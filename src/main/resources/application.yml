@@ -1,0 +1,39 @@
+spring:
+  profiles:
+    active: local
+    group:
+      local:
+        - local
+      dev:
+        - dev
+    include: oauth2
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false
+        highlight_sql: true
+    open-in-view: true
+
+jwt:
+  secretKey: ENC(N6a0XhuWu+jKyeVjorwDVlZm5vqhRyilQBEkKhgNBWkOmBuvVdVTBEfr1Ry1Qa2QbNC8l21f5I8hVLz21HYGx+W5uxFtgCRLIpLyYJHijpPNo7VXMv77/neycLvms/HyTc8hsXILR9mCsIGRNn+aS24Z+3dV7ofcznbPTwLb6MKPCjIBnL8WRBqyllkSqXC+)
+  expirationTime: 1800000
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_PASSWORD}
+    algorithm: ${JASYPT_ALGORITHM}
+
+#logging:
+#  file.name: logs/application-debug.log
+#  pattern:
+#    console: "%d %-5level %logger : %msg%n"
+#    file: "%d %-5level [%thread] %logger : %msg%n"
+#  level:
+#    org.springframework.web: ERROR
+#    com.howtodoinjava: DEBUG
+#    org.hibernate: ERROR
