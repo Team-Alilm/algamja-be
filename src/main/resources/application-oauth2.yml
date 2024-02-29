@@ -1,0 +1,11 @@
+#spring:
+#  config:
+#    activate:
+#      on-profile: oauth2
+#
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          kakao:
+#            client-id: ${}
