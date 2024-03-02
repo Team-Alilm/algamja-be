@@ -5,7 +5,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ## AWS RDS URL
+    url: jdbc:mysql://localhost:3306/alilm
     username: ## AWS RDS username
     password: ## AWS RDS password
 
