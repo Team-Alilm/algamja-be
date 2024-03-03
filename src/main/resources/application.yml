@@ -14,13 +14,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        show_sql: false
+        show_sql: true
         highlight_sql: true
+        use_sql_comments: true
     open-in-view: true
 
-jwt:
-  secretKey: ENC(N6a0XhuWu+jKyeVjorwDVlZm5vqhRyilQBEkKhgNBWkOmBuvVdVTBEfr1Ry1Qa2QbNC8l21f5I8hVLz21HYGx+W5uxFtgCRLIpLyYJHijpPNo7VXMv77/neycLvms/HyTc8hsXILR9mCsIGRNn+aS24Z+3dV7ofcznbPTwLb6MKPCjIBnL8WRBqyllkSqXC+)
-  expirationTime: 1800000
+  jwt:
+    secretKey: ENC(XHzc4j5aQ9QBZsvGZxTRRzSyKU1wfRFruDDgZZKMrVLVDuR0kzpK+b2jc9t+r3Flj++7Jn3z3s16PCGWBgEpKCthC8FEzQGJcpINWNs452+MuIyzON3wMmr7WqfJhDyevB8xGLeWHurz2ROwV9p1gHFZoCuMa/yrC++W4iU8lRRk2Wkr9G2H67inPkXqyt1I)
+    expirationTime: 1800000
 
 jasypt:
   encryptor:

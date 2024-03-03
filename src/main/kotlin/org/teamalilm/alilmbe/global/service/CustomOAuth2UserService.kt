@@ -5,14 +5,16 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User
 import org.springframework.security.oauth2.core.user.OAuth2User
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.global.dto.OAuth2Attribute
 import org.teamalilm.alilmbe.member.entity.Role
-import java.util.Collections.singleton
+import java.util.Collections
 
-@Service
-class CustomOAuth2UserService() : DefaultOAuth2UserService() {
+@Component
+class CustomOAuth2UserService: DefaultOAuth2UserService() {
 
+    @Transactional
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
         val oAuth2User = super.loadUser(userRequest)
 
@@ -28,10 +30,11 @@ class CustomOAuth2UserService() : DefaultOAuth2UserService() {
         )
 
         return DefaultOAuth2User(
-            singleton(SimpleGrantedAuthority(Role.MEMBER.key)),
+            Collections.singleton(SimpleGrantedAuthority(Role.MEMBER.key)),
             oAuth2Attribute.convertToMap(),
             userNameAttributeName
         )
+
     }
 
 }

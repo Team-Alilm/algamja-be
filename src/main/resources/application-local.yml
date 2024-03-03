@@ -5,6 +5,10 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:lcaoldb
+    url: jdbc:h2:mem:local
     username: sa
     password:
+
+  h2:
+    console:
+      enabled: true

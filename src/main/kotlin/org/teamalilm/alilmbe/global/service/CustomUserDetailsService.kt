@@ -1,30 +1,23 @@
 package org.teamalilm.alilmbe.global.service
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.stereotype.Service
-import org.teamalilm.alilmbe.member.entity.Member
+import org.teamalilm.alilmbe.global.entity.CustomUserDetails
+import org.teamalilm.alilmbe.member.error.NotFoundMemberException
 import org.teamalilm.alilmbe.member.repository.MemberRepository
 
-@Service
 class CustomUserDetailsService(
-    private val memberRepository: MemberRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val memberRepository: MemberRepository
 ) : UserDetailsService {
 
-    override fun loadUserByUsername(username: String): UserDetails =
-        memberRepository.findByLoginId(username)
-            ?.let { createUserDetails(it) } ?: throw UsernameNotFoundException("해당 유저는 없습니다.")
+    override fun loadUserByUsername(memberId: String): UserDetails? {
+        return null
+    }
 
-    private fun createUserDetails(member: Member): UserDetails =
-        User(
-            member.loginId,
-            passwordEncoder.encode(member.password),
-            member.memberRole!!.map { SimpleGrantedAuthority("ROLE_${it.role}") }
-        )
+    fun loadUserByMemberId(memberId: Long): UserDetails {
+        val member = memberRepository.findByIdOrNull(memberId.toLong()) ?: (throw NotFoundMemberException(""))
+
+        return CustomUserDetails(member)
+    }
 }
-
