@@ -10,14 +10,17 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.teamalilm.alilmbe.global.handler.CustomSuccessHandler
+import org.teamalilm.alilmbe.global.jwt.JwtFilter
 import org.teamalilm.alilmbe.global.service.CustomOAuth2UserService
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
     private val customOAuth2UserService: CustomOAuth2UserService,
-    private val customSuccessHandler: CustomSuccessHandler
+    private val customSuccessHandler: CustomSuccessHandler,
+    private val jwtFilter: JwtFilter
 ) {
 
     @Bean
@@ -25,16 +28,19 @@ class SecurityConfig(
         PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
     @Bean
-    fun configureH2ConsoleEnable() : WebSecurityCustomizer {
-        return WebSecurityCustomizer { web -> web
-            .ignoring()
-            .requestMatchers(PathRequest.toH2Console())
+    fun configureH2ConsoleEnable(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { web ->
+            web
+                .ignoring()
+                .requestMatchers(PathRequest.toH2Console())
         }
     }
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .cors { it.disable() }
+
             .formLogin {
                 it.disable()
             }
@@ -51,18 +57,22 @@ class SecurityConfig(
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
 
-            .oauth2Login{ oauth2LoginCustomizer -> oauth2LoginCustomizer
-                .userInfoEndpoint { userInfoEndpointCustomizer ->
-                    userInfoEndpointCustomizer.userService(customOAuth2UserService)
-                }
+            .oauth2Login { oauth2LoginCustomizer ->
+                oauth2LoginCustomizer
+                    .userInfoEndpoint { userInfoEndpointCustomizer ->
+                        userInfoEndpointCustomizer.userService(customOAuth2UserService)
+                    }
 
-                .successHandler(customSuccessHandler)
+                    .successHandler(customSuccessHandler)
             }
 
-            .authorizeHttpRequests { auth -> auth
-                .requestMatchers(PathRequest.toH2Console()).permitAll()
-                .anyRequest().authenticated()
+            .authorizeHttpRequests { auth ->
+                auth
+                    .requestMatchers(PathRequest.toH2Console()).permitAll()
+                    .anyRequest().authenticated()
             }
+
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }
