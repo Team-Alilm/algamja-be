@@ -1,0 +1,59 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Gradle Caching
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+      
+    - name: Build with Gradle Wrapper
+      run: ./gradlew build -Pprofile=prod 
+
+    - name: Docker build & push to prod
+      if: contains(github.ref, 'main')
+      run: |
+        docker login -u ${{  secrets.DOCKER_ID  }} -p ${{  secrets.DOCKER_PASSWORD  }}
+        docker build -f DockerFile-dev -t ${{  secrets.DOCKER_USERNAME  }}/${{  secrets.DOCKER_REP_ID  }} .
+        docker push ${{  secrets.DOCKER_USERNAME  }}/${{  secrets.DOCKER_REP_ID  }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - name: ssh ec2 connect & docker impage pull && start server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{  secrets.EC2_PUBLIC_IP  }}
