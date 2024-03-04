@@ -47,11 +47,6 @@ jobs:
         docker build -f ${{ secrets.DOCKER_USERNAME  }}/${{ secrets.DOCKER_REP_ID }} .
         docker push ${{ secrets.DOCKER_USERNAME  }}/${{ secrets.DOCKER_REP_ID }}
 
-    - name: deploy
-      runs-on: ubuntu-latest
-      permissions:
-        contents: read
-
     - name: ssh ec2 connect & docker impage pull && start server
       uses: appleboy/ssh-action@master
       with:
