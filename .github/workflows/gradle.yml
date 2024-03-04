@@ -44,8 +44,8 @@ jobs:
       if: contains(github.ref, 'main')
       run: |
         docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -f ${{ secrets.DOCKER_USERNAME  }}/${{ secrets.DOCKER_REP_ID }} .
-        docker push ${{ secrets.DOCKER_USERNAME  }}/${{ secrets.DOCKER_REP_ID }}
+        docker build -f ${{ secrets.DOCKER_REP  }} .
+        docker push ${{ secrets.DOCKER_REP  }}
 
     - name: ssh ec2 connect & docker impage pull && start server
       uses: appleboy/ssh-action@master
@@ -54,6 +54,6 @@ jobs:
         username: ec2-user
         key: ${{  secrets.EC2_KEY  }}
         script: |
-          docker pull ${{ secrets.DOCKER_USERNAME  }}/${{ secrets.DOCKER_REP_ID }}
+          docker pull ${{ secrets.DOCKER_REP  }}
           docker stop $(docker ps -a -q)
           docker run -d -p 8080:8080 -e
