@@ -60,5 +60,4 @@ jobs:
           docker rm -f $(docker ps -qa)
           docker rmi ${{ secrets.DOCKER_REP }}
           docker pull ${{ secrets.DOCKER_REP }}
-          docker stop $(docker ps -a -q)
-          docker run -d -p 8080:8080
+          docker-compose up -d
