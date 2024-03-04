@@ -14,7 +14,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build & deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -47,12 +47,11 @@ jobs:
         docker build -f ${{ secrets.DOCKER_USERNAME  }}/${{ secrets.DOCKER_REP_ID }} .
         docker push ${{ secrets.DOCKER_USERNAME  }}/${{ secrets.DOCKER_REP_ID }}
 
-  deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    - name: deploy
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
 
-    steps:
     - name: ssh ec2 connect & docker impage pull && start server
       uses: appleboy/ssh-action@master
       with:
