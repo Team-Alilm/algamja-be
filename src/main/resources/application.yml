@@ -6,11 +6,12 @@ spring:
         - local
       dev:
         - dev
+      prod:
+        - prod
+
     include: oauth2
 
   jpa:
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
