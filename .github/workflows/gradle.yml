@@ -38,7 +38,7 @@ jobs:
           ${{ runner.os }}-gradle-
       
     - name: Build with Gradle Wrapper
-      run: ./gradlew build -Pprofile=prod 
+      run: ./gradlew build
 
     - name: Docker build & push to prod
       if: contains(github.ref, 'main')
