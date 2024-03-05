@@ -59,5 +59,6 @@ jobs:
         script: |
           docker rm -f $(docker ps -qa)
           docker rmi ${{ secrets.DOCKER_REP }}
+          docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker pull ${{ secrets.DOCKER_REP }}
           docker-compose up -d
