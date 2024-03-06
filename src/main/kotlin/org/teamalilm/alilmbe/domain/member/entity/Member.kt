@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.member.entity
+package org.teamalilm.alilmbe.domain.member.entity
 
 import jakarta.persistence.*
 import org.teamalilm.alilmbe.global.entity.BaseTimeEntity

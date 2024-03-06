@@ -2,7 +2,7 @@ package org.teamalilm.alilmbe.global.entity
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.teamalilm.alilmbe.member.entity.Member
+import org.teamalilm.alilmbe.domain.member.entity.Member
 import java.util.*
 
 class CustomUserDetails(

@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
 import org.teamalilm.alilmbe.global.jwt.JwtUtil
 import org.teamalilm.alilmbe.global.status.OAuth2Provider
-import org.teamalilm.alilmbe.member.entity.Member
-import org.teamalilm.alilmbe.member.entity.Role
-import org.teamalilm.alilmbe.member.error.NotFoundEmailExections
-import org.teamalilm.alilmbe.member.repository.MemberRepository
+import org.teamalilm.alilmbe.domain.member.entity.Member
+import org.teamalilm.alilmbe.domain.member.entity.Role
+import org.teamalilm.alilmbe.domain.member.error.NotFoundEmailExections
+import org.teamalilm.alilmbe.domain.member.repository.MemberRepository
 
 @Component
 class CustomSuccessHandler(
