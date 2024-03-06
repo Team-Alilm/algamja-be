@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.entity
+package org.teamalilm.alilmbe.domain.product.entity
 
 enum class Store(
     val url: String
