@@ -3,6 +3,7 @@ package org.teamalilm.alilmbe.global.config
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
@@ -26,15 +27,6 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder(): PasswordEncoder =
         PasswordEncoderFactories.createDelegatingPasswordEncoder()
-
-    @Bean
-    fun configureH2ConsoleEnable(): WebSecurityCustomizer {
-        return WebSecurityCustomizer { web ->
-            web
-                .ignoring()
-                .requestMatchers(PathRequest.toH2Console())
-        }
-    }
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -68,7 +60,6 @@ class SecurityConfig(
 
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers(PathRequest.toH2Console()).permitAll()
                     .anyRequest().authenticated()
             }
 
