@@ -2,8 +2,8 @@ package org.teamalilm.alilmbe.global.dto
 
 import lombok.extern.slf4j.Slf4j
 import org.teamalilm.alilmbe.global.status.OAuth2Provider
-import org.teamalilm.alilmbe.member.entity.Member
-import org.teamalilm.alilmbe.member.entity.Role
+import org.teamalilm.alilmbe.domain.member.entity.Member
+import org.teamalilm.alilmbe.domain.member.entity.Role
 import java.util.*
 
 @Slf4j

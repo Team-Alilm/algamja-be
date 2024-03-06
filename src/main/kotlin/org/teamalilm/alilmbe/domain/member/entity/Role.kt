@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.member.entity
+package org.teamalilm.alilmbe.domain.member.entity
 
 enum class Role(
     val key: String
