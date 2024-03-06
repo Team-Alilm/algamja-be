@@ -1,8 +1,7 @@
-package org.teamalilm.alilmbe.domain.product
+package org.teamalilm.alilmbe.domain.product.entity
 
 import jakarta.persistence.*
 import org.teamalilm.alilmbe.global.entity.BaseTimeEntity
-import org.teamalilm.alilmbe.global.entity.Store
 
 @Entity
 class Product(
