@@ -20,7 +20,11 @@ class JwtUtil(
     }
 
     fun isExpired(token: String?): Boolean {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).payload.expiration.before(Date())
+        return Jwts.parser().verifyWith(secretKey).build()
+                .parseSignedClaims(token)
+                .payload
+                .expiration
+                .before(Date())
     }
 
     fun createJwt(memberId: Long, expireMs: Long) : String {
