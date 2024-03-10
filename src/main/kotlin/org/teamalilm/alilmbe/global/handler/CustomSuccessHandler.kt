@@ -39,7 +39,7 @@ class CustomSuccessHandler(
             }
 
             val memberId = memberRepository.save(newMember).id ?: throw IllegalStateException("")
-            val baseUrl = """http://localhost:3000"""
+            val baseUrl = """https://alilm.co.kr"""
 
             val redirectUri = UriComponentsBuilder.fromOriginHeader(baseUrl)
                 .path("/oauth/kakao")
