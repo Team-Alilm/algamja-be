@@ -12,23 +12,25 @@ import java.time.LocalDateTime
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
-abstract class BaseTimeEntity {
-
+abstract class BaseTimeEntity(
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    var createdDate: LocalDateTime? = null
+    var createdDate: LocalDateTime? = null,
 
     @LastModifiedDate
     @Column(nullable = false)
     var lastModifiedDate: LocalDateTime? = null
+) {
 
     @PrePersist
-    fun PrePersist() {
+    private fun PrePersist() {
         this.createdDate = LocalDateTime.now()
     }
 
     @PreUpdate
-    fun preUpdate() {
+    private fun preUpdate() {
         this.lastModifiedDate = LocalDateTime.now()
     }
+
+
 }

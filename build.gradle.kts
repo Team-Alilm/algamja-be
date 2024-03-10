@@ -57,10 +57,16 @@ dependencies {
     // validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    // swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+
+    // jsoup
+    implementation("org.jsoup:jsoup:1.17.2")
+
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 }
 
-allOpen{
+allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.Embeddable")
     annotation("jakarta.persistence.MappedSuperclass")
