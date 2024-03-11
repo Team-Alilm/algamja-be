@@ -9,9 +9,9 @@ spring:
         registration:
           kakao:
             client-name: Kakao
-            client-id: ENC(50wnUe6oZOxMWsOCRmSeUVBlEk8kXbO9ZjSoKlelLi323oyDbAk+IPtxAd1JIZ0q)
-            client-secret: ENC(IiFMsuf21EaxwEwKO0IaX9RAJJvLiCVUrdpEOjdq9WuKW+FtkWnqbkssjK9Zw8cn)
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            client-id: ENC(NbBUj89oVS3cZPjyqpY3IJ1aeP6APd4Shu8TKGdFhCQS7MF1Gj9U7ARmYDW+Tmr1)
+            client-secret: ENC(stc5I/Npc0dAqzq0kJCCUVZWvr56YljGhsc05zY2BLvaTuymqQJjeY6QSo5w3ZsT)
+            redirect-uri: http://alilm.store:8080/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
