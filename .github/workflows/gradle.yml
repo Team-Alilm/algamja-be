@@ -54,6 +54,9 @@ jobs:
 
       - name: Docker build & push to prod
         if: contains(github.ref, 'main')
+        env:
+          JASYPT_ALGORITHM: ${{ secrets.JASYPT_ALGORITHM }}
+          JASYPT_PASSWORD: ${{ secrets.JASYPT_PASSWORD }}
         run: |
           docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_REP }} .
