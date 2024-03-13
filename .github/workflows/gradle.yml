@@ -53,7 +53,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-artifact
-          path: build
+          path: ./
 
       - name: Docker build & push to prod
         if: contains(github.ref, 'main')
