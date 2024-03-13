@@ -11,6 +11,6 @@ class HealthController {
     @GetMapping
     fun health() : String {
         return "Hello Alilm"
-
     }
+
 }
