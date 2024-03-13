@@ -66,6 +66,7 @@ jobs:
           JASYPT_ALGORITHM: ${{ secrets.JASYPT_ALGORITHM }}
           JASYPT_PASSWORD: ${{ secrets.JASYPT_PASSWORD }}
         run: |
+          ls
           docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_REP }} -f Dockerfile .
           docker push ${{ secrets.DOCKER_REP }}
