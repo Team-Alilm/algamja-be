@@ -1,88 +1,85 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.2.2"
-    id("io.spring.dependency-management") version "1.1.4"
+    id("org.springframework.boot") version "3.2.2" apply false
+    id("io.spring.dependency-management") version "1.1.4" apply false
     kotlin("jvm") version "1.9.22"
-    kotlin("plugin.spring") version "1.9.22"
-    kotlin("plugin.jpa") version "2.0.0-Beta4"
+    kotlin("plugin.spring") version "1.9.22" apply false
+    kotlin("plugin.jpa") version "2.0.0-Beta4" apply false
 }
 
-group = "org.TeamAlilm"
-version = "0.0.1-SNAPSHOT"
+allprojects {
+    group = "org.teamAlilm"
+    version = "0.0.1-SNAPSHOT"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-}
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs += "-Xjsr305=strict"
+            jvmTarget = "17"
+        }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
     }
 }
 
-repositories {
-    mavenCentral()
-}
+subprojects {
+    apply(plugin = "kotlin")
+    apply(plugin = "org.springframework.boot")
+    apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 
-dependencies {
-    // default
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    dependencies {
+        implementation("org.jetbrains.kotlin:kotlin-reflect")
+        implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
+    }
 
-    // jpa
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    dependencies {
+        // default
+        implementation("org.springframework.boot:spring-boot-starter-web")
+        annotationProcessor("org.projectlombok:lombok")
 
-    //oauth2
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+        // jpa
+        implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    // security
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    testImplementation("org.springframework.security:spring-security-test")
+        //oauth2
+        implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
-    // jwt
-    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
+        // security
+        implementation("org.springframework.boot:spring-boot-starter-security")
+        testImplementation("org.springframework.security:spring-security-test")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    compileOnly("org.projectlombok:lombok")
+        // jwt
+        implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+        runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
+        runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
 
-    // database
-    runtimeOnly("com.h2database:h2")
-    runtimeOnly("com.mysql:mysql-connector-j")
 
-    // validation
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+        // database
+        runtimeOnly("com.h2database:h2")
+        runtimeOnly("com.mysql:mysql-connector-j")
 
-    // swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+        // validation
+        implementation("org.springframework.boot:spring-boot-starter-validation")
 
-    // jsoup
-    implementation("org.jsoup:jsoup:1.17.2")
+        // swagger
+        implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 
-    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
-}
+        // jsoup
+        implementation("org.jsoup:jsoup:1.17.2")
 
-allOpen {
-    annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.Embeddable")
-    annotation("jakarta.persistence.MappedSuperclass")
-}
-
-noArg {
-    annotation("jakarta.persistence.Entity")
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
-        jvmTarget = "17"
+        implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
