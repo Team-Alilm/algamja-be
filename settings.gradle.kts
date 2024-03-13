@@ -1,1 +1,3 @@
-rootProject.name = "Alilm-Be"
+rootProject.name = "alilm-be"
+
+include("core", "api")
