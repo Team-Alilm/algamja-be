@@ -40,10 +40,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact
-          path: |
-            build
-            Dockerfile
-            
+          path: ./
 
   docker_push:
     needs: build
@@ -56,9 +53,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
-          path: |
-            build/
-            Dockerfile
+          path: ./
 
       - name: Docker build & push to prod
         if: contains(github.ref, 'main')
