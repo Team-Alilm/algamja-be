@@ -40,9 +40,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-artifact
-          path: |
-            build/
-            Dockerfile
+          path: ./
 
   docker_push:
     needs: build
