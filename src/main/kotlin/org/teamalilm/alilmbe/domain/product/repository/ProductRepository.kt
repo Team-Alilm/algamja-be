@@ -7,9 +7,7 @@ import org.teamalilm.alilmbe.domain.product.entity.ProductInfo
 
 interface ProductRepository : JpaRepository<Product, Long> {
     fun findAllByOrderByCreatedDateDesc(): List<Product>
-    fun findByProductInfo(productInfo: ProductInfo): Nothing? {
+    fun findByProductInfo(productInfo: ProductInfo): Product? {
         TODO("Not yet implemented")
     }
-
-    fun findByProductAndMember(product: Nothing, member: Member): Boolean
 }
