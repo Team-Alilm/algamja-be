@@ -1,38 +1,53 @@
 package org.teamalilm.alilmbe.controller
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.product.entity.Product
 import org.teamalilm.alilmbe.domain.product.entity.Store
 import org.teamalilm.alilmbe.domain.product.service.ProductService
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
+@Tag(name = "상품 API")
 @RestController
 @RequestMapping("/api/v1/product")
 class ProductController(
     val productService: ProductService
 ) {
 
-    @PostMapping()
+    @Operation(
+        summary = "상품 등록",
+        description = "상품을 등록해요."
+    )
+    @PostMapping
     fun registration(
         @RequestBody
         @Valid
         productSaveForm: ProductSaveForm,
-    ): ResponseEntity<Any> {
-        productService.registration(productSaveForm)
+
+        @AuthenticationPrincipal
+        member: Member
+    ): ResponseEntity<Void> {
+        productService.registration(productSaveForm, member)
 
         return ResponseEntity.ok().build()
     }
 
+    @Operation(
+        summary = "상품 전체 조회",
+        description = "상품을 전체 조회해요."
+    )
     @GetMapping
     fun findAll(): ResponseEntity<List<ProductFindAllView>> {
         val productFindAllViews: List<ProductFindAllView> = productService.findAll();
@@ -48,7 +63,7 @@ data class ProductSaveForm(
         example = "https://image.msscdn.net/images/goods_img/20240208/3859221/3859221_17084100068855_500.jpg"
     )
     @NotBlank(message = "이미지 url은 필수에요.")
-    val imageUrl: String,
+    val number: String,
 
     @Schema(
         description = "상품명 입니다.",
@@ -79,20 +94,28 @@ data class ProductSaveForm(
         nullable = true,
         example = "(헤링본)화이트 or S, M"
     )
-    val option1: String?, // 상품 사이즈
+    @NotBlank(message = "옵션 1은 필수 입니다.")
+    val option1: String, // 상품 사이즈
 
     @Schema(
         description = "상품 옵션 2 입니다.",
         nullable = true,
         example = "(헤링본)화이트 or S, M"
     )
-    val option2: String? // 상품 색상
+    val option2: String?, // 상품 색상
+
+    @Schema(
+        description = "상품 옵션 3 입니다.",
+        nullable = true,
+        example = "(헤링본)화이트 및 세트"
+    )
+    val option3: String? // 상품 색상
 )
 
 data class ProductFindAllView(
     val productId: Long,
     val name: String,
-    val imageUrl: String,
+    val number: String,
     val store: Store,
     val size: String,
     val color: String,
@@ -104,11 +127,11 @@ data class ProductFindAllView(
             return ProductFindAllView(
                 productId = product.id!!,
                 name = product.name,
-                imageUrl = product.imageUrl,
-                store = product.store,
+                number = product.productInfo.number,
+                store = product.productInfo.store,
                 size = product.productInfo.option1!!,
-                color = product.productInfo.option2!!,
-                createdDate = product.createdDate!!
+                color = product.productInfo.option2 ?: "",
+                createdDate = product.createdDate
             )
         }
     }
