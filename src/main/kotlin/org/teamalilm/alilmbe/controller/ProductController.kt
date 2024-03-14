@@ -14,6 +14,7 @@ import org.teamalilm.alilmbe.domain.product.entity.Product
 import org.teamalilm.alilmbe.domain.product.entity.Store
 import org.teamalilm.alilmbe.domain.product.service.ProductService
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -21,8 +22,7 @@ class ProductController(
     val productService: ProductService
 ) {
 
-    @Tag(name = "상품 컨트롤러", description = "상품 등록 API에요.")
-    @PostMapping
+    @PostMapping()
     fun registration(
         @RequestBody
         @Valid
@@ -96,7 +96,7 @@ data class ProductFindAllView(
     val store: Store,
     val size: String,
     val color: String,
-    val createdDate: LocalDateTime
+    val createdDate: ZonedDateTime
 ) {
 
     companion object {
