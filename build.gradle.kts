@@ -1,20 +1,23 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.9.22"
-    id("org.springframework.boot") version "3.2.2" apply false
-    id("io.spring.dependency-management") version "1.1.4" apply false
-    kotlin("plugin.spring") version "1.9.22" apply false
-    kotlin("plugin.jpa") version "2.0.0-Beta4" apply false
+    kotlin("jvm")
+    id("org.springframework.boot") apply false
+    id("io.spring.dependency-management")
+    kotlin("plugin.spring") apply false
+    kotlin("plugin.jpa") apply false
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
+val projectGroup: String by project
+val applicationVersion: String by project
+
 allprojects {
-    group = "org.team_alilm"
-    version = "0.0.1-SNAPSHOT"
+    group = projectGroup
+    version = applicationVersion
 
     repositories {
         mavenCentral()
@@ -27,7 +30,16 @@ subprojects {
     apply(plugin = "org.springframework.boot")
     apply(plugin = "io.spring.dependency-management")
 
+    dependencyManagement {
+        val springCloudVersion: String by project
+
+        imports {
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+        }
+    }
+
     dependencies {
+        implementation("org.springframework.boot:spring-boot-starter-web")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         implementation("org.jetbrains.kotlin:kotlin-reflect")
