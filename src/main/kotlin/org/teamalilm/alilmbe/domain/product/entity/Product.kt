@@ -16,22 +16,15 @@ import org.teamalilm.alilmbe.global.entity.BaseTimeEntity
 @Table(
     uniqueConstraints = [UniqueConstraint(
         name = "tag_key_number_size_color",
-        columnNames = ["number", "option1", "option2"]
+        columnNames = ["store", "number", "option1", "option2", "option3"]
     )]
 )
 class Product(
-
     @Column(nullable = false)
     val name: String,
 
-    @Column(nullable = false)
-    val imageUrl: String,
-
     @Embedded
     val productInfo: ProductInfo,
-
-    @Enumerated(value = EnumType.STRING)
-    val store: Store,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -21,8 +21,10 @@ class SwaggerConfig {
 
     @Bean
     fun openAPI(): OpenAPI {
-        val jwtHeaderName = "token"
+        val jwtHeaderName = "Authorization"
+
         val securityRequirement = SecurityRequirement().addList(jwtHeaderName)
+
         val components = Components()
             .addSecuritySchemes(
                 jwtHeaderName, SecurityScheme()
