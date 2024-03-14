@@ -14,9 +14,7 @@ class BasketService(
 ) {
 
     fun save(basketSaveCommand: BasketSaveCommand) {
-        val basket = Basket()
-        basket.members.add(basketSaveCommand.member)
-        basket.products.add(basketSaveCommand.product)
+        val basket = Basket(member = basketSaveCommand.member, product = basketSaveCommand.product)
 
         basketRepository.save(basket)
     }
