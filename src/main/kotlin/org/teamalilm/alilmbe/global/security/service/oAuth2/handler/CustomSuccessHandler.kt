@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.member.entity.Role
-import org.teamalilm.alilmbe.domain.member.error.NotFoundEmailExections
 import org.teamalilm.alilmbe.domain.member.repository.MemberRepository
 import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.OAuth2Provider
@@ -34,10 +33,9 @@ class CustomSuccessHandler(
             val attributes = oAuth2User.attributes
 
             val email = attributes["email"]?.toString()
-                ?: throw NotFoundEmailExections("OAuth2 응답에 이메일이 없습니다.")
-            val member = memberRepository.findByEmail(email)
-
-            val newMember = when (member) {
+                ?: throw IllegalStateException("OAuth2 응답에 이메일이 없습니다.")
+            
+            val newMember = when (val member = memberRepository.findByEmail(email)) {
                 null -> saveMember(attributes)
                 else -> updateMember(attributes, member)
             }

@@ -5,14 +5,14 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import org.teamalilm.alilmbe.global.security.service.CustomUserDetailsService
 
 @Component
 class JwtFilter(
     private val jwtUtil: JwtUtil,
-    private val customUserDetailsService: CustomUserDetailsService
+    private val userDetailsService: UserDetailsService
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -26,7 +26,7 @@ class JwtFilter(
         if (jwtUtil.validate(token)) {
             val memberId = jwtUtil.getMemberId(token)
 
-            val userDetails = customUserDetailsService.loadUserByMemberId(memberId)
+            val userDetails = userDetailsService.loadUserByUsername(memberId.toString())
             val authToken =
                 UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
 

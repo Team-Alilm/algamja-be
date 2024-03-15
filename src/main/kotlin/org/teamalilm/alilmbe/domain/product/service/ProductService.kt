@@ -1,8 +1,8 @@
 package org.teamalilm.alilmbe.domain.product.service
 
+import ProductFindAllData
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.teamalilm.alilmbe.controller.product.data.ProductFindAllView
 import org.teamalilm.alilmbe.controller.product.data.ProductSaveRequestData
 import org.teamalilm.alilmbe.domain.basket.entity.Basket
 import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
@@ -51,10 +51,10 @@ class ProductService(
         basketRepository.save(Basket(product = product, member = member))
     }
 
-    fun findAll(): List<ProductFindAllView> {
+    fun findAll(): List<ProductFindAllData> {
         val products = productRepository.findAllByOrderByCreatedDateDesc()
 
-        return products.map { ProductFindAllView.of(it) }
+        return products.map { ProductFindAllData.of(it) }
     }
 
 }

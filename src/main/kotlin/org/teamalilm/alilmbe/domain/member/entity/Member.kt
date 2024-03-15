@@ -7,7 +7,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import org.teamalilm.alilmbe.global.base.BaseTimeEntity
+import org.teamalilm.alilmbe.global.jpa.base.BaseTimeEntity
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.OAuth2Provider
 
 @Entity
