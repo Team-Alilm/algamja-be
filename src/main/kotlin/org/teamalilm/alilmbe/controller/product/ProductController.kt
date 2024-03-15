@@ -17,7 +17,7 @@ import org.teamalilm.alilmbe.domain.product.service.ProductService
 
 @Tag(name = "상품 API")
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 class ProductController(
     val productService: ProductService
 ) {
