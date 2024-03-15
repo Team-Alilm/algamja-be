@@ -51,8 +51,8 @@ class OAuth2Attribute(
             attributeKey: String,
             attributes: Map<String, Any>
         ): OAuth2Attribute {
-            val kakaoAccount = attributes["kakao_account"] as Map<String, Any>
-            val profile = attributes["properties"] as Map<String, Any>
+            val kakaoAccount = attributes["kakao_account"] as Map<*, *>
+            val profile = attributes["properties"] as Map<*, *>
 
             val nickname = profile["nickname"].toString()
             val email = kakaoAccount["email"].toString()
