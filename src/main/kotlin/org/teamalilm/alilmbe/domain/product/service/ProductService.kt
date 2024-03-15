@@ -2,8 +2,8 @@ package org.teamalilm.alilmbe.domain.product.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.teamalilm.alilmbe.controller.product.ProductSaveForm
 import org.teamalilm.alilmbe.controller.product.data.ProductFindAllView
+import org.teamalilm.alilmbe.controller.product.data.ProductSaveRequestData
 import org.teamalilm.alilmbe.domain.basket.entity.Basket
 import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
 import org.teamalilm.alilmbe.domain.member.entity.Member
@@ -22,25 +22,25 @@ class ProductService(
      * 상품을 등록해요.
      */
     @Transactional
-    fun registration(productSaveForm: ProductSaveForm, member: Member) {
+    fun registration(productSaveRequestData: ProductSaveRequestData, member: Member) {
         // 유일 상품 정보
         val productInfo = ProductInfo(
-            store = productSaveForm.store,
-            number = productSaveForm.number,
-            option1 = productSaveForm.option1,
-            option2 = productSaveForm.option2,
-            option3 = productSaveForm.option3
+            store = productSaveRequestData.store,
+            number = productSaveRequestData.number,
+            option1 = productSaveRequestData.option1,
+            option2 = productSaveRequestData.option2,
+            option3 = productSaveRequestData.option3
         )
 
         val product = productRepository.findByProductInfo(productInfo)
             ?: Product(
-                name = productSaveForm.name,
+                name = productSaveRequestData.name,
                 productInfo = ProductInfo(
-                    number = productSaveForm.number,
-                    store = productSaveForm.store,
-                    option1 = productSaveForm.option1,
-                    option2 = productSaveForm.option2,
-                    option3 = productSaveForm.option3
+                    store = productSaveRequestData.store,
+                    number = productSaveRequestData.number,
+                    option1 = productSaveRequestData.option1,
+                    option2 = productSaveRequestData.option2,
+                    option3 = productSaveRequestData.option3
                 )
             ).also { productRepository.save(it) }
 
