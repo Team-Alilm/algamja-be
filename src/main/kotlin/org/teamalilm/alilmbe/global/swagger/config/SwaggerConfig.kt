@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.config
+package org.teamalilm.alilmbe.global.swagger.config
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.info.Info

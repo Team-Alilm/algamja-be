@@ -1,13 +1,13 @@
-package org.teamalilm.alilmbe.global.entity
+package org.teamalilm.alilmbe.global.security.entity
 
+import java.util.Collections
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.teamalilm.alilmbe.domain.member.entity.Member
-import java.util.*
 
 class CustomUserDetails(
     private val member: Member
-) : UserDetails{
+) : UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return Collections.emptyList()

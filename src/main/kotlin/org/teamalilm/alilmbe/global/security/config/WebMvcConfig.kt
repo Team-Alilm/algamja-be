@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.config
+package org.teamalilm.alilmbe.global.security.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry

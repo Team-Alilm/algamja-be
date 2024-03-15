@@ -1,8 +1,7 @@
-package org.teamalilm.alilmbe.global.dto
+package org.teamalilm.alilmbe.global.security.service.oAuth2.data
 
 import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.member.entity.Role
-import org.teamalilm.alilmbe.global.status.OAuth2Provider
 
 
 class OAuth2Attribute(
@@ -37,13 +36,21 @@ class OAuth2Attribute(
 
     companion object {
 
-        fun of(attributes: Map<String, Any>, provider: String, attributeKey: String): OAuth2Attribute {
+        fun of(
+            attributes: Map<String, Any>,
+            provider: String,
+            attributeKey: String
+        ): OAuth2Attribute {
             return when (OAuth2Provider.from(provider)) {
                 OAuth2Provider.KAKAO -> ofKakao(provider, attributeKey, attributes)
             }
         }
 
-        private fun ofKakao(provider: String, attributeKey: String, attributes: Map<String, Any>): OAuth2Attribute {
+        private fun ofKakao(
+            provider: String,
+            attributeKey: String,
+            attributes: Map<String, Any>
+        ): OAuth2Attribute {
             val kakaoAccount = attributes["kakao_account"] as Map<String, Any>
             val profile = attributes["properties"] as Map<String, Any>
 

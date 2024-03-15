@@ -1,39 +1,38 @@
-package org.teamalilm.alilmbe.global.entity
+package org.teamalilm.alilmbe.global.base
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
+import java.time.ZoneOffset.UTC
+import java.time.ZonedDateTime
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset.UTC
-import java.time.ZonedDateTime
-import java.util.TimeZone
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
-abstract class BaseTimeEntity(
+abstract class BaseTimeEntity {
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    var createdDate: ZonedDateTime = ZonedDateTime.of(LocalDateTime.now(), UTC),
+    lateinit var createdDate: ZonedDateTime
 
     @LastModifiedDate
     @Column(nullable = false)
-    var lastModifiedDate: ZonedDateTime = ZonedDateTime.of(LocalDateTime.now(), UTC)
-) {
+    lateinit var lastModifiedDate: ZonedDateTime
 
     @PrePersist
-    private fun PrePersist() {
-        this.createdDate = ZonedDateTime.of(LocalDateTime.now(), UTC)
+    fun prePersist() {
+        val now = ZonedDateTime.now(UTC)
+        createdDate = now
+        lastModifiedDate = now
     }
 
     @PreUpdate
-    private fun preUpdate() {
-        this.lastModifiedDate = ZonedDateTime.of(LocalDateTime.now(), UTC)
+    fun preUpdate() {
+        lastModifiedDate = ZonedDateTime.now(UTC)
     }
-
+    
 }

@@ -1,8 +1,14 @@
 package org.teamalilm.alilmbe.domain.member.entity
 
-import jakarta.persistence.*
-import org.teamalilm.alilmbe.global.entity.BaseTimeEntity
-import org.teamalilm.alilmbe.global.status.OAuth2Provider
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import org.teamalilm.alilmbe.global.base.BaseTimeEntity
+import org.teamalilm.alilmbe.global.security.service.oAuth2.data.OAuth2Provider
 
 @Entity
 class Member(
