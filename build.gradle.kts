@@ -14,6 +14,10 @@ val applicationVersion: String by project
 group = projectGroup
 version = applicationVersion
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
 repositories {
     mavenCentral()
 }
