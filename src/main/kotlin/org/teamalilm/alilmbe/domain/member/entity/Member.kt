@@ -7,8 +7,11 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import org.teamalilm.alilmbe.global.jpa.base.BaseTimeEntity
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.OAuth2Provider
+import java.util.*
 
 @Entity
 class Member(
@@ -32,9 +35,37 @@ class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-) : BaseTimeEntity() {
+) : BaseTimeEntity(), UserDetails {
 
-    fun update(email: String) {
+    fun updateEmail(email: String) {
         this.email = email
+    }
+
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+        return Collections.emptyList()
+    }
+
+    override fun getPassword(): String? {
+        return null
+    }
+
+    override fun getUsername(): String {
+        return this.id.toString()
+    }
+
+    override fun isAccountNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isAccountNonLocked(): Boolean {
+        return true
+    }
+
+    override fun isCredentialsNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isEnabled(): Boolean {
+        return true
     }
 }

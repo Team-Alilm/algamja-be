@@ -72,7 +72,7 @@ class CustomSuccessHandler(
 
     private fun updateMember(attributes: Map<String, Any>, member: Member): Member {
         val email = attributes["email"] as? String ?: throw IllegalStateException("")
-        member.update(email)
+        member.updateEmail(email)
 
         return member
     }
