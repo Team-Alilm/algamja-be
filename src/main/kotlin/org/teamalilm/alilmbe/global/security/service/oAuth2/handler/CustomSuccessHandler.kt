@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.handler
+package org.teamalilm.alilmbe.global.security.service.oAuth2.handler
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -7,12 +7,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
-import org.teamalilm.alilmbe.global.jwt.JwtUtil
-import org.teamalilm.alilmbe.global.status.OAuth2Provider
 import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.member.entity.Role
 import org.teamalilm.alilmbe.domain.member.error.NotFoundEmailExections
 import org.teamalilm.alilmbe.domain.member.repository.MemberRepository
+import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
+import org.teamalilm.alilmbe.global.security.service.oAuth2.data.OAuth2Provider
 
 @Component
 class CustomSuccessHandler(
@@ -30,10 +30,11 @@ class CustomSuccessHandler(
             val oAuth2User = authentication.principal as OAuth2User
             val attributes = oAuth2User.attributes
 
-            val email = attributes["email"]?.toString() ?: throw NotFoundEmailExections("OAuth2 응답에 이메일이 없습니다.")
+            val email = attributes["email"]?.toString()
+                ?: throw NotFoundEmailExections("OAuth2 응답에 이메일이 없습니다.")
             val member = memberRepository.findByEmail(email)
 
-            val newMember =  when(member) {
+            val newMember = when (member) {
                 null -> saveMember(attributes)
                 else -> updateMember(attributes, member)
             }
@@ -52,8 +53,9 @@ class CustomSuccessHandler(
 
     }
 
-    private fun saveMember(attributes: Map<String, Any>) : Member {
-        val provider = attributes["provider"] as? String ?: throw IllegalStateException("OAuth2 응답에 공급자가 없습니다.")
+    private fun saveMember(attributes: Map<String, Any>): Member {
+        val provider = attributes["provider"] as? String
+            ?: throw IllegalStateException("OAuth2 응답에 공급자가 없습니다.")
         val providerId = attributes["id"] as? Long ?: throw IllegalStateException("")
         val email = attributes["email"] as? String ?: throw IllegalStateException("")
         val nickname = attributes["nickname"] as? String ?: throw IllegalStateException("")
@@ -67,7 +69,7 @@ class CustomSuccessHandler(
         )
     }
 
-    private fun updateMember(attributes: Map<String, Any>, member: Member) : Member {
+    private fun updateMember(attributes: Map<String, Any>, member: Member): Member {
         val email = attributes["email"] as? String ?: throw IllegalStateException("")
         member.update(email)
 

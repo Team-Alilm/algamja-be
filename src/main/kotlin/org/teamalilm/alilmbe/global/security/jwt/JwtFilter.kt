@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.jwt
+package org.teamalilm.alilmbe.global.security.jwt
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -7,7 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import org.teamalilm.alilmbe.global.service.CustomUserDetailsService
+import org.teamalilm.alilmbe.global.security.service.CustomUserDetailsService
 
 @Component
 class JwtFilter(
@@ -31,7 +31,8 @@ class JwtFilter(
             val memberId = jwtUtil.getMemberId(token)
 
             val userDetails = customUserDetailsService.loadUserByMemberId(memberId)
-            val authToken = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+            val authToken =
+                UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
 
             SecurityContextHolder.getContext().authentication = authToken
         }

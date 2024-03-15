@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.config
+package org.teamalilm.alilmbe.global.security.config
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 import org.jasypt.encryption.StringEncryptor
@@ -19,7 +19,7 @@ class JasyptConfig(
 ) {
 
     @Bean(name = ["jasyptStringEncryptor"])
-    fun stringEncryptor() : StringEncryptor {
+    fun stringEncryptor(): StringEncryptor {
         val encryptor = PooledPBEStringEncryptor()
         val config = SimpleStringPBEConfig()
 
