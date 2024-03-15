@@ -45,7 +45,7 @@ class CustomSuccessHandler(
 
             val redirectUri = UriComponentsBuilder.fromOriginHeader(baseUrl)
                 .path("/oauth/kakao")
-                .queryParam("token", jwtUtil.createJwt(memberId, 1000 * 60 * 60))
+                .queryParam("Authorization", jwtUtil.createJwt(memberId, 1000 * 60 * 60))
                 .build()
                 .toUriString()
 
