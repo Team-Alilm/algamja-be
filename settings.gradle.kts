@@ -1,9 +1,4 @@
-rootProject.name = "alilm-be"
-
-include(
-    "core",
-    "api"
-)
+rootProject.name = "Alilm-Be"
 
 pluginManagement {
     val kotlinVersion: String by settings
