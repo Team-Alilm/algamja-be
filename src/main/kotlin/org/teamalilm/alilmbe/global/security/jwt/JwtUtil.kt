@@ -47,7 +47,7 @@ class JwtUtil(
             log.info("Invalid JWT signature-MalformedJwtException, 유효하지 않는 JWT 서명 입니다. token : $token");
             false
         } catch (e: Exception) {
-            log.info(e.toString())
+            log.info(e.message)
             false
         }
     }

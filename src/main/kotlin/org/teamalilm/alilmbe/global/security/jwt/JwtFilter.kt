@@ -22,12 +22,8 @@ class JwtFilter(
     ) {
 
         val token = request.getHeader("Authorization")?.replace("Bearer ", "") ?: " "
-        println("token $token")
-
-        println("jwtUtil.validate(token) ${jwtUtil.validate(token)}")
 
         if (jwtUtil.validate(token)) {
-
             val memberId = jwtUtil.getMemberId(token)
 
             val userDetails = customUserDetailsService.loadUserByMemberId(memberId)
