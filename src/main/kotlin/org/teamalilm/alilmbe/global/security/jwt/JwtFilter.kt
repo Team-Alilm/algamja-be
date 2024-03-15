@@ -21,6 +21,7 @@ class JwtFilter(
         filterChain: FilterChain
     ) {
 
+        // token == Authorization
         val token = request.getHeader("Authorization")?.replace("Bearer ", "") ?: " "
 
         if (jwtUtil.validate(token)) {
