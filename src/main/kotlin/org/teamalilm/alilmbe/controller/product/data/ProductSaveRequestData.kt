@@ -2,8 +2,6 @@ package org.teamalilm.alilmbe.controller.product.data
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
-import java.time.LocalDateTime
-import org.teamalilm.alilmbe.domain.product.entity.Product
 import org.teamalilm.alilmbe.domain.product.entity.Store
 
 data class ProductSaveRequestData(
@@ -62,27 +60,3 @@ data class ProductSaveRequestData(
     val option3: String? // 상품 색상
 )
 
-data class ProductFindAllView(
-    val productId: Long,
-    val name: String,
-    val number: String,
-    val store: Store,
-    val size: String,
-    val color: String,
-    val createdDate: LocalDateTime
-) {
-
-    companion object {
-        fun of(product: Product): ProductFindAllView {
-            return ProductFindAllView(
-                productId = product.id!!,
-                name = product.name,
-                number = product.productInfo.number,
-                store = product.productInfo.store,
-                size = product.productInfo.option1,
-                color = product.productInfo.option2 ?: "",
-                createdDate = product.createdDate
-            )
-        }
-    }
-}

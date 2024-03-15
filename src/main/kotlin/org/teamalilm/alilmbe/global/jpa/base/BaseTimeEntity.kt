@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.base
+package org.teamalilm.alilmbe.global.jpa.base
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners

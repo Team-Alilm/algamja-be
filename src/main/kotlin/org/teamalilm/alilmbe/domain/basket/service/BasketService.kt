@@ -4,8 +4,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.domain.basket.entity.Basket
 import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
-import org.teamalilm.alilmbe.domain.member.entity.Member
-import org.teamalilm.alilmbe.domain.product.entity.Product
 
 @Service
 @Transactional(readOnly = true)
@@ -13,21 +11,19 @@ class BasketService(
     private val basketRepository: BasketRepository
 ) {
 
-    fun save(basketSaveCommand: BasketSaveCommand) {
-        val basket = Basket(member = basketSaveCommand.member, product = basketSaveCommand.product)
+    @Transactional
+    fun findAll(): List<BasketFindAllAnswer> {
+        val baskets = basketRepository.findAll()
 
-        basketRepository.save(basket)
+        return baskets.map { BasketFindAllAnswer(it) }
     }
 }
 
-data class BasketSaveCommand(
-    val member: Member,
-    val product: Product
+data class BasketFindAllAnswer(
+    val id: Long,
 ) {
 
-    companion object {
-        fun from(member: Member, product: Product): BasketSaveCommand {
-            return BasketSaveCommand(member = member, product = product)
-        }
-    }
+    constructor(basket: Basket) : this(
+        id = basket.id ?: 1
+    )
 }

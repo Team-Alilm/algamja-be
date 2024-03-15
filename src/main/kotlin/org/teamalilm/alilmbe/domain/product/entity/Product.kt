@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
-import org.teamalilm.alilmbe.global.base.BaseTimeEntity
+import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
 @Entity
 @Table(
@@ -27,7 +27,7 @@ class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-) : BaseTimeEntity() {
+) : BaseEntity() {
 
 
 }
