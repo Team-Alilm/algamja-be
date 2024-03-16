@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -25,19 +24,6 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder(): PasswordEncoder =
         PasswordEncoderFactories.createDelegatingPasswordEncoder()
-
-    @Bean
-    fun ignoringCustomizer(): WebSecurityCustomizer =
-        WebSecurityCustomizer { web ->
-            web.ignoring().requestMatchers(
-                "/resources/**",
-                "/static/**",
-                "/swagger-ui/**",
-                "/api-docs/**",
-                "/h2-console/**",
-
-                )
-        }
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -71,7 +57,8 @@ class SecurityConfig(
 
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/swagger-ui/**").permitAll()
+                    .requestMatchers("/resources/**", "/static/**", "/swagger-ui/**", "/api-docs/**", "/h2-console/**")
+                    .permitAll()
                     .anyRequest().authenticated()
             }
 
