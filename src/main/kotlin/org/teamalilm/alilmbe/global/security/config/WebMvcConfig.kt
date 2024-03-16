@@ -16,7 +16,7 @@ class WebMvcConfig : WebMvcConfigurer {
                 "https://alilm.co.kr/"
             )
             .allowedHeaders("*")
-            .allowedMethods("*")
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
             .allowCredentials(false)
             .maxAge(1000)
     }
