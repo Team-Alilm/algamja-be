@@ -41,7 +41,6 @@ class SwaggerConfig {
             .servers(
                 listOf(
                     Server().url("https://alilm.store").description("https Server"),
-                    Server().url("http://.alilm.store").description("http Server")
                 )
             )
     }
