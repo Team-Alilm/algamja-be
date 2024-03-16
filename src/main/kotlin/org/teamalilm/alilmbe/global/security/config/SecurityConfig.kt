@@ -3,7 +3,9 @@ package org.teamalilm.alilmbe.global.security.config
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -12,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.teamalilm.alilmbe.global.security.jwt.JwtFilter
 import org.teamalilm.alilmbe.global.security.service.oAuth2.handler.CustomSuccessHandler
 import org.teamalilm.alilmbe.global.security.service.oAuth2.service.CustomOAuth2UserService
+
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +27,14 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder(): PasswordEncoder =
         PasswordEncoderFactories.createDelegatingPasswordEncoder()
+
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { web: WebSecurity ->
+            web.ignoring()
+                .requestMatchers("/swagger-ui/**", "/api-docs/**", "/h2-console/**", "/resources/**", "/static/**")
+        }
+    }
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
