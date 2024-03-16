@@ -12,7 +12,7 @@ class WebMvcConfig : WebMvcConfigurer {
             .allowedOrigins(
                 "http://localhost:8080",
                 "http://localhost:3000",
-                "http://alilm.store",
+                "https://alilm.store",
                 "https://alilm.co.kr"
             )
             .allowedHeaders("*")
