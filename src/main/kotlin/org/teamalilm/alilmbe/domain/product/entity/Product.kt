@@ -21,13 +21,13 @@ class Product(
     @Column(nullable = false)
     val name: String,
 
+    @Column(nullable = false)
+    val imageUrl: String,
+
     @Embedded
     val productInfo: ProductInfo,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-) : BaseEntity() {
-
-
-}
+) : BaseEntity()

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import org.teamalilm.alilmbe.domain.product.entity.Store
 
-data class ProductSaveRequestData(
+data class ProductSaveRequestBody(
     @Schema(
         description = "상품 번호 입니다.",
         nullable = false,

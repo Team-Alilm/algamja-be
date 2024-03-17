@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.controller.product.data.ProductSaveRequestData
+import org.teamalilm.alilmbe.controller.product.data.ProductSaveRequestBody
 import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.product.service.ProductService
 
@@ -30,12 +30,12 @@ class ProductController(
     fun registration(
         @RequestBody
         @Valid
-        productSaveRequestData: ProductSaveRequestData,
+        productSaveRequestBody: ProductSaveRequestBody,
 
         @AuthenticationPrincipal
         member: Member
     ): ResponseEntity<Unit> {
-        productService.registration(productSaveRequestData, member)
+        productService.registration(productSaveRequestBody, member)
 
         return ResponseEntity.ok().build()
     }

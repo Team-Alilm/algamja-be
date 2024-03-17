@@ -22,12 +22,6 @@ repositories {
     mavenCentral()
 }
 
-apply(plugin = "org.jetbrains.kotlin.jvm")
-apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-apply(plugin = "org.springframework.boot")
-apply(plugin = "io.spring.dependency-management")
-apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -62,6 +56,9 @@ dependencies {
 
     // jsoup
     implementation("org.jsoup:jsoup:1.17.2")
+
+    // scheduler
+    implementation("org.springframework.boot:spring-boot-starter-quartz:3.2.1")
 
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 }
