@@ -40,7 +40,8 @@ class SwaggerConfig {
             .components(components)
             .servers(
                 listOf(
-                    Server().url("https://alilm.store").description("https Server"),
+                    Server().url("https://alilm.store").description("prod Server"),
+                    Server().url("http://localhost:8080").description("Local Server")
                 )
             )
     }
