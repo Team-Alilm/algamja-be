@@ -25,6 +25,4 @@ class Basket(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     val product: Product
-) : BaseEntity() {
-
-}
+) : BaseEntity()

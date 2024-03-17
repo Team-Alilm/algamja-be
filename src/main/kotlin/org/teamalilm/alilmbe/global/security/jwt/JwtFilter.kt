@@ -28,8 +28,9 @@ class JwtFilter(
 
         if (jwtUtil.validate(token)) {
             val memberId = jwtUtil.getMemberId(token)
-            log.info("memberId: $memberId")
+
             val userDetails = userDetailsService.loadUserByUsername(memberId.toString())
+            
             val authToken =
                 UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
 
