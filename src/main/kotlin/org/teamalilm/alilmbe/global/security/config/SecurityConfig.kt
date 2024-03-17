@@ -32,7 +32,18 @@ class SecurityConfig(
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()
-                .requestMatchers("/swagger-ui/**", "/api-docs/**", "/h2-console/**", "/resources/**", "/static/**")
+                .requestMatchers(
+                    "/resources/**",
+                    "/static/**",
+                    "/swagger-ui/**",
+                    "/api-docs/**",
+                    "/h2-console/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui.html",
+                    "/swagger-ui",
+                    "/oauth2/**",
+                    "/login/**",
+                )
         }
     }
 
