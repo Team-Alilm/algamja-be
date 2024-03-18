@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import io.swagger.v3.oas.models.servers.Server
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -35,6 +36,10 @@ class SwaggerConfig {
             )
 
         return OpenAPI()
+            .servers(listOf(
+                Server().url("https://alilm.store").description("prod Server"),
+                Server().url("https://localhost:8080").description("dev Server")
+            ))
             .addSecurityItem(securityRequirement)
             .components(components)
     }
