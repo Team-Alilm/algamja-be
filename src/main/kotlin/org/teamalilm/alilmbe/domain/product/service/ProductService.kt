@@ -9,6 +9,7 @@ import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
 import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.product.entity.Product
 import org.teamalilm.alilmbe.domain.product.entity.ProductInfo
+import org.teamalilm.alilmbe.domain.product.error.exception.DuplicateProductInBasketException
 import org.teamalilm.alilmbe.domain.product.repository.ProductRepository
 
 @Service
@@ -46,10 +47,15 @@ class ProductService(
             ).also { productRepository.save(it) }
 
         if (basketRepository.existsByProductAndMember(product, member)) {
-            throw RuntimeException("이미 장바구니에 담긴 상품입니다.")
+            throw DuplicateProductInBasketException()
         }
 
-        basketRepository.save(Basket(product = product, member = member))
+        basketRepository.save(
+            Basket(
+                product = product,
+                member = member
+            )
+        )
     }
 
     fun findAll(): List<ProductFindAllData> {
