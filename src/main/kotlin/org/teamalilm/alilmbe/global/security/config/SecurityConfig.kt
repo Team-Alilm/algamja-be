@@ -2,6 +2,7 @@ package org.teamalilm.alilmbe.global.security.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
@@ -31,12 +32,15 @@ class SecurityConfig(
 
     @Bean
     @Order(1)
+    @Profile("local")
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()
                 .requestMatchers(
                     "/resources/**",
                     "/static/**",
+                    "/swagger-ui/**",
+                    "/h2-console/**",
                 )
         }
     }
