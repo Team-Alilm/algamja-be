@@ -24,8 +24,9 @@ class JwtFilter(
         filterChain: FilterChain
     ) {
 
-        val token = request.getHeader("Authorization")?.replace("Bearer ", "") ?: " "
+        val token = request.getHeader("Authorization")?.replace("Bearer ", "") ?: ""
 
+        log.info("request.requestURI : " + request.requestURI)
         if (jwtUtil.validate(token)) {
             val memberId = jwtUtil.getMemberId(token)
 
