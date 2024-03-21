@@ -52,7 +52,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui")
 
     // jsoup
     implementation("org.jsoup:jsoup:1.17.2")
@@ -60,7 +60,7 @@ dependencies {
     // scheduler
     implementation("org.springframework.boot:spring-boot-starter-quartz:3.2.1")
 
-    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter")
 }
 
 configurations {

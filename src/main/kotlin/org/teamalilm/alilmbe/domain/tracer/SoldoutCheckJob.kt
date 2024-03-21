@@ -1,26 +1,24 @@
 package org.teamalilm.alilmbe.domain.tracer
 
+import java.net.URI
 import org.quartz.Job
-import org.quartz.JobBuilder
 import org.quartz.JobExecutionContext
-import org.quartz.SimpleScheduleBuilder
-import org.quartz.TriggerBuilder
-import org.quartz.impl.StdSchedulerFactory
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
+import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
 import org.teamalilm.alilmbe.domain.product.repository.ProductRepository
-import java.net.URI
 
-class SoldoutJob(
+@Component
+class SoldoutCheckJob(
     val productRepository: ProductRepository,
     val basketRepository: BasketRepository
+
 ) : Job {
 
-    private val log = LoggerFactory.getLogger(SoldoutTracer::class.java)
-
+    private val log = LoggerFactory.getLogger(SoldoutCheckJob::class.java)
     override fun execute(context: JobExecutionContext) {
         log.info("SoldoutCheckJob is running")
 
@@ -29,12 +27,12 @@ class SoldoutJob(
         val products = productRepository.findAllByOrderByCreatedDateDesc()
 
         products.forEach {
-            val apiUrl = SoldoutTracer.API_URL_TEMPLATE.format(it.productInfo.number)
+            val apiUrl = SoldoutScheduler.API_URL_TEMPLATE.format(it.productInfo.number)
             val response = restClient.get()
                 .uri(URI.create(apiUrl))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .body<SoldoutTracer.SoldoutCheckResponse>()
+                .body<SoldoutScheduler.SoldoutCheckResponse>()
 
             log.error("무신사 api의 요청이 성공하지 못했어요. URL: $apiUrl, 상품번호: ${it.productInfo.number}")
 
@@ -61,26 +59,4 @@ class SoldoutJob(
 
         basketRepository.deleteByProductIds(soldoutProductIds)
     }
-
-    fun startTracing() {
-        val scheduler = StdSchedulerFactory.getDefaultScheduler()
-        scheduler.start()
-
-        val job = JobBuilder.newJob(SoldoutTracer.SoldoutCheckJob::class.java)
-            .withIdentity("soldoutCheckJob", "soldoutTracer")
-            .build()
-
-        val trigger = TriggerBuilder.newTrigger()
-            .withIdentity("soldoutCheckTrigger", "soldoutTracer")
-            .startNow()
-            .withSchedule(
-                SimpleScheduleBuilder.simpleSchedule()
-                    .withIntervalInSeconds(5)
-                    .repeatForever()
-            )
-            .build()
-
-        scheduler.scheduleJob(job, trigger)
-    }
-
 }
