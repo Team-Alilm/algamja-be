@@ -42,7 +42,7 @@ data class ProductSaveRequestBody(
     @Schema(
         description = "상품 옵션 1 입니다.",
         nullable = true,
-        example = "(헤링본)화이트 or S, M"
+        example = "(헤링본)화이트"
     )
     @NotBlank(message = "옵션 1은 필수 입니다.")
     val option1: String, // 상품 사이즈
@@ -50,14 +50,14 @@ data class ProductSaveRequestBody(
     @Schema(
         description = "상품 옵션 2 입니다.",
         nullable = true,
-        example = "(헤링본)화이트 or S, M"
+        example = "M"
     )
     val option2: String?, // 상품 색상
 
     @Schema(
         description = "상품 옵션 3 입니다.",
         nullable = true,
-        example = "해당 예제에는 없습니다."
+        example = "해당 상품은 없습니다."
     )
     val option3: String? // 상품 색상
 )
