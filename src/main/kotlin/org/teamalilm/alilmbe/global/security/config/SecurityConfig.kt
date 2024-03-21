@@ -41,6 +41,7 @@ class SecurityConfig(
                     "/static/**",
                     "/swagger-ui/**",
                     "/h2-console/**",
+                    "/api-docs/**"
                 )
         }
     }
