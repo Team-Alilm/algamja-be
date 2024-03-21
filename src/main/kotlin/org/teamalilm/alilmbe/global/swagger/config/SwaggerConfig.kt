@@ -36,10 +36,12 @@ class SwaggerConfig {
             )
 
         return OpenAPI()
-            .servers(listOf(
-                Server().url("https://alilm.store").description("prod Server"),
-                Server().url("https://localhost:8080").description("dev Server")
-            ))
+            .servers(
+                listOf(
+                    Server().url("https://alilm.store").description("prod Server"),
+                    Server().url("http://localhost:8080").description("dev Server")
+                )
+            )
             .addSecurityItem(securityRequirement)
             .components(components)
     }

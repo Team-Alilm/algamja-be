@@ -6,6 +6,13 @@ import org.quartz.JobListener
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+/**
+ *  SoldoutQuartzListener
+ *
+ *  @author SkyLabs
+ *  @version 1.0.0
+ *  @date 2024-03-21
+ **/
 class SoldoutQuartzListener(
     val log: Logger = LoggerFactory.getLogger(SoldoutQuartzListener::class.java)!!
 ) : JobListener {
