@@ -60,6 +60,9 @@ dependencies {
     // scheduler
     implementation("org.springframework.boot:spring-boot-starter-quartz")
 
+    // mail
+    implementation("org.springframework.boot:spring-boot-starter-mail:3.2.3")
+
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 }
 
