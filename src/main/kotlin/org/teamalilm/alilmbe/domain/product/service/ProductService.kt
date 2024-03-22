@@ -12,11 +12,18 @@ import org.teamalilm.alilmbe.domain.product.entity.ProductInfo
 import org.teamalilm.alilmbe.domain.product.error.exception.DuplicateProductInBasketException
 import org.teamalilm.alilmbe.domain.product.repository.ProductRepository
 
+/**
+ *  ProductService
+ *
+ *  @author SkyLabs
+ *  @version 1.0.0
+ *  @date 2024-03-22
+ **/
 @Service
 @Transactional(readOnly = false)
 class ProductService(
-    val productRepository: ProductRepository,
-    val basketRepository: BasketRepository
+    private val productRepository: ProductRepository,
+    private val basketRepository: BasketRepository
 ) {
 
     /**
