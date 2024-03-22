@@ -10,6 +10,8 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
 import org.teamalilm.alilmbe.domain.product.repository.ProductRepository
+import org.teamalilm.alilmbe.global.email.data.EmailMessage
+import org.teamalilm.alilmbe.global.email.service.EmailService
 
 /**
  *  SoldoutCheckJob
@@ -21,7 +23,8 @@ import org.teamalilm.alilmbe.domain.product.repository.ProductRepository
 @Component
 class SoldoutCheckJob(
     val productRepository: ProductRepository,
-    val basketRepository: BasketRepository
+    val basketRepository: BasketRepository,
+    val emailService: EmailService
 
 ) : Job {
 
@@ -62,6 +65,17 @@ class SoldoutCheckJob(
             if (!isSoldOut) {
                 soldoutProductIds.add(it.id!!)
             }
+        }
+
+        if (soldoutProductIds.isNotEmpty()) {
+            val emailMessage = EmailMessage(
+                from = "cloudwi@naver.com",
+                to = "cloudwi@naver.com",
+                subject = "품절 상품 알림",
+                text = "품절 상품이 있습니다. 확인해주세요.",
+            )
+
+            emailService.sendMail(emailMessage)
         }
 
         basketRepository.deleteByProductIds(soldoutProductIds)

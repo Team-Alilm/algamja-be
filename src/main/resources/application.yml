@@ -32,8 +32,14 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ENC(sFof+3WFWlj6RRF5SA9Bz7kz6OQfBwc7BWLiuDyXwzY=)
-    password: ENC(XbDfiXZYzChVtJ+rVj9KrYSTgjcldX8B)
+    username: ENC(eG9973L2GmZBXBPgiaTRCBggUaJrsfxyixbh5pFkyCc=)
+    password: ENC(eVjULpPEuymorOXq1vdSrlHk3E3rg2+NKbiACiqWckQ=)
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 jasypt:
   encryptor:
