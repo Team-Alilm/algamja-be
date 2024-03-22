@@ -10,9 +10,14 @@ class EmailService(
     private val emailSender: JavaMailSender,
 ) {
 
-    fun sendMail(emailMessage: EmailMessage, type: String) {
+    fun sendMail(emailMessage: EmailMessage) {
         val message = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true)
-        helper.setFrom("
+
+        helper.setFrom(emailMessage.from)
+        helper.setTo(emailMessage.to)
+        helper.setSubject(emailMessage.subject)
+        helper.setText(emailMessage.text, true)
+        emailSender.send(message)
     }
 }
