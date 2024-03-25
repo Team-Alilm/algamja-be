@@ -63,6 +63,9 @@ dependencies {
     // mail
     implementation("org.springframework.boot:spring-boot-starter-mail:3.2.3")
 
+    //slack
+    implementation("com.slack.api:slack-api-client:1.38.1")
+
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 }
 
