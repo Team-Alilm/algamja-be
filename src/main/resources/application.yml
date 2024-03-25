@@ -30,16 +30,8 @@ spring:
     expirationTime: 1800000
 
   mail:
-    host: smtp.gmail.com
-    port: 587
     username: ENC(eG9973L2GmZBXBPgiaTRCBggUaJrsfxyixbh5pFkyCc=)
     password: ENC(eVjULpPEuymorOXq1vdSrlHk3E3rg2+NKbiACiqWckQ=)
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
 
 jasypt:
   encryptor:
@@ -65,3 +57,7 @@ springdoc:
   model-and-view-allowed: true
   paths-to-match:
     - /api/**
+
+webhook:
+  slack:
+    url: ENC(66oIt8AFhAxu4Kt9kV5SIvPbb+QALCAbBJOQAOoftXdYaWp+yAa5H20WZTlGoyeo26OB8UAq8GxkiSlkyWZwUsR+eLr/ZLhPk0lde5A9MLFSZi6/DT5cIiAtOd+el6CP)
