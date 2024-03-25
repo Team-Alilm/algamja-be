@@ -9,6 +9,9 @@ import org.teamalilm.alilmbe.domain.product.entity.Product
 interface BasketRepository : JpaRepository<Basket, Long> {
     fun existsByProductAndMember(product: Product, member: Member): Boolean
 
-    @Query("SELECT b FROM Basket b WHERE b.product.id IN :soldoutProductIds")
-    fun deleteByProductIds(soldoutProductIds: MutableList<Long>)
+    fun deleteByProductIdIn(productIds: List<Long>): Long
+    fun findByProductId(productId: Long): Basket?
+
+    @Query("SELECT b FROM Basket b GROUP BY b.product.id")
+    fun findAllByGroupByProductId(): List<Basket>
 }
