@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
+import org.teamalilm.alilmbe.domain.quartz.data.SoldoutCheckResponse
+import org.teamalilm.alilmbe.domain.quartz.scheduler.SoldoutScheduler
 import org.teamalilm.alilmbe.global.email.data.EmailMessage
 import org.teamalilm.alilmbe.global.email.service.EmailService
 import org.teamalilm.alilmbe.global.slack.service.SlackService
@@ -48,7 +50,7 @@ class SoldoutCheckJob(
                 .uri(URI.create(apiUrl))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .body<SoldoutScheduler.SoldoutCheckResponse>()
+                .body<SoldoutCheckResponse>()
 
             val option1 = it.product.productInfo.option1
             val option2 = it.product.productInfo.option2
