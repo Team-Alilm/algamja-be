@@ -1,9 +1,10 @@
-package org.teamalilm.alilmbe.domain.tracer
+package org.teamalilm.alilmbe.domain.quartz.config
 
 import jakarta.annotation.PostConstruct
 import org.quartz.Scheduler
 import org.quartz.SchedulerException
 import org.springframework.context.annotation.Configuration
+import org.teamalilm.alilmbe.domain.quartz.scheduler.SoldoutScheduler
 
 
 /**
