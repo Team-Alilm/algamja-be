@@ -85,3 +85,9 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks.jar {
+    enabled = false
+    archiveBaseName.set("alilm-be")
+    archiveVersion.set("0.0.1")
+}
