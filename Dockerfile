@@ -1,10 +1,10 @@
 FROM openjdk:17
 
-ARG JAR_FILE=build/libs/Alilm-Be-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=build/libs/*.jar
 
 COPY ${JAR_FILE} alilm.jar
 
-ENV JASYPT_ALGORITHM ${JASYPT_ALGORITHM}
-ENV JASYPT_PASSWORD ${JASYPT_PASSWORD}
+ENV JASYPT_ALGORITHM=$JASYPT_ALGORITHM
+ENV JASYPT_PASSWORD=$JASYPT_PASSWORD
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod" ,"-jar", "alilm.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=local" ,"-jar", "alilm.jar", "--build-arg JASYPT_ALGORITHM=$JASYPT_ALGORITHM", "--build-arg JASYPT_PASSWORD=$JASYPT_PASSWORD"]
