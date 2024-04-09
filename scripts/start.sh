@@ -12,6 +12,8 @@ DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 # 현재 시간 구하기
 TIME_NOW=$(date +%c)
 
+source /etc/profile
+
 # 프로파일 설정 및 jar 파일 실행
 echo "$TIME_NOW > $JAR_FILE 파일 실행 (프로파일: prod)" >> "$DEPLOY_LOG"
 nohup java -Dspring.profiles.active=prod -jar "$JAR_FILE" > "$APP_LOG" 2> "$ERROR_LOG" &
