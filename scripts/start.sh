@@ -2,7 +2,7 @@
 
 # 프로젝트 루트 디렉토리 및 JAR 파일 경로 설정
 PROJECT_ROOT="/home/ec2-user/app/deploy"
-JAR_FILE="$PROJECT_ROOT/build/libs/*.jar"
+JAR_FILE="$PROJECT_ROOT/build/libs/Alilm-Be-0.0.1-SNAPSHOT.jar"
 
 # 로그 파일 경로 설정
 APP_LOG="$PROJECT_ROOT/application.log"
