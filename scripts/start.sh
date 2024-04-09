@@ -14,7 +14,7 @@ TIME_NOW=$(date +%c)
 
 # build 파일 복사
 echo "$TIME_NOW > $JAR_FILE 파일 복사" >> "$DEPLOY_LOG"
-cp "$PROJECT_ROOT/build/libs/*.jar" "$JAR_FILE"
+cp "$PROJECT_ROOT/build/libs/Alilm-Be-0.0.1-SNAPSHOT.jar" "$JAR_FILE"
 
 # 프로파일 설정 및 jar 파일 실행
 echo "$TIME_NOW > $JAR_FILE 파일 실행 (프로파일: prod)" >> "$DEPLOY_LOG"
