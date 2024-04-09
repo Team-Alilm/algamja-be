@@ -2,7 +2,7 @@
 
 # 프로젝트 루트 디렉토리 및 JAR 파일 경로 설정
 PROJECT_ROOT="/home/ec2-user/app/deploy"
-JAR_FILE="$PROJECT_ROOT/Alilm-Be.jar"
+JAR_FILE="$PROJECT_ROOT/build/libs/*.jar"
 
 # 로그 파일 경로 설정
 APP_LOG="$PROJECT_ROOT/application.log"
@@ -11,10 +11,6 @@ DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
 # 현재 시간 구하기
 TIME_NOW=$(date +%c)
-
-# build 파일 복사
-echo "$TIME_NOW > $JAR_FILE 파일 복사" >> "$DEPLOY_LOG"
-cp "$PROJECT_ROOT/build/libs/Alilm-Be-0.0.1-SNAPSHOT.jar" "$JAR_FILE"
 
 # 프로파일 설정 및 jar 파일 실행
 echo "$TIME_NOW > $JAR_FILE 파일 실행 (프로파일: prod)" >> "$DEPLOY_LOG"
