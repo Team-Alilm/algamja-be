@@ -68,6 +68,8 @@ class SecurityConfig(
 
             .authorizeHttpRequests { auth ->
                 auth
+                    .requestMatchers("/health-check").permitAll()
+                    .requestMatchers("/favicon.ico").permitAll()
                     .anyRequest().authenticated()
             }
 
