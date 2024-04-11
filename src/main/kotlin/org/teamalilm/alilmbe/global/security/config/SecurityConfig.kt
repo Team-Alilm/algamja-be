@@ -40,7 +40,6 @@ class SecurityConfig(
                     "/api-docs/**",
                     "/health-check",
                     "/favicon.ico/**",
-                    "/login/**"
                 )
         }
     }
