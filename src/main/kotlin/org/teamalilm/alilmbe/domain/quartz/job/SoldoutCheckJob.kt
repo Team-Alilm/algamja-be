@@ -77,18 +77,22 @@ class SoldoutCheckJob(
         restockProductIds.forEach {
             log.info("재입고 상품 ID: $it")
 
-            val basket = basketRepository.findByProductId(it)
+            val baskets = basketRepository.findAllByProductId(it)
                 ?: throw IllegalStateException("해당 상품을 찾을 수 없어요. 상품 ID: $it")
 
-            val emailMessage = EmailMessage(
-                from = "Alilm",
-                to = "cloudwi@naver.com",
-                subject = "재입고 알림",
-                text = "${basket.product.name} 상품이 재입고 되었습니다. 확인해주세요.",
-            )
-            basketRepository.deleteById(it)
-            emailService.sendMail(emailMessage)
-            slackService.sendSlackMessage("${basket.product.name} 상품이 재입고 되었습니다. 확인해주세요.")
+            baskets.forEach {
+                val emailMessage = EmailMessage(
+                    from = "Alilm",
+                    to = "cloudwi@naver.com",
+                    subject = "재입고 알림",
+                    text = "${it.product.name} 상품이 재입고 되었습니다. 확인해주세요.",
+                )
+
+                basketRepository.deleteById(it.id!!)
+                emailService.sendMail(emailMessage)
+                slackService.sendSlackMessage("${it.product.name} 상품이 재입고 되었습니다. 확인해주세요.")
+            }
+
         }
     }
 }

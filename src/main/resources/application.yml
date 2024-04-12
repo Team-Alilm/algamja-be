@@ -31,7 +31,7 @@ spring:
 
   mail:
     username: ENC(eG9973L2GmZBXBPgiaTRCBggUaJrsfxyixbh5pFkyCc=)
-    password: ENC(eVjULpPEuymorOXq1vdSrlHk3E3rg2+NKbiACiqWckQ=)
+    password: ENC(ZpjcL6Eavw7dkzQl++I5tQX6AujgzCSJ)
 
 jasypt:
   encryptor:
