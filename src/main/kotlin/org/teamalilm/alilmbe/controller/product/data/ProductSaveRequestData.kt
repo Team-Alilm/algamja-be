@@ -60,5 +60,5 @@ data class ProductSaveRequestBody(
         example = "해당 상품은 없습니다."
     )
     val option3: String? // 상품 색상
-)
+) {}
 

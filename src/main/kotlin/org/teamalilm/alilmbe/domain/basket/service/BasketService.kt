@@ -1,10 +1,13 @@
 package org.teamalilm.alilmbe.domain.basket.service
 
+import java.time.LocalDateTime
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.domain.basket.entity.Basket
 import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
-import java.time.LocalDateTime
+import org.teamalilm.alilmbe.domain.basket.repository.data.CountBasketsGroupByProductIdWithProduct
 
 @Service
 @Transactional(readOnly = true)
@@ -12,11 +15,8 @@ class BasketService(
     private val basketRepository: BasketRepository
 ) {
 
-    @Transactional
-    fun findAll(): List<BasketFindAllAnswer> {
-        val baskets = basketRepository.findAll()
-
-        return baskets.map { BasketFindAllAnswer.of(it, baskets.size) }
+    fun findAll(pageable: Pageable): Slice<CountBasketsGroupByProductIdWithProduct> {
+        return basketRepository.countBasketsGroupByProductIdWithProduct(pageable)
     }
 }
 
