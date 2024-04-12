@@ -34,6 +34,10 @@ abstract class BaseEntity {
     @Column(nullable = false)
     lateinit var lastModifiedBy: String
 
+    // 삭제 여부
+    @Column(nullable = false)
+    var isDelete: Boolean = false
+
     @PrePersist
     fun prePersist() {
         val now = ZonedDateTime.now(UTC).toLocalDateTime()

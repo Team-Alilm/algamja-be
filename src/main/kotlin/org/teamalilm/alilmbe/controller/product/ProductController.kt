@@ -41,14 +41,15 @@ class ProductController(
     }
 
     @Operation(
-        summary = "상품 전체 조회",
-        description = "상품을 전체 조회해요."
+        summary = "등록된 상품 전체 조회",
+        description = "현재 basket에 등록된 상품을 출력해요."
     )
-    @GetMapping
+    @GetMapping("")
     fun findAll(): ResponseEntity<List<ProductFindAllData>> {
         val productFindAllData: List<ProductFindAllData> = productService.findAll()
 
         return ResponseEntity.ok().body(productFindAllData)
     }
+
 }
 
