@@ -12,7 +12,18 @@ import org.teamalilm.alilmbe.domain.product.entity.Product
 interface BasketRepository : JpaRepository<Basket, Long> {
     fun existsByProductAndMember(product: Product, member: Member): Boolean
 
-    fun findByProductId(productId: Long): Basket?
+    fun findAllByProductId(productId: Long): List<Basket>
+
+    @Query(
+        """
+        SELECT b
+        FROM Basket b
+        join fetch b.product
+        join fetch b.member
+        GROUP BY b.product.id
+    """
+    )
+    fun findAllByGroupByProductId(): List<Basket>
 
     // 상품 ID로 그룹화된 장바구니 정보와 상품 정보 조회
     @Query(
