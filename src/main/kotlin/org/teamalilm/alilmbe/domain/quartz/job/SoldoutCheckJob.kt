@@ -37,7 +37,7 @@ class SoldoutCheckJob(
     override fun execute(context: JobExecutionContext) {
         log.info("SoldoutCheckJob is running")
 
-        val restockProductIds = mutableListOf<Long>()
+        val restockProductIds = mutableSetOf<Long>()
         val restClient = RestClient.create()
         val baskets = basketRepository.findAllByGroupByProductId()
 
@@ -78,7 +78,6 @@ class SoldoutCheckJob(
             log.info("재입고 상품 ID: $it")
 
             val baskets = basketRepository.findAllByProductId(it)
-                ?: throw IllegalStateException("해당 상품을 찾을 수 없어요. 상품 ID: $it")
 
             baskets.forEach {
                 val emailMessage = EmailMessage(
