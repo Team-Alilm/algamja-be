@@ -30,9 +30,8 @@ class SecurityConfig(
 
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer {
-        return WebSecurityCustomizer {
-            web: WebSecurity ->
-            web.ignoring()
+        return WebSecurityCustomizer { web: WebSecurity ->
+            web.ignoring().requestMatchers("/h2-console/**")
         }
     }
 
@@ -66,7 +65,9 @@ class SecurityConfig(
                         "/h2-console/**",
                         "/api-docs/**",
                         "/health-check",
-                        "/favicon.ico/**",)
+                        "/favicon.ico/**",
+                        "login"
+                    )
                     .permitAll()
                     .anyRequest().authenticated()
             }
