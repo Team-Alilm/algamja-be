@@ -1,8 +1,7 @@
 package org.teamalilm.alilmbe.controller.basket.data
 
-import java.time.LocalDateTime
 
-data class BasketFindAllData (
+data class BasketFindAllData(
     val id: Long,
     val memberNickname: String,
     val productName: String,
