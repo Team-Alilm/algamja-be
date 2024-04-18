@@ -16,4 +16,5 @@ class WebMvcConfig : WebMvcConfigurer {
             .allowCredentials(false)
             .maxAge(1000)
     }
+
 }
