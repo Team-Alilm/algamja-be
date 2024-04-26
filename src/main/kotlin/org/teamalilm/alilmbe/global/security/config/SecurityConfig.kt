@@ -31,7 +31,16 @@ class SecurityConfig(
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer { web: WebSecurity ->
-            web.ignoring().requestMatchers("/h2-console/**")
+            web.ignoring()
+                .requestMatchers(
+                    "/resources/**",
+                    "/static/**",
+                    "/swagger-ui/**",
+                    "/h2-console/**",
+                    "/api-docs/**",
+                    "/health-check",
+                    "/favicon.ico/**",
+                )
         }
     }
 
@@ -58,17 +67,6 @@ class SecurityConfig(
 
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers(
-                        "/resources/**",
-                        "/static/**",
-                        "/swagger-ui/**",
-                        "/h2-console/**",
-                        "/api-docs/**",
-                        "/health-check",
-                        "/favicon.ico/**",
-                        "login"
-                    )
-                    .permitAll()
                     .anyRequest().authenticated()
             }
 

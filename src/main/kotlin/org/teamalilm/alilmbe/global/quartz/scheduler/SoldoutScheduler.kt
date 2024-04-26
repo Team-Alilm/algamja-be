@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.domain.quartz.scheduler
+package org.teamalilm.alilmbe.global.quartz.scheduler
 
 import org.quartz.JobBuilder
 import org.quartz.Scheduler

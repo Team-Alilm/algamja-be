@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.domain.quartz.listener
+package org.teamalilm.alilmbe.global.quartz.listener
 
 import org.quartz.JobExecutionContext
 import org.quartz.JobExecutionException
