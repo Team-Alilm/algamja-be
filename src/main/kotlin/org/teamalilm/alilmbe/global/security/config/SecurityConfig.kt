@@ -1,5 +1,6 @@
 package org.teamalilm.alilmbe.global.security.config
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -11,6 +12,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector
 import org.teamalilm.alilmbe.global.security.jwt.JwtFilter
 import org.teamalilm.alilmbe.global.security.service.oAuth2.handler.CustomSuccessHandler
 import org.teamalilm.alilmbe.global.security.service.oAuth2.service.CustomOAuth2UserService
@@ -29,23 +32,10 @@ class SecurityConfig(
         PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
     @Bean
-    fun webSecurityCustomizer(): WebSecurityCustomizer {
-        return WebSecurityCustomizer { web: WebSecurity ->
-            web.ignoring()
-                .requestMatchers(
-                    "/resources/**",
-                    "/static/**",
-                    "/swagger-ui/**",
-                    "/h2-console/**",
-                    "/api-docs/**",
-                    "/health-check",
-                    "/favicon.ico/**",
-                )
-        }
-    }
-
-    @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    fun securityFilterChain(
+        http: HttpSecurity,
+        introspector: HandlerMappingIntrospector
+    ): SecurityFilterChain {
         http
             .cors { it.disable() }
 
@@ -57,16 +47,17 @@ class SecurityConfig(
                 it.disable()
             }
 
-            .csrf {
-                it.disable()
-            }
+            .csrf { it.disable() }
+
+            .headers { it.frameOptions { it.disable() } }
 
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
 
-            .authorizeHttpRequests { auth ->
-                auth
+            .authorizeHttpRequests { authorizeRequest ->
+                authorizeRequest
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                     .anyRequest().authenticated()
             }
 
@@ -83,4 +74,15 @@ class SecurityConfig(
         return http.build()
     }
 
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer? {
+        // 정적 리소스 spring security 대상에서 제외
+        return WebSecurityCustomizer { web: WebSecurity ->
+            web
+                .ignoring()
+                .requestMatchers(
+                    PathRequest.toStaticResources().atCommonLocations()
+                )
+        }
+    }
 }

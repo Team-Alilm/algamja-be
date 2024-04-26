@@ -48,12 +48,7 @@ class AlilmRegistrationService(
         )
 
         slackService.sendSlackMessage(
-            """
-            id: ${alilmRegistrationCommand.member.id} 
-            nickname : ${alilmRegistrationCommand.member.nickname}
-            님이 상품을 등록했어요.
-            상품 : $product
-        """.trimIndent()
+            """id: ${alilmRegistrationCommand.member.id} nickname : ${alilmRegistrationCommand.member.nickname} 님이 상품을 등록했어요. 상품 : $product""".trimIndent()
         )
     }
 

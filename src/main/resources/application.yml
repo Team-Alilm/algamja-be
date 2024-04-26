@@ -30,8 +30,8 @@ spring:
     expirationTime: 1800000
 
   mail:
-    username: ENC(bR7vVm2pM2ohWB6oyHa02bVLtrjlxOqV///7oqy1gZQ=)
-    password: ENC(NttBQIM5qEWLJfBZohM+tpfs+9BA7ngW)
+    username: ENC(fpEd4HyIdvVYn60S7s8T4g72TvezBBVEjbYrMUs9O54=)
+    password: ENC(1R59kMY9w6HXMS7dHpbgrI0XR46KkV6z)
 
 jasypt:
   encryptor:
