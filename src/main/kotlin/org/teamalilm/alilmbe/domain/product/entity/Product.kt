@@ -63,12 +63,11 @@ class Product(
 
     override fun toString(): String {
         return """
-            Product(
-                name='$name', 
-                imageUrl='$imageUrl', 
-                productInfo=$productInfo, 
-                id=$id
-            )""".trimIndent()
+            name='$name', 
+            imageUrl='$imageUrl', 
+            productInfo=$productInfo, 
+            id=$id
+            """.trimIndent()
     }
 
 
