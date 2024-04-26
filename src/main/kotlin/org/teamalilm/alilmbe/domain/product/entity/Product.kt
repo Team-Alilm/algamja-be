@@ -1,8 +1,11 @@
 package org.teamalilm.alilmbe.domain.product.entity
 
 import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
 import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -30,4 +33,43 @@ class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-) : BaseEntity()
+) : BaseEntity() {
+
+    @Embeddable
+    class ProductInfo(
+        @Column(nullable = false)
+        @Enumerated(EnumType.STRING)
+        val store: Store,
+
+        @Column(nullable = false)
+        val number: Int,
+
+        @Column(nullable = false)
+        val option1: String,
+
+        @Column
+        val option2: String?,
+
+        @Column
+        val option3: String?
+    ) {
+
+        enum class Store {
+
+            MUSINSA, ZIGZAG, OLIVEYOUNG
+        }
+
+    }
+
+    override fun toString(): String {
+        return """
+            Product(
+                name='$name', 
+                imageUrl='$imageUrl', 
+                productInfo=$productInfo, 
+                id=$id
+            )""".trimIndent()
+    }
+
+
+}

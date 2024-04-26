@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.domain.quartz.data
+package org.teamalilm.alilmbe.global.quartz.data
 
 
 data class SoldoutCheckResponse(

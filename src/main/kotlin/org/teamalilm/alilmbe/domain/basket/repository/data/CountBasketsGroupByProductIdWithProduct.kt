@@ -1,6 +1,7 @@
 package org.teamalilm.alilmbe.domain.basket.repository.data
 
-import org.teamalilm.alilmbe.domain.product.entity.Store
+import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo.Store
+
 
 data class CountBasketsGroupByProductIdWithProduct(
     val id: Long, // 상품 ID

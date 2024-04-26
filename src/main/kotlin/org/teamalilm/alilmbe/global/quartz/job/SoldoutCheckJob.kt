@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
-import org.teamalilm.alilmbe.domain.quartz.data.SoldoutCheckResponse
-import org.teamalilm.alilmbe.domain.quartz.scheduler.SoldoutScheduler
 import org.teamalilm.alilmbe.global.email.data.EmailMessage
 import org.teamalilm.alilmbe.global.email.service.EmailService
+import org.teamalilm.alilmbe.global.quartz.data.SoldoutCheckResponse
+import org.teamalilm.alilmbe.global.quartz.scheduler.SoldoutScheduler
 import org.teamalilm.alilmbe.global.slack.service.SlackService
 
 /**
