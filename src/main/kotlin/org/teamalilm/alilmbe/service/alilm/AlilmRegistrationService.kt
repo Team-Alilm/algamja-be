@@ -3,7 +3,6 @@ package org.teamalilm.alilmbe.service.alilm
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.domain.basket.entity.Basket
-import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
 import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.product.entity.Product
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
@@ -15,8 +14,8 @@ import org.teamalilm.alilmbe.global.slack.service.SlackService
 @Transactional(readOnly = true)
 class AlilmRegistrationService(
     private val productRepository: ProductRepository,
-    private val basketRepository: BasketRepository,
-    private val slackService: SlackService
+    private val slackService: SlackService,
+    private val basketRepository: org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
 ) {
 
     @Transactional

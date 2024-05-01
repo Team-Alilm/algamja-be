@@ -1,6 +1,5 @@
 package org.teamalilm.alilmbe.global.security.config
 
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector
 import org.teamalilm.alilmbe.global.security.jwt.JwtFilter
 import org.teamalilm.alilmbe.global.security.service.oAuth2.handler.CustomSuccessHandler
 import org.teamalilm.alilmbe.global.security.service.oAuth2.service.CustomOAuth2UserService
-
 
 @Configuration
 @EnableWebSecurity
@@ -49,7 +47,7 @@ class SecurityConfig(
 
             .csrf { it.disable() }
 
-            .headers { it.frameOptions { it.disable() } }
+            .headers { it.frameOptions { frameOptionsCustomizer -> frameOptionsCustomizer.sameOrigin() } }
 
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -81,7 +79,12 @@ class SecurityConfig(
             web
                 .ignoring()
                 .requestMatchers(
-                    PathRequest.toStaticResources().atCommonLocations()
+                    "/h2-console/**",
+                    "/static/**",
+                    "/swagger-ui/**",
+                    "/api-docs/**",
+                    "/favicon.ico/**",
+                    "/health-check",
                 )
         }
     }
