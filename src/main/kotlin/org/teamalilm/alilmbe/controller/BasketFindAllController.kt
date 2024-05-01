@@ -1,25 +1,28 @@
 package org.teamalilm.alilmbe.controller
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Slice
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
 import org.teamalilm.alilmbe.global.SortCondition
-import org.teamalilm.alilmbe.service.product.ProductFindAllService
+import org.teamalilm.alilmbe.service.product.BasketFindAllService
+import org.teamalilm.alilmbe.service.product.BasketFindAllService.BasketFindAllCommand
 
 @RestController
-@RequestMapping("api/v1/products")
-@Tag(name = "product", description = "상품 전체 조회 api")
-class ProductFindAllController(
-    private val productFindAllService: ProductFindAllService
+@RequestMapping("/api/v1/baskets")
+@Tag(name = "basket", description = "상품 전체 조회 api")
+class BasketFindAllController(
+    private val basketFindAllService: BasketFindAllService
 ) {
 
     @Operation(
@@ -36,32 +39,40 @@ class ProductFindAllController(
     """
     )
     @GetMapping
-    fun findAll(@ParameterObject @Valid productFindAllParameter: ProductFindAllParameter): ResponseEntity<ProductFindAllResponse> {
+    fun findAll(@ParameterObject @Valid basketFindAllParameter: BasketFindAllParameter): ResponseEntity<Slice<BasketFindAllResponse>> {
         val pageRequest = PageRequest.of(
-            productFindAllParameter.page,
-            productFindAllParameter.size,
-            productFindAllParameter.sortCondition.sort
+            basketFindAllParameter.page,
+            basketFindAllParameter.size,
+            basketFindAllParameter.sortCondition.sort
         )
 
-        productFindAllService.findAll(
-            ProductFindAllService.ProductFindAllCommand(pageRequest)
+        return ResponseEntity.ok(
+            basketFindAllService.findAll(
+                BasketFindAllCommand(pageRequest)
+            )
         )
-
-        return ResponseEntity.ok().build()
     }
 
-    data class ProductFindAllParameter(
+    @Schema(description = "상품 조회 파라미터")
+    data class BasketFindAllParameter(
         @NotBlank(message = "사이즈는 필수에요.")
         @Min(value = 1, message = "사이즈는 1 이상이어야 합니다.")
+        @Schema(description = "페이지 사이즈", defaultValue = "10")
         val size: Int,
         @NotBlank(message = "페이지 번호는 필수에요.")
-        @Min(value = 1, message = "페이지 번호는 1 이상이어야 합니다.")
+        @Schema(description = "페이지 번호", defaultValue = "0")
+        @Min(value = 0, message = "페이지 번호는 1 이상이어야 합니다.")
         val page: Int,
-        @NotBlank(message = "정렬 조건은 필수에요.")
+        @Schema(
+            implementation = SortCondition::class,
+            description = "정렬 조건",
+            defaultValue = "WAITING_COUNT_DESC"
+        )
         val sortCondition: SortCondition
     )
 
-    data class ProductFindAllResponse(
+    data class BasketFindAllResponse(
+        val id: Long,
         val name: String,
         val imageUrl: String,
         val productInfo: ProductInfo,
