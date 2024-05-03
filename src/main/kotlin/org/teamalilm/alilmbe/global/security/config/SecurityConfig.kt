@@ -56,6 +56,8 @@ class SecurityConfig(
             .authorizeHttpRequests { authorizeRequest ->
                 authorizeRequest
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/favicon.ico/**"))
+                    .permitAll()
                     .anyRequest().authenticated()
             }
 
