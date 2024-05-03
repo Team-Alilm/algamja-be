@@ -7,8 +7,10 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import org.springdoc.core.annotations.ParameterObject
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
+import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -43,7 +45,7 @@ class BasketFindAllController(
         val pageRequest = PageRequest.of(
             basketFindAllParameter.page,
             basketFindAllParameter.size,
-            basketFindAllParameter.sortCondition.sort
+            Sort.by(Sort.Direction.DESC, "id")
         )
 
         return ResponseEntity.ok(
@@ -62,19 +64,15 @@ class BasketFindAllController(
         @NotBlank(message = "페이지 번호는 필수에요.")
         @Schema(description = "페이지 번호", defaultValue = "0")
         @Min(value = 0, message = "페이지 번호는 1 이상이어야 합니다.")
-        val page: Int,
-        @Schema(
-            implementation = SortCondition::class,
-            description = "정렬 조건",
-            defaultValue = "WAITING_COUNT_DESC"
-        )
-        val sortCondition: SortCondition
+        val page: Int
     )
 
     data class BasketFindAllResponse(
+        val count: Long,
         val id: Long,
         val name: String,
         val imageUrl: String,
         val productInfo: ProductInfo,
+        val createdDate: Long
     )
 }
