@@ -56,8 +56,6 @@ class SecurityConfig(
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/oauth2/authorization/kakao"))
-                    .permitAll()
                     .anyRequest().authenticated()
             }
 
