@@ -12,7 +12,7 @@ import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.member.entity.Role
 import org.teamalilm.alilmbe.domain.member.repository.MemberRepository
 import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
-import org.teamalilm.alilmbe.global.security.service.oAuth2.data.OAuth2Provider
+import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 
 @Component
 @Transactional(readOnly = true)
@@ -32,10 +32,10 @@ class CustomSuccessHandler(
             val oAuth2User = authentication.principal as OAuth2User
             val attributes = oAuth2User.attributes
 
-            val email = attributes["email"]?.toString()
+            val email = attributes["phoneNumber"]?.toString()
                 ?: throw IllegalStateException("OAuth2 응답에 이메일이 없습니다.")
-            
-            val newMember = when (val member = memberRepository.findByEmail(email)) {
+
+            val newMember = when (val member = memberRepository.findByPhoneNumber(email)) {
                 null -> saveMember(attributes)
                 else -> updateMember(attributes, member)
             }
@@ -59,20 +59,22 @@ class CustomSuccessHandler(
             ?: throw IllegalStateException("OAuth2 응답에 공급자가 없습니다.")
         val providerId = attributes["id"] as? Long ?: throw IllegalStateException("")
         val email = attributes["email"] as? String ?: throw IllegalStateException("")
+        val phoneNumber = attributes["phoneNumber"] as? String ?: throw IllegalStateException("")
         val nickname = attributes["nickname"] as? String ?: throw IllegalStateException("")
 
         return Member(
-            provider = OAuth2Provider.from(provider),
+            provider = Provider.from(provider),
             providerId = providerId,
             email = email,
+            phoneNumber = phoneNumber,
             nickname = nickname,
             role = Role.MEMBER
         )
     }
 
     private fun updateMember(attributes: Map<String, Any>, member: Member): Member {
-        val email = attributes["email"] as? String ?: throw IllegalStateException("")
-        member.updateEmail(email)
+        val phoneNumber = attributes["phoneNumber"] as? String ?: throw IllegalStateException("")
+        member.updatePhoneNumber(phoneNumber)
 
         return member
     }
