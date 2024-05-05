@@ -13,11 +13,11 @@ abstract class BaseEntity : BaseTimeEntity() {
 
     @CreatedBy
     @Column(nullable = false, updatable = false)
-    var createdBy: Long = 0
+    lateinit var createdBy: String
 
     @LastModifiedBy
     @Column(nullable = false)
-    var lastModifiedBy: Long = 0
+    lateinit var lastModifiedBy: String
 
     // 삭제 여부
     @Column(nullable = false)
