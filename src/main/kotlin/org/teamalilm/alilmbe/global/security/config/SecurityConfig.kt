@@ -3,9 +3,7 @@ package org.teamalilm.alilmbe.global.security.config
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -56,7 +54,9 @@ class SecurityConfig(
             .authorizeHttpRequests { authorizeRequest ->
                 authorizeRequest
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/favicon.ico/**"))
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll()
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/oauth2/authorization/kakao"))
                     .permitAll()
                     .anyRequest().authenticated()
             }
@@ -74,20 +74,4 @@ class SecurityConfig(
         return http.build()
     }
 
-    @Bean
-    fun webSecurityCustomizer(): WebSecurityCustomizer? {
-        // 정적 리소스 spring security 대상에서 제외
-        return WebSecurityCustomizer { web: WebSecurity ->
-            web
-                .ignoring()
-                .requestMatchers(
-                    "/h2-console/**",
-                    "/static/**",
-                    "/swagger-ui/**",
-                    "/api-docs/**",
-                    "/favicon.ico/**",
-                    "/health-check",
-                )
-        }
-    }
 }
