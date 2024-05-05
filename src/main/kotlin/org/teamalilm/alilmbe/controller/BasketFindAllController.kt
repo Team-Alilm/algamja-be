@@ -7,7 +7,6 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.Sort
@@ -16,13 +15,12 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
-import org.teamalilm.alilmbe.global.SortCondition
 import org.teamalilm.alilmbe.service.product.BasketFindAllService
 import org.teamalilm.alilmbe.service.product.BasketFindAllService.BasketFindAllCommand
 
 @RestController
 @RequestMapping("/api/v1/baskets")
-@Tag(name = "basket", description = "상품 전체 조회 api")
+@Tag(name = "baskets", description = "상품 전체 조회 api")
 class BasketFindAllController(
     private val basketFindAllService: BasketFindAllService
 ) {
