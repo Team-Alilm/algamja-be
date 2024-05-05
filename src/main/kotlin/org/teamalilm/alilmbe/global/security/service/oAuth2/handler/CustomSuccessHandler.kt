@@ -13,12 +13,16 @@ import org.teamalilm.alilmbe.domain.member.entity.Role
 import org.teamalilm.alilmbe.domain.member.repository.MemberRepository
 import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
+import org.teamalilm.alilmbe.global.slack.service.SlackService
+
+private const val BASE_URL = """https://alilm.co.kr"""
 
 @Component
 @Transactional(readOnly = true)
 class CustomSuccessHandler(
     private val jwtUtil: JwtUtil,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val slackService: SlackService
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
     @Transactional
@@ -41,9 +45,8 @@ class CustomSuccessHandler(
             }
 
             val memberId = memberRepository.save(newMember).id ?: throw IllegalStateException("")
-            val baseUrl = """https://alilm.co.kr"""
 
-            val redirectUri = UriComponentsBuilder.fromOriginHeader(baseUrl)
+            val redirectUri = UriComponentsBuilder.fromOriginHeader(BASE_URL)
                 .path("/oauth/kakao")
                 .queryParam("Authorization", jwtUtil.createJwt(memberId, 1000 * 60 * 60))
                 .build()
@@ -62,6 +65,8 @@ class CustomSuccessHandler(
         val phoneNumber = attributes["phoneNumber"] as? String ?: throw IllegalStateException("")
         val nickname = attributes["nickname"] as? String ?: throw IllegalStateException("")
 
+        slackService.sendSlackMessage("새로운 회원이 가입했습니다. \nemail: $email \nphoneNumber: $phoneNumber \nnickname: $nickname")
+
         return Member(
             provider = Provider.from(provider),
             providerId = providerId,
@@ -73,6 +78,8 @@ class CustomSuccessHandler(
     }
 
     private fun updateMember(attributes: Map<String, Any>, member: Member): Member {
+        slackService.sendSlackMessage("기존 회원이 로그인했습니다. \nemail: ${member.email} \nphoneNumber: ${member.phoneNumber} \nnickname: ${member.nickname}")
+
         val phoneNumber = attributes["phoneNumber"] as? String ?: throw IllegalStateException("")
         member.updatePhoneNumber(phoneNumber)
 
