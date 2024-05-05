@@ -22,10 +22,10 @@ class Member(
     @Column(nullable = false)
     val providerId: Long,
 
-    @Column(unique = true, nullable = false, length = 30)
+    @Column(nullable = false, length = 30)
     var email: String,
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     var phoneNumber: String,
 
     @Column(nullable = false, length = 10)
