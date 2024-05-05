@@ -5,5 +5,5 @@ import org.teamalilm.alilmbe.domain.member.entity.Member
 
 interface MemberRepository : JpaRepository<Member, Long> {
 
-    fun findByEmail(email: String): Member?
+    fun findByPhoneNumber(phoneNumber: String): Member?
 }
