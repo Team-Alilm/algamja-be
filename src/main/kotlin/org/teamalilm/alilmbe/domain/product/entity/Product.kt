@@ -57,6 +57,7 @@ class Product(
         enum class Store {
 
             MUSINSA, ZIGZAG, OLIVEYOUNG
+
         }
 
     }

@@ -5,7 +5,7 @@ import org.quartz.Scheduler
 import org.quartz.SchedulerException
 import org.quartz.SimpleScheduleBuilder
 import org.quartz.TriggerBuilder
-import org.teamalilm.alilmbe.domain.tracer.SoldoutCheckJob
+import org.teamalilm.alilmbe.domain.tracer.MusinsaSoldoutCheckJob
 
 /**
  *  SoldoutScheduler
@@ -20,7 +20,7 @@ class SoldoutScheduler(
 
     @Throws(SchedulerException::class)
     fun startTracing() {
-        val job = JobBuilder.newJob(SoldoutCheckJob::class.java)
+        val job = JobBuilder.newJob(MusinsaSoldoutCheckJob::class.java)
             .withIdentity("soldoutCheckJob", "soldoutTracer")
             .build()
 
@@ -36,11 +36,5 @@ class SoldoutScheduler(
 
         scheduler.scheduleJob(job, trigger)
     }
-
-    companion object {
-        const val API_URL_TEMPLATE =
-            "https://goods-detail.musinsa.com/goods/%s/options?goodsSaleType=SALE"
-    }
-
 
 }
