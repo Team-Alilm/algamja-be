@@ -3,8 +3,6 @@ package org.teamalilm.alilmbe.domain.tracer
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.slf4j.LoggerFactory
-import org.springframework.http.MediaType
-import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
@@ -33,8 +31,13 @@ class MusinsaSoldoutCheckJob(
     override fun execute(context: JobExecutionContext) {
         val baskets = basketRepository.findAll()
         val restClient = RestClient.create()
+        val passList = ArrayList<Long>()
 
         baskets.forEach {
+            if (passList.contains(it.product.id)) {
+                return@forEach
+            }
+
             val requestUri = MUSINSA_API_URL_TEMPLATE.format(it.product.productInfo.number)
 
             val response = restClient.get()
@@ -58,9 +61,13 @@ class MusinsaSoldoutCheckJob(
                     ?: throw IllegalStateException("상품 옵션1을 찾지 못했어요. 상품번호: ${it.product.productInfo.number} 옵션1: ${it.product.productInfo.option2}")
 
             if (!isSoldOut) {
-                emailService.sendMail(getEmailMessage(it), it.member.email)
-                slackService.sendSlackMessage(getSlackMessage(it))
-                basketRepository.delete(it)
+                passList.add(it.product.id!!)
+
+                basketRepository.findAllByProductId(it.product.id).forEach {
+                    emailService.sendMail(getEmailMessage(it), it.member.email)
+                    slackService.sendSlackMessage(getSlackMessage(it))
+                    basketRepository.delete(it)
+                }
             }
         }
     }

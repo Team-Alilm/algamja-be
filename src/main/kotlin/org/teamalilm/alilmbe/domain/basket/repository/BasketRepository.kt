@@ -8,6 +8,8 @@ import org.teamalilm.alilmbe.domain.basket.entity.Basket
 
 interface BasketRepository : JpaRepository<Basket, Long> {
 
+    fun findAllByProductId(productId: Long): List<Basket>
+
     @Query(
         "SELECT b as basket, (SELECT COUNT(b2) FROM Basket b2 WHERE b2.product.id = b.product.id) as count " +
                 "FROM Basket b " +
