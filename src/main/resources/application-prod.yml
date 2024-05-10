@@ -17,7 +17,7 @@ spring:
             client-name: Kakao
             client-id: ENC(OSM6Nh+CSTo+F3C5H08o6ogJ8hybjMlrsTbN6+zA6RXPDQmbBiRmrJMEtFIrbx39)
             client-secret: ENC(zWQDCX266I8wJvl+rKHmKY2UCaE8HIqbANOCwJuQcawQ5aHRDzCMXU/lh0XNVQKg)
-            redirect-uri: https://alilm.store/login/oauth2/code/kakao
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
