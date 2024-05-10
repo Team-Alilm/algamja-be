@@ -81,8 +81,8 @@ class MusinsaSoldoutCheckJob(
 
     private fun getSlackMessage(basket: Basket): String {
         return """
-            |${basket.product.name} 상품이 재 입고 되었습니다.
-            |바구니에서 삭제되었습니다.
+            ${basket.product.name} 상품이 재 입고 되었습니다.
+            바구니에서 삭제되었습니다.
         """.trimIndent()
     }
 
