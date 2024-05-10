@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service
 class EmailService(
     @Value("\${spring.mail.subject}") private val subject: String,
     @Value("\${spring.mail.from}") private val from: String,
+    @Value("\${spring.mail.username}") private val emailId : String,
 
     private val emailSender: JavaMailSender,
 ) {
@@ -17,7 +18,7 @@ class EmailService(
         val mimeMessage = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
 
-        helper.setFrom(from)
+        helper.setFrom(emailId, from)
         helper.setTo(to)
         helper.setSubject(subject)
         helper.setText(message, true)

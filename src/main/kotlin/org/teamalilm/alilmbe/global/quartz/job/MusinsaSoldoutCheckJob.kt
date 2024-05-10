@@ -39,7 +39,6 @@ class MusinsaSoldoutCheckJob(
 
             val response = restClient.get()
                 .uri(requestUri)
-                .accept(MediaType(APPLICATION_JSON_VALUE))
                 .retrieve()
                 .body<SoldoutCheckResponse>()
 
