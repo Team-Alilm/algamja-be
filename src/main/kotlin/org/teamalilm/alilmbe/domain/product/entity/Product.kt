@@ -60,15 +60,14 @@ class Product(
 
         }
 
+        override fun toString(): String {
+            return "\n상품번호=$number\n옵션1='$option1'\n옵션2='$option2'\n옵션3='$option3'"
+        }
     }
 
     override fun toString(): String {
-        return """
-            name='$name', 
-            imageUrl='$imageUrl', 
-            productInfo=$productInfo, 
-            id=$id
-            """.trimIndent()
+        return "상품명 ='$name' \n상품 이미지='$imageUrl'\n상품 정보=$productInfo\nid=$id"
+
     }
 
 }
