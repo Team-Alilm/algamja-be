@@ -19,7 +19,7 @@ spring:
 
   jwt:
     secretKey: ENC(H/YIzvgutX1KSXRbpkyUqfaQG1qN9HgrCUFPWJQ0f2vSc+2FG6H3XIVyjcJ7TIQF3mFQOWlpIXqhAp2bp/tCwmfNxhKSHm5ynymmpiwMEo7txz6+PmCUdYYf5T92C5KowFk72d8SOb8naaVxiRWooXFUbQ8j+d9+DDRxuYRxWNB8sPVaq4BT8K9eyXBCiGCSCTnZ1YR3F5thHOfVxvQ4+5JM9ZQyr2ypedfFS694SnPsE1p+L2/uHMzx5uvw6EE0stIqRuk/2o8=)
-    expirationTime: 1000 * 60 * 60 * 24 * 7
+    expirationTime: 86400000
 
   mail:
     from: Team Alilm
