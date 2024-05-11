@@ -29,7 +29,7 @@ class SoldoutScheduler(
             .startNow()
             .withSchedule(
                 SimpleScheduleBuilder.simpleSchedule()
-                    .withIntervalInMinutes(1)
+                    .withIntervalInMinutes(10)
                     .repeatForever()
             )
             .build()
