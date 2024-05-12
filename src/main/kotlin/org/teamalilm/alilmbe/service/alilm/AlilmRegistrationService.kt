@@ -39,12 +39,16 @@ class AlilmRegistrationService(
                 )
             )
 
-        basketRepository.save(
-            Basket(
-                member = alilmRegistrationCommand.member,
-                product = product
-            )
+        basketRepository.findByProductIdAndMemberId(
+            product.id!!,
+            alilmRegistrationCommand.member.id
         )
+            ?: basketRepository.save(
+                Basket(
+                    member = alilmRegistrationCommand.member,
+                    product = product
+                )
+            )
 
         slackService.sendSlackMessage(
             """

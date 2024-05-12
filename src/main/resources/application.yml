@@ -6,6 +6,11 @@ spring:
       prod:
         - prod
 
+
+  quartz:
+    job-store-type: jdbc
+
+
   jpa:
     properties:
       hibernate:

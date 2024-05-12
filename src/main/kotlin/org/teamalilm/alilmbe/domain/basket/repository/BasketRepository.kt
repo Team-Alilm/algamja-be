@@ -17,6 +17,8 @@ interface BasketRepository : JpaRepository<Basket, Long> {
                 "IN (SELECT MIN(b3.id) FROM Basket b3 GROUP BY b3.product.id)"
     )
     fun findDistinctByProductAndOldestCreationTimeWithCount(pageable: Pageable): Slice<BasketCountProjection>
+    fun findByProductIdAndMemberId(id: Long, id1: Long?): Basket?
+
 
     interface BasketCountProjection {
         fun getBasket(): Basket
