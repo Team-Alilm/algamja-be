@@ -2,6 +2,7 @@ package org.teamalilm.alilmbe.global.security.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -57,6 +58,13 @@ class SecurityConfig(
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll()
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/health-check")).permitAll()
+                    .requestMatchers(
+                        AntPathRequestMatcher.antMatcher(
+                            HttpMethod.GET,
+                            "/api/v1/baskets"
+                        )
+                    )
+                    .permitAll()
                     .anyRequest().authenticated()
             }
 
