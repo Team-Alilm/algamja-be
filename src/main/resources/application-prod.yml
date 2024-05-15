@@ -38,5 +38,5 @@ aws:
     log-group-name: alilm-log-group
     log-stream-name: alilm-log-stream
     region: ENC(y8z9bgZwg2e2awo/G5MoNRuXw+SK7mWT)
-    access-key: ENC(s336luAOMQg4wD8+vQcan9ZOLNy+/ZseIRvDxhDQshGlX8XlOaskpq3pdYGx8Uly)
-    secret-key: ENC(Ig891/vVGdeFbPmN0FyLdUSsndylJJqQifVlERgaujPNQAf1rMPo/+goVHE2zcWmCJLtJNSKoVqThL4dhXuD1tCZSH2fnTuQ)
+    access-key: ENC(6n/It557Ko5FqQ70zS4ybO+p9922DJySEHAy5kkfLZ4=)
+    secret-key: ENC(lC60snUP1JKJIMM0kZ8Xely1JgpQyVXVubkongv6t/GZHaBuHAwAXw+wl08cnmtk403Rwa6UX0o=)
