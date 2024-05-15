@@ -32,3 +32,11 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+
+aws:
+  cloud-watch:
+    log-group-name: alilm-log-group
+    log-stream-name: alilm-log-stream
+    region: ENC(y8z9bgZwg2e2awo/G5MoNRuXw+SK7mWT)
+    access-key: ENC(s336luAOMQg4wD8+vQcan9ZOLNy+/ZseIRvDxhDQshGlX8XlOaskpq3pdYGx8Uly)
+    secret-key: ENC(Ig891/vVGdeFbPmN0FyLdUSsndylJJqQifVlERgaujPNQAf1rMPo/+goVHE2zcWmCJLtJNSKoVqThL4dhXuD1tCZSH2fnTuQ)
