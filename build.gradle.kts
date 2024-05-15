@@ -66,6 +66,9 @@ dependencies {
     //slack
     implementation("com.slack.api:slack-api-client:1.38.1")
 
+    //logback
+    implementation("ca.pjer:logback-awslogs-appender:1.6.0")
+    
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 }
 
