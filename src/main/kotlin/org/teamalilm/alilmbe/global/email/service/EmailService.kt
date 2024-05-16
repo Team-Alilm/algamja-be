@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 class EmailService(
     @Value("\${spring.mail.subject}") private val subject: String,
     @Value("\${spring.mail.from}") private val from: String,
-    @Value("\${spring.mail.username}") private val emailId : String,
+    @Value("\${spring.mail.username}") private val emailId: String,
 
     private val emailSender: JavaMailSender,
 ) {
@@ -22,7 +22,9 @@ class EmailService(
         helper.setTo(to)
         helper.setSubject(subject)
         helper.setText(message, true)
-        
+
         emailSender.send(mimeMessage)
+
     }
+
 }
