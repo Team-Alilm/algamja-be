@@ -1,6 +1,16 @@
 package org.teamalilm.alilmbe.domain.product.entity
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
+import jakarta.persistence.Embedded
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
 @Entity
@@ -57,7 +67,6 @@ class Product(
 
     override fun toString(): String {
         return "상품명 ='$name' \n상품 이미지 ='$imageUrl'\n상품 정보 =$productInfo\nid =$id"
-
     }
 
 }

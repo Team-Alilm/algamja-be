@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import org.teamalilm.alilmbe.global.enums.ExcludedUrls
 import org.teamalilm.alilmbe.global.security.service.CustomUserDetailsService
 
 @Component
@@ -24,18 +25,27 @@ class JwtFilter(
         filterChain: FilterChain
     ) {
 
-        val token = request.getHeader("Authorization")?.replace("Bearer ", "") ?: ""
+        log.info(request.requestURI)
 
-        log.info("request.requestURI : " + request.requestURI)
-        if (jwtUtil.validate(token)) {
-            val memberId = jwtUtil.getMemberId(token)
+        val shouldFilter =
+            ExcludedUrls.entries.toTypedArray()
+                .none { (it.path).equals(request.requestURI) }
 
-            val userDetails = userDetailsService.loadUserByUsername(memberId.toString())
-            
-            val authToken =
-                UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+        if (shouldFilter) {
+            val token = request.getHeader("Authorization")
 
-            SecurityContextHolder.getContext().authentication = authToken
+            if (jwtUtil.validate(token)) {
+                val memberId = jwtUtil.getMemberId(token)
+
+                val userDetails = userDetailsService.loadUserByUsername(memberId.toString())
+
+                val authToken =
+                    UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+
+                SecurityContextHolder.getContext().authentication = authToken
+            } else {
+                logger.info("JWT claims is empty, 잘못된 JWT 토큰 입니다. token : $token")
+            }
         }
 
         filterChain.doFilter(request, response)
