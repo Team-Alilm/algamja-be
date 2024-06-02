@@ -2,7 +2,6 @@ package org.teamalilm.alilmbe.global.security.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -10,8 +9,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector
+import org.teamalilm.alilmbe.global.enums.ExcludedUrls
 import org.teamalilm.alilmbe.global.security.jwt.JwtFilter
 import org.teamalilm.alilmbe.global.security.service.oAuth2.handler.CustomSuccessHandler
 import org.teamalilm.alilmbe.global.security.service.oAuth2.service.CustomOAuth2UserService
@@ -53,19 +52,15 @@ class SecurityConfig(
             }
 
             .authorizeHttpRequests { authorizeRequest ->
-                authorizeRequest
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/health-check")).permitAll()
-                    .requestMatchers(
-                        AntPathRequestMatcher.antMatcher(
-                            HttpMethod.GET,
-                            "/api/v1/baskets"
-                        )
-                    )
-                    .permitAll()
-                    .anyRequest().authenticated()
+                ExcludedUrls.entries.forEach { excludedUrl ->
+                    val method = excludedUrl.methode
+
+                    if (method == null) {
+                        authorizeRequest.requestMatchers(excludedUrl.path).permitAll()
+                    } else {
+                        authorizeRequest.requestMatchers(method, excludedUrl.path).permitAll()
+                    }
+                }
             }
 
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
