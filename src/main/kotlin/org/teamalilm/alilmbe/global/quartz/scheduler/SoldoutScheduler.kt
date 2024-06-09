@@ -1,16 +1,16 @@
 package org.teamalilm.alilmbe.global.quartz.scheduler
 
 import org.quartz.JobBuilder
+import org.quartz.JobKey
 import org.quartz.Scheduler
-import org.quartz.SchedulerException
 import org.quartz.SimpleScheduleBuilder
 import org.quartz.TriggerBuilder
+import org.quartz.TriggerKey
 import org.teamalilm.alilmbe.domain.tracer.MusinsaSoldoutCheckJob
 
 /**
  *  SoldoutScheduler
  *
- *  @author jubi
  *  @version 1.0.0
  *  @date 2024-03-21
  **/
@@ -18,23 +18,30 @@ class SoldoutScheduler(
     val scheduler: Scheduler
 ) {
 
-    @Throws(SchedulerException::class)
     fun startTracing() {
-        val job = JobBuilder.newJob(MusinsaSoldoutCheckJob::class.java)
-            .withIdentity("soldoutCheckJob", "soldoutTracer")
-            .build()
+        val jobKey = JobKey("soldoutCheckJob", "soldoutTracer")
+        val triggerKey = TriggerKey("soldoutCheckTrigger", "soldoutTracer")
 
-        val trigger = TriggerBuilder.newTrigger()
-            .withIdentity("soldoutCheckTrigger", "soldoutTracer")
-            .startNow()
-            .withSchedule(
-                SimpleScheduleBuilder.simpleSchedule()
-                    .withIntervalInMinutes(10)
-                    .repeatForever()
-            )
-            .build()
+        // Check if the job already exists
+        if (!scheduler.checkExists(jobKey)) {
+            val job = JobBuilder.newJob(MusinsaSoldoutCheckJob::class.java)
+                .withIdentity(jobKey)
+                .build()
 
-        scheduler.scheduleJob(job, trigger)
+            val trigger = TriggerBuilder.newTrigger()
+                .withIdentity(triggerKey)
+                .startNow()
+                .withSchedule(
+                    SimpleScheduleBuilder.simpleSchedule()
+                        .withIntervalInMinutes(10)
+                        .repeatForever()
+                )
+                .build()
+
+            scheduler.scheduleJob(job, trigger)
+        } else {
+            println("Job with key $jobKey already exists")
+        }
     }
 
 }
