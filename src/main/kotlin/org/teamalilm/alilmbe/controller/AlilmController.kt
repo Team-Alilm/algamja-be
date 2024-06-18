@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo.Store
-import org.teamalilm.alilmbe.service.alilm.AlilmRegistrationService
-import org.teamalilm.alilmbe.service.alilm.AlilmRegistrationService.AlilmRegistrationCommand
+import org.teamalilm.alilmbe.service.alilm.AlilmService
+import org.teamalilm.alilmbe.service.alilm.AlilmService.AlilmRegistrationCommand
 
 @RestController
 @RequestMapping("/api/v1/alilms")
 @Tag(name = "alilms", description = "재 입고 알림 API")
-class AlilmRegistrationController(
-    private val alilmRegistrationService: AlilmRegistrationService
+class AlilmController(
+    private val alilmService: AlilmService
 ) {
 
     @Operation(
@@ -36,7 +36,7 @@ class AlilmRegistrationController(
         @AuthenticationPrincipal member: Member
     ): ResponseEntity<Unit> {
 
-        alilmRegistrationService.registration(
+        alilmService.registration(
             AlilmRegistrationCommand(
                 number = alilmRegistrationRequest.number,
                 name = alilmRegistrationRequest.name,
