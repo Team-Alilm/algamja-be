@@ -12,7 +12,7 @@ import org.teamalilm.alilmbe.global.slack.service.SlackService
 
 @Service
 @Transactional(readOnly = true)
-class AlilmRegistrationService(
+class AlilmService(
     private val productRepository: ProductRepository,
     private val slackService: SlackService,
     private val basketRepository: org.teamalilm.alilmbe.domain.basket.repository.BasketRepository

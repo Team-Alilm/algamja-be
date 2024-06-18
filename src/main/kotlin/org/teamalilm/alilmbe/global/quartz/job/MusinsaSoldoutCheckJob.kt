@@ -2,7 +2,6 @@ package org.teamalilm.alilmbe.domain.tracer
 
 import org.quartz.Job
 import org.quartz.JobExecutionContext
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
@@ -24,8 +23,6 @@ class MusinsaSoldoutCheckJob(
     val emailService: EmailService,
     val slackService: SlackService,
 ) : Job {
-
-    private val log = LoggerFactory.getLogger(MusinsaSoldoutCheckJob::class.java)
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
@@ -84,7 +81,6 @@ class MusinsaSoldoutCheckJob(
             </html>
         """.trimIndent()
     }
-
 
     private fun getSlackMessage(basket: Basket): String {
         return """

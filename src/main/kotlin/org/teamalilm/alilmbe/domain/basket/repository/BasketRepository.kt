@@ -5,6 +5,7 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.teamalilm.alilmbe.domain.basket.entity.Basket
+import org.teamalilm.alilmbe.domain.member.entity.Member
 
 interface BasketRepository : JpaRepository<Basket, Long> {
 
@@ -17,7 +18,11 @@ interface BasketRepository : JpaRepository<Basket, Long> {
                 "IN (SELECT MIN(b3.id) FROM Basket b3 GROUP BY b3.product.id)"
     )
     fun findDistinctByProductAndOldestCreationTimeWithCount(pageable: Pageable): Slice<BasketCountProjection>
+
     fun findByProductIdAndMemberId(id: Long, id1: Long?): Basket?
+
+    @Query("SELECT b FROM Basket b WHERE b.member = :member")
+    fun findAllByMember(member: Member): List<Basket>
 
 
     interface BasketCountProjection {

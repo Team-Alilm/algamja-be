@@ -11,18 +11,21 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
-import org.teamalilm.alilmbe.service.product.BasketFindAllService
-import org.teamalilm.alilmbe.service.product.BasketFindAllService.BasketFindAllCommand
+import org.teamalilm.alilmbe.service.product.BasketService
+import org.teamalilm.alilmbe.service.product.BasketService.BasketFindAllCommand
+import org.teamalilm.alilmbe.service.product.BasketService.BasketFindBasketCommand
 
 @RestController
 @RequestMapping("/api/v1/baskets")
 @Tag(name = "baskets", description = "상품 전체 조회 api")
-class BasketFindAllController(
-    private val basketFindAllService: BasketFindAllService
+class BasketController(
+    private val basketService: BasketService
 ) {
 
     @Operation(
@@ -39,7 +42,11 @@ class BasketFindAllController(
     """
     )
     @GetMapping
-    fun findAll(@ParameterObject @Valid basketFindAllParameter: BasketFindAllParameter): ResponseEntity<Slice<BasketFindAllResponse>> {
+    fun findAll(
+        @ParameterObject
+        @Valid
+        basketFindAllParameter: BasketFindAllParameter
+    ): ResponseEntity<Slice<BasketFindAllResponse>> {
         val pageRequest = PageRequest.of(
             basketFindAllParameter.page,
             basketFindAllParameter.size,
@@ -47,7 +54,7 @@ class BasketFindAllController(
         )
 
         return ResponseEntity.ok(
-            basketFindAllService.findAll(
+            basketService.findAll(
                 BasketFindAllCommand(pageRequest)
             )
         )
@@ -59,7 +66,7 @@ class BasketFindAllController(
         @Min(value = 1, message = "사이즈는 1 이상이어야 합니다.")
         @Schema(description = "페이지 사이즈", defaultValue = "10")
         val size: Int,
-        
+
         @NotBlank(message = "페이지 번호는 필수에요.")
         @Schema(description = "페이지 번호", defaultValue = "0")
         @Min(value = 0, message = "페이지 번호는 1 이상이어야 합니다.")
@@ -73,5 +80,25 @@ class BasketFindAllController(
         val imageUrl: String,
         val productInfo: ProductInfo,
         val createdDate: Long
+    )
+
+    @Operation(
+        summary = "상품 상세 조회 API",
+        description = """
+            사용자들이 등록한 상품을 상세 조회할 수 있는 기능을 제공해요.
+            상품 id를 입력받아요.
+    """
+    )
+    @GetMapping("/{id}")
+    fun findMyBasket(@AuthenticationPrincipal member: Member): ResponseEntity<List<BasketFindMyBasketResponse>> {
+        return ResponseEntity.ok(basketService.findMyBasket(BasketFindBasketCommand(member)))
+    }
+
+    data class BasketFindMyBasketResponse(
+        val id: Long,
+        val name: String,
+        val imageUrl: String,
+        val productInfo: ProductInfo,
+        val createdDate: Long,
     )
 }
