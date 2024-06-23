@@ -35,7 +35,7 @@ env:
   ECR_REPOSITORY: alilm-ecr           # set this to your Amazon ECR repository name
   ECS_SERVICE: alilm-test-4                 # set this to your Amazon ECS service name
   ECS_CLUSTER: alilm-cluster                # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: alilm-task-dev-family   # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION: alilm-task-family   # set this to the path to your Amazon ECS task definition
   CONTAINER_NAME: alilm-container           # set this to the name of the container in the
 
 permissions:
