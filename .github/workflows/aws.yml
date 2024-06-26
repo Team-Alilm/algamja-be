@@ -33,7 +33,7 @@ on:
 env:
   AWS_REGION: ap-northeast-2                   # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: alilm-dev                    # set this to your Amazon ECR repository name
-  ECS_SERVICE: alilm-test-4                    # set this to your Amazon ECS service name
+  ECS_SERVICE: alilm-dev-service                    # set this to your Amazon ECS service name
   ECS_CLUSTER: AlilmDevCluster                   # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: alilm-task-family       # set this to the path to your Amazon ECS task definition
   CONTAINER_NAME: alilm-dev              # set this to the name of the container in the
