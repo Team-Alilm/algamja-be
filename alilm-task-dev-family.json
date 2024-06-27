@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
-            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:92fba9b049f5c7c06eb7a9f019d8d4bcc9941e29",
+            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:latest",
             "cpu": 0,
             "portMappings": [
                 {
