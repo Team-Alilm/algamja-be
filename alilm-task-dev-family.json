@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:5",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:15",
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
-            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:latest",
+            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:aca987b1481fd68cd9825753fc121bdb56172bba",
             "cpu": 0,
             "portMappings": [
                 {
@@ -20,12 +20,12 @@
             "volumesFrom": [],
             "secrets": [
                 {
-                    "name": "JASYPT_ALGORITHM",
-                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm/secret-cmPhs4:JASYPT_ALGORITHM::"
+                    "name": "JASYPT_PASSWORD",
+                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_PASSWORD::"
                 },
                 {
-                    "name": "JASYPT_PASSWORD",
-                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm/secret-cmPhs4:JASYPT_PASSWORD::"
+                    "name": "JASYPT_ALGORITHM",
+                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_ALGORITHM::"
                 }
             ],
             "logConfiguration": {
@@ -35,17 +35,15 @@
                     "awslogs-create-group": "true",
                     "awslogs-region": "ap-northeast-2",
                     "awslogs-stream-prefix": "ecs"
-                },
-                "secretOptions": []
+                }
             },
             "systemControls": []
         }
     ],
     "family": "alilm-task-dev-family",
-    "taskRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 5,
+    "revision": 15,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -63,9 +61,6 @@
         },
         {
             "name": "ecs.capability.secrets.asm.environment-variables"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.task-iam-role"
         },
         {
             "name": "ecs.capability.execution-role-ecr-pull"
@@ -94,7 +89,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-06-27T04:37:21.370Z",
+    "registeredAt": "2024-06-27T07:00:39.112Z",
     "registeredBy": "arn:aws:iam::891377281535:root",
     "tags": []
 }
