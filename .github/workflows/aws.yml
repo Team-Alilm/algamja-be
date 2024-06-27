@@ -90,7 +90,7 @@ jobs:
       - name: Download task definition
         run: |
           aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} \
-          --query taskDefinition > alilm-dev-task-family.json
+          --query taskDefinition > ${{ env.ECS_TASK_DEFINITION }}
 
       - name: task-definition.json file check
         run: |
