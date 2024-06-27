@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:37",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:39",
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
-            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:latest",
+            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:10f4ff8cff243f56e2ad23a473e91b2484c84a5c",
             "cpu": 0,
             "portMappings": [
                 {
@@ -16,20 +16,18 @@
             ],
             "essential": true,
             "environment": [],
-            "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
             "secrets": [
                 {
                     "name": "JASYPT_PASSWORD",
-                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_PASSWORD::"
+                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:JASYPT_PASSWORD"
                 },
                 {
                     "name": "JASYPT_ALGORITHM",
-                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_ALGORITHM::"
+                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:JASYPT_ALGORITHM"
                 }
             ],
-            "ulimits": [],
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
@@ -37,8 +35,7 @@
                     "awslogs-create-group": "true",
                     "awslogs-region": "ap-northeast-2",
                     "awslogs-stream-prefix": "ecs"
-                },
-                "secretOptions": []
+                }
             },
             "systemControls": []
         }
@@ -46,7 +43,7 @@
     "family": "alilm-task-dev-family",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 37,
+    "revision": 39,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -92,7 +89,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-06-27T23:32:21.813Z",
+    "registeredAt": "2024-06-27T23:47:06.221Z",
     "registeredBy": "arn:aws:iam::891377281535:root",
     "tags": []
 }
