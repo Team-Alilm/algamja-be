@@ -1,0 +1,98 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:37",
+    "containerDefinitions": [
+        {
+            "name": "alilm-dev-container",
+            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "alilm-dev-container-8080-tcp",
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "JASYPT_PASSWORD",
+                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_PASSWORD::"
+                },
+                {
+                    "name": "JASYPT_ALGORITHM",
+                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_ALGORITHM::"
+                }
+            ],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/alilm-task-dev-family",
+                    "awslogs-create-group": "true",
+                    "awslogs-region": "ap-northeast-2",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "alilm-task-dev-family",
+    "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 37,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.secrets.asm.environment-variables"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-06-27T23:32:21.813Z",
+    "registeredBy": "arn:aws:iam::891377281535:root",
+    "tags": []
+}
