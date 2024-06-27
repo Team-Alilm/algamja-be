@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:28",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:31",
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
-            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:7ebae58ae292fb8510722641cfb156634e304597",
+            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:92fba9b049f5c7c06eb7a9f019d8d4bcc9941e29",
             "cpu": 0,
             "portMappings": [
                 {
@@ -20,12 +20,12 @@
             "volumesFrom": [],
             "secrets": [
                 {
-                    "name": "JASYPT_PASSWORD",
-                    "valueFrom": "arn:aws:ssm:ap-northeast-2:891377281535:parameter/JASYPT_PASSWORD"
-                },
-                {
                     "name": "JASYPT_ALGORITHM",
                     "valueFrom": "arn:aws:ssm:ap-northeast-2:891377281535:parameter/JASYPT_ALGORITHM"
+                },
+                {
+                    "name": "JASYPT_PASSWORD",
+                    "valueFrom": "arn:aws:ssm:ap-northeast-2:891377281535:parameter/JASYPT_PASSWORD"
                 }
             ],
             "logConfiguration": {
@@ -35,15 +35,17 @@
                     "awslogs-create-group": "true",
                     "awslogs-region": "ap-northeast-2",
                     "awslogs-stream-prefix": "ecs"
-                }
+                },
+                "secretOptions": []
             },
             "systemControls": []
         }
     ],
     "family": "alilm-task-dev-family",
+    "taskRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 28,
+    "revision": 31,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -58,6 +60,9 @@
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
         },
         {
             "name": "ecs.capability.execution-role-ecr-pull"
@@ -89,7 +94,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-06-27T07:50:46.270Z",
+    "registeredAt": "2024-06-27T08:06:17.934Z",
     "registeredBy": "arn:aws:iam::891377281535:root",
     "tags": []
 }
