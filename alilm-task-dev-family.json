@@ -1,8 +1,8 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:4",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:5",
     "containerDefinitions": [
         {
-            "name": "alilm-container",
+            "name": "alilm-dev-container",
             "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:latest",
             "cpu": 0,
             "portMappings": [
@@ -45,7 +45,7 @@
     "taskRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 4,
+    "revision": 5,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -94,7 +94,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-06-27T04:33:01.333Z",
+    "registeredAt": "2024-06-27T04:37:21.370Z",
     "registeredBy": "arn:aws:iam::891377281535:root",
     "tags": []
 }
