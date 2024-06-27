@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:25",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:28",
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
-            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:ee7840b2b5a231e0a3bba7b6cab6751dc738b447",
+            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:7ebae58ae292fb8510722641cfb156634e304597",
             "cpu": 0,
             "portMappings": [
                 {
@@ -21,11 +21,11 @@
             "secrets": [
                 {
                     "name": "JASYPT_PASSWORD",
-                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev:JASYPT_PASSWORD::"
+                    "valueFrom": "arn:aws:ssm:ap-northeast-2:891377281535:parameter/JASYPT_PASSWORD"
                 },
                 {
                     "name": "JASYPT_ALGORITHM",
-                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev:JASYPT_ALGORITHM::"
+                    "valueFrom": "arn:aws:ssm:ap-northeast-2:891377281535:parameter/JASYPT_ALGORITHM"
                 }
             ],
             "logConfiguration": {
@@ -43,7 +43,7 @@
     "family": "alilm-task-dev-family",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 25,
+    "revision": 28,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -60,10 +60,10 @@
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
         },
         {
-            "name": "ecs.capability.secrets.asm.environment-variables"
+            "name": "ecs.capability.execution-role-ecr-pull"
         },
         {
-            "name": "ecs.capability.execution-role-ecr-pull"
+            "name": "ecs.capability.secrets.ssm.environment-variables"
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
@@ -89,7 +89,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-06-27T07:39:10.753Z",
+    "registeredAt": "2024-06-27T07:50:46.270Z",
     "registeredBy": "arn:aws:iam::891377281535:root",
     "tags": []
 }
