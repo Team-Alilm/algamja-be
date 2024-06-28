@@ -12,7 +12,7 @@ class HealthController {
     @GetMapping("/health-check")
     @Operation(summary = "Health Check API", description = "Health Check API")
     fun health(): String {
-        return "Hello Alilm"
+        return "Hello Alilm!"
     }
 
 }
