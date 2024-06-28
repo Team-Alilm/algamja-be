@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:41",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family:43",
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
-            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:b538a8191fde1ea2b23c50178ab1ed3b5ea67eb1",
+            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:99ebfa44be74fcf28318e8e209244afec684dc16",
             "cpu": 0,
             "portMappings": [
                 {
@@ -21,11 +21,11 @@
             "secrets": [
                 {
                     "name": "JASYPT_PASSWORD",
-                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:JASYPT_PASSWORD::"
+                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_PASSWORD::"
                 },
                 {
                     "name": "JASYPT_ALGORITHM",
-                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:JASYPT_ALGORITHM::"
+                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_ALGORITHM::"
                 }
             ],
             "logConfiguration": {
@@ -43,7 +43,7 @@
     "family": "alilm-task-dev-family",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 41,
+    "revision": 43,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -89,7 +89,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-06-27T23:57:37.106Z",
+    "registeredAt": "2024-06-28T04:08:33.972Z",
     "registeredBy": "arn:aws:iam::891377281535:root",
     "tags": []
 }
