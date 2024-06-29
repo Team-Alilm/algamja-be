@@ -72,13 +72,32 @@ class MusinsaSoldoutCheckJob(
     private fun getEmailMessage(basket: Basket): String {
         return """
             <html>
-            <body>
-                <h2>안녕하세요 ${basket.member.nickname}님 </h2>
-                <p>${basket.product.name} 상품이 재입고 되었어요.</p>
-                
-                <p>이쁘게 만들어 주실 수 있나요 ?</p>
-            </body>
-            </html>
+    <body>
+        <h1>Alilm</h1>
+        <div style="width:580px; height:252px; background-color: #F3F3F3; display: flex; flex-direction: column; gap: 40px;">
+            <div style="display: flex; flex-direction: column;">
+                <h2>${basket.member.nickname}님이 등록하신 제품이</h2>
+                <h2>재입고 되었습니다!</h2>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <img src="주영님!! 이미지_소스_넣어주세요" width="68px" height="80px" />
+                <div>
+                    <p>상품 옵션 : ${basket.product.name}/${basket.product.productInfo.option1}/${basket.product.productInfo.option2}</p>
+                    <p>재입고 시각 : ${basket.product.createdBy}</p>
+                </div>
+            </div>
+        </div>
+        <div>
+            <p>${basket.member.nickname}님이 등록하신 상품의 재입고 소식을 알려드리러 왔어요.</p>
+            <p>상품은 재입고 시각으로 부터 다시 품절이 될 수 있음을 유의해주세요!</p>
+            <p>저희 알림 서비스를 이용해주셔서 감사합니다 :) </p>
+        </div>
+        <button style="width: 580px; height: 252px; background-color: #1B1A3B;">
+            <h2 style="color: white;">재입고 상품 구매하러 가기 👉</h2>
+        </button>
+    </body>
+</html>
+
         """.trimIndent()
     }
 
