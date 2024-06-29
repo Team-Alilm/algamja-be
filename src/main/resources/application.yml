@@ -72,12 +72,3 @@ springdoc:
 webhook:
   slack:
     url: ENC(66oIt8AFhAxu4Kt9kV5SIvPbb+QALCAbBJOQAOoftXdYaWp+yAa5H20WZTlGoyeo26OB8UAq8GxkiSlkyWZwUsR+eLr/ZLhPk0lde5A9MLFSZi6/DT5cIiAtOd+el6CP)
-
-cloud:
-  aws:
-    cloud-watch:
-      log-group-name: alilm-log-group
-      log-stream-name: alilm-log-stream
-      region: ${AWS_REGION}
-      access-key: ${AWS_CLOUD_WATCH_ACCESS_KEY}
-      secret-key: ${AWS_CLOUD_WATCH_SECRET_KEY}
