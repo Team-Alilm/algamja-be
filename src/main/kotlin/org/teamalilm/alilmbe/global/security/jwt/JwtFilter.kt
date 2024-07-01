@@ -25,14 +25,14 @@ class JwtFilter(
         filterChain: FilterChain
     ) {
 
-        log.info(request.requestURI)
+        log.info(" request.requestURI : ${request.requestURI}")
 
         val shouldFilter =
             ExcludedUrls.entries.toTypedArray()
-                .none { (it.path).equals(request.requestURI) }
+                .none { (it.path) == request.requestURI }
 
         if (shouldFilter) {
-            val token = request.getHeader("Authorization")
+            val token = request.getHeader("Authorization").replace("Bearer ", "")
 
             if (jwtUtil.validate(token)) {
                 val memberId = jwtUtil.getMemberId(token)
