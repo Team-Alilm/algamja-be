@@ -13,10 +13,6 @@ enum class ExcludedUrls(
     HEALTH_CHECK("/health-check", HttpMethod.GET),
     FAVICON("/favicon.ico", null);
 
-    companion object {
-        fun getPatterns(): Array<String> = entries.map { it._path }.toTypedArray()
-    }
-
     val path: String
         get() = _path
 

@@ -32,7 +32,7 @@ class JwtFilter(
                 .none { (it.path) == request.requestURI }
 
         if (shouldFilter) {
-            val token = request.getHeader("Authorization").replace("Bearer ", "")
+            val token = request.getHeader("Authorization")?.replace("Bearer ", "") ?: ""
 
             if (jwtUtil.validate(token)) {
                 val memberId = jwtUtil.getMemberId(token)
