@@ -9,11 +9,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.teamalilm.alilmbe.service.scraping.ScrapingService
+import org.teamalilm.alilmbe.service.crawling.ProductCrawlingService
 
 @Tag(name = "scraping", description = "Scraping APIs")
 class ScrapingController(
-    private val scrapingService: ScrapingService
+    private val productCrawlingService: ProductCrawlingService
 ) {
 
     @Operation(
@@ -26,21 +26,34 @@ class ScrapingController(
     )
     @GetMapping("/scraping")
     fun scraping(
-        @RequestBody @Valid scrapingRequest: ScrapingRequest,
+        @RequestBody @Valid request: ScrapingRequestBody,
         bindingResult: BindingResult
     ): ResponseEntity<ScrapingResponse> {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build()
         }
 
+        val command = ProductCrawlingService.ProductCrawlingCommand(
+            url = request.url
+        )
+
+        val result = productCrawlingService.crawling(command)
+
+        val response = ScrapingResponse(
+            name = result.name,
+
+            )
+
         return ResponseEntity.ok(
-            
+            null
         )
     }
 
-    data class ScrapingRequest(
+    @Schema(description = "Scraping 요청")
+    data class ScrapingRequestBody(
         @NotBlank
-        private val url: String
+        @Schema(description = "상품 URL", example = "https://www.musinsa.com/app/goods/3262292")
+        val url: String
     )
 
     @Schema(description = "Alilm 등록을 위한 요청 DTO")
