@@ -61,6 +61,8 @@ class SecurityConfig(
                         authorizeRequest.requestMatchers(method, excludedUrl.path).permitAll()
                     }
                 }
+
+                authorizeRequest.anyRequest().authenticated()
             }
 
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
