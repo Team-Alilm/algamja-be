@@ -1,6 +1,5 @@
 package org.teamalilm.alilmbe.service.crawling
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -33,7 +32,7 @@ class ProductCrawlingService {
             .replace(" ", "")
             .toInt()
 
-        var uri = command.url
+        val uri = command.url
             .replace("www", "goods-detail")
             .replace("/app", "") + "/options?goodsSaleType=SALE"
         log.info("uri: $uri")
@@ -49,7 +48,7 @@ class ProductCrawlingService {
         log.info("option1s: $option1s")
 
         val option2s = if (soldoutCheckResponse?.data?.basic?.isNotEmpty() == true) {
-            soldoutCheckResponse.data.basic[0].subOptions.map { it.name } ?: emptyList()
+            soldoutCheckResponse.data.basic[0].subOptions.map { it.name }
         } else {
             emptyList()
         }
@@ -59,7 +58,7 @@ class ProductCrawlingService {
                 soldoutCheckResponse?.data?.basic?.isNotEmpty() == true &&
                 soldoutCheckResponse.data.basic[0].subOptions.isNotEmpty()
             ) {
-            soldoutCheckResponse.data.basic[0].subOptions[0].subOptions.map { it.name } ?: emptyList()
+            soldoutCheckResponse.data.basic[0].subOptions[0].subOptions.map { it.name }
         } else {
             emptyList()
         }
