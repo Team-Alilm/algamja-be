@@ -8,6 +8,9 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import org.teamalilm.alilmbe.domain.product.entity.Product
 import org.teamalilm.alilmbe.global.quartz.data.SoldoutCheckResponse
+import java.net.URI
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @Service
 @Transactional(readOnly = true)
@@ -18,8 +21,12 @@ class ProductCrawlingService {
 
     // 크롤링을 담당하는 함수
     fun crawling(command: ProductCrawlingCommand): ProductCrawlingResult {
+        val decodedUrl = URLDecoder.decode(command.url, StandardCharsets.UTF_8.toString())
+        val url = URI.create(decodedUrl).toString()
+        log.info("url: $url")
+
         val descriptionDoc = Jsoup
-            .connect(command.url)
+            .connect(url)
             .get()
 
         val description =
@@ -32,7 +39,7 @@ class ProductCrawlingService {
             .replace(" ", "")
             .toInt()
 
-        val uri = command.url
+        val uri = url
             .replace("www", "goods-detail")
             .replace("/app", "") + "/options?goodsSaleType=SALE"
         log.info("uri: $uri")
