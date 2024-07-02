@@ -57,23 +57,29 @@ class AlilmController(
         @NotBlank(message = "상품 번호는 필수에요.")
         @Schema(description = "각 스토어 별 상품 번호", example = "3859221")
         val number: Int,
+
         @NotBlank(message = "상품 명은 필수에요.")
         @Schema(description = "이름", example = "COOL 롱 슬리브 셔츠 STYLE 3 TIPE")
         val name: String,
+
         @NotBlank(message = "구매하는 스토어는 필수에요.")
         @Schema(description = "구매하는 스토어", example = "MUSINSA")
         val store: Store,
+
         @NotBlank(message = "이미지 링크는 필수에요.")
         @Schema(
             description = "main 이미지 링크",
             example = "https://image.msscdn.net/images/goods_img/20240208/3859221/3859221_17084100068855_500.jpg"
         )
         val imageUrl: String,
+
         @NotBlank(message = "상품 옵션 1은 필수에요.")
         @Schema(description = "구매 옵션 1", example = "(헤링본)화이트")
         val option1: String,
+
         @Schema(description = "구매 옵션 2", example = "M")
         val option2: String?,
+
         @Schema(description = "구매 옵션 3", example = "해당 상품은 없습니다.")
         val option3: String?
     )
