@@ -15,19 +15,18 @@ class ProductCrawlingService {
             .connect(command.url)
             .get()
 
-        log.info(doc.tag().toString())
+        log.info("doc.html(): ${doc.html()}")
 
-        val name = doc.select("h1.product_title").text()
-
-        return ProductCrawlingResult(
-            name = name,
-            imageUrl = "",
-            price = 0,
-            store = Product.ProductInfo.Store.MUSINSA,
-            option1 = "",
-            option2 = "",
-            option3 = ""
-        )
+//        return ProductCrawlingResult(
+//            name = "name",
+//            brand = doc.select("meta[property=product:brand]")?.attr("content")? ?: "내용 없음",
+//            imageUrl = doc.getElementById("fbOgImage")?.attr("content") ?: "null",
+//            price = 0,
+//            store = Product.ProductInfo.Store.MUSINSA,
+//            option1 = "",
+//            option2 = "",
+//            option3 = ""
+//        )
     }
 
     data class ProductCrawlingCommand (
@@ -36,6 +35,7 @@ class ProductCrawlingService {
 
     data class ProductCrawlingResult (
         val name: String,
+        val brand: String,
         val imageUrl: String,
         val price: Int,
         val store: Product.ProductInfo.Store,
