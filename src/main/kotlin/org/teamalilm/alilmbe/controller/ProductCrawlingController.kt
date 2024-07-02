@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.controller.error.RequestValidateException
 import org.teamalilm.alilmbe.domain.product.entity.Product
-import org.teamalilm.alilmbe.service.ProductCrawlingService
+import org.teamalilm.alilmbe.service.crawling.ProductCrawlingService
 
 @RestController
 @RequestMapping("/api/v1/product-crawling")
@@ -59,13 +59,16 @@ class ProductCrawlingController(
         return ResponseEntity.ok(response)
     }
 
-    data class ProductCrawlingRequestBody (
+    data class ProductCrawlingRequestBody(
         @NotBlank(message = "URL은 필수에요.")
-        @Schema(description = "크롤링할 상품 URL", defaultValue = "https://www.musinsa.com/app/goods/3262292")
+        @Schema(
+            description = "크롤링할 상품 URL",
+            defaultValue = "https://www.musinsa.com/app/goods/3262292"
+        )
         val url: String
     )
 
-    data class ProductCrawlingResponseBody (
+    data class ProductCrawlingResponseBody(
         val name: String,
         val imageUrl: String,
         val price: Int,

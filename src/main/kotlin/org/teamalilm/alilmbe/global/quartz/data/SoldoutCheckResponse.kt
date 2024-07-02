@@ -22,6 +22,7 @@ data class SoldoutCheckResponse(
                 val price: Int,
                 val isSoldOut: Boolean,
                 val remainQuantity: Int,
+                val subOptions: List<SubOption>
             )
         }
     }
