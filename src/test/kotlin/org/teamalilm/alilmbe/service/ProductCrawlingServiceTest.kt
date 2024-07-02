@@ -7,13 +7,13 @@ import org.teamalilm.alilmbe.service.crawling.ProductCrawlingService
 
 class ProductCrawlingServiceTest {
 
-    val productCrawlingService = ProductCrawlingService()
+    private val productCrawlingService = ProductCrawlingService()
 
     @Test
     fun crawling() {
         // given
         val command = ProductCrawlingService.ProductCrawlingCommand(
-            url = "https://www.musinsa.com/app/goods/3262292"
+            url = "https%3A%2F%2Fwww.musinsa.com%2Fapp%2Fgoods%2F3262292"
         )
 
         // when
