@@ -25,6 +25,7 @@ class ProductCrawlingController(
     @Operation(
         summary = "상품 크롤링을 실행하는 API",
         description = """
+            사용자가 url을 입력하면 해당 상품의 데이터를 파싱하는 API에요.
             상품 크롤링을 실행하는 API 이며, 크롤링된 상품은 DB에 저장되어요.
         """
     )
@@ -48,7 +49,9 @@ class ProductCrawlingController(
 
         val response = ProductCrawlingResponseBody(
             name = result.name,
+            brand = result.brand,
             imageUrl = result.imageUrl,
+            category = result.category,
             price = result.price,
             store = result.store,
             option1 = result.option1,
@@ -70,11 +73,13 @@ class ProductCrawlingController(
 
     data class ProductCrawlingResponseBody(
         val name: String,
+        val brand: String,
         val imageUrl: String,
+        val category: String,
         val price: Int,
         val store: Product.ProductInfo.Store,
-        val option1: String,
-        val option2: String?,
-        val option3: String?
+        val option1: List<String>,
+        val option2: List<String>,
+        val option3: List<String>
     )
 }
