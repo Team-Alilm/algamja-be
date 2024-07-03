@@ -80,9 +80,9 @@ class ProductCrawlingService {
             category = category,
             price = price,
             store = Product.ProductInfo.Store.MUSINSA,
-            option1 = option1s,
-            option2 = option2s,
-            option3 = option3s
+            option1List = option1s,
+            option2List = option2s,
+            option3List = option3s
         )
 
     }
@@ -98,9 +98,9 @@ class ProductCrawlingService {
         val category: String,
         val price: Int,
         val store: Product.ProductInfo.Store,
-        val option1: List<String>,
-        val option2: List<String>,
-        val option3: List<String>
+        val option1List: List<String>,
+        val option2List: List<String>,
+        val option3List: List<String>
     )
 
 }
