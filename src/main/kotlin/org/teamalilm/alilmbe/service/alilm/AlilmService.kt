@@ -1,5 +1,6 @@
 package org.teamalilm.alilmbe.service.alilm
 
+import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.domain.basket.entity.Basket
@@ -17,6 +18,8 @@ class AlilmService(
     private val slackService: SlackService,
     private val basketRepository: org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
 ) {
+
+    private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
     @Transactional
     fun registration(
@@ -42,23 +45,25 @@ class AlilmService(
                 )
             )
 
-        // 상품을 등록한 회원이 바구니에 상품을 담았는지 확인
-        // Update 문은 위험하다. 1차 캐쉬 문제등 고려할 사항이 많아진다.
-        basketRepository.findByProductIdAndMemberId(
-            product.id!!,
-            alilmRegistrationCommand.member.id
-        )
-            ?: {
-                    // 상품을 기다리는 사람 수를 카운팅 합니다.
-                    product.waitingCount++
+        log.info("$product")
 
-                    basketRepository.save(
-                        Basket(
-                            member = alilmRegistrationCommand.member,
-                            product = product
-                        )
-                    )
-                }
+        if (
+            basketRepository.existsByMemberAndProduct(
+                member =alilmRegistrationCommand.member,
+                product = product
+            )
+        ) {
+            log.info("이미 등록된 상품입니다.")
+        } else {
+            log.info("상품을 등록합니다.")
+
+            basketRepository.save(
+                Basket(
+                    member = alilmRegistrationCommand.member,
+                    product = product
+                )
+            )
+        }
 
         slackService.sendSlackMessage(
             """
@@ -67,6 +72,7 @@ class AlilmService(
                 상품 : $product
                 """.trimIndent()
         )
+
     }
 
     data class AlilmRegistrationCommand(

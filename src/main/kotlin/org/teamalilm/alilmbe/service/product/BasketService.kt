@@ -14,9 +14,9 @@ class BasketService(
     private val basketRepository: BasketRepository,
 ) {
 
+    // 상품 전체 조회
     fun findAll(basketFindAllCommand: BasketFindAllCommand): Slice<BasketFindAllResponse> {
-        val baskets =
-            basketRepository.findDistinctByProductAndOldestCreationTimeWithCount(pageable = basketFindAllCommand.pageRequest)
+        val baskets = basketRepository.findDistinctByProductAndOldestCreationTimeWithCount(pageable = basketFindAllCommand.pageRequest)
 
         return baskets.map {
             BasketFindAllResponse(
