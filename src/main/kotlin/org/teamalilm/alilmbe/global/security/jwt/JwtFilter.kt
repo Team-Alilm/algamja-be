@@ -32,10 +32,11 @@ class JwtFilter(
                 .none { (it.path) == request.requestURI }
 
         if (shouldFilter) {
-            val token = request.getHeader("Authorization")?.replace("Bearer ", "") ?: ""
+            val parserToken = request.getHeader("Authorization")?.replace("Bearer ", "") ?: ""
+            log.info("token : $parserToken")
 
-            if (jwtUtil.validate(token)) {
-                val memberId = jwtUtil.getMemberId(token)
+            if (jwtUtil.validate(parserToken)) {
+                val memberId = jwtUtil.getMemberId(parserToken)
 
                 val userDetails = userDetailsService.loadUserByUsername(memberId.toString())
 
@@ -44,7 +45,7 @@ class JwtFilter(
 
                 SecurityContextHolder.getContext().authentication = authToken
             } else {
-                logger.info("JWT claims is empty, 잘못된 JWT 토큰 입니다. token : $token")
+                logger.info("JWT claims is empty, 잘못된 JWT 토큰 입니다. token : $parserToken")
             }
         }
 
