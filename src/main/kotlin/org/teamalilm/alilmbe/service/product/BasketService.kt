@@ -39,8 +39,8 @@ class BasketService(
         }
     }
 
-    fun findMyBasket(basketFindBasketCommand: BasketFindBasketCommand): List<BasketController.BasketFindMyBasketResponse> {
-        return basketRepository.findAllByMember(basketFindBasketCommand.member).map {
+    fun findMyBasket(command: BasketFindBasketCommand): List<BasketController.BasketFindMyBasketResponse> {
+        return basketRepository.findAllByMember(command.member).map {
             BasketController.BasketFindMyBasketResponse(
                 id = it.product.id!!,
                 name = it.product.name,
