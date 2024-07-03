@@ -21,9 +21,15 @@ class ProductCrawlingService {
 
     // 크롤링을 담당하는 함수
     fun crawling(command: ProductCrawlingCommand): ProductCrawlingResult {
+        // https://www.musinsa.com/app/goods/3262292/option/3262292_001?goodsSaleType=SALE
         val decodedUrl = URLDecoder.decode(command.url, StandardCharsets.UTF_8.toString())
         val url = URI.create(decodedUrl).toString()
         log.info("url: $url")
+
+        val regex = Regex("goods/(\\d+)")
+        val matchResult = regex.find(url)
+        val number = matchResult?.groupValues?.get(1)?.toLong()
+        log.info("number: $number")
 
         val descriptionDoc = Jsoup
             .connect(url)
@@ -73,6 +79,7 @@ class ProductCrawlingService {
 
 
         return ProductCrawlingResult(
+            number = number,
             name = name,
             brand = descriptionDoc.select("meta[property=product:brand]").attr("content")
                 ?: "내용 없음",
@@ -92,6 +99,7 @@ class ProductCrawlingService {
     )
 
     data class ProductCrawlingResult(
+        val number: Number?,
         val name: String,
         val brand: String,
         val imageUrl: String,

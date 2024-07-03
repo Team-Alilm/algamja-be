@@ -23,19 +23,22 @@ class AlilmService(
         alilmRegistrationCommand: AlilmRegistrationCommand
     ) {
         val productInfo = ProductInfo(
-            store = alilmRegistrationCommand.store,
-            number = alilmRegistrationCommand.number,
-            option1 = alilmRegistrationCommand.option1,
-            option2 = alilmRegistrationCommand.option2,
-            option3 = alilmRegistrationCommand.option3
+            _store = alilmRegistrationCommand.store,
+            _number = alilmRegistrationCommand.number,
+            _option1 = alilmRegistrationCommand.option1,
+            _option2 = alilmRegistrationCommand.option2,
+            _option3 = alilmRegistrationCommand.option3
         )
 
         val product = productRepository.findByProductInfo(productInfo)
             ?: productRepository.save(
                 Product(
-                    name = alilmRegistrationCommand.name,
-                    imageUrl = alilmRegistrationCommand.imageUrl,
-                    productInfo = productInfo
+                    _name = alilmRegistrationCommand.name,
+                    _brand = alilmRegistrationCommand.brand,
+                    _imageUrl = alilmRegistrationCommand.imageUrl,
+                    _category = alilmRegistrationCommand.category,
+                    _price = alilmRegistrationCommand.price,
+                    _productInfo = productInfo
                 )
             )
 
@@ -60,10 +63,13 @@ class AlilmService(
     }
 
     data class AlilmRegistrationCommand(
-        val number: Int,
+        val number: Number,
         val name: String,
+        val brand: String,
         val store: Store,
         val imageUrl: String,
+        val category: String,
+        val price: Int,
         val option1: String,
         val option2: String?,
         val option3: String?,

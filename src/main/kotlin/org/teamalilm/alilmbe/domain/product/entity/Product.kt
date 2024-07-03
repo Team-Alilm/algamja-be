@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
 @Entity
@@ -21,38 +22,86 @@ import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
     )]
 )
 class Product(
-    @Column(nullable = false)
-    val name: String,
+    @Column(name = "name", nullable = false)
+    private val _name: String,
 
-    @Column(nullable = false)
-    val imageUrl: String,
+    @Column(name = "brand")
+    private val _brand: String,
+
+    @Column(name = "image_url")
+    private val _imageUrl: String,
+
+    @Column(name = "category")
+    val _category: String,
+
+    @Column(name = "price")
+    val _price: Int,
+
+    @Column(name = "waiting_count")
+    val _waitingCount: Long = 0,
 
     @Embedded
-    val productInfo: ProductInfo,
+    private val _productInfo: ProductInfo,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    private val _id: Long? = null
 ) : BaseEntity() {
+
+    val name : String
+        get() = _name
+
+    val brand : String
+        get() = _brand
+
+    val imageUrl : String
+        get() = _imageUrl
+
+    val category : String
+        get() = _category
+
+    val price : Int
+        get() = _price
+
+    val waitingCount : Long
+        get() = _waitingCount
+
+    val id : Long?
+        get() = _id
 
     @Embeddable
     class ProductInfo(
         @Column(nullable = false)
         @Enumerated(EnumType.STRING)
-        val store: Store,
+        private val _store: Store,
 
         @Column(nullable = false)
-        val number: Int,
+        private val _number: Number,
 
         @Column(nullable = false)
-        val option1: String,
+        private val _option1: String,
 
         @Column
-        val option2: String?,
+        private val _option2: String?,
 
         @Column
-        val option3: String?
+        private val _option3: String?
     ) {
+
+        val store: Store
+            get() = _store
+
+        val number: Number
+            get() = _number
+
+        val option1: String
+            get() = _option1
+
+        val option2: String?
+            get() = _option2
+
+        val option3: String?
+            get() = _option3
 
         enum class Store {
 
@@ -66,7 +115,7 @@ class Product(
     }
 
     override fun toString(): String {
-        return "상품명 ='$name' \n상품 이미지 ='$imageUrl'\n상품 정보 =$productInfo\nid =$id"
+        return "상품명 ='$_name' \n상품 이미지 ='$_imageUrl'\n상품 정보 =$_productInfo\nid =$id"
     }
 
 }
