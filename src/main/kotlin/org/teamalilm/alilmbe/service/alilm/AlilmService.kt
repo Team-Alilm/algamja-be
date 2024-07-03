@@ -76,7 +76,7 @@ class AlilmService(
     }
 
     data class AlilmRegistrationCommand(
-        val number: Number,
+        val number: Int,
         val name: String,
         val brand: String,
         val store: Store,
