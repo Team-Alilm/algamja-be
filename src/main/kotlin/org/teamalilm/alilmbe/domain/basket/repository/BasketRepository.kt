@@ -16,23 +16,20 @@ interface BasketRepository : JpaRepository<Basket, Long> {
         """
             SELECT b
             FROM Basket b 
+            join fetch b.product
+            join fetch b.member
             WHERE b.id IN (
                 SELECT MIN(b3.id)
                 FROM Basket b3
                 GROUP BY b3.product.id
             )
-"""
+        """
     )
-    fun findDistinctByProductAndOldestCreationTimeWithCount(pageable: Pageable): Slice<BasketCountProjection>
+    fun findDistinctByProductAndOldestCreationTimeWithCount(pageable: Pageable): Slice<Basket>
 
     fun existsByMemberAndProduct(member: Member, product: Product): Boolean
 
     @Query("SELECT b FROM Basket b WHERE b.member = :member")
     fun findAllByMember(member: Member): List<Basket>
 
-
-    interface BasketCountProjection {
-        fun getBasket(): Basket
-        fun getCount(): Long
-    }
 }
