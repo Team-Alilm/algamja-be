@@ -33,19 +33,22 @@ class AlilmController(
     )
     @PostMapping
     fun registration(
-        @RequestBody @Valid alilmRegistrationRequest: AlilmRegistrationRequest,
+        @RequestBody @Valid alilmRegistrationRequestBody: AlilmRegistrationRequestBody,
         @AuthenticationPrincipal member: Member
     ): ResponseEntity<Unit> {
 
         alilmService.registration(
             AlilmRegistrationCommand(
-                number = alilmRegistrationRequest.number,
-                name = alilmRegistrationRequest.name,
-                store = alilmRegistrationRequest.store,
-                imageUrl = alilmRegistrationRequest.imageUrl,
-                option1 = alilmRegistrationRequest.option1,
-                option2 = alilmRegistrationRequest.option2,
-                option3 = alilmRegistrationRequest.option3,
+                number = alilmRegistrationRequestBody.number,
+                name = alilmRegistrationRequestBody.name,
+                brand = alilmRegistrationRequestBody.brand,
+                store = alilmRegistrationRequestBody.store,
+                imageUrl = alilmRegistrationRequestBody.imageUrl,
+                category = alilmRegistrationRequestBody.category,
+                price = alilmRegistrationRequestBody.price,
+                option1 = alilmRegistrationRequestBody.option1,
+                option2 = alilmRegistrationRequestBody.option2,
+                option3 = alilmRegistrationRequestBody.option3,
                 member,
             )
         )
@@ -55,18 +58,18 @@ class AlilmController(
     }
 
     @Schema(description = "Alilm 등록을 위한 요청 DTO")
-    data class AlilmRegistrationRequest(
-        @NotBlank(message = "상품 번호는 필수에요.")
-        @Schema(description = "각 스토어 별 상품 번호", example = "3859221")
-        val number: Int,
+    data class AlilmRegistrationRequestBody(
+        @NotNull(message = "상품 번호는 필수에요.")
+        @Schema(description = "상품 번호", example = "123456")
+        val number: Number,
 
         @NotBlank(message = "상품 명은 필수에요.")
         @Schema(description = "이름", example = "COOL 롱 슬리브 셔츠 STYLE 3 TIPE")
         val name: String,
 
-        @NotNull(message = "구매하는 스토어는 필수에요.")
-        @Schema(description = "구매하는 스토어", example = "MUSINSA")
-        val store: Store,
+        @NotBlank(message = "브랜드는 필수에요.")
+        @Schema(description = "브랜드", example = "Alilm Brand")
+        val brand: String,
 
         @NotBlank(message = "이미지 링크는 필수에요.")
         @Schema(
@@ -74,6 +77,18 @@ class AlilmController(
             example = "https://image.msscdn.net/images/goods_img/20240208/3859221/3859221_17084100068855_500.jpg"
         )
         val imageUrl: String,
+
+        @NotBlank(message = "상품 카테고리는 필수에요.")
+        @Schema(description = "상품 카테고리", example = "상의")
+        val category: String,
+
+        @NotBlank(message = "상품 가격는 필수에요.")
+        @Schema(description = "상품 가격", example = "31000")
+        val price: Int,
+
+        @NotNull(message = "구매하는 스토어는 필수에요.")
+        @Schema(description = "구매하는 스토어", example = "MUSINSA")
+        val store: Store,
 
         @NotBlank(message = "상품 옵션 1은 필수에요.")
         @Schema(description = "구매 옵션 1", example = "(헤링본)화이트")
