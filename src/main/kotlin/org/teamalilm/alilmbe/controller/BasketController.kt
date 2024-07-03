@@ -86,10 +86,9 @@ class BasketController(
     )
 
     @Operation(
-        summary = "상품 상세 조회 API",
+        summary = "나의 상품 조회 API",
         description = """
             사용자들이 등록한 상품을 상세 조회할 수 있는 기능을 제공해요.
-            상품 id를 입력받아요.
         """
     )
     @GetMapping("/{id}")
@@ -100,7 +99,10 @@ class BasketController(
     data class BasketFindMyBasketResponse(
         val id: Long,
         val name: String,
+        val brand: String,
         val imageUrl: String,
+        val category: String,
+        val price: Int,
         val productInfo: ProductInfo,
         val createdDate: Long,
     )

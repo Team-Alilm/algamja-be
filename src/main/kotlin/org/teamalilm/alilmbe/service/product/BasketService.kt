@@ -44,6 +44,9 @@ class BasketService(
             BasketController.BasketFindMyBasketResponse(
                 id = it.product.id!!,
                 name = it.product.name,
+                brand = it.product.brand,
+                price = it.product.price,
+                category = it.product.category,
                 imageUrl = it.product.imageUrl,
                 productInfo = ProductInfo(
                     store = it.product.productInfo.store,
