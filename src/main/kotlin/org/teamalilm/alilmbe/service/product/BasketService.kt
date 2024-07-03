@@ -20,18 +20,21 @@ class BasketService(
 
         return baskets.map {
             BasketFindAllResponse(
-                id = it.getBasket().product.id!!,
-                name = it.getBasket().product.name,
-                imageUrl = it.getBasket().product.imageUrl,
+                id = it.product.id!!,
+                name = it.product.name,
+                brand = it.product.brand,
+                imageUrl = it.product.imageUrl,
+                waitingCount = it.product.waitingCount,
+                price = it.product.price,
+                category = it.product.category,
                 productInfo = ProductInfo(
-                    store = it.getBasket().product.productInfo.store,
-                    number = it.getBasket().product.productInfo.number,
-                    option1 = it.getBasket().product.productInfo.option1,
-                    option2 = it.getBasket().product.productInfo.option2,
-                    option3 = it.getBasket().product.productInfo.option3
+                    store = it.product.productInfo.store,
+                    number = it.product.productInfo.number,
+                    option1 = it.product.productInfo.option1,
+                    option2 = it.product.productInfo.option2,
+                    option3 = it.product.productInfo.option3
                 ),
-                createdDate = it.getBasket().createdDate,
-                count = it.getCount()
+                createdDate = it.product.createdDate
             )
         }
     }

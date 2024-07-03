@@ -37,7 +37,7 @@ class Product(
     val price: Int,
 
     @Column(name = "waiting_count")
-    var waitingCount: Long = 0,
+    var waitingCount: Int = 0,
 
     @Embedded
     val productInfo: ProductInfo,

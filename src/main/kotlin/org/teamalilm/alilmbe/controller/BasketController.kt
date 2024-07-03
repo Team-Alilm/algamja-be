@@ -74,10 +74,13 @@ class BasketController(
     )
 
     data class BasketFindAllResponse(
-        val count: Long,
         val id: Long,
         val name: String,
+        val brand: String,
         val imageUrl: String,
+        val category: String,
+        val price: Int,
+        val waitingCount: Int,
         val productInfo: ProductInfo,
         val createdDate: Long
     )
