@@ -8,12 +8,10 @@ import org.teamalilm.alilmbe.controller.BasketController.BasketFindAllResponse
 import org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
 import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
-import org.teamalilm.alilmbe.domain.product.repository.ProductRepository
 
 @Service
 class BasketService(
     private val basketRepository: BasketRepository,
-    private val productRepository: ProductRepository
 ) {
 
     fun findAll(basketFindAllCommand: BasketFindAllCommand): Slice<BasketFindAllResponse> {

@@ -23,35 +23,42 @@ class AlilmService(
         alilmRegistrationCommand: AlilmRegistrationCommand
     ) {
         val productInfo = ProductInfo(
-            _store = alilmRegistrationCommand.store,
-            _number = alilmRegistrationCommand.number,
-            _option1 = alilmRegistrationCommand.option1,
-            _option2 = alilmRegistrationCommand.option2,
-            _option3 = alilmRegistrationCommand.option3
+            store = alilmRegistrationCommand.store,
+            number = alilmRegistrationCommand.number,
+            option1 = alilmRegistrationCommand.option1,
+            option2 = alilmRegistrationCommand.option2,
+            option3 = alilmRegistrationCommand.option3
         )
 
         val product = productRepository.findByProductInfo(productInfo)
             ?: productRepository.save(
                 Product(
-                    _name = alilmRegistrationCommand.name,
-                    _brand = alilmRegistrationCommand.brand,
-                    _imageUrl = alilmRegistrationCommand.imageUrl,
-                    _category = alilmRegistrationCommand.category,
-                    _price = alilmRegistrationCommand.price,
-                    _productInfo = productInfo
+                    name = alilmRegistrationCommand.name,
+                    brand = alilmRegistrationCommand.brand,
+                    imageUrl = alilmRegistrationCommand.imageUrl,
+                    category = alilmRegistrationCommand.category,
+                    price = alilmRegistrationCommand.price,
+                    productInfo = productInfo
                 )
             )
 
+        // 상품을 등록한 회원이 바구니에 상품을 담았는지 확인
+        // Update 문은 위험하다. 1차 캐쉬 문제등 고려할 사항이 많아진다.
         basketRepository.findByProductIdAndMemberId(
             product.id!!,
             alilmRegistrationCommand.member.id
         )
-            ?: basketRepository.save(
-                Basket(
-                    member = alilmRegistrationCommand.member,
-                    product = product
-                )
-            )
+            ?: {
+                    // 상품을 기다리는 사람 수를 카운팅 합니다.
+                    product.waitingCount++
+
+                    basketRepository.save(
+                        Basket(
+                            member = alilmRegistrationCommand.member,
+                            product = product
+                        )
+                    )
+                }
 
         slackService.sendSlackMessage(
             """
