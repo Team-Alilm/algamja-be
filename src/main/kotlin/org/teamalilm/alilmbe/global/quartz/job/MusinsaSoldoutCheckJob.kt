@@ -31,7 +31,7 @@ class MusinsaSoldoutCheckJob(
         val passList = ArrayList<Long>()
 
         baskets.forEach {
-            if (passList.contains(it.product.id)) {
+            if (passList.contains(it.product.id!!)) {
                 return@forEach
             }
 
@@ -60,7 +60,7 @@ class MusinsaSoldoutCheckJob(
             if (!isSoldOut) {
                 passList.add(it.product.id!!)
 
-                basketRepository.findAllByProductId(it.product.id).forEach {
+                basketRepository.findAllByProductId(it.product.id!!).forEach {
                     emailService.sendMail(getEmailMessage(it), it.member.email)
                     slackService.sendSlackMessage(getSlackMessage(it))
                     basketRepository.delete(it)
