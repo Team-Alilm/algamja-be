@@ -12,6 +12,7 @@ class ProductCrawlingServiceTest {
     @Test
     fun crawling() {
         // given
+        // https://www.musinsa.com/app/goods/3262292
         val command = ProductCrawlingService.ProductCrawlingCommand(
             url = "https%3A%2F%2Fwww.musinsa.com%2Fapp%2Fgoods%2F3262292"
         )

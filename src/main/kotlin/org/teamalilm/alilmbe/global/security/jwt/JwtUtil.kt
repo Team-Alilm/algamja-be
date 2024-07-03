@@ -15,9 +15,6 @@ import org.springframework.stereotype.Component
 class JwtUtil(
     @Value("\${spring.jwt.secretKey}")
     private val secret: String,
-
-    @Value("\${spring.jwt.expirationTime}")
-    private val expireTime: Long
 ) {
 
     private val secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))
@@ -35,7 +32,10 @@ class JwtUtil(
             log.info("Invalid JWT signature-SecurityException, 유효하지 않는 JWT 서명 입니다. token : $token");
             false
         } catch (e: ExpiredJwtException) {
+            log.info(e.message)
             log.info("Expired JWT token, 만료된 JWT token 입니다. token : $token");
+            log.info("Exp Time : ${ Jwts.parser().verifyWith(secretKey).build()
+                .parseSignedClaims(token).payload.expiration}")
             false
         } catch (e: UnsupportedJwtException) {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다. token : $token");
@@ -53,11 +53,13 @@ class JwtUtil(
     }
 
     fun createJwt(memberId: Long, expireMs: Long): String {
+        val now = System.currentTimeMillis()
+        log.info("now : $now")
 
         return "Bearer " + Jwts.builder()
             .claim(MEMBER_ID_KEY, memberId)
-            .issuedAt(Date(System.currentTimeMillis()))
-            .expiration(Date(System.currentTimeMillis() + expireTime))
+            .issuedAt(Date(now))
+            .expiration(Date(now - expireMs))
             .signWith(secretKey)
             .compact()
     }
