@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PostMapping
@@ -50,6 +51,7 @@ class AlilmController(
         )
 
         return ResponseEntity.ok().build()
+
     }
 
     @Schema(description = "Alilm 등록을 위한 요청 DTO")
@@ -62,7 +64,7 @@ class AlilmController(
         @Schema(description = "이름", example = "COOL 롱 슬리브 셔츠 STYLE 3 TIPE")
         val name: String,
 
-        @NotBlank(message = "구매하는 스토어는 필수에요.")
+        @NotNull(message = "구매하는 스토어는 필수에요.")
         @Schema(description = "구매하는 스토어", example = "MUSINSA")
         val store: Store,
 
