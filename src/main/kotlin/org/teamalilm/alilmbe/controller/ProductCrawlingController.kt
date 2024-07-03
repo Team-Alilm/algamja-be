@@ -54,9 +54,9 @@ class ProductCrawlingController(
             category = result.category,
             price = result.price,
             store = result.store,
-            option1 = result.option1,
-            option2 = result.option2,
-            option3 = result.option3
+            option1 = result.option1List,
+            option2 = result.option2List,
+            option3 = result.option3List
         )
 
         return ResponseEntity.ok(response)

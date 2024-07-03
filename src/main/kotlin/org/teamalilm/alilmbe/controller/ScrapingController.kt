@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo.*
 import org.teamalilm.alilmbe.service.crawling.ProductCrawlingService
 
 @Tag(name = "scraping", description = "Scraping APIs")
@@ -41,12 +42,17 @@ class ScrapingController(
 
         val response = ScrapingResponse(
             name = result.name,
-
-            )
-
-        return ResponseEntity.ok(
-            null
+            brand = result.brand,
+            imageUrl = result.imageUrl,
+            category = result.category,
+            price = result.price,
+            store = result.store,
+            option1s = result.option1List,
+            option2s = result.option2List,
+            option3s = result.option3List
         )
+
+        return ResponseEntity.ok(response)
     }
 
     @Schema(description = "Scraping 요청")
@@ -58,7 +64,15 @@ class ScrapingController(
 
     @Schema(description = "Alilm 등록을 위한 요청 DTO")
     data class ScrapingResponse(
-        private val name: String
+        private val name: String,
+        private val brand: String,
+        private val imageUrl: String,
+        private val category: String,
+        private val price: Int,
+        private val store: Store,
+        private val option1s: List<String>,
+        private val option2s: List<String>,
+        private val option3s: List<String>
     )
 
 }
