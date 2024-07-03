@@ -58,9 +58,9 @@ class MusinsaSoldoutCheckJob(
                     ?: throw IllegalStateException("상품 옵션1을 찾지 못했어요. 상품번호: ${it.product.productInfo.number} 옵션1: ${it.product.productInfo.option2}")
 
             if (!isSoldOut) {
-                passList.add(it.product.id!!)
+                passList.add(it.product.id)
 
-                basketRepository.findAllByProductId(it.product.id!!).forEach {
+                basketRepository.findAllByProductId(it.product.id).forEach {
                     emailService.sendMail(getEmailMessage(it), it.member.email)
                     slackService.sendSlackMessage(getSlackMessage(it))
                     basketRepository.delete(it)
