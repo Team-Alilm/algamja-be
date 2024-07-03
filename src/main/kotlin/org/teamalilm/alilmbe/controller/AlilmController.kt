@@ -61,7 +61,7 @@ class AlilmController(
     data class AlilmRegistrationRequestBody(
         @NotNull(message = "상품 번호는 필수에요.")
         @Schema(description = "상품 번호", example = "123456")
-        val number: Number,
+        val number: Int,
 
         @NotBlank(message = "상품 명은 필수에요.")
         @Schema(description = "이름", example = "COOL 롱 슬리브 셔츠 STYLE 3 TIPE")

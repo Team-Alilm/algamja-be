@@ -54,7 +54,7 @@ class Product(
         val store: Store,
 
         @Column(name = "number", nullable = false)
-        val number: Number,
+        val number: Int,
 
         @Column(name = "option1", nullable = false)
         val option1: String,
