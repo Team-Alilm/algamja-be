@@ -59,7 +59,7 @@ class JwtUtil(
         return "Bearer " + Jwts.builder()
             .claim(MEMBER_ID_KEY, memberId)
             .issuedAt(Date(now))
-            .expiration(Date(now - expireMs))
+            .expiration(Date(now + expireMs))
             .signWith(secretKey)
             .compact()
     }

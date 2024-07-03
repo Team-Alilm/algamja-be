@@ -2,6 +2,7 @@ package org.teamalilm.alilmbe.global.security.service.oAuth2.handler
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
@@ -25,6 +26,8 @@ class CustomSuccessHandler(
     private val slackService: SlackService
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     @Transactional
     override fun onAuthenticationSuccess(
         request: HttpServletRequest?,
@@ -45,6 +48,8 @@ class CustomSuccessHandler(
             }
 
             val memberId = memberRepository.save(newMember).id ?: throw IllegalStateException("")
+            val jwt = jwtUtil.createJwt(memberId, 1000 * 60 * 60)
+            log.info("jwt: $jwt")
 
             val redirectUri = UriComponentsBuilder.fromOriginHeader(BASE_URL)
                 .path("/oauth/kakao")
