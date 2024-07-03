@@ -91,7 +91,7 @@ class BasketController(
             사용자들이 등록한 상품을 상세 조회할 수 있는 기능을 제공해요.
         """
     )
-    @GetMapping("/{id}")
+    @GetMapping("/my")
     fun findMyBasket(@AuthenticationPrincipal member: Member): ResponseEntity<List<BasketFindMyBasketResponse>> {
         return ResponseEntity.ok(basketService.findMyBasket(BasketFindBasketCommand(member)))
     }
