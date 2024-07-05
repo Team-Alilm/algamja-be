@@ -1,5 +1,5 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-dev-task-family-ec2:1",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-dev-task-family-ec2:4",
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
@@ -15,16 +15,15 @@
                 }
             ],
             "essential": true,
-            "environment": [
-                {
-                    "name": "JASYPT_ALGORITHM",
-                    "value": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_ALGORITHM::"
-                }
-            ],
+            "environment": [],
             "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
             "secrets": [
+                {
+                    "name": "JASYPT_ALGORITHM",
+                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_ALGORITHM::"
+                },
                 {
                     "name": "JASYPT_PASSWORD",
                     "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_PASSWORD::"
@@ -47,7 +46,7 @@
     "family": "alilm-dev-task-family-ec2",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 1,
+    "revision": 4,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -87,13 +86,13 @@
     "requiresCompatibilities": [
         "EC2"
     ],
-    "cpu": "1024",
+    "cpu": "512",
     "memory": "3072",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-07-04T00:49:59.684Z",
+    "registeredAt": "2024-07-05T00:30:35.301Z",
     "registeredBy": "arn:aws:iam::891377281535:root",
     "tags": []
 }
