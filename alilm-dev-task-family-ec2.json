@@ -1,5 +1,5 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-dev-task-family-ec2:7",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-dev-task-family-ec2:10",
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
@@ -43,8 +43,8 @@
     ],
     "family": "alilm-dev-task-family-ec2",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
-    "networkMode": "awsvpc",
-    "revision": 7,
+    "networkMode": "bridge",
+    "revision": 10,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -67,12 +67,6 @@
             "name": "ecs.capability.execution-role-ecr-pull"
         },
         {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-        },
-        {
-            "name": "ecs.capability.task-eni"
-        },
-        {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
         }
     ],
@@ -89,7 +83,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-07-05T00:45:48.576Z",
+    "registeredAt": "2024-07-05T01:06:34.317Z",
     "registeredBy": "arn:aws:iam::891377281535:root",
     "tags": []
 }
