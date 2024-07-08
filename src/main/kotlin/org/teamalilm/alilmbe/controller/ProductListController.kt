@@ -93,7 +93,7 @@ class ProductListController(
         val category: String,
         val price: Int,
         val productInfo: ProductInfo,
-        val waitingCount: Int,
+        val waitingCount: Long,
         val oldestCreationTime: Long
     )
 
