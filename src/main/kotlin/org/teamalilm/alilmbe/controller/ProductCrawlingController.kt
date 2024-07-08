@@ -16,7 +16,7 @@ import org.teamalilm.alilmbe.domain.product.entity.Product
 import org.teamalilm.alilmbe.service.crawling.ProductCrawlingService
 
 @RestController
-@RequestMapping("/api/v1/product-crawling")
+@RequestMapping("/api/v1/products")
 @Tag(name = "product-crawling", description = "상품 크롤링 API")
 class ProductCrawlingController(
     private val productCrawlingService: ProductCrawlingService
@@ -29,7 +29,7 @@ class ProductCrawlingController(
             상품 크롤링을 실행하는 API 이며, 크롤링된 상품은 DB에 저장되어요.
         """
     )
-    @GetMapping
+    @GetMapping("/scraping")
     fun crawling(
         @ParameterObject
         @Valid
