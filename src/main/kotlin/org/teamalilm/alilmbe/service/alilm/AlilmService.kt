@@ -1,6 +1,5 @@
 package org.teamalilm.alilmbe.service.alilm
 
-import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.domain.basket.entity.Basket
@@ -23,24 +22,24 @@ class AlilmService(
 
     @Transactional
     fun registration(
-        alilmRegistrationCommand: AlilmRegistrationCommand
+        command: AlilmRegistrationCommand
     ) {
         val productInfo = ProductInfo(
-            store = alilmRegistrationCommand.store,
-            number = alilmRegistrationCommand.number,
-            option1 = alilmRegistrationCommand.option1,
-            option2 = alilmRegistrationCommand.option2,
-            option3 = alilmRegistrationCommand.option3
+            store = command.store,
+            number = command.number,
+            option1 = command.option1,
+            option2 = command.option2,
+            option3 = command.option3
         )
 
         val product = productRepository.findByProductInfo(productInfo)
             ?: productRepository.save(
                 Product(
-                    name = alilmRegistrationCommand.name,
-                    brand = alilmRegistrationCommand.brand,
-                    imageUrl = alilmRegistrationCommand.imageUrl,
-                    category = alilmRegistrationCommand.category,
-                    price = alilmRegistrationCommand.price,
+                    name = command.name,
+                    brand = command.brand,
+                    imageUrl = command.imageUrl,
+                    category = command.category,
+                    price = command.price,
                     productInfo = productInfo
                 )
             )
@@ -49,7 +48,7 @@ class AlilmService(
 
         if (
             basketRepository.existsByMemberAndProduct(
-                member =alilmRegistrationCommand.member,
+                member =command.member,
                 product = product
             )
         ) {
@@ -59,7 +58,7 @@ class AlilmService(
 
             basketRepository.save(
                 Basket(
-                    member = alilmRegistrationCommand.member,
+                    member = command.member,
                     product = product
                 )
             )
@@ -67,8 +66,8 @@ class AlilmService(
 
         slackService.sendSlackMessage(
             """
-                id: ${alilmRegistrationCommand.member.id}
-                nickname : ${alilmRegistrationCommand.member.nickname} 님이 상품을 등록했어요. 
+                id: ${command.member.id}
+                nickname : ${command.member.nickname} 님이 상품을 등록했어요. 
                 상품 : $product
                 """.trimIndent()
         )
