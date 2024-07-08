@@ -42,10 +42,10 @@ class ProductListService(
         val name: String,
         val brand: String,
         val imageUrl: String,
-        val waitingCount: Int,
         val price: Int,
         val category: String,
         val productInfo: ProductInfo,
+        val waitingCount: Long,
         val oldestCreationTime: Long
     )
 

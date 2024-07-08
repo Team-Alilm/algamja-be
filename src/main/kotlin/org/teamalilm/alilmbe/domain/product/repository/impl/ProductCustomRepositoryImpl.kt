@@ -1,6 +1,7 @@
 package org.teamalilm.alilmbe.domain.product.repository.impl
 
 import com.querydsl.core.types.Projections
+import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
@@ -18,24 +19,22 @@ class ProductCustomRepositoryImpl(
     override fun productList(query: ProductListQuery): Slice<ProductListProjection> {
         val content = jpaQueryFactory
             .select(
-                Projections.constructor(
+                Projections.fields(
                     ProductListProjection::class.java,
-                    product.id!!,
+                    product.id,
                     product.name,
                     product.brand,
                     product.imageUrl,
                     product.price,
                     product.category,
                     product.productInfo,
-                    basket.member.id.count().`as`("waitingCount"),
-                    basket.createdDate.min().`as`("oldestCreationTime"),
+                    basket.member.count().`as`("waitingCount"),
+                    basket.createdDate.min().`as`("oldestCreationTime")
                 )
             )
             .from(basket)
-            .innerJoin(basket.product, product).fetchJoin()
-            .on(product.id.eq(basket.product.id))
-            .innerJoin(basket.member, member).fetchJoin()
-            .on(member.id.eq(basket.member.id))
+            .leftJoin(basket.product, product)
+            .leftJoin(basket.member, member)
             .groupBy(basket.product.id)
             .orderBy(basket.member.id.count().desc(), product.name.asc())
             .offset(query.pageRequest.offset)
@@ -67,7 +66,7 @@ class ProductCustomRepositoryImpl(
         val price: Int,
         val category: String,
         val productInfo: Product.ProductInfo,
-        val waitingCount: Int,
+        val waitingCount: Long,
         val oldestCreationTime: Long,
     )
 }
