@@ -1,22 +1,21 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family-ec2:6",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family-ec2:9",
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
-            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:latest",
+            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:64f15f3d417872d86af6cf2c858608e88ad7445c",
             "cpu": 0,
             "portMappings": [
                 {
                     "name": "alilm-dev-container-8080-tcp",
                     "containerPort": 8080,
-                    "hostPort": 0,
+                    "hostPort": 8080,
                     "protocol": "tcp",
                     "appProtocol": "http"
                 }
             ],
             "essential": true,
             "environment": [],
-            "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
             "secrets": [
@@ -29,7 +28,6 @@
                     "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:891377281535:secret:alilm-dev/secret-wWBZa2:JASYPT_PASSWORD::"
                 }
             ],
-            "ulimits": [],
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
@@ -46,7 +44,7 @@
     "family": "alilm-task-dev-family-ec2",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "networkMode": "bridge",
-    "revision": 6,
+    "revision": 9,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -69,9 +67,6 @@
             "name": "ecs.capability.execution-role-ecr-pull"
         },
         {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-        },
-        {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
         }
     ],
@@ -88,7 +83,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-07-07T23:20:56.712Z",
+    "registeredAt": "2024-07-08T00:06:58.359Z",
     "registeredBy": "arn:aws:iam::891377281535:root",
     "tags": []
 }
