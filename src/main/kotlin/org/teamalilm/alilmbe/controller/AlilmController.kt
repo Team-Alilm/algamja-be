@@ -36,22 +36,21 @@ class AlilmController(
         @RequestBody @Valid alilmRegistrationRequestBody: AlilmRegistrationRequestBody,
         @AuthenticationPrincipal member: Member
     ): ResponseEntity<Unit> {
-
-        alilmService.registration(
-            AlilmRegistrationCommand(
-                number = alilmRegistrationRequestBody.number,
-                name = alilmRegistrationRequestBody.name,
-                brand = alilmRegistrationRequestBody.brand,
-                store = alilmRegistrationRequestBody.store,
-                imageUrl = alilmRegistrationRequestBody.imageUrl,
-                category = alilmRegistrationRequestBody.category,
-                price = alilmRegistrationRequestBody.price,
-                option1 = alilmRegistrationRequestBody.option1,
-                option2 = alilmRegistrationRequestBody.option2,
-                option3 = alilmRegistrationRequestBody.option3,
-                member,
-            )
+        val command = AlilmRegistrationCommand(
+            number = alilmRegistrationRequestBody.number,
+            name = alilmRegistrationRequestBody.name,
+            brand = alilmRegistrationRequestBody.brand,
+            store = alilmRegistrationRequestBody.store,
+            imageUrl = alilmRegistrationRequestBody.imageUrl,
+            category = alilmRegistrationRequestBody.category,
+            price = alilmRegistrationRequestBody.price,
+            option1 = alilmRegistrationRequestBody.option1,
+            option2 = alilmRegistrationRequestBody.option2,
+            option3 = alilmRegistrationRequestBody.option3,
+            member,
         )
+
+        alilmService.registration(command)
 
         return ResponseEntity.ok().build()
 
