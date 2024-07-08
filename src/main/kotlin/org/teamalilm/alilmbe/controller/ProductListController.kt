@@ -11,21 +11,18 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.domain.member.entity.Member
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
-import org.teamalilm.alilmbe.service.product.BasketService
-import org.teamalilm.alilmbe.service.product.BasketService.BasketFindAllCommand
-import org.teamalilm.alilmbe.service.product.BasketService.BasketFindBasketCommand
+import org.teamalilm.alilmbe.service.product.ProductListService
+import org.teamalilm.alilmbe.service.product.ProductListService.BasketFindAllCommand
 
 @RestController
-@RequestMapping("/api/v1/baskets")
-@Tag(name = "baskets", description = "상품 전체 조회 api")
-class BasketController(
-    private val basketService: BasketService
+@RequestMapping("/api/v1/products")
+@Tag(name = "products", description = "상품 전체 조회 api")
+class ProductListController(
+    private val productListService: ProductListService
 ) {
 
     @Operation(
@@ -42,26 +39,41 @@ class BasketController(
     """
     )
     @GetMapping
-    fun findAll(
+    fun productList(
         @ParameterObject
         @Valid
-        basketFindAllParameter: BasketFindAllParameter
-    ): ResponseEntity<Slice<BasketFindAllResponse>> {
+        productListParameter: ProductListParameter
+
+    ): ResponseEntity<Slice<ProductListResponse>> {
         val pageRequest = PageRequest.of(
-            basketFindAllParameter.page,
-            basketFindAllParameter.size,
+            productListParameter.page,
+            productListParameter.size,
             Sort.by(Sort.Direction.DESC, "id")
         )
 
-        return ResponseEntity.ok(
-            basketService.findAll(
-                BasketFindAllCommand(pageRequest)
+        val command = BasketFindAllCommand(pageRequest)
+
+        val result = productListService.listProduct(command)
+
+        val response = result.map {
+            ProductListResponse(
+                id = it.id,
+                name = it.name,
+                brand = it.brand,
+                imageUrl = it.imageUrl,
+                price = it.price,
+                category = it.category,
+                productInfo = it.productInfo,
+                waitingCount = it.waitingCount,
+                oldestCreationTime = it.oldestCreationTime
             )
-        )
+        }
+
+        return ResponseEntity.ok(response)
     }
 
     @Schema(description = "상품 조회 파라미터")
-    data class BasketFindAllParameter(
+    data class ProductListParameter(
         @NotBlank(message = "사이즈는 필수에요.")
         @Min(value = 1, message = "사이즈는 1 이상이어야 합니다.")
         @Schema(description = "페이지 사이즈", defaultValue = "10")
@@ -73,37 +85,16 @@ class BasketController(
         val page: Int
     )
 
-    data class BasketFindAllResponse(
+    data class ProductListResponse(
         val id: Long,
         val name: String,
         val brand: String,
         val imageUrl: String,
         val category: String,
         val price: Int,
+        val productInfo: ProductInfo,
         val waitingCount: Int,
-        val productInfo: ProductInfo,
-        val createdDate: Long
+        val oldestCreationTime: Long
     )
 
-    @Operation(
-        summary = "나의 상품 조회 API",
-        description = """
-            사용자들이 등록한 상품을 상세 조회할 수 있는 기능을 제공해요.
-        """
-    )
-    @GetMapping("/my")
-    fun findMyBasket(@AuthenticationPrincipal member: Member): ResponseEntity<List<BasketFindMyBasketResponse>> {
-        return ResponseEntity.ok(basketService.findMyBasket(BasketFindBasketCommand(member)))
-    }
-
-    data class BasketFindMyBasketResponse(
-        val id: Long,
-        val name: String,
-        val brand: String,
-        val imageUrl: String,
-        val category: String,
-        val price: Int,
-        val productInfo: ProductInfo,
-        val createdDate: Long,
-    )
 }

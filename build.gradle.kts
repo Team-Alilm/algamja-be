@@ -6,6 +6,7 @@ plugins {
     id("io.spring.dependency-management")
     kotlin("plugin.spring")
     kotlin("plugin.jpa")
+    kotlin("kapt") version "1.9.21"
 }
 
 val projectGroup: String by project
@@ -69,6 +70,12 @@ dependencies {
     implementation("ca.pjer:logback-awslogs-appender:1.6.0")
 
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+
+    // querydsl
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    kapt("jakarta.annotation:jakarta.annotation-api")
+    kapt("jakarta.persistence:jakarta.persistence-api")
 }
 
 configurations {
@@ -92,4 +99,28 @@ tasks.jar {
     enabled = false
     archiveBaseName.set("alilm-be")
     archiveVersion.set("0.0.1")
+}
+
+// Querydsl 설정부 추가 - start
+val generated = file("src/main/generated")
+
+tasks.withType<JavaCompile> {
+    options.generatedSourceOutputDirectory.set(generated)
+}
+
+sourceSets {
+    main {
+        kotlin.srcDirs += generated
+    }
+}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+tasks.named("clean") {
+    doLast {
+        generated.deleteRecursively()
+    }
+}
+
+kapt {
+    generateStubs = true
 }
