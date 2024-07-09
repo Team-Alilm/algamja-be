@@ -21,9 +21,7 @@ class AlilmService(
     private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
     @Transactional
-    fun registration(
-        command: AlilmRegistrationCommand
-    ) {
+    fun registerProduct(command: AlilmRegistrationCommand) {
         val productInfo = ProductInfo(
             store = command.store,
             number = command.number,
@@ -32,7 +30,20 @@ class AlilmService(
             option3 = command.option3
         )
 
-        val product = productRepository.findByProductInfo(productInfo)
+        val product = findOrCreateProduct(command, productInfo)
+
+        if (basketRepository.existsByMemberAndProduct(command.member, product)) {
+            log.info("Product already registered: ${product.name}")
+        } else {
+            log.info("Registering product: ${product.name}")
+            basketRepository.save(Basket(member = command.member, product = product))
+        }
+
+        notifySlack(command.member, product)
+    }
+
+    private fun findOrCreateProduct(command: AlilmRegistrationCommand, productInfo: ProductInfo): Product {
+        return productRepository.findByProductInfo(productInfo)
             ?: productRepository.save(
                 Product(
                     name = command.name,
@@ -42,36 +53,17 @@ class AlilmService(
                     price = command.price,
                     productInfo = productInfo
                 )
-            )
+            ).also { log.info("Created new product: $it") }
+    }
 
-        log.info("$product")
-
-        if (
-            basketRepository.existsByMemberAndProduct(
-                member =command.member,
-                product = product
-            )
-        ) {
-            log.info("이미 등록된 상품입니다.")
-        } else {
-            log.info("상품을 등록합니다.")
-
-            basketRepository.save(
-                Basket(
-                    member = command.member,
-                    product = product
-                )
-            )
-        }
-
+    private fun notifySlack(member: Member, product: Product) {
         slackService.sendSlackMessage(
             """
-                id: ${command.member.id}
-                nickname : ${command.member.nickname} 님이 상품을 등록했어요. 
-                상품 : $product
-                """.trimIndent()
+            id: ${member.id}
+            nickname: ${member.nickname} has registered a new product.
+            Product: $product
+            """.trimIndent()
         )
-
     }
 
     data class AlilmRegistrationCommand(
@@ -87,6 +79,4 @@ class AlilmService(
         val option3: String?,
         val member: Member
     )
-
 }
-

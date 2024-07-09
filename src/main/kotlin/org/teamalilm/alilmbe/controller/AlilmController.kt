@@ -50,7 +50,7 @@ class AlilmController(
             member,
         )
 
-        alilmService.registration(command)
+        alilmService.registerProduct(command)
 
         return ResponseEntity.ok().build()
 
