@@ -1,7 +1,6 @@
 package org.teamalilm.alilmbe.domain.product.repository.impl
 
 import com.querydsl.core.types.Projections
-import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
@@ -19,7 +18,7 @@ class ProductCustomRepositoryImpl(
     override fun productList(query: ProductListQuery): Slice<ProductListProjection> {
         val content = jpaQueryFactory
             .select(
-                Projections.fields(
+                Projections.constructor(
                     ProductListProjection::class.java,
                     product.id,
                     product.name,
