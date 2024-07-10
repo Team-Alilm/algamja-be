@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.controller
+package org.teamalilm.alilmbe.adapter.`in`.web.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema

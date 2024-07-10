@@ -2,8 +2,9 @@ package org.teamalilm.alilmbe.service.alilm
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.teamalilm.alilmbe.domain.basket.entity.Basket
-import org.teamalilm.alilmbe.domain.member.entity.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.basket.Basket
+import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.jpa.repository.BasketRepository
 import org.teamalilm.alilmbe.domain.product.entity.Product
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo.Store
@@ -15,7 +16,7 @@ import org.teamalilm.alilmbe.global.slack.service.SlackService
 class AlilmService(
     private val productRepository: ProductRepository,
     private val slackService: SlackService,
-    private val basketRepository: org.teamalilm.alilmbe.domain.basket.repository.BasketRepository
+    private val basketRepository: BasketRepository
 ) {
 
     private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)

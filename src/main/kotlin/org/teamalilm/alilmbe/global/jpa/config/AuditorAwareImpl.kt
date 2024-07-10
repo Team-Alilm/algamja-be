@@ -3,7 +3,7 @@ package org.teamalilm.alilmbe.global.jpa.config
 import org.springframework.data.domain.AuditorAware
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.core.user.OAuth2User
-import org.teamalilm.alilmbe.domain.member.entity.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Member
 import java.util.*
 
 class AuditorAwareImpl : AuditorAware<String> {

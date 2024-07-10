@@ -1,7 +1,7 @@
 package org.teamalilm.alilmbe.global.security.service.oAuth2.data
 
-import org.teamalilm.alilmbe.domain.member.entity.Member
-import org.teamalilm.alilmbe.domain.member.entity.Role
+import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Role
 
 
 class OAuth2Attribute(

@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.controller
+package org.teamalilm.alilmbe.adapter.`in`.web.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -7,7 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.domain.member.entity.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Member
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
 import org.teamalilm.alilmbe.service.basket.BasketMyService
 import org.teamalilm.alilmbe.service.basket.BasketMyService.*

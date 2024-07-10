@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.domain.member.entity
+package org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member
 
 enum class Role(
     val key: String

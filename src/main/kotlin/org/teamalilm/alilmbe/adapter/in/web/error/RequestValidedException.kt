@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.controller.error
+package org.teamalilm.alilmbe.web.adapter.error
 
 import org.springframework.validation.BindingResult
 
