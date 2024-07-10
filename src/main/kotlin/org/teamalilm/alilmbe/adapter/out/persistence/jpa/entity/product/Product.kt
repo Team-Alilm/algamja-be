@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.domain.product.entity
+package org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.product
 
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
@@ -36,46 +36,13 @@ class Product(
     @Column(name = "price")
     val price: Int,
 
+    @Column(name = "waiting_count")
+    var waitingCount: Int = 0,
+
     @Embedded
     val productInfo: ProductInfo,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-) : BaseEntity() {
-
-    @Embeddable
-    class ProductInfo(
-        @Column(name = "store", nullable = false)
-        @Enumerated(EnumType.STRING)
-        val store: Store,
-
-        @Column(name = "number", nullable = false)
-        val number: Int,
-
-        @Column(name = "option1", nullable = false)
-        val option1: String,
-
-        @Column(name = "option2")
-        val option2: String?,
-
-        @Column(name = "option3")
-        val option3: String?
-    ) {
-
-        enum class Store {
-
-            MUSINSA, ZIGZAG, OLIVEYOUNG
-
-        }
-
-        override fun toString(): String {
-            return "\n상품번호=$number\n옵션1='$option1'\n옵션2='$option2'\n옵션3='$option3'"
-        }
-    }
-
-    override fun toString(): String {
-        return "상품명 ='$name' \n상품 이미지 ='$imageUrl'\n상품 정보 =$productInfo\nid =$id"
-    }
-
-}
+) : BaseEntity()

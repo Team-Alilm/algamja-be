@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.teamalilm.alilmbe.domain.member.entity.Role
+import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Role
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.OAuth2Attribute
 
 @Component

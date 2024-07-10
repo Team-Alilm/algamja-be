@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.controller
+package org.teamalilm.alilmbe.adapter.`in`.web.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
@@ -11,9 +11,9 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.controller.error.RequestValidateException
 import org.teamalilm.alilmbe.domain.product.entity.Product
 import org.teamalilm.alilmbe.service.crawling.ProductCrawlingService
+import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
 
 @RestController
 @RequestMapping("/api/v1/products")
