@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.product
+package org.teamalilm.alilmbe.adapter.out.persistence.entity.product
 
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable

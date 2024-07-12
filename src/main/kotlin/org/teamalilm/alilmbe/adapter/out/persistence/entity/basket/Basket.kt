@@ -1,8 +1,8 @@
-package org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.basket
+package org.teamalilm.alilmbe.adapter.out.persistence.entity.basket
 
 import jakarta.persistence.*
-import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Member
-import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.product.Product
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Product
 import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
 @Entity

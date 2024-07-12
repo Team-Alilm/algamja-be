@@ -1,11 +1,8 @@
-package org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.product
+package org.teamalilm.alilmbe.adapter.out.persistence.entity.product
 
 import jakarta.persistence.Column
-import jakarta.persistence.Embeddable
 import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id

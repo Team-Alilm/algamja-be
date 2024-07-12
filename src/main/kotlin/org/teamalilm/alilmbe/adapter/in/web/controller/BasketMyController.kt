@@ -7,8 +7,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Member
-import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductInfo
 import org.teamalilm.alilmbe.service.basket.BasketMyService
 import org.teamalilm.alilmbe.service.basket.BasketMyService.*
 
