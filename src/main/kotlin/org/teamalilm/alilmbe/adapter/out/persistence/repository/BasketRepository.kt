@@ -1,10 +1,10 @@
-package org.teamalilm.alilmbe.adapter.out.persistence.jpa.repository
+package org.teamalilm.alilmbe.adapter.out.persistence.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.basket.Basket
-import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Member
-import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.product.Product
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.basket.Basket
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Product
 
 interface BasketRepository : JpaRepository<Basket, Long> {
 

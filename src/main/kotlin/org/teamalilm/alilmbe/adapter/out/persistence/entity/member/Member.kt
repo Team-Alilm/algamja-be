@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member
+package org.teamalilm.alilmbe.adapter.out.persistence.entity.member
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

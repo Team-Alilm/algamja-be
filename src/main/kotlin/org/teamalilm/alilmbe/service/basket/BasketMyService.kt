@@ -3,8 +3,8 @@ package org.teamalilm.alilmbe.service.basket
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.adapter.`in`.web.controller.BasketMyController
-import org.teamalilm.alilmbe.adapter.out.persistence.jpa.repository.BasketRepository
-import org.teamalilm.alilmbe.adapter.out.persistence.jpa.entity.member.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.BasketRepository
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
 import org.teamalilm.alilmbe.domain.product.entity.Product.*
 
 @Service
