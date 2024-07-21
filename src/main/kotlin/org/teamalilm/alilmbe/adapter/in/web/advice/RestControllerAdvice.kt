@@ -15,9 +15,11 @@ class RestControllerAdvice {
     fun handleRequestValidateException(e: RequestValidateException): ResponseEntity<String> {
         log.error("error log : ${e.message}")
 
-        return ResponseEntity.badRequest().body(e.bindingResult.allErrors.joinToString { it.defaultMessage ?: "" },
-
-        )
+        return ResponseEntity
+            .badRequest()
+            .body(e.bindingResult.allErrors.joinToString {
+                it.defaultMessage ?: ""
+            })
     }
 
     @ExceptionHandler(value = [RuntimeException::class])

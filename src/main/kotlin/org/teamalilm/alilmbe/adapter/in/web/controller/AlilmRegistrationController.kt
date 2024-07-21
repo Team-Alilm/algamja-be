@@ -19,6 +19,7 @@ import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUse
 @Tag(name = "alilms", description = "재 입고 알림 API")
 class AlilmRegistrationController(
     private val registrationAlilmService: AlilmRegistrationUseCase
+
 ) {
 
     @Operation(
@@ -30,8 +31,12 @@ class AlilmRegistrationController(
     )
     @PostMapping("/registration")
     fun registration(
-        @RequestBody @Valid alilmRegistrationRequestBody: AlilmRegistrationRequest,
-        @AuthenticationPrincipal member: Member
+        @RequestBody
+        @Valid
+        alilmRegistrationRequestBody: AlilmRegistrationRequest,
+
+        @AuthenticationPrincipal
+        member: Member
     ): ResponseEntity<Unit> {
         val command = AlilmRegistrationCommand(
             number = alilmRegistrationRequestBody.number,

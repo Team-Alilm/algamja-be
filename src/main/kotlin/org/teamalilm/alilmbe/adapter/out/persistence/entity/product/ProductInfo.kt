@@ -22,7 +22,4 @@ class ProductInfo(
 
     @Column(name = "option3")
     val option3: String?
-) {
-
-
-}
+)

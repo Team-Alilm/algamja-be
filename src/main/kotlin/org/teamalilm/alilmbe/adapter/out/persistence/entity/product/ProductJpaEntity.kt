@@ -1,13 +1,6 @@
 package org.teamalilm.alilmbe.adapter.out.persistence.entity.product
 
-import jakarta.persistence.Column
-import jakarta.persistence.Embedded
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import jakarta.persistence.*
 import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
 @Entity
@@ -17,7 +10,7 @@ import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
         columnNames = ["store", "number", "option1", "option2", "option3"]
     )]
 )
-class Product(
+class ProductJpaEntity(
     @Column(name = "name", nullable = false)
     val name: String,
 
@@ -26,6 +19,10 @@ class Product(
 
     @Column(name = "image_url")
     val imageUrl: String,
+
+    @Column(name = "store")
+    @Enumerated(EnumType.STRING)
+    val store: Store,
 
     @Column(name = "category")
     val category: String,
