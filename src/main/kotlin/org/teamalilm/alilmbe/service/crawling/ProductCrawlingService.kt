@@ -21,7 +21,6 @@ class ProductCrawlingService {
 
     // 크롤링을 담당하는 함수
     fun crawling(command: ProductCrawlingCommand): ProductCrawlingResult {
-        // https://www.musinsa.com/app/goods/3262292/option/3262292_001?goodsSaleType=SALE
         val decodedUrl = URLDecoder.decode(command.url, StandardCharsets.UTF_8.toString())
         val url = URI.create(decodedUrl).toString()
         log.info("url: $url")

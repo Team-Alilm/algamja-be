@@ -4,7 +4,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
-import org.teamalilm.alilmbe.domain.product.repository.ProductRepository
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.ProductRepository
 import org.teamalilm.alilmbe.domain.product.repository.impl.ProductCustomRepositoryImpl.*
 
 @Service

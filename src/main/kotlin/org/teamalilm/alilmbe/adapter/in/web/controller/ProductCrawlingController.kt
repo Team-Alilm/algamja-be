@@ -1,17 +1,17 @@
 package org.teamalilm.alilmbe.adapter.`in`.web.controller
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import jakarta.validation.constraints.NotBlank
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.domain.product.entity.Product
+import org.teamalilm.alilmbe.adapter.`in`.web.controller.request.ProductCrawlingRequest
+import org.teamalilm.alilmbe.adapter.`in`.web.controller.response.ProductCrawlingResponse
+import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingUseCase
 import org.teamalilm.alilmbe.service.crawling.ProductCrawlingService
 import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
 
@@ -19,7 +19,7 @@ import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
 @RequestMapping("/api/v1/products")
 @Tag(name = "product-crawling", description = "상품 크롤링 API")
 class ProductCrawlingController(
-    private val productCrawlingService: ProductCrawlingService
+    private val productCrawlingUseCase: ProductCrawlingUseCase
 ) {
 
     @Operation(
@@ -33,21 +33,21 @@ class ProductCrawlingController(
     fun crawling(
         @ParameterObject
         @Valid
-        requestBody: ProductCrawlingRequestBody,
+        request: ProductCrawlingRequest,
 
         bindingResult: BindingResult
-    ): ResponseEntity<ProductCrawlingResponseBody> {
+    ): ResponseEntity<ProductCrawlingResponse> {
         if (bindingResult.hasErrors()) {
             throw RequestValidateException(bindingResult)
         }
 
         val command = ProductCrawlingService.ProductCrawlingCommand(
-            url = requestBody.url
+            url = request.url
         )
 
-        val result = productCrawlingService.crawling(command)
+        val result = productCrawlingUseCase.invoke(command)
 
-        val response = ProductCrawlingResponseBody(
+        val response = ProductCrawlingResponse(
             name = result.name,
             brand = result.brand,
             imageUrl = result.imageUrl,
@@ -62,24 +62,4 @@ class ProductCrawlingController(
         return ResponseEntity.ok(response)
     }
 
-    data class ProductCrawlingRequestBody(
-        @NotBlank(message = "URL은 필수에요.")
-        @Schema(
-            description = "크롤링할 상품 URL",
-            defaultValue = "https://www.musinsa.com/app/goods/3262292"
-        )
-        val url: String
-    )
-
-    data class ProductCrawlingResponseBody(
-        val name: String,
-        val brand: String,
-        val imageUrl: String,
-        val category: String,
-        val price: Int,
-        val store: Product.ProductInfo.Store,
-        val option1: List<String>,
-        val option2: List<String>,
-        val option3: List<String>
-    )
 }
