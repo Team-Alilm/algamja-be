@@ -2,12 +2,19 @@ package org.teamalilm.alilmbe.adapter.out.persistence.entity.basket
 
 import jakarta.persistence.*
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Product
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductJpaEntity
 import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
 @Entity
-@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["member_id", "product_id"])])
-class Basket(
+@Table(
+    name = "basket",
+    uniqueConstraints = [
+        UniqueConstraint(
+            columnNames = ["member_id", "product_id"]
+        )
+    ]
+)
+class BasketJpaEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +26,6 @@ class Basket(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    val product: Product
+    val product: ProductJpaEntity
 
 ) : BaseEntity()

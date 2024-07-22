@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.adapter.`in`.web.controller.BasketMyController
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.BasketRepository
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
-import org.teamalilm.alilmbe.domain.product.entity.Product.*
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductInfo
 
 @Service
 @Transactional(readOnly = true)

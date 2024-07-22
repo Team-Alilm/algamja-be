@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "1.9.21"
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-    kotlin("plugin.spring")
-    kotlin("plugin.jpa")
+    kotlin("plugin.spring") version "1.9.21"
+    kotlin("plugin.jpa") version "1.9.21"
     kotlin("kapt") version "1.9.21"
 }
 
@@ -122,5 +122,5 @@ tasks.named("clean") {
 }
 
 kapt {
-    generateStubs = true
+    correctErrorTypes = true
 }

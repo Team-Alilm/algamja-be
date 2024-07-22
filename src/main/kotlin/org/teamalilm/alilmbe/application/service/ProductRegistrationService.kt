@@ -3,23 +3,22 @@ package org.teamalilm.alilmbe.application.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.SpringDataProductRepository
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingCommand
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingResult
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingUseCase
+import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductRegistrationCommand
+import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductRegistrationUseCase
 
 @Service
 @Transactional(readOnly = true)
-class AlilmRegistrationService(
+class ProductRegistrationService(
     private val springDataProductRepository: SpringDataProductRepository
-) : ProductCrawlingUseCase {
+) : ProductRegistrationUseCase {
 
     private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
     @Transactional
-    override fun invoke(productCrawlingCommand: ProductCrawlingCommand): ProductCrawlingResult {
+    override fun invoke(command: ProductRegistrationCommand) {
 
 
-        springDataProductRepository.save()
+//        log.info("Product registered: ${product.name}")
     }
 
 //    @Transactional
