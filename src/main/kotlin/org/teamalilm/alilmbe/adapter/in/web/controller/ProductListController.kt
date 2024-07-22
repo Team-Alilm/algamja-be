@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductInfo
 import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
 import org.teamalilm.alilmbe.service.product.ProductListService
 import org.teamalilm.alilmbe.service.product.ProductListService.BasketFindAllCommand

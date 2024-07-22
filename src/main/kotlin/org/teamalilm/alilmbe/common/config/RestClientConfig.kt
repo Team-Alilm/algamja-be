@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.config
+package org.teamalilm.alilmbe.common.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,6 +9,8 @@ class RestClientConfig {
 
     @Bean
     fun restClient(): RestClient {
-        return RestClient.create()
+        return RestClient.builder()
+            .defaultHeader("Content-Type", "application/json")
+            .build()
     }
 }
