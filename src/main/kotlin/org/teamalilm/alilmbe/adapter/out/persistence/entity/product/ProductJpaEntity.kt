@@ -11,30 +11,39 @@ import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
     )]
 )
 class ProductJpaEntity(
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
+    val number :Long,
+
+    @Column(nullable = false)
     val name: String,
 
-    @Column(name = "brand")
+    @Column(nullable = false)
     val brand: String,
 
-    @Column(name = "image_url")
+    @Column(nullable = false)
     val imageUrl: String,
 
-    @Column(name = "store")
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     val store: Store,
 
-    @Column(name = "category")
+    @Column(nullable = false)
     val category: String,
 
-    @Column(name = "price")
+    @Column(nullable = false)
     val price: Int,
 
-    @Column(name = "waiting_count")
+    @Column(nullable = false)
     var waitingCount: Int = 0,
 
-    @Embedded
-    val productInfo: ProductInfo,
+    @Column(nullable = false)
+    val option1: String,
+
+    @Column
+    val option2: String?,
+
+    @Column
+    val option3: String?,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

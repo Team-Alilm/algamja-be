@@ -7,23 +7,17 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
-import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductInfo
-import org.teamalilm.alilmbe.domain.product.entity.Product.ProductInfo
-import org.teamalilm.alilmbe.service.product.ProductListService
-import org.teamalilm.alilmbe.service.product.ProductListService.BasketFindAllCommand
 
 @RestController
 @RequestMapping("/api/v1/products")
 @Tag(name = "products", description = "상품 전체 조회 api")
 class ProductListController(
-    private val productListService: ProductListService
 ) {
 
     @Operation(
@@ -46,31 +40,31 @@ class ProductListController(
         productListParameter: ProductListParameter
 
     ): ResponseEntity<Slice<ProductListResponse>> {
-        val pageRequest = PageRequest.of(
-            productListParameter.page,
-            productListParameter.size,
-            Sort.by(Sort.Direction.DESC, "id")
-        )
+//        val pageRequest = PageRequest.of(
+//            productListParameter.page,
+//            productListParameter.size,
+//            Sort.by(Sort.Direction.DESC, "id")
+//        )
+//
+//        val command = BasketFindAllCommand(pageRequest)
+//
+//        val result = productListService.listProduct(command)
+//
+//        val response = result.map {
+//            ProductListResponse(
+//                id = it.id,
+//                name = it.name,
+//                brand = it.brand,
+//                imageUrl = it.imageUrl,
+//                price = it.price,
+//                category = it.category,
+//                productInfo = it.productInfo,
+//                waitingCount = it.waitingCount,
+//                oldestCreationTime = it.oldestCreationTime
+//            )
+//        }
 
-        val command = BasketFindAllCommand(pageRequest)
-
-        val result = productListService.listProduct(command)
-
-        val response = result.map {
-            ProductListResponse(
-                id = it.id,
-                name = it.name,
-                brand = it.brand,
-                imageUrl = it.imageUrl,
-                price = it.price,
-                category = it.category,
-                productInfo = it.productInfo,
-                waitingCount = it.waitingCount,
-                oldestCreationTime = it.oldestCreationTime
-            )
-        }
-
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(null)
     }
 
     @Schema(description = "상품 조회 파라미터")
