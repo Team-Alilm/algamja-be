@@ -31,9 +31,7 @@ class ProductCrawlingController(
         summary = "상품 크롤링을 실행하는 API",
         description = """
             사용자의 URL을 받아서 상품의 정보를 추출하는 API 입니다. 
-            
             저희 서비스에 데이터를 저장하는 로직이 1도 없습니다.
-            
             (현재 무신사만 지원해요.)
         """
     )
