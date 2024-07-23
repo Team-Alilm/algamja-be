@@ -4,4 +4,11 @@ import org.springframework.validation.BindingResult
 
 class RequestValidateException(
     val bindingResult: BindingResult
-) : RuntimeException()
+) : RuntimeException() {
+
+    override val message: String
+        get() {
+            val errorMessage = bindingResult.allErrors.joinToString { it.defaultMessage ?: "" }
+            return errorMessage
+        }
+}

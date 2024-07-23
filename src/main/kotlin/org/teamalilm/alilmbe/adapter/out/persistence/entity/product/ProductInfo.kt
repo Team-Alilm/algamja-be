@@ -12,7 +12,7 @@ class ProductInfo(
     val store: Store,
 
     @Column(name = "number", nullable = false)
-    val number: Int,
+    val number: Long,
 
     @Column(name = "option1", nullable = false)
     val option1: String,

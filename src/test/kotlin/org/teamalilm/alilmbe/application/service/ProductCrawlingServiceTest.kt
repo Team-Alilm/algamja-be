@@ -2,26 +2,36 @@ package org.teamalilm.alilmbe.application.service
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.mockito.Mock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingCommand
 import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingUseCase
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.web.client.RestClient
+import org.teamalilm.alilmbe.application.port.out.ProductDataGateway
 
-@SpringBootTest
-@Transactional  // 각 테스트가 완료된 후 트랜잭션을 롤백하여 데이터베이스 상태를 정리합니다.
+@AutoConfigureMockMvc
 class ProductCrawlingServiceIntegrationTest {
 
-    @Autowired
-    private lateinit var useCase: ProductCrawlingUseCase
+    @Mock
+    val productDataGateway: ProductDataGateway
+
+    @Mock
+    val restClient: RestClient
 
     @Test
     fun `should return product crawling result`() {
         // Given
-        val command = ProductCrawlingCommand("https://store.musinsa.com/app/goods/305485")
+        val command = ProductCrawlingCommand("https://www.musinsa.com/app/goods/4175204")
 
         // When
-        val result = useCase.invoke(command)
+        val result = ProductCrawlingService(
+            productDataGateway = productDataGateway,
+            restClient = restClient
+        ).invoke(command)
 
         // Then
         assertNotNull(result)

@@ -3,7 +3,7 @@ package org.teamalilm.alilmbe.domain.product
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 
 class Product (
-    val id: Long,
+    val id: ProductId,
     val number: Long,
     val name: String,
     val brand: String,
@@ -25,4 +25,7 @@ class Product (
         require(price >= 0) { "Product price must be non-negative" }
         require(option1.isNotBlank()) { "Product option1 must not be blank" }
     }
+
+    data class ProductId(val value: Long?)
+
 }

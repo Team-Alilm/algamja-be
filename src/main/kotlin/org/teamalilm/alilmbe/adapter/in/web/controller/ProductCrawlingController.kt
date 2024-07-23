@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import org.slf4j.LoggerFactory
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -15,6 +16,7 @@ import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingCommand
 import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingResult
 import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingUseCase
+import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -22,6 +24,8 @@ import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingUseCa
 class ProductCrawlingController(
     private val useCase: ProductCrawlingUseCase
 ) {
+
+    private val log = LoggerFactory.getLogger(ProductCrawlingController::class.java)
 
     @Operation(
         summary = "상품 크롤링을 실행하는 API",
@@ -40,9 +44,9 @@ class ProductCrawlingController(
         request: ProductScrapingRequest,
 
         bindingResult: BindingResult
-    ): ResponseEntity<ProductCrawlingResponse> {
+    ) : ResponseEntity<ProductCrawlingResponse> {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().build()
+            throw RequestValidateException(bindingResult)
         }
 
         return ResponseEntity.ok(
@@ -56,10 +60,14 @@ class ProductCrawlingController(
 
     @Schema(description = "Scraping 요청")
     data class ProductScrapingRequest(
-        @NotBlank
-        @Schema(description = "상품 URL (무신사 URL만 지원해요)", example = "https://www.musinsa.com/app/goods/3262292")
+        @field:NotBlank(message = "URL은 필수입니다.")
+        @field:Schema(description = "상품 URL (무신사 URL만 지원해요)", example = "https://www.musinsa.com/app/goods/3262292")
+        val _url: String?
+    ) {
+
         val url: String
-    )
+            get() = _url!!
+    }
 
     @Schema(description = "상품 데이터 응답")
     data class ProductCrawlingResponse(

@@ -1,5 +1,6 @@
 package org.teamalilm.alilmbe.application.service
 
+import org.jsoup.nodes.Document
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -65,8 +66,10 @@ class ProductCrawlingService(
         return regex.find(url)?.groupValues?.get(1)?.toLongOrNull() ?: throw IllegalArgumentException("상품 번호를 찾을 수 없습니다.")
     }
 
-    private fun parseDescription(descriptionDoc: org.jsoup.nodes.Document): Triple<String, String, Int> {
+    private fun parseDescription(descriptionDoc: Document): Triple<String, String, Int> {
         val description = descriptionDoc.select("meta[property=og:description]").attr("content").split(" : ")
+        log.info("description: $description")
+
         val category = description[1].replace(" 브랜드", "")
         val name = description[4].split(" - ")[0]
         val price = description[4].split(" - ")[1].replace(",", "").replace(" ", "").toInt()
@@ -91,11 +94,11 @@ class ProductCrawlingService(
         return Triple(option1s, option2s, option3s)
     }
 
-    private fun fetchBrand(descriptionDoc: org.jsoup.nodes.Document): String {
+    private fun fetchBrand(descriptionDoc: Document): String {
         return descriptionDoc.select("meta[property=product:brand]").attr("content").ifBlank { "없음" }
     }
 
-    private fun fetchImageUrl(descriptionDoc: org.jsoup.nodes.Document): String {
+    private fun fetchImageUrl(descriptionDoc: Document): String {
         return descriptionDoc.getElementById("fbOgImage")?.attr("content") ?: "null"
     }
 
