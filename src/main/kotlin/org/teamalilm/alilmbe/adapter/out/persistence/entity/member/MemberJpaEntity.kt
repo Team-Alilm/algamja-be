@@ -14,7 +14,7 @@ import org.teamalilm.alilmbe.global.jpa.base.BaseTimeEntity
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 
 @Entity
-class Member(
+class MemberJpaEntity(
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     val provider: Provider,
@@ -70,5 +70,13 @@ class Member(
 
     override fun isEnabled(): Boolean {
         return true
+    }
+
+    enum class Role(
+        val key: String
+    ) {
+        ADMIN("ROLE_ADMIN"),
+        MEMBER("ROLE_USER"),
+        GUEST("ROLE_GUEST")
     }
 }

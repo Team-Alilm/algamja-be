@@ -3,7 +3,10 @@ package org.teamalilm.alilmbe.application.port.`in`.use_case
 import org.teamalilm.alilmbe.adapter.`in`.web.controller.ProductCrawlingController.ProductScrapingRequest
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 
-typealias ProductCrawlingUseCase = (ProductCrawlingCommand) -> ProductCrawlingResult
+interface ProductCrawlingUseCase {
+
+    fun productCrawling(command: ProductCrawlingCommand): ProductCrawlingResult
+}
 
 data class ProductCrawlingCommand(
     val url: String

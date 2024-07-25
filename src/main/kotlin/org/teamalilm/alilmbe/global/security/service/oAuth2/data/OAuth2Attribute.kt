@@ -1,9 +1,5 @@
 package org.teamalilm.alilmbe.global.security.service.oAuth2.data
 
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Role
-
-
 class OAuth2Attribute(
     private val attributes: Map<String, Any>,
     private val provider: String,

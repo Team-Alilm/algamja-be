@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.teamalilm.alilmbe.domain.member.repository.MemberRepository
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.member.MemberRepository
 
 @Component
 @Transactional(readOnly = true)

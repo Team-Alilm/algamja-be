@@ -22,7 +22,7 @@ import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
 @RequestMapping("/api/v1/products")
 @Tag(name = "product-crawling", description = "상품 정보를 쇼핑몰에서 가져오는 API (현재 무신사만 지원)")
 class ProductCrawlingController(
-    private val useCase: ProductCrawlingUseCase
+    private val productCrawlingUseCase: ProductCrawlingUseCase
 ) {
 
     private val log = LoggerFactory.getLogger(ProductCrawlingController::class.java)
@@ -51,7 +51,7 @@ class ProductCrawlingController(
 
         return ResponseEntity.ok(
             ProductCrawlingResponse.from(
-                useCase.invoke(
+                productCrawlingUseCase.productCrawling(
                     ProductCrawlingCommand.from(request)
                 )
             )

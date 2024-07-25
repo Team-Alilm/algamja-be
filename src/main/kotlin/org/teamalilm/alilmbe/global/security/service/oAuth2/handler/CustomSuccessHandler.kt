@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Role
-import org.teamalilm.alilmbe.domain.member.repository.MemberRepository
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.member.MemberRepository
 import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 import org.teamalilm.alilmbe.global.slack.service.SlackService

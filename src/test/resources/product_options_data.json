@@ -1,0 +1,35 @@
+{
+  "data": {
+    "basic": [
+      {
+        "name": "M",
+        "price": 0,
+        "isSoldOut": false,
+        "remainQuantity": 0,
+        "subOptions": []
+      },
+      {
+        "name": "L",
+        "price": 0,
+        "isSoldOut": false,
+        "remainQuantity": 0,
+        "subOptions": []
+      },
+      {
+        "name": "XL",
+        "price": 0,
+        "isSoldOut": false,
+        "remainQuantity": 0,
+        "subOptions": []
+      },
+      {
+        "name": "XXL",
+        "price": 0,
+        "isSoldOut": false,
+        "remainQuantity": 0,
+        "subOptions": []
+      }
+    ],
+    "extra": []
+  }
+}
