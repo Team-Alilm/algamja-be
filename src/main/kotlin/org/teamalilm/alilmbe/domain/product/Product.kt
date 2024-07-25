@@ -24,6 +24,7 @@ class Product (
         require(category.isNotBlank()) { "Product category must not be blank" }
         require(price >= 0) { "Product price must be non-negative" }
         require(option1.isNotBlank()) { "Product option1 must not be blank" }
+        require(waitingCount >= 0) { "Product waiting count must be non-negative" }
     }
 
     data class ProductId(val value: Long?)

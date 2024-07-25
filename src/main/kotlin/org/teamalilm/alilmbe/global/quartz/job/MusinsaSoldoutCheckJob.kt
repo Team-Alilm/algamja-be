@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.basket.BasketJpaEntity
-import org.teamalilm.alilmbe.adapter.out.persistence.repository.product.BasketRepository
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.basket.BasketRepository
 import org.teamalilm.alilmbe.global.email.service.EmailService
 import org.teamalilm.alilmbe.global.slack.service.SlackService
 

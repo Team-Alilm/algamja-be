@@ -1,7 +1,7 @@
 package org.teamalilm.alilmbe.adapter.out.persistence.entity.basket
 
 import jakarta.persistence.*
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.MemberJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductJpaEntity
 import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
@@ -22,10 +22,10 @@ class BasketJpaEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    val member: Member,
+    val memberJpaEntity: MemberJpaEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    val product: ProductJpaEntity
+    val productJpaEntity: ProductJpaEntity
 
 ) : BaseEntity()

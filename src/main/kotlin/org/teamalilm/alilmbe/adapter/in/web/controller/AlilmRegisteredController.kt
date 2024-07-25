@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductRegistrationCommand
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductRegistrationUseCase
+import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationCommand
+import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUseCase
+import org.teamalilm.alilmbe.domain.member.Member
 import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/alilms")
 @Tag(name = "product-registered", description = "상품 정보를 등록하는 API")
-class ProductRegisteredController(
-    private val useCase: ProductRegistrationUseCase
+class AlilmRegisteredController(
+    private val alilmRegistrationUseCase: AlilmRegistrationUseCase
 ) {
 
     @Operation(
@@ -32,7 +32,7 @@ class ProductRegisteredController(
     )
     @PostMapping("/registered")
     fun registered(
-        @RequestBody @Valid request: ProductRegistrationRequest,
+        @RequestBody @Valid request: AlilmRegistrationRequest,
         @AuthenticationPrincipal member: Member,
         bindingResult: BindingResult
     ): ResponseEntity<Unit> {
@@ -40,16 +40,28 @@ class ProductRegisteredController(
             throw RequestValidateException(bindingResult)
         }
 
-        useCase.invoke(
-            ProductRegistrationCommand.from(request, member)
+        alilmRegistrationUseCase.alilmRegistration(
+            AlilmRegistrationCommand.from(request, member)
         )
 
         return ResponseEntity.ok().build()
     }
 
     @Schema(description = "상품 등록 요청")
-    data class ProductRegistrationRequest(
+    data class AlilmRegistrationRequest(
+        @Schema(
+            example = "405656",
+            description = "상품 번호",
+            format = "int64",
+            required = true,
+            type = "integer"
+        )
         val number: Long,
+        @Schema(
+            example = "나이키 에어맥스 97",
+            description = "상품 이름",
+            required = true
+        )
         val name: String,
         val brand: String,
         val imageUrl: String,

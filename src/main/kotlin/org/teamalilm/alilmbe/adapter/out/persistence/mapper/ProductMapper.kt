@@ -25,4 +25,40 @@ class ProductMapper {
         )
     }
 
+    fun mapToDomainEntity(productJpaEntity: ProductJpaEntity?): Product? {
+        productJpaEntity ?: return null
+
+        return Product(
+            id = Product.ProductId(productJpaEntity.id),
+            number = productJpaEntity.number,
+            name = productJpaEntity.name,
+            brand = productJpaEntity.brand,
+            imageUrl = productJpaEntity.imageUrl,
+            store = productJpaEntity.store,
+            category = productJpaEntity.category,
+            price = productJpaEntity.price,
+            waitingCount = productJpaEntity.waitingCount,
+            option1 = productJpaEntity.option1,
+            option2 = productJpaEntity.option2,
+            option3 = productJpaEntity.option3
+        )
+    }
+
+    fun mapToDomainEntity(productJpaEntity: ProductJpaEntity): Product {
+        return Product(
+            id = Product.ProductId(productJpaEntity.id),
+            number = productJpaEntity.number,
+            name = productJpaEntity.name,
+            brand = productJpaEntity.brand,
+            imageUrl = productJpaEntity.imageUrl,
+            store = productJpaEntity.store,
+            category = productJpaEntity.category,
+            price = productJpaEntity.price,
+            waitingCount = productJpaEntity.waitingCount,
+            option1 = productJpaEntity.option1,
+            option2 = productJpaEntity.option2,
+            option3 = productJpaEntity.option3
+        )
+    }
+
 }

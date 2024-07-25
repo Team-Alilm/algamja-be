@@ -30,7 +30,7 @@ class ProductCrawlingService(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    override fun invoke(command: ProductCrawlingCommand): ProductCrawlingResult {
+    override fun productCrawling(command: ProductCrawlingCommand): ProductCrawlingResult {
         val decodedUrl = decodeUrl(command.url)
         val productNumber = extractProductNumber(decodedUrl)
         val document = productDataGateway.invoke(ProductDataGatewayRequest(decodedUrl)).document
@@ -80,7 +80,7 @@ class ProductCrawlingService(
         val uri = buildSoldoutCheckUri(url)
         log.info("Fetching soldout check response from URI: $uri")
 
-        return restClient.get().uri(uri).retrieve().body()
+        return restClient.get().uri(uri).retrieve().body<SoldoutCheckResponse>()
     }
 
     private fun buildSoldoutCheckUri(url: String): String {

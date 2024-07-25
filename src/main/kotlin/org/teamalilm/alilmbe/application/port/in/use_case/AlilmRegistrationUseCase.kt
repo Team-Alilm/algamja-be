@@ -1,12 +1,16 @@
 package org.teamalilm.alilmbe.application.port.`in`.use_case
 
-import org.teamalilm.alilmbe.adapter.`in`.web.controller.ProductRegisteredController.*
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.Member
+import org.teamalilm.alilmbe.adapter.`in`.web.controller.AlilmRegisteredController.*
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
+import org.teamalilm.alilmbe.domain.member.Member
 
-typealias ProductRegistrationUseCase = (ProductRegistrationCommand) -> Unit
+interface AlilmRegistrationUseCase {
 
-data class ProductRegistrationCommand(
+    fun alilmRegistration(command: AlilmRegistrationCommand)
+
+}
+
+data class AlilmRegistrationCommand(
     val number: Long,
     val name: String,
     val brand: String,
@@ -21,8 +25,8 @@ data class ProductRegistrationCommand(
 ) {
 
     companion object {
-        fun from(request: ProductRegistrationRequest, member: Member): ProductRegistrationCommand {
-            return ProductRegistrationCommand(
+        fun from(request: AlilmRegistrationRequest, member: Member): AlilmRegistrationCommand {
+            return AlilmRegistrationCommand(
                 number = request.number,
                 name = request.name,
                 brand = request.brand,

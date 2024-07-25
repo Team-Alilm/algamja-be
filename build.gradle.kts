@@ -56,6 +56,7 @@ dependencies {
 
     // jsoup
     implementation("org.jsoup:jsoup:1.17.2")
+    implementation("org.wiremock:wiremock-")
 
     // scheduler
     implementation("org.springframework.boot:spring-boot-starter-quartz")
@@ -71,6 +72,7 @@ dependencies {
 
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.2")
     // querydsl
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
