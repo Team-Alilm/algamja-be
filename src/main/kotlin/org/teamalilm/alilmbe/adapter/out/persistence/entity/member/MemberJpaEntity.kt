@@ -16,9 +16,6 @@ import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
             columnNames = ["provider", "provider_id"]
         ),
         UniqueConstraint(
-            columnNames = ["email"]
-        ),
-        UniqueConstraint(
             columnNames = ["phone_number"]
         ),
     ]

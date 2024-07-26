@@ -12,12 +12,13 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductInfo
+import org.teamalilm.alilmbe.application.port.`in`.use_case.BasketSliceUseCase
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/baskets")
 @Tag(name = "products", description = "상품 전체 조회 api")
-class ProductListController(
+class BasketSliceController(
+    private val basketSliceUseCase: BasketSliceUseCase
 ) {
 
     @Operation(
@@ -26,15 +27,13 @@ class ProductListController(
             사용자들이 등록한 상품을 조회할 수 있는 기능을 제공해요.
             정렬 조건, 페이지, 사이즈를 입력받아요.
             
-            기다리는 사람이 0명이라도 조회 응답 데이터에 포함되어 있어요.
-            
             기본은 기다리는 사람이 많은 순이며 같다면 상품명 순 입니다.
             
             기다리는 사람 순, 업데이트된 최신 순 으로 정렬 가능해요.
     """
     )
     @GetMapping
-    fun productList(
+    fun productSlice(
         @ParameterObject
         @Valid
         productListParameter: ProductListParameter
@@ -87,7 +86,7 @@ class ProductListController(
         val imageUrl: String,
         val category: String,
         val price: Int,
-        val productInfo: ProductInfo,
+        val productInfo: String,
         val waitingCount: Long,
         val oldestCreationTime: Long
     )

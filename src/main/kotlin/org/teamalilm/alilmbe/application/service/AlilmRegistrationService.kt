@@ -2,7 +2,6 @@ package org.teamalilm.alilmbe.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationCommand
 import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUseCase
 import org.teamalilm.alilmbe.application.port.out.Basket.AddBasketPort
 import org.teamalilm.alilmbe.application.port.out.Basket.LoadBasketPort
@@ -25,13 +24,13 @@ class AlilmRegistrationService(
     private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
     @Transactional
-    override fun alilmRegistration(command: AlilmRegistrationCommand) {
+    override fun alilmRegistration(command: AlilmRegistrationUseCase.AlilmRegistrationCommand) {
         val product = getProduct(command)
         saveBasket(command, product)
     }
 
     private fun saveBasket(
-        command: AlilmRegistrationCommand,
+        command: AlilmRegistrationUseCase.AlilmRegistrationCommand,
         product: Product,
     ) {
         loadBasketPort.loadBasket(
@@ -54,7 +53,7 @@ class AlilmRegistrationService(
         }
     }
 
-    private fun getProduct(command: AlilmRegistrationCommand) =
+    private fun getProduct(command: AlilmRegistrationUseCase.AlilmRegistrationCommand) =
         loadProductPort.loadProduct(
             number = command.number,
             store = command.store,
@@ -62,7 +61,7 @@ class AlilmRegistrationService(
             option2 = command.option2,
             option3 = command.option3
         ) ?: run {
-            addProductPort.invoke(
+            addProductPort.addProduct(
                 Product(
                     id = Product.ProductId(null),
                     number = command.number,

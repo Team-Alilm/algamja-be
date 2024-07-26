@@ -1,5 +1,7 @@
 package org.teamalilm.alilmbe.adapter.out.persistence.adapter
 
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.ProductMapper
@@ -16,7 +18,7 @@ class ProductPersistenceAdapter(
     private val productMapper: ProductMapper
 ) : AddProductPort, LoadProductPort {
 
-    override fun invoke(product: Product) : Product {
+    override fun addProduct(product: Product) : Product {
         return productMapper
             .mapToDomainEntity(
                 springDataProductRepository.save(
@@ -42,6 +44,5 @@ class ProductPersistenceAdapter(
 
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
     }
-
 
 }
