@@ -13,8 +13,8 @@ class MemberPersistenceAdapter (
     private val memberMapper: MemberMapper
 ) : LoadMemberPort, AddMemberPort {
 
-    override fun loadMember(email: String): Member? {
-        val memberJpaEntity = springDataMemberRepository.findByEmailAndIsDeleteFalse(email)
+    override fun loadMember(phoneNumber: String): Member? {
+        val memberJpaEntity = springDataMemberRepository.findByPhoneNumberAndIsDeleteFalse(phoneNumber)
 
         return memberMapper.mapToDomainEntityOrNull(memberJpaEntity)
     }

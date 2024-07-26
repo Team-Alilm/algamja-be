@@ -9,10 +9,10 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
-import org.teamalilm.alilmbe.adapter.out.persistence.repository.member.MemberRepository
 import org.teamalilm.alilmbe.application.port.out.member.AddMemberPort
 import org.teamalilm.alilmbe.application.port.out.member.LoadMemberPort
 import org.teamalilm.alilmbe.domain.member.Member
+import org.teamalilm.alilmbe.global.email.service.EmailService
 import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 import org.teamalilm.alilmbe.global.slack.service.SlackService
@@ -23,10 +23,10 @@ private const val BASE_URL = """https://alilm.co.kr"""
 @Transactional(readOnly = true)
 class CustomSuccessHandler(
     private val jwtUtil: JwtUtil,
-    private val memberRepository: MemberRepository,
     private val slackService: SlackService,
     private val loadMemberPort: LoadMemberPort,
-    private val addMemberPort: AddMemberPort
+    private val addMemberPort: AddMemberPort,
+    private val emailService: EmailService
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -43,10 +43,12 @@ class CustomSuccessHandler(
             val attributes = oAuth2User.attributes
             log.info("attributes: $attributes")
 
-            val email = attributes["phoneNumber"]?.toString()
+            log.info("attributes: ${attributes[""]}")
+
+            val phoneNumber = attributes["phoneNumber"]?.toString()
                 ?: throw IllegalStateException("OAuth2 응답에 이메일이 없습니다.")
 
-            val member = when (val member = loadMemberPort.loadMember(email)) {
+            val member = when (val member = loadMemberPort.loadMember(phoneNumber)) {
                 null -> saveMember(attributes)
                 else -> updateMember(attributes, member)
             }
@@ -69,12 +71,15 @@ class CustomSuccessHandler(
     private fun saveMember(attributes: Map<String, Any>): Member {
         val provider = attributes["provider"] as? String
             ?: throw IllegalStateException("OAuth2 응답에 공급자가 없습니다.")
+        log.info("provider: $provider")
         val providerId = attributes["id"] as? Long ?: throw IllegalStateException("")
+        log.info("providerId: $providerId")
         val email = attributes["email"] as? String ?: throw IllegalStateException("")
         val phoneNumber = attributes["phoneNumber"] as? String ?: throw IllegalStateException("")
         val nickname = attributes["nickname"] as? String ?: throw IllegalStateException("")
 
         slackService.sendSlackMessage("새로운 회원이 가입했습니다. \nemail: $email \nphoneNumber: $phoneNumber \nnickname: $nickname")
+        emailService.sendMail("알림 회원가입을 환영합니다. 😊", email)
 
         return addMemberPort.addMember(
             Member(

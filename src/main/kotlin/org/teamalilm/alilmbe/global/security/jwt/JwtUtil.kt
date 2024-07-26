@@ -56,7 +56,6 @@ class JwtUtil(
 
     fun createJwt(memberId: MemberId, expireMs: Long): String {
         val now = System.currentTimeMillis()
-        log.info("now : $now")
 
         return "Bearer " + Jwts.builder()
             .claim(MEMBER_ID_KEY, memberId.value)
