@@ -13,19 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingCommand
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingResult
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingUseCase
+import org.teamalilm.alilmbe.application.port.`in`.use_case.CrawlingUseCase
 import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
 
 @RestController
 @RequestMapping("/api/v1/products")
 @Tag(name = "product-crawling", description = "상품 정보를 쇼핑몰에서 가져오는 API (현재 무신사만 지원)")
-class ProductCrawlingController(
-    private val productCrawlingUseCase: ProductCrawlingUseCase
+class CrawlingController(
+    private val crawlingUseCase: CrawlingUseCase
 ) {
 
-    private val log = LoggerFactory.getLogger(ProductCrawlingController::class.java)
+    private val log = LoggerFactory.getLogger(CrawlingController::class.java)
 
     @Operation(
         summary = "상품 크롤링을 실행하는 API",
@@ -36,28 +34,28 @@ class ProductCrawlingController(
         """
     )
     @GetMapping("/crawling")
-    fun scraping(
+    fun crawling(
         @ParameterObject
         @Valid
-        request: ProductScrapingRequest,
+        request: CrawlingRequest,
 
         bindingResult: BindingResult
-    ) : ResponseEntity<ProductCrawlingResponse> {
+    ) : ResponseEntity<CrawlingResponse> {
         if (bindingResult.hasErrors()) {
             throw RequestValidateException(bindingResult)
         }
 
         return ResponseEntity.ok(
-            ProductCrawlingResponse.from(
-                productCrawlingUseCase.productCrawling(
-                    ProductCrawlingCommand.from(request)
+            CrawlingResponse.from(
+                crawlingUseCase.productCrawling(
+                    CrawlingUseCase.ProductCrawlingCommand.from(request)
                 )
             )
         )
     }
 
     @Schema(description = "Scraping 요청")
-    data class ProductScrapingRequest(
+    data class CrawlingRequest(
         @field:NotBlank(message = "URL은 필수입니다.")
         @field:Schema(description = "상품 URL (무신사 URL만 지원해요)", example = "https://www.musinsa.com/app/goods/3262292")
         val _url: String?
@@ -68,7 +66,7 @@ class ProductCrawlingController(
     }
 
     @Schema(description = "상품 데이터 응답")
-    data class ProductCrawlingResponse(
+    data class CrawlingResponse(
         val number: Long,
         val name: String,
         val brand: String,
@@ -82,8 +80,8 @@ class ProductCrawlingController(
     ) {
 
         companion object {
-            fun from(result: ProductCrawlingResult): ProductCrawlingResponse {
-                return ProductCrawlingResponse(
+            fun from(result: CrawlingUseCase.CrawlingResult): CrawlingResponse {
+                return CrawlingResponse(
                     number = result.number,
                     name = result.name,
                     brand = result.brand,

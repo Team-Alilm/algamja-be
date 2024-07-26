@@ -7,9 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingCommand
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingResult
-import org.teamalilm.alilmbe.application.port.`in`.use_case.ProductCrawlingUseCase
+import org.teamalilm.alilmbe.application.port.`in`.use_case.CrawlingUseCase
 import org.teamalilm.alilmbe.application.port.out.ProductDataGateway
 import org.teamalilm.alilmbe.application.port.out.ProductDataGatewayRequest
 import org.teamalilm.alilmbe.global.quartz.data.SoldoutCheckResponse
@@ -23,14 +21,14 @@ import java.nio.charset.StandardCharsets
  */
 @Service
 @Transactional(readOnly = true)
-class ProductCrawlingService(
+class CrawlingService(
     private val productDataGateway: ProductDataGateway,
     private val restClient: RestClient
-) : ProductCrawlingUseCase {
+) : CrawlingUseCase {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    override fun productCrawling(command: ProductCrawlingCommand): ProductCrawlingResult {
+    override fun productCrawling(command: CrawlingUseCase.ProductCrawlingCommand): CrawlingUseCase.CrawlingResult {
         val decodedUrl = decodeUrl(command.url)
         val productNumber = extractProductNumber(decodedUrl)
         val document = productDataGateway.invoke(ProductDataGatewayRequest(decodedUrl)).document
@@ -40,7 +38,7 @@ class ProductCrawlingService(
 
         val options = extractOptions(soldoutCheckResponse)
 
-        return ProductCrawlingResult(
+        return CrawlingUseCase.CrawlingResult(
             number = productNumber,
             name = name,
             brand = fetchBrand(document),

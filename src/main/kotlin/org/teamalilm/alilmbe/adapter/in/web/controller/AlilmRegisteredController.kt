@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
-import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationCommand
 import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUseCase
 import org.teamalilm.alilmbe.domain.member.Member
 import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
@@ -41,7 +40,7 @@ class AlilmRegisteredController(
         }
 
         alilmRegistrationUseCase.alilmRegistration(
-            AlilmRegistrationCommand.from(request, member)
+            AlilmRegistrationUseCase.AlilmRegistrationCommand.from(request, member)
         )
 
         return ResponseEntity.ok().build()
@@ -63,6 +62,7 @@ class AlilmRegisteredController(
             required = true
         )
         val name: String,
+
         val brand: String,
         val imageUrl: String,
         val category: String,
