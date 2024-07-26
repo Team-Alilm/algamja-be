@@ -1,6 +1,5 @@
 package org.teamalilm.alilmbe.domain.member
 
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.MemberJpaEntity
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 
 class Member(
@@ -8,9 +7,9 @@ class Member(
     val provider: Provider,
     val providerId: Long,
     val email: String,
-    val phoneNumber: String,
-    val nickname: String,
-    val role: MemberJpaEntity.Role,
+    var phoneNumber: String,
+    var nickname: String,
+    val role: Role,
     ) {
 
     init {
@@ -19,5 +18,18 @@ class Member(
         require(nickname.isNotBlank()) { "nickname must not be blank" }
     }
 
+    fun update(newNickname: String, newPhoneNumber: String) {
+        this.nickname = newNickname
+        this.phoneNumber = newPhoneNumber
+    }
+
     data class MemberId(val value: Long?)
+
+    enum class Role(
+        val key: String
+    ) {
+        ADMIN("ROLE_ADMIN"),
+        MEMBER("ROLE_USER"),
+        GUEST("ROLE_GUEST")
+    }
 }

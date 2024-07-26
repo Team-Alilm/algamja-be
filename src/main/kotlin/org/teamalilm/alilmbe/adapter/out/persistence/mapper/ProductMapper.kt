@@ -25,7 +25,7 @@ class ProductMapper {
         )
     }
 
-    fun mapToDomainEntity(productJpaEntity: ProductJpaEntity?): Product? {
+    fun mapToDomainEntityOrNull(productJpaEntity: ProductJpaEntity?): Product? {
         productJpaEntity ?: return null
 
         return Product(

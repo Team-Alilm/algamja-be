@@ -1,19 +1,29 @@
 package org.teamalilm.alilmbe.adapter.out.persistence.entity.member
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import java.util.Collections
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.teamalilm.alilmbe.global.jpa.base.BaseTimeEntity
+import org.teamalilm.alilmbe.domain.member.Member.*
+import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 
 @Entity
+@Table(
+    name = "member",
+    uniqueConstraints = [
+        UniqueConstraint(
+            columnNames = ["provider", "provider_id"]
+        ),
+        UniqueConstraint(
+            columnNames = ["email"]
+        ),
+        UniqueConstraint(
+            columnNames = ["phone_number"]
+        ),
+    ]
+
+)
 class MemberJpaEntity(
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -38,7 +48,7 @@ class MemberJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-) : BaseTimeEntity(), UserDetails {
+) : BaseEntity(), UserDetails {
 
     fun updatePhoneNumber(phoneNumber: String) {
         this.phoneNumber = phoneNumber
@@ -72,11 +82,5 @@ class MemberJpaEntity(
         return true
     }
 
-    enum class Role(
-        val key: String
-    ) {
-        ADMIN("ROLE_ADMIN"),
-        MEMBER("ROLE_USER"),
-        GUEST("ROLE_GUEST")
-    }
+
 }

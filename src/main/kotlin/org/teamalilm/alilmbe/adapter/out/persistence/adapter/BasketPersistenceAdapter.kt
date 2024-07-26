@@ -26,15 +26,15 @@ class BasketPersistenceAdapter(
         member: Member,
         product: Product
     ): Basket {
-        return basketMapper.mapToDomainEntity(
-            springDataBasketRepository.save(
+        val basketJpaEntity = springDataBasketRepository.save(
                 basketMapper.mapToJpaEntity(
-                    basket,
-                    memberMapper.mapToJpaEntity(member),
-                    productMapper.mapToJpaEntity(product)
-                )
+                basket,
+                memberMapper.mapToJpaEntity(member),
+                productMapper.mapToJpaEntity(product)
             )
         )
+
+        return basketMapper.mapToDomainEntity(basketJpaEntity)
     }
 
     override fun loadBasket(
@@ -46,6 +46,6 @@ class BasketPersistenceAdapter(
             productId = productId
         )
 
-        return basketMapper.mapToDomainEntity(basketJpaEntity)
+        return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 }

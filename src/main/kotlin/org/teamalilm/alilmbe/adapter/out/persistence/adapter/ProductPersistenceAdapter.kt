@@ -40,7 +40,7 @@ class ProductPersistenceAdapter(
             option3 = option3
         )
 
-        return productMapper.mapToDomainEntity(productJpaEntity)
+        return productMapper.mapToDomainEntityOrNull(productJpaEntity)
     }
 
 
