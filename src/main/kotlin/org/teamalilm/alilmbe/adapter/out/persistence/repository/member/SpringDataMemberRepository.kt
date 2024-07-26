@@ -5,5 +5,5 @@ import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.MemberJpaEnti
 
 interface SpringDataMemberRepository : JpaRepository<MemberJpaEntity, Long> {
 
-    fun findByEmailAndIsDeleteFalse(email: String): MemberJpaEntity?
+    fun findByPhoneNumberAndIsDeleteFalse(phoneNumber: String): MemberJpaEntity?
 }
