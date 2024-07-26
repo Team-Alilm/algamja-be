@@ -10,6 +10,8 @@ import java.util.Date
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.teamalilm.alilmbe.domain.member.Member
+import org.teamalilm.alilmbe.domain.member.Member.*
 
 @Component
 class JwtUtil(
@@ -52,12 +54,12 @@ class JwtUtil(
         }
     }
 
-    fun createJwt(memberId: Long, expireMs: Long): String {
+    fun createJwt(memberId: MemberId, expireMs: Long): String {
         val now = System.currentTimeMillis()
         log.info("now : $now")
 
         return "Bearer " + Jwts.builder()
-            .claim(MEMBER_ID_KEY, memberId)
+            .claim(MEMBER_ID_KEY, memberId.value)
             .issuedAt(Date(now))
             .expiration(Date(now + expireMs))
             .signWith(secretKey)

@@ -13,8 +13,8 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
         """
         SELECT b 
         FROM BasketJpaEntity b
-        WHERE b.member = :member
-        AND b.product = :product
+        WHERE b.memberJpaEntity = :memberId
+        AND b.productJpaEntity.id = :productId
         """
     )
     fun findByMemberIdAndProductId(

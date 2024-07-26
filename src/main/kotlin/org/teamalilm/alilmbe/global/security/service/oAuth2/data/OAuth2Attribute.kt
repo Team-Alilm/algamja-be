@@ -1,5 +1,7 @@
 package org.teamalilm.alilmbe.global.security.service.oAuth2.data
 
+import org.teamalilm.alilmbe.domain.member.Member
+
 class OAuth2Attribute(
     private val attributes: Map<String, Any>,
     private val provider: String,
@@ -24,12 +26,14 @@ class OAuth2Attribute(
 
     fun toEntity(): Member {
         return Member(
+            id = Member.MemberId(null),
             provider = Provider.from(this.provider),
             providerId = attributes[attributeKey] as Long,
             email = this._email,
             phoneNumber = this.phoneNumber,
             nickname = this.nickname,
-            role = Role.MEMBER
+            role = Member.Role.MEMBER
+
         )
     }
 

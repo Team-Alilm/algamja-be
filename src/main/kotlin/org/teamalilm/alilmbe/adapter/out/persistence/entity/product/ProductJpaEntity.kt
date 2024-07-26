@@ -5,6 +5,7 @@ import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
 @Entity
 @Table(
+    name = "product",
     uniqueConstraints = [UniqueConstraint(
         name = "tag_key_number_size_color",
         columnNames = ["store", "number", "option1", "option2", "option3"]

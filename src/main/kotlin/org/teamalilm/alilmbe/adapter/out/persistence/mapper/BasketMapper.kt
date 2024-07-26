@@ -19,7 +19,7 @@ class BasketMapper {
         )
     }
 
-    fun mapToDomainEntity(basketJpaEntity: BasketJpaEntity?): Basket? {
+    fun mapToDomainEntityOrNull(basketJpaEntity: BasketJpaEntity?): Basket? {
         basketJpaEntity ?: return null
 
         return Basket(

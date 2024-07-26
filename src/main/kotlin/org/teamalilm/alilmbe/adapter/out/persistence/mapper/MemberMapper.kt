@@ -18,4 +18,30 @@ class MemberMapper {
             role = member.role
         )
     }
+
+    fun mapToDomainEntityOrNull(memberJpaEntity: MemberJpaEntity?) : Member? {
+        memberJpaEntity ?: return null
+
+        return Member(
+            id = Member.MemberId(memberJpaEntity.id),
+            email = memberJpaEntity.email,
+            phoneNumber = memberJpaEntity.phoneNumber,
+            nickname = memberJpaEntity.nickname,
+            providerId = memberJpaEntity.providerId,
+            provider = memberJpaEntity.provider,
+            role = memberJpaEntity.role
+        )
+    }
+
+    fun mapToDomainEntity(memberJpaEntity: MemberJpaEntity) : Member {
+        return Member(
+            id = Member.MemberId(memberJpaEntity.id),
+            email = memberJpaEntity.email,
+            phoneNumber = memberJpaEntity.phoneNumber,
+            nickname = memberJpaEntity.nickname,
+            providerId = memberJpaEntity.providerId,
+            provider = memberJpaEntity.provider,
+            role = memberJpaEntity.role
+        )
+    }
 }
