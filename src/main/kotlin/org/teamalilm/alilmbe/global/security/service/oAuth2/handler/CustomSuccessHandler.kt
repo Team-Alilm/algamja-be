@@ -52,6 +52,7 @@ class CustomSuccessHandler(
                 null -> saveMember(attributes)
                 else -> updateMember(attributes, member)
             }
+            log.info("member: $member")
 
             val memberId = member.id
             val jwt = jwtUtil.createJwt(memberId, 1000 * 60 * 60)

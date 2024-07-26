@@ -3,7 +3,7 @@ package org.teamalilm.alilmbe.web.adapter.error
 import org.springframework.validation.BindingResult
 
 class RequestValidateException(
-    val bindingResult: BindingResult
+    private val bindingResult: BindingResult
 ) : RuntimeException() {
 
     override val message: String
