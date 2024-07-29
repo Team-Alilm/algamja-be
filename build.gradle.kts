@@ -16,7 +16,7 @@ group = projectGroup
 version = applicationVersion
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
