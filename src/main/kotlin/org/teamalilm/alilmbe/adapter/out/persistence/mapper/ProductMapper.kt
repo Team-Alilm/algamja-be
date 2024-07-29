@@ -9,7 +9,7 @@ class ProductMapper {
 
     fun mapToJpaEntity(product: Product): ProductJpaEntity {
         return ProductJpaEntity(
-            id = product.id.value,
+            id = product.id?.value,
             number = product.number,
             name = product.name,
             brand = product.brand,
@@ -28,7 +28,7 @@ class ProductMapper {
         productJpaEntity ?: return null
 
         return Product(
-            id = Product.ProductId(productJpaEntity.id),
+            id = Product.ProductId(productJpaEntity.id!!),
             number = productJpaEntity.number,
             name = productJpaEntity.name,
             brand = productJpaEntity.brand,
@@ -45,7 +45,7 @@ class ProductMapper {
 
     fun mapToDomainEntity(productJpaEntity: ProductJpaEntity): Product {
         return Product(
-            id = Product.ProductId(productJpaEntity.id),
+            id = Product.ProductId(productJpaEntity.id!!),
             number = productJpaEntity.number,
             name = productJpaEntity.name,
             brand = productJpaEntity.brand,

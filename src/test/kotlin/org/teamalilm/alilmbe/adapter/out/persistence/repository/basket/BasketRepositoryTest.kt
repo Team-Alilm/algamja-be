@@ -83,8 +83,8 @@ class BasketRepositoryTest @Autowired constructor(
         assert(result.content.isNotEmpty())
 
         result.content.forEach {
-            val product = it.product
-            val count = it.count
+            val product = it.get("productJpaEntity", ProductJpaEntity::class.java)!!
+            val count = it.get("waitingCount", Long::class.java)!!
 
             println("count: $count")
             println(

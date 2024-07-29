@@ -24,16 +24,16 @@ class BasketMapper {
 
         return Basket(
             id = Basket.BasketId(basketJpaEntity.id),
-            memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id),
-            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id)
+            memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id!!),
+            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!)
         )
     }
 
     fun mapToDomainEntity(basketJpaEntity: BasketJpaEntity): Basket {
         return Basket(
             id = Basket.BasketId(basketJpaEntity.id),
-            memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id),
-            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id)
+            memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id!!),
+            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!)
         )
     }
 }

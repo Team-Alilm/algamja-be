@@ -9,10 +9,12 @@ import jakarta.validation.constraints.NotBlank
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Slice
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.application.port.`in`.use_case.BasketSliceUseCase
+import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
 
 @RestController
 @RequestMapping("/api/v1/baskets")
@@ -36,10 +38,67 @@ class BasketSliceController(
     fun productSlice(
         @ParameterObject
         @Valid
-        productListParameter: ProductListParameter
+        productListParameter: ProductListParameter,
 
+        bindingResult: BindingResult
     ): ResponseEntity<Slice<ProductListResponse>> {
-//        val pageRequest = PageRequest.of(
+        if (bindingResult.hasErrors()) {
+            throw RequestValidateException(bindingResult)
+        }
+        val command = BasketSliceUseCase.BasketListCommand.from(productListParameter)
+
+        val resultSlice = basketSliceUseCase.basketSlice(command)
+
+        return ResponseEntity.ok(resultSlice.map { ProductListResponse.from(it) })
+    }
+
+    @Schema(description = "상품 조회 파라미터")
+    data class ProductListParameter(
+        @NotBlank(message = "사이즈는 필수에요.")
+        @Min(value = 1, message = "사이즈는 1 이상이어야 합니다.")
+        @Schema(description = "페이지 사이즈", defaultValue = "10")
+        val size: Int,
+
+        @NotBlank(message = "페이지 번호는 필수에요.")
+        @Schema(description = "페이지 번호", defaultValue = "0")
+        @Min(value = 0, message = "페이지 번호는 1 이상이어야 합니다.")
+        val page: Int
+    )
+
+    data class ProductListResponse(
+        val id: Long,
+        val number: Long,
+        val name: String,
+        val brand: String,
+        val imageUrl: String,
+        val category: String,
+        val price: Int,
+        val option1: String,
+        val option2: String?,
+        val option3: String?,
+        val waitingCount: Long,
+    ) {
+
+        companion object {
+            fun from(result: BasketSliceUseCase.BasketListResult): ProductListResponse {
+                return ProductListResponse(
+                    id = result.id,
+                    number = result.number,
+                    name = result.name,
+                    brand = result.brand,
+                    imageUrl = result.imageUrl,
+                    category = result.category,
+                    price = result.price,
+                    option1 = result.option1,
+                    option2 = result.option2,
+                    option3 = result.option3,
+                    waitingCount = result.waitingCount,
+                )
+            }
+        }
+    }
+
+    //        val pageRequest = PageRequest.of(
 //            productListParameter.page,
 //            productListParameter.size,
 //            Sort.by(Sort.Direction.DESC, "id")
@@ -62,33 +121,4 @@ class BasketSliceController(
 //                oldestCreationTime = it.oldestCreationTime
 //            )
 //        }
-
-        return ResponseEntity.ok(null)
-    }
-
-    @Schema(description = "상품 조회 파라미터")
-    data class ProductListParameter(
-        @NotBlank(message = "사이즈는 필수에요.")
-        @Min(value = 1, message = "사이즈는 1 이상이어야 합니다.")
-        @Schema(description = "페이지 사이즈", defaultValue = "10")
-        val size: Int,
-
-        @NotBlank(message = "페이지 번호는 필수에요.")
-        @Schema(description = "페이지 번호", defaultValue = "0")
-        @Min(value = 0, message = "페이지 번호는 1 이상이어야 합니다.")
-        val page: Int
-    )
-
-    data class ProductListResponse(
-        val id: Long,
-        val name: String,
-        val brand: String,
-        val imageUrl: String,
-        val category: String,
-        val price: Int,
-        val productInfo: String,
-        val waitingCount: Long,
-        val oldestCreationTime: Long
-    )
-
 }
