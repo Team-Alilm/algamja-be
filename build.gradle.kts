@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "1.9.21"
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-    kotlin("plugin.spring")
-    kotlin("plugin.jpa")
+    kotlin("plugin.spring") version "1.9.21"
+    kotlin("plugin.jpa") version "1.9.21"
     kotlin("kapt") version "1.9.21"
 }
 
@@ -56,6 +56,7 @@ dependencies {
 
     // jsoup
     implementation("org.jsoup:jsoup:1.17.2")
+    implementation("org.wiremock:wiremock-")
 
     // scheduler
     implementation("org.springframework.boot:spring-boot-starter-quartz")
@@ -71,6 +72,7 @@ dependencies {
 
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.2")
     // querydsl
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
@@ -122,5 +124,11 @@ tasks.named("clean") {
 }
 
 kapt {
-    generateStubs = true
+    correctErrorTypes = true
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.Embeddable")
+    annotation("jakarta.persistence.MappedSuperclass")
 }

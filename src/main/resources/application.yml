@@ -5,7 +5,8 @@ spring:
         - local
       prod:
         - prod
-
+    default: local
+    
   quartz:
     job-store-type: jdbc
 
