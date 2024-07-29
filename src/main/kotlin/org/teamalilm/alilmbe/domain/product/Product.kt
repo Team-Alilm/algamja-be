@@ -3,7 +3,7 @@ package org.teamalilm.alilmbe.domain.product
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 
 class Product (
-    val id: ProductId,
+    val id: ProductId?,
     val number: Long,
     val name: String,
     val brand: String,
@@ -27,6 +27,6 @@ class Product (
         require(waitingCount >= 0) { "Product waiting count must be non-negative" }
     }
 
-    data class ProductId(val value: Long?)
+    data class ProductId(val value: Long)
 
 }

@@ -45,6 +45,8 @@ class JwtFilter(
                 log.info("authToken : $authToken")
 
                 SecurityContextHolder.getContext().authentication = authToken
+
+                log.info("SecurityContextHolder.getContext().authentication : ${SecurityContextHolder.getContext().authentication}")
             } else {
                 logger.info("JWT claims is empty, 잘못된 JWT 토큰 입니다. token : $parserToken")
             }

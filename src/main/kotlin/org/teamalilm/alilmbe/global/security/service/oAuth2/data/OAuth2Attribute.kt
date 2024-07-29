@@ -26,7 +26,7 @@ class OAuth2Attribute(
 
     fun toEntity(): Member {
         return Member(
-            id = Member.MemberId(null),
+            id = null,
             provider = Provider.from(this.provider),
             providerId = attributes[attributeKey] as Long,
             email = this._email,

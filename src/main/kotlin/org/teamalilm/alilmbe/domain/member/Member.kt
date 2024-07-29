@@ -3,7 +3,7 @@ package org.teamalilm.alilmbe.domain.member
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 
 class Member(
-    val id: MemberId,
+    val id: MemberId?,
     val provider: Provider,
     val providerId: Long,
     val email: String,
@@ -23,7 +23,7 @@ class Member(
         this.phoneNumber = newPhoneNumber
     }
 
-    data class MemberId(val value: Long?)
+    data class MemberId(val value: Long) {}
 
     enum class Role(
         val key: String

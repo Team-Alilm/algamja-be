@@ -1,8 +1,8 @@
 package org.teamalilm.alilmbe.application.port.`in`.use_case
 
 import org.teamalilm.alilmbe.adapter.`in`.web.controller.AlilmRegisteredController.*
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.MemberJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
-import org.teamalilm.alilmbe.domain.member.Member
 
 interface AlilmRegistrationUseCase {
 
@@ -19,11 +19,11 @@ interface AlilmRegistrationUseCase {
         val option1: String,
         val option2: String?,
         val option3: String?,
-        val member: Member
+        val memberJpaEntity: MemberJpaEntity
     ) {
 
         companion object {
-            fun from(request: AlilmRegistrationRequest, member: Member): AlilmRegistrationCommand {
+            fun from(request: AlilmRegistrationRequest, memberJpaEntity: MemberJpaEntity): AlilmRegistrationCommand {
                 return AlilmRegistrationCommand(
                     number = request.number,
                     name = request.name,
@@ -35,7 +35,7 @@ interface AlilmRegistrationUseCase {
                     option1 = request.option1,
                     option2 = request.option2,
                     option3 = request.option3,
-                    member = member
+                    memberJpaEntity = memberJpaEntity
                 )
             }
         }

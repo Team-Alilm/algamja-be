@@ -3,6 +3,8 @@ package org.teamalilm.alilmbe.adapter.out.persistence.adapter
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.MemberJpaEntity
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.BasketMapper
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.MemberMapper
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.ProductMapper
@@ -11,29 +13,29 @@ import org.teamalilm.alilmbe.adapter.out.persistence.repository.basket.SpringDat
 import org.teamalilm.alilmbe.application.port.out.Basket.AddBasketPort
 import org.teamalilm.alilmbe.application.port.out.Basket.LoadBasketPort
 import org.teamalilm.alilmbe.application.port.out.product.LoadBasketSlicePort
-import org.teamalilm.alilmbe.application.port.out.product.ProductBasketCountProjection
 import org.teamalilm.alilmbe.domain.basket.Basket
 import org.teamalilm.alilmbe.domain.member.Member
+import org.teamalilm.alilmbe.domain.member.Member.*
 import org.teamalilm.alilmbe.domain.product.Product
+import org.teamalilm.alilmbe.domain.product.Product.*
 
 @Component
 class BasketPersistenceAdapter(
     private val springDataBasketRepository: SpringDataBasketRepository,
     private val basketRepository: BasketRepository,
     private val basketMapper: BasketMapper,
-    private val memberMapper: MemberMapper,
     private val productMapper: ProductMapper
 ) : AddBasketPort, LoadBasketPort, LoadBasketSlicePort {
 
     override fun addBasket(
         basket: Basket,
-        member: Member,
+        memberJpaEntity: MemberJpaEntity,
         product: Product
     ): Basket {
         val basketJpaEntity = springDataBasketRepository.save(
                 basketMapper.mapToJpaEntity(
                 basket,
-                memberMapper.mapToJpaEntity(member),
+                    memberJpaEntity,
                 productMapper.mapToJpaEntity(product)
             )
         )
@@ -42,19 +44,33 @@ class BasketPersistenceAdapter(
     }
 
     override fun loadBasket(
-        memberId: Member.MemberId,
-        productId: Product.ProductId
+        memberId: MemberId,
+        productId: ProductId
     ): Basket? {
         val basketJpaEntity = springDataBasketRepository.findByMemberJpaEntityIdAndProductJpaEntityId(
-            memberId = memberId,
-            productId = productId
+            memberJpaEntityId = memberId.value,
+            productJpaEntityId = productId.value
         )
 
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
-    override fun loadBasketSlice(pageRequest: PageRequest): Slice<ProductBasketCountProjection> {
-        return basketRepository.loadBasketSlice(pageRequest)
+    override fun loadBasketSlice(pageRequest: PageRequest): Slice<BasketCountData> {
+        val basketCountProjectionSlice = basketRepository.loadBasketSlice(pageRequest)
+
+        return basketCountProjectionSlice.map {
+            val productJpaEntity = it.get("productJpaEntity", ProductJpaEntity::class.java)!!
+            val waitingCount = it.get("waitingCount", Long::class.java)!!
+
+            BasketCountData(
+                product = productMapper.mapToDomainEntity(productJpaEntity),
+                waitingCount = waitingCount
+            )
+        }
     }
 
+    data class BasketCountData(
+        val product: Product,
+        val waitingCount: Long
+    )
 }

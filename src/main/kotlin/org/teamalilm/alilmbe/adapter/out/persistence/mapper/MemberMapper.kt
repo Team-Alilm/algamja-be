@@ -9,7 +9,7 @@ class MemberMapper {
 
     fun mapToJpaEntity(member: Member) : MemberJpaEntity {
         return MemberJpaEntity(
-            id = member.id.value,
+            id = member.id?.value,
             email = member.email,
             phoneNumber = member.phoneNumber,
             nickname = member.nickname,
@@ -23,7 +23,7 @@ class MemberMapper {
         memberJpaEntity ?: return null
 
         return Member(
-            id = Member.MemberId(memberJpaEntity.id),
+            id = Member.MemberId(memberJpaEntity.id!!),
             email = memberJpaEntity.email,
             phoneNumber = memberJpaEntity.phoneNumber,
             nickname = memberJpaEntity.nickname,
@@ -35,7 +35,7 @@ class MemberMapper {
 
     fun mapToDomainEntity(memberJpaEntity: MemberJpaEntity) : Member {
         return Member(
-            id = Member.MemberId(memberJpaEntity.id),
+            id = Member.MemberId(memberJpaEntity.id!!),
             email = memberJpaEntity.email,
             phoneNumber = memberJpaEntity.phoneNumber,
             nickname = memberJpaEntity.nickname,
