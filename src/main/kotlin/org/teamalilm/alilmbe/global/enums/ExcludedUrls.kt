@@ -12,7 +12,7 @@ enum class ExcludedUrls(
     API_DOCS("/api-docs/**", null),
     HEALTH_CHECK("/health-check", HttpMethod.GET),
     FAVICON("/favicon.ico", null),
-    BASKET("/api/v1/products", HttpMethod.GET);
+    BASKET("/api/v1/baskets", HttpMethod.GET);
 
     val path: String
         get() = _path
