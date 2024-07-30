@@ -6,18 +6,23 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.util.ContentCachingRequestWrapper
 import org.springframework.web.util.ContentCachingResponseWrapper
+import kotlin.math.log
 
 class LoggingFilter : OncePerRequestFilter() {
 
     private val excludedUrls = listOf(
-        "/swagger-ui.html",   // Swagger UI
-        "/v3/api-docs",       // Swagger JSON endpoint
-        "/swagger-resources"  // Swagger resources endpoint
+        "html",
+        "docs",
+        "swagger",
+        "config"
     )
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         // Check if the request URL is excluded
+        logger.info("request.requestURI : ${request.requestURI}")
+
         if (isExcludedUrl(request.requestURI)) {
+            logger.info("isExcludedUrl request.requestURI : ${request.requestURI}")
             filterChain.doFilter(request, response)
             return
         }
@@ -38,7 +43,7 @@ class LoggingFilter : OncePerRequestFilter() {
     }
 
     private fun isExcludedUrl(requestUri: String): Boolean {
-        return excludedUrls.any { requestUri.startsWith(it) }
+        return excludedUrls.any { requestUri.contains(it) }
     }
 
     private fun logRequest(request: ContentCachingRequestWrapper) {
