@@ -47,10 +47,6 @@ class MemberJpaEntity(
     var id: Long? = null
 ) : BaseEntity(), UserDetails {
 
-    fun updatePhoneNumber(phoneNumber: String) {
-        this.phoneNumber = phoneNumber
-    }
-
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return Collections.emptyList()
     }
