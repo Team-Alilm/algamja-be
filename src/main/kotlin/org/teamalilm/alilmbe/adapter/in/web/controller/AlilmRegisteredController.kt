@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.MemberJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUseCase
-import org.teamalilm.alilmbe.domain.member.Member
 import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
 
 @RestController

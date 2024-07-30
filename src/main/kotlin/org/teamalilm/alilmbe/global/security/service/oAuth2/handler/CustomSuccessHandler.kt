@@ -43,8 +43,6 @@ class CustomSuccessHandler(
             val attributes = oAuth2User.attributes
             log.info("attributes: $attributes")
 
-            log.info("attributes: ${attributes[""]}")
-
             val phoneNumber = attributes["phoneNumber"]?.toString()
                 ?: throw IllegalStateException("OAuth2 응답에 이메일이 없습니다.")
 
