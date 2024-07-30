@@ -1,8 +1,6 @@
-package org.teamalilm.alilmbe.adapter.out.persistence.entity.basket
+package org.teamalilm.alilmbe.adapter.out.persistence.entity
 
 import jakarta.persistence.*
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.MemberJpaEntity
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductJpaEntity
 import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
 @Entity
@@ -15,7 +13,6 @@ import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
     ]
 )
 class BasketJpaEntity(
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

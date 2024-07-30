@@ -1,9 +1,9 @@
 package org.teamalilm.alilmbe.adapter.out.persistence.mapper
 
 import org.springframework.stereotype.Component
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.basket.BasketJpaEntity
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.MemberJpaEntity
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductJpaEntity
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.BasketJpaEntity
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.ProductJpaEntity
 import org.teamalilm.alilmbe.domain.basket.Basket
 import org.teamalilm.alilmbe.domain.member.Member
 import org.teamalilm.alilmbe.domain.product.Product

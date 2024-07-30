@@ -4,5 +4,7 @@ import org.teamalilm.alilmbe.domain.member.Member
 
 interface LoadMemberPort {
 
-    fun loadMember(email: String): Member?
+    fun loadMember(phoneNumber: String): Member?
+
+    fun loadMember(id: Long): Member?
 }
