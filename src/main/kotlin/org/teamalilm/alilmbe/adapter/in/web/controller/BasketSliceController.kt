@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.application.port.`in`.use_case.BasketSliceUseCase
-import org.teamalilm.alilmbe.web.adapter.error.RequestValidateException
+import org.teamalilm.alilmbe.common.error.RequestValidateException
 
 @RestController
 @RequestMapping("/api/v1/baskets")

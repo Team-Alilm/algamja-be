@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.web.adapter.error
+package org.teamalilm.alilmbe.common.error
 
 import org.slf4j.LoggerFactory
 import org.springframework.validation.BindingResult
@@ -12,9 +12,10 @@ class RequestValidateException(
     override val message: String
         get() {
             val errorMessage = bindingResult.allErrors.joinToString {
-                log.error("error log : ${it.defaultMessage}")
                 it.defaultMessage ?: ""
             }
+
             return errorMessage
         }
+
 }

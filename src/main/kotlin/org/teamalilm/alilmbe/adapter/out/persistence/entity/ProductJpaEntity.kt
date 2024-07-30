@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.adapter.out.persistence.entity.product
+package org.teamalilm.alilmbe.adapter.out.persistence.entity
 
 import jakarta.persistence.*
 import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
@@ -49,4 +49,10 @@ class ProductJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-) : BaseEntity()
+) : BaseEntity() {
+
+    enum class Store {
+
+        MUSINSA;
+    }
+}

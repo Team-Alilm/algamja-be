@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.teamalilm.alilmbe.global.enums.ExcludedUrls
-import org.teamalilm.alilmbe.global.security.service.CustomUserDetailsService
+import org.teamalilm.alilmbe.application.service.security.CustomUserDetailsService
 
 @Component
 class JwtFilter(

@@ -1,5 +1,6 @@
 package org.teamalilm.alilmbe.adapter.out.persistence.adapter
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.MemberMapper
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.member.SpringDataMemberRepository
@@ -14,9 +15,15 @@ class MemberPersistenceAdapter (
 ) : LoadMemberPort, AddMemberPort {
 
     override fun loadMember(phoneNumber: String): Member? {
-        val memberJpaEntity = springDataMemberRepository.findByPhoneNumberAndIsDeleteFalse(phoneNumber)
+        return memberMapper.mapToDomainEntityOrNull(
+            springDataMemberRepository.findByPhoneNumberAndIsDeleteFalse(phoneNumber)
+        )
+    }
 
-        return memberMapper.mapToDomainEntityOrNull(memberJpaEntity)
+    override fun loadMember(id: Long): Member? {
+        return memberMapper.mapToDomainEntityOrNull(
+            springDataMemberRepository.findByIdOrNull(id)
+        )
     }
 
     override fun addMember(member: Member): Member {

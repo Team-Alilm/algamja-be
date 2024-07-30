@@ -3,8 +3,8 @@ package org.teamalilm.alilmbe.adapter.out.persistence.adapter
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.member.MemberJpaEntity
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.ProductJpaEntity
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
+import org.teamalilm.alilmbe.adapter.out.persistence.entity.ProductJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.BasketMapper
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.ProductMapper
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.basket.BasketRepository

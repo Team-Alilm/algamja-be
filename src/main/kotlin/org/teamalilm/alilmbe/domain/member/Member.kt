@@ -9,7 +9,6 @@ class Member(
     val email: String,
     var phoneNumber: String,
     var nickname: String,
-    val role: Role,
     ) {
 
     init {

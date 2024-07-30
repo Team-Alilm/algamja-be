@@ -88,7 +88,7 @@ class CustomSuccessHandler(
                 email = email,
                 phoneNumber = phoneNumber,
                 nickname = nickname,
-                role = Member.Role.MEMBER
+                role = listOf(Member.Role.MEMBER)
             )
         )
     }
