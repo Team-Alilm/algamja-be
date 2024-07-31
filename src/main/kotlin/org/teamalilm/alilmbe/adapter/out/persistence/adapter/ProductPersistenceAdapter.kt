@@ -1,15 +1,12 @@
 package org.teamalilm.alilmbe.adapter.out.persistence.adapter
 
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.ProductMapper
-import org.teamalilm.alilmbe.adapter.out.persistence.repository.product.ProductRepository
-import org.teamalilm.alilmbe.adapter.out.persistence.repository.product.SpringDataProductRepository
-import org.teamalilm.alilmbe.application.port.out.product.AddProductPort
-import org.teamalilm.alilmbe.application.port.out.product.LoadProductPort
-import org.teamalilm.alilmbe.domain.product.Product
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.ProductRepository
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
+import org.teamalilm.alilmbe.application.port.out.AddProductPort
+import org.teamalilm.alilmbe.application.port.out.LoadProductPort
+import org.teamalilm.alilmbe.domain.Product
 
 @Component
 class ProductPersistenceAdapter(
@@ -29,7 +26,7 @@ class ProductPersistenceAdapter(
 
     override fun loadProduct(
         number: Long,
-        store: Store,
+        store: Product.Store,
         option1: String,
         option2: String?,
         option3: String?,

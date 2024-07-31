@@ -4,16 +4,15 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUseCase
 import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUseCase.*
-import org.teamalilm.alilmbe.application.port.out.Basket.AddBasketPort
-import org.teamalilm.alilmbe.application.port.out.Basket.LoadBasketPort
-import org.teamalilm.alilmbe.application.port.out.product.AddProductPort
-import org.teamalilm.alilmbe.application.port.out.product.LoadProductPort
+import org.teamalilm.alilmbe.application.port.out.AddBasketPort
+import org.teamalilm.alilmbe.application.port.out.LoadBasketPort
+import org.teamalilm.alilmbe.application.port.out.AddProductPort
+import org.teamalilm.alilmbe.application.port.out.LoadProductPort
 import org.teamalilm.alilmbe.common.error.BasketAlreadyExistsException
 import org.teamalilm.alilmbe.common.error.ErrorMessage
-import org.teamalilm.alilmbe.domain.basket.Basket
-import org.teamalilm.alilmbe.domain.member.Member
-import org.teamalilm.alilmbe.domain.member.Member.*
-import org.teamalilm.alilmbe.domain.product.Product
+import org.teamalilm.alilmbe.domain.Basket
+import org.teamalilm.alilmbe.domain.Member.*
+import org.teamalilm.alilmbe.domain.Product
 
 @Service
 @Transactional(readOnly = true)

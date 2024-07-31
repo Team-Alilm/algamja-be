@@ -1,6 +1,7 @@
 package org.teamalilm.alilmbe.adapter.out.persistence.entity
 
 import jakarta.persistence.*
+import org.teamalilm.alilmbe.domain.Product
 import org.teamalilm.alilmbe.global.jpa.base.BaseEntity
 
 @Entity
@@ -26,7 +27,7 @@ class ProductJpaEntity(
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val store: Store,
+    val store: Product.Store,
 
     @Column(nullable = false)
     val category: String,
@@ -49,10 +50,4 @@ class ProductJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-) : BaseEntity() {
-
-    enum class Store {
-
-        MUSINSA;
-    }
-}
+) : BaseEntity()

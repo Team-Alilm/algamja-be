@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.application.port.`in`.use_case.BasketSliceUseCase
 import org.teamalilm.alilmbe.application.port.`in`.use_case.BasketSliceUseCase.*
-import org.teamalilm.alilmbe.application.port.out.product.LoadBasketSlicePort
+import org.teamalilm.alilmbe.application.port.out.LoadBasketSlicePort
 
 @Service
 @Transactional(readOnly = true)

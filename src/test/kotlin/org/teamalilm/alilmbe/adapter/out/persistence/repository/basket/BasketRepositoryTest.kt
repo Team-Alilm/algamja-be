@@ -9,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.BasketJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.ProductJpaEntity
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
-import org.teamalilm.alilmbe.adapter.out.persistence.repository.member.MemberRepository
-import org.teamalilm.alilmbe.adapter.out.persistence.repository.product.ProductRepository
-import org.teamalilm.alilmbe.domain.member.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.BasketRepository
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.MemberRepository
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.ProductRepository
+import org.teamalilm.alilmbe.domain.Member
+import org.teamalilm.alilmbe.domain.Product
+import org.teamalilm.alilmbe.domain.Role
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 
 @DataJpaTest
@@ -31,7 +33,7 @@ class BasketRepositoryTest @Autowired constructor(
             name = "Product 1",
             brand = "Brand 1",
             imageUrl = "https://image.url",
-            store = Store.MUSINSA,
+            store = Product.Store.MUSINSA,
             category = "Category 1",
             price = 10000,
             option1 = "Option 1",
@@ -43,7 +45,7 @@ class BasketRepositoryTest @Autowired constructor(
             name = "Product 2",
             brand = "Brand 2",
             imageUrl = "https://image.url",
-            store = Store.MUSINSA,
+            store = Product.Store.MUSINSA,
             category = "Category 2",
             price = 10000,
             option1 = "Option 1",
@@ -58,7 +60,6 @@ class BasketRepositoryTest @Autowired constructor(
             email = "cloudwi@naver.com",
             phoneNumber = "01012345678",
             nickname = "cloudwi",
-            roleJpaEntity = Member.Role.MEMBER,
         )
         val member2 = MemberJpaEntity(
             provider = Provider.KAKAO,
@@ -66,7 +67,6 @@ class BasketRepositoryTest @Autowired constructor(
             email = "cloudwi@naver.com,",
             phoneNumber = "0101236787",
             nickname = "cloudwi",
-            roleJpaEntity = Member.Role.MEMBER,
         )
         memberRepository.saveAll(listOf(member1, member2))
 

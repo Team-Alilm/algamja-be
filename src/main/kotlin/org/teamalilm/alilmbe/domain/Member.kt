@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.domain.member
+package org.teamalilm.alilmbe.domain
 
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 
@@ -24,11 +24,4 @@ class Member(
 
     data class MemberId(val value: Long) {}
 
-    enum class Role(
-        val key: String
-    ) {
-        ADMIN("ROLE_ADMIN"),
-        MEMBER("ROLE_USER"),
-        GUEST("ROLE_GUEST")
-    }
 }

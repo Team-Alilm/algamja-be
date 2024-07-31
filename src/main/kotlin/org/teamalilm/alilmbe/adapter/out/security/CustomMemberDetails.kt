@@ -2,21 +2,19 @@ package org.teamalilm.alilmbe.adapter.out.security
 
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.teamalilm.alilmbe.domain.member.Member
-
+import org.teamalilm.alilmbe.domain.Member
 
 /**
  * Custom implementation of UserDetails to integrate with Spring Security.
  */
 class CustomMemberDetails(
-    private val member: Member
+    val member: Member
 ) : UserDetails {
 
-    override fun getAuthorities(): Collection<GrantedAuthority> {
+    override fun getAuthorities(): Collection<GrantedAuthority>? {
         // If you have roles or permissions, return them here.
         // Returning an empty list for simplicity.
-        return member.role.map { SimpleGrantedAuthority(it.key) }
+        return null
     }
 
     override fun getPassword(): String? {

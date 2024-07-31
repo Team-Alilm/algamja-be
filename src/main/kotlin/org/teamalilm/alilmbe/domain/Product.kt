@@ -1,6 +1,4 @@
-package org.teamalilm.alilmbe.domain.product
-
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
+package org.teamalilm.alilmbe.domain
 
 class Product (
     val id: ProductId?,
@@ -29,4 +27,9 @@ class Product (
 
     data class ProductId(val value: Long)
 
+    enum class Store {
+
+        MUSINSA;
+
+    }
 }

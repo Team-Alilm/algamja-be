@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.adapter.out.security.CustomMemberDetails
-import org.teamalilm.alilmbe.application.port.out.member.LoadMemberPort
+import org.teamalilm.alilmbe.application.port.out.LoadMemberPort
 import org.teamalilm.alilmbe.common.error.NotFoundMemberException
 
 @Service

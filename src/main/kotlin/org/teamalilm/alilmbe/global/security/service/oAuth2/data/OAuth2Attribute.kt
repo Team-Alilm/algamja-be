@@ -1,6 +1,6 @@
 package org.teamalilm.alilmbe.global.security.service.oAuth2.data
 
-import org.teamalilm.alilmbe.domain.member.Member
+import org.teamalilm.alilmbe.domain.Member
 
 class OAuth2Attribute(
     private val attributes: Map<String, Any>,
@@ -32,8 +32,6 @@ class OAuth2Attribute(
             email = this._email,
             phoneNumber = this.phoneNumber,
             nickname = this.nickname,
-            role = Member.Role.MEMBER
-
         )
     }
 

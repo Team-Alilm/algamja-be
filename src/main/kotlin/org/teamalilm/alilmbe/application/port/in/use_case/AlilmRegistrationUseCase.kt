@@ -2,7 +2,7 @@ package org.teamalilm.alilmbe.application.port.`in`.use_case
 
 import org.teamalilm.alilmbe.adapter.`in`.web.controller.AlilmRegisteredController.*
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
+import org.teamalilm.alilmbe.domain.Product
 
 interface AlilmRegistrationUseCase {
 
@@ -12,7 +12,7 @@ interface AlilmRegistrationUseCase {
         val number: Long,
         val name: String,
         val brand: String,
-        val store: Store,
+        val store: Product.Store,
         val imageUrl: String,
         val category: String,
         val price: Int,

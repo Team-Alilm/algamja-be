@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 import org.teamalilm.alilmbe.application.port.`in`.use_case.CrawlingUseCase
-import org.teamalilm.alilmbe.application.port.out.ProductDataGateway
-import org.teamalilm.alilmbe.application.port.out.ProductDataGatewayRequest
+import org.teamalilm.alilmbe.application.port.out.ProductCrawlingGateway
+import org.teamalilm.alilmbe.application.port.out.ProductCrawlingGateway.*
+import org.teamalilm.alilmbe.domain.Product
 import org.teamalilm.alilmbe.global.quartz.data.SoldoutCheckResponse
 import java.net.URI
 import java.net.URLDecoder
@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets
 @Service
 @Transactional(readOnly = true)
 class CrawlingService(
-    private val productDataGateway: ProductDataGateway,
+    private val productCrawlingGateway: ProductCrawlingGateway,
     private val restClient: RestClient
 ) : CrawlingUseCase {
 
@@ -31,7 +31,7 @@ class CrawlingService(
     override fun productCrawling(command: CrawlingUseCase.ProductCrawlingCommand): CrawlingUseCase.CrawlingResult {
         val decodedUrl = decodeUrl(command.url)
         val productNumber = extractProductNumber(decodedUrl)
-        val document = productDataGateway.invoke(ProductDataGatewayRequest(decodedUrl)).document
+        val document = productCrawlingGateway.crawling(ProductDataGatewayRequest(decodedUrl)).document
 
         val (category, name, price) = parseDescription(document)
         val soldoutCheckResponse = fetchSoldoutCheckResponse(decodedUrl)
@@ -45,7 +45,7 @@ class CrawlingService(
             imageUrl = fetchImageUrl(document),
             category = category,
             price = price,
-            store = Store.MUSINSA,
+            store = Product.Store.MUSINSA,
             option1List = options.first,
             option2List = options.second,
             option3List = options.third

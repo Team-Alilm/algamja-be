@@ -9,9 +9,11 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
-import org.teamalilm.alilmbe.application.port.out.member.AddMemberPort
-import org.teamalilm.alilmbe.application.port.out.member.LoadMemberPort
-import org.teamalilm.alilmbe.domain.member.Member
+import org.teamalilm.alilmbe.application.port.out.AddMemberPort
+import org.teamalilm.alilmbe.application.port.out.AddMemberRoleMappingPort
+import org.teamalilm.alilmbe.application.port.out.LoadMemberPort
+import org.teamalilm.alilmbe.domain.Member
+import org.teamalilm.alilmbe.domain.Role
 import org.teamalilm.alilmbe.global.email.service.EmailService
 import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
@@ -23,9 +25,10 @@ private const val BASE_URL = """https://alilm.co.kr"""
 @Transactional(readOnly = true)
 class CustomSuccessHandler(
     private val jwtUtil: JwtUtil,
-    private val slackService: SlackService,
     private val loadMemberPort: LoadMemberPort,
     private val addMemberPort: AddMemberPort,
+    private val addMemberRoleMappingPort: AddMemberRoleMappingPort,
+    private val slackService: SlackService,
     private val emailService: EmailService
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
@@ -48,6 +51,7 @@ class CustomSuccessHandler(
 
             val member = when (val member = loadMemberPort.loadMember(phoneNumber)) {
                 null -> saveMember(attributes)
+                    .also { saveMemberRoleMapping(it) }
                 else -> updateMember(attributes, member)
             }
             log.info("member: $member")
@@ -88,8 +92,18 @@ class CustomSuccessHandler(
                 email = email,
                 phoneNumber = phoneNumber,
                 nickname = nickname,
-                role = listOf(Member.Role.MEMBER)
             )
+        )
+    }
+
+    private fun saveMemberRoleMapping(member: Member) {
+        val role = Role(
+            roleType = Role.RoleType.ROLE_USER
+        )
+
+        addMemberRoleMappingPort.addMemberRoleMapping(
+            member = member,
+            role = role
         )
     }
 
