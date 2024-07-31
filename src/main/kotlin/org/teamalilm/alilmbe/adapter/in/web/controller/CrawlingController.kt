@@ -5,16 +5,15 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
-import org.slf4j.LoggerFactory
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 import org.teamalilm.alilmbe.application.port.`in`.use_case.CrawlingUseCase
 import org.teamalilm.alilmbe.common.error.RequestValidateException
+import org.teamalilm.alilmbe.domain.Product
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -22,8 +21,6 @@ import org.teamalilm.alilmbe.common.error.RequestValidateException
 class CrawlingController(
     private val crawlingUseCase: CrawlingUseCase
 ) {
-
-    private val log = LoggerFactory.getLogger(CrawlingController::class.java)
 
     @Operation(
         summary = "상품 크롤링을 실행하는 API",
@@ -73,7 +70,7 @@ class CrawlingController(
         val imageUrl: String,
         val category: String,
         val price: Int,
-        val store: Store,
+        val store: Product.Store,
         val option1List: List<String>,
         val option2List: List<String>,
         val option3List: List<String>

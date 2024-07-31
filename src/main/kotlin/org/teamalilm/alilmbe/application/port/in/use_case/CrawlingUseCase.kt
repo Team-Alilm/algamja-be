@@ -1,7 +1,7 @@
 package org.teamalilm.alilmbe.application.port.`in`.use_case
 
 import org.teamalilm.alilmbe.adapter.`in`.web.controller.CrawlingController.CrawlingRequest
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
+import org.teamalilm.alilmbe.domain.Product
 
 interface CrawlingUseCase {
 
@@ -25,7 +25,7 @@ interface CrawlingUseCase {
         val imageUrl: String,
         val category: String,
         val price: Int,
-        val store: Store,
+        val store: Product.Store,
         val option1List: List<String>,
         val option2List: List<String>,
         val option3List: List<String>

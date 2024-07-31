@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.adapter.out.persistence.repository.basket
+package org.teamalilm.alilmbe.adapter.out.persistence.repository
 
 import jakarta.persistence.Tuple
 import org.springframework.data.domain.PageRequest

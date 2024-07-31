@@ -4,9 +4,9 @@ import org.springframework.stereotype.Component
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.BasketJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.ProductJpaEntity
-import org.teamalilm.alilmbe.domain.basket.Basket
-import org.teamalilm.alilmbe.domain.member.Member
-import org.teamalilm.alilmbe.domain.product.Product
+import org.teamalilm.alilmbe.domain.Basket
+import org.teamalilm.alilmbe.domain.Member
+import org.teamalilm.alilmbe.domain.Product
 
 @Component
 class BasketMapper {

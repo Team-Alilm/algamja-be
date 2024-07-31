@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.product.Store
 import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUseCase
 import org.teamalilm.alilmbe.common.error.RequestValidateException
+import org.teamalilm.alilmbe.domain.Product
 
 @RestController
 @RequestMapping("/api/v1/alilms")
@@ -103,7 +103,7 @@ class AlilmRegisteredController(
             example = "MUSINSA",
             required = true
         )
-        val store: Store,
+        val store: Product.Store,
         @field:NotBlank(message = "옵션은 필수입니다.")
         @field:Schema(
             description = "옵션1",

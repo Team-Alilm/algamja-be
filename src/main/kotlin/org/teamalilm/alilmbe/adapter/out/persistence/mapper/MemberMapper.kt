@@ -2,7 +2,7 @@ package org.teamalilm.alilmbe.adapter.out.persistence.mapper
 
 import org.springframework.stereotype.Component
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
-import org.teamalilm.alilmbe.domain.member.Member
+import org.teamalilm.alilmbe.domain.Member
 
 @Component
 class MemberMapper {

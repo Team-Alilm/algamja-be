@@ -7,15 +7,15 @@ import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.ProductJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.BasketMapper
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.ProductMapper
-import org.teamalilm.alilmbe.adapter.out.persistence.repository.basket.BasketRepository
-import org.teamalilm.alilmbe.adapter.out.persistence.repository.basket.SpringDataBasketRepository
-import org.teamalilm.alilmbe.application.port.out.Basket.AddBasketPort
-import org.teamalilm.alilmbe.application.port.out.Basket.LoadBasketPort
-import org.teamalilm.alilmbe.application.port.out.product.LoadBasketSlicePort
-import org.teamalilm.alilmbe.domain.basket.Basket
-import org.teamalilm.alilmbe.domain.member.Member.*
-import org.teamalilm.alilmbe.domain.product.Product
-import org.teamalilm.alilmbe.domain.product.Product.*
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.BasketRepository
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.spring_data.SpringDataBasketRepository
+import org.teamalilm.alilmbe.application.port.out.AddBasketPort
+import org.teamalilm.alilmbe.application.port.out.LoadBasketPort
+import org.teamalilm.alilmbe.application.port.out.LoadBasketSlicePort
+import org.teamalilm.alilmbe.domain.Basket
+import org.teamalilm.alilmbe.domain.Member.*
+import org.teamalilm.alilmbe.domain.Product
+import org.teamalilm.alilmbe.domain.Product.*
 
 @Component
 class BasketPersistenceAdapter(

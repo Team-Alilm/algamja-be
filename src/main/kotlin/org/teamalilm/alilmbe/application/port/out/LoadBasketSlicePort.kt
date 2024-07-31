@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.application.port.out.product
+package org.teamalilm.alilmbe.application.port.out
 
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice

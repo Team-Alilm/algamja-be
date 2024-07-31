@@ -3,10 +3,10 @@ package org.teamalilm.alilmbe.adapter.out.persistence.adapter
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.MemberMapper
-import org.teamalilm.alilmbe.adapter.out.persistence.repository.member.SpringDataMemberRepository
-import org.teamalilm.alilmbe.application.port.out.member.AddMemberPort
-import org.teamalilm.alilmbe.application.port.out.member.LoadMemberPort
-import org.teamalilm.alilmbe.domain.member.Member
+import org.teamalilm.alilmbe.adapter.out.persistence.repository.spring_data.SpringDataMemberRepository
+import org.teamalilm.alilmbe.application.port.out.AddMemberPort
+import org.teamalilm.alilmbe.application.port.out.LoadMemberPort
+import org.teamalilm.alilmbe.domain.Member
 
 @Component
 class MemberPersistenceAdapter (

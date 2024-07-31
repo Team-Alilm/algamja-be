@@ -1,6 +1,6 @@
-package org.teamalilm.alilmbe.application.port.out.member
+package org.teamalilm.alilmbe.application.port.out
 
-import org.teamalilm.alilmbe.domain.member.Member
+import org.teamalilm.alilmbe.domain.Member
 
 interface LoadMemberPort {
 

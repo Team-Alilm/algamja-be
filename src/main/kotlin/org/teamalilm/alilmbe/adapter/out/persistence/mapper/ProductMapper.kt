@@ -2,7 +2,7 @@ package org.teamalilm.alilmbe.adapter.out.persistence.mapper
 
 import org.springframework.stereotype.Component
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.ProductJpaEntity
-import org.teamalilm.alilmbe.domain.product.Product
+import org.teamalilm.alilmbe.domain.Product
 
 @Component
 class ProductMapper {
