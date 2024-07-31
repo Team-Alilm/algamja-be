@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family-ec2:43",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:891377281535:task-definition/alilm-task-dev-family-ec2:36",
     "containerDefinitions": [
         {
             "name": "alilm-dev-container",
-            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:9192f498fa3dbda8ae92f9c43832a1b59e714c91",
+            "image": "891377281535.dkr.ecr.ap-northeast-2.amazonaws.com/alilm-dev-repository:31b5d1ae7da104d45f62777eb2288a1996a72ec3",
             "cpu": 0,
             "portMappings": [
                 {
@@ -35,8 +35,7 @@
                     "awslogs-create-group": "true",
                     "awslogs-region": "ap-northeast-2",
                     "awslogs-stream-prefix": "ecs"
-                },
-                "secretOptions": []
+                }
             },
             "systemControls": []
         }
@@ -44,7 +43,7 @@
     "family": "alilm-task-dev-family-ec2",
     "executionRoleArn": "arn:aws:iam::891377281535:role/ecsTaskExecutionRole",
     "networkMode": "bridge",
-    "revision": 43,
+    "revision": 36,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -77,13 +76,13 @@
     "requiresCompatibilities": [
         "EC2"
     ],
-    "cpu": "922",
-    "memory": "922",
+    "cpu": "512",
+    "memory": "512",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-07-31T02:22:04.132Z",
-    "registeredBy": "arn:aws:iam::891377281535:root",
+    "registeredAt": "2024-07-30T01:36:48.659Z",
+    "registeredBy": "arn:aws:iam::891377281535:user/alilm-ecs-user",
     "tags": []
 }
