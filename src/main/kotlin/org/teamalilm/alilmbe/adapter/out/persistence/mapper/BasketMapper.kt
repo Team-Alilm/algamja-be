@@ -13,7 +13,7 @@ class BasketMapper {
 
     fun mapToJpaEntity(basket: Basket, memberJpaEntity: MemberJpaEntity, productJpaEntity: ProductJpaEntity): BasketJpaEntity {
         return BasketJpaEntity(
-            id = basket.id.value,
+            id = basket.id?.value,
             memberJpaEntity = memberJpaEntity,
             productJpaEntity = productJpaEntity
         )
