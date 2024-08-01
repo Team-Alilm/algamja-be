@@ -6,7 +6,7 @@ class Role (
 ) {
 
     data class RoleId (
-        val id: Long
+        val value: Long
     )
 
     enum class RoleType {

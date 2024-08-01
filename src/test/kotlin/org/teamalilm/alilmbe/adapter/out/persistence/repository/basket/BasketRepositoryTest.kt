@@ -12,9 +12,7 @@ import org.teamalilm.alilmbe.adapter.out.persistence.entity.ProductJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.BasketRepository
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.MemberRepository
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.ProductRepository
-import org.teamalilm.alilmbe.domain.Member
 import org.teamalilm.alilmbe.domain.Product
-import org.teamalilm.alilmbe.domain.Role
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 
 @DataJpaTest

@@ -12,6 +12,9 @@ import org.springframework.web.util.UriComponentsBuilder
 import org.teamalilm.alilmbe.application.port.out.AddMemberPort
 import org.teamalilm.alilmbe.application.port.out.AddMemberRoleMappingPort
 import org.teamalilm.alilmbe.application.port.out.LoadMemberPort
+import org.teamalilm.alilmbe.application.port.out.LoadRolePort
+import org.teamalilm.alilmbe.common.error.ErrorMessage
+import org.teamalilm.alilmbe.common.error.NotFoundRoleException
 import org.teamalilm.alilmbe.domain.Member
 import org.teamalilm.alilmbe.domain.Role
 import org.teamalilm.alilmbe.global.email.service.EmailService
@@ -28,6 +31,7 @@ class CustomSuccessHandler(
     private val loadMemberPort: LoadMemberPort,
     private val addMemberPort: AddMemberPort,
     private val addMemberRoleMappingPort: AddMemberRoleMappingPort,
+    private val loadRolePort: LoadRolePort,
     private val slackService: SlackService,
     private val emailService: EmailService
 ) : SimpleUrlAuthenticationSuccessHandler() {
@@ -97,9 +101,7 @@ class CustomSuccessHandler(
     }
 
     private fun saveMemberRoleMapping(member: Member) {
-        val role = Role(
-            roleType = Role.RoleType.ROLE_USER
-        )
+        val role = loadRolePort.loadRole(Role.RoleType.ROLE_USER) ?: throw NotFoundRoleException(ErrorMessage.NOT_FOUND_ROLE)
 
         addMemberRoleMappingPort.addMemberRoleMapping(
             member = member,

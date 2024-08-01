@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import org.teamalilm.alilmbe.domain.Role
 
 @Entity
-@Table(name = "member_role")
+@Table(name = "role")
 class RoleJpaEntity (
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
