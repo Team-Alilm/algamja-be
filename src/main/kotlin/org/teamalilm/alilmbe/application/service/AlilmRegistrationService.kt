@@ -36,20 +36,20 @@ class AlilmRegistrationService(
         product: Product,
     ) {
         loadBasketPort.loadBasket(
-            memberId = MemberId(command.memberJpaEntity.id!!),
+            memberId = command.member.id!!,
             productId = product.id!!
         ) ?.let {
-            log.info("장바구니가 이미 존재합니다. memberId: ${command.memberJpaEntity.id}, productId: ${product.id}")
+            log.info("장바구니가 이미 존재합니다. memberId: ${command.member.id}, productId: ${product.id}")
             throw BasketAlreadyExistsException(ErrorMessage.BASKET_ALREADY_EXISTS)
         } ?: run {
             log.info("장바구니를 등록 합니다.")
             addBasketPort.addBasket(
                 basket = Basket(
                     id = Basket.BasketId(null),
-                    memberId = MemberId(command.memberJpaEntity.id!!),
+                    memberId = command.member.id,
                     productId = product.id
                 ),
-                memberJpaEntity = command.memberJpaEntity,
+                member = command.member,
                 product = product
             )
         }

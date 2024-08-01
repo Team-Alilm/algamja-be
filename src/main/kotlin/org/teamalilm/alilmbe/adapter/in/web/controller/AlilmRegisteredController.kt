@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
+import org.teamalilm.alilmbe.adapter.out.security.CustomMemberDetails
 import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUseCase
 import org.teamalilm.alilmbe.common.error.RequestValidateException
 import org.teamalilm.alilmbe.domain.Product
@@ -34,7 +35,7 @@ class AlilmRegisteredController(
     @PostMapping("/registered")
     fun registered(
         @RequestBody @Valid request: AlilmRegistrationRequest,
-        @AuthenticationPrincipal memberJpaEntity: MemberJpaEntity,
+        @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
 
         bindingResult: BindingResult
     ): ResponseEntity<Unit> {
@@ -43,7 +44,7 @@ class AlilmRegisteredController(
         }
 
         alilmRegistrationUseCase.alilmRegistration(
-            AlilmRegistrationUseCase.AlilmRegistrationCommand.from(request, memberJpaEntity)
+            AlilmRegistrationUseCase.AlilmRegistrationCommand.from(request, customMemberDetails.member)
         )
 
         return ResponseEntity.ok().build()
@@ -92,7 +93,7 @@ class AlilmRegisteredController(
         @field:Schema(
             example = "31300",
             description = "가격",
-            format = "int64",
+            format = "int32",
             required = true,
             type = "integer"
         )
