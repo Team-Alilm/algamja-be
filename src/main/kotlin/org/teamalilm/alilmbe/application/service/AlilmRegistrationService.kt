@@ -47,7 +47,7 @@ class AlilmRegistrationService(
                 basket = Basket(
                     id = Basket.BasketId(null),
                     memberId = MemberId(command.memberJpaEntity.id!!),
-                    productId = product.id!!
+                    productId = product.id
                 ),
                 memberJpaEntity = command.memberJpaEntity,
                 product = product
