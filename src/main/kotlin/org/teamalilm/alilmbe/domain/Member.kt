@@ -22,6 +22,6 @@ class Member(
         this.phoneNumber = newPhoneNumber
     }
 
-    data class MemberId(val value: Long) {}
+    data class MemberId(val value: Long)
 
 }
