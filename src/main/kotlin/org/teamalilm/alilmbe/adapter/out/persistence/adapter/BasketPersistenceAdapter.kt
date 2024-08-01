@@ -3,9 +3,9 @@ package org.teamalilm.alilmbe.adapter.out.persistence.adapter
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.ProductJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.BasketMapper
+import org.teamalilm.alilmbe.adapter.out.persistence.mapper.MemberMapper
 import org.teamalilm.alilmbe.adapter.out.persistence.mapper.ProductMapper
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.BasketRepository
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.spring_data.SpringDataBasketRepository
@@ -13,6 +13,7 @@ import org.teamalilm.alilmbe.application.port.out.AddBasketPort
 import org.teamalilm.alilmbe.application.port.out.LoadBasketPort
 import org.teamalilm.alilmbe.application.port.out.LoadBasketSlicePort
 import org.teamalilm.alilmbe.domain.Basket
+import org.teamalilm.alilmbe.domain.Member
 import org.teamalilm.alilmbe.domain.Member.*
 import org.teamalilm.alilmbe.domain.Product
 import org.teamalilm.alilmbe.domain.Product.*
@@ -22,18 +23,19 @@ class BasketPersistenceAdapter(
     private val springDataBasketRepository: SpringDataBasketRepository,
     private val basketRepository: BasketRepository,
     private val basketMapper: BasketMapper,
-    private val productMapper: ProductMapper
+    private val productMapper: ProductMapper,
+    private val memberMapper: MemberMapper
 ) : AddBasketPort, LoadBasketPort, LoadBasketSlicePort {
 
     override fun addBasket(
         basket: Basket,
-        memberJpaEntity: MemberJpaEntity,
+        member: Member,
         product: Product
     ): Basket {
         val basketJpaEntity = springDataBasketRepository.save(
-                basketMapper.mapToJpaEntity(
+            basketMapper.mapToJpaEntity(
                 basket,
-                    memberJpaEntity,
+                memberMapper.mapToJpaEntity(member),
                 productMapper.mapToJpaEntity(product)
             )
         )
