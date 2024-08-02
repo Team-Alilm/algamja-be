@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.security.config
+package org.teamalilm.alilmbe.common.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector
-import org.teamalilm.alilmbe.global.enums.ExcludedUrls
+import org.teamalilm.alilmbe.global.security.ExcludedUrls
 import org.teamalilm.alilmbe.global.security.jwt.JwtFilter
 import org.teamalilm.alilmbe.global.security.service.oAuth2.handler.CustomSuccessHandler
 import org.teamalilm.alilmbe.global.security.service.oAuth2.service.CustomOAuth2UserService

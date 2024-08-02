@@ -23,6 +23,8 @@ class BasketJpaEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    val productJpaEntity: ProductJpaEntity
+    val productJpaEntity: ProductJpaEntity,
 
+    @Column(nullable = false)
+    val isHidden: Boolean = false
 ) : BaseEntity()

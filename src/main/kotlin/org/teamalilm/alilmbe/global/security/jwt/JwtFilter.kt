@@ -8,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import org.teamalilm.alilmbe.global.enums.ExcludedUrls
+import org.teamalilm.alilmbe.global.security.ExcludedUrls
 import org.teamalilm.alilmbe.application.service.security.CustomUserDetailsService
 
 @Component

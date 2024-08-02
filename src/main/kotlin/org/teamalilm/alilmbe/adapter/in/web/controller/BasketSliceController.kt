@@ -18,7 +18,7 @@ import org.teamalilm.alilmbe.common.error.RequestValidateException
 
 @RestController
 @RequestMapping("/api/v1/baskets")
-@Tag(name = "products", description = "상품 전체 조회 api")
+@Tag(name = "장바구니 API", description = "장바구니와 연관되어 있는 API를 제공합니다.")
 class BasketSliceController(
     private val basketSliceUseCase: BasketSliceUseCase
 ) {
@@ -29,9 +29,7 @@ class BasketSliceController(
             사용자들이 등록한 상품을 조회할 수 있는 기능을 제공해요.
             정렬 조건, 페이지, 사이즈를 입력받아요.
             
-            기본은 기다리는 사람이 많은 순이며 같다면 상품명 순 입니다.
-            
-            기다리는 사람 순, 업데이트된 최신 순 으로 정렬 가능해요.
+            기본은 기다리는 사람이 많은 순 이에요.
     """
     )
     @GetMapping
@@ -98,27 +96,4 @@ class BasketSliceController(
         }
     }
 
-    //        val pageRequest = PageRequest.of(
-//            productListParameter.page,
-//            productListParameter.size,
-//            Sort.by(Sort.Direction.DESC, "id")
-//        )
-//
-//        val command = BasketFindAllCommand(pageRequest)
-//
-//        val result = productListService.listProduct(command)
-//
-//        val response = result.map {
-//            ProductListResponse(
-//                id = it.id,
-//                name = it.name,
-//                brand = it.brand,
-//                imageUrl = it.imageUrl,
-//                price = it.price,
-//                category = it.category,
-//                productInfo = it.productInfo,
-//                waitingCount = it.waitingCount,
-//                oldestCreationTime = it.oldestCreationTime
-//            )
-//        }
 }

@@ -30,22 +30,22 @@ class JwtUtil(
             Jwts.parser().verifyWith(secretKey).build()
                 .parseSignedClaims(token).payload.expiration.after(Date())
         } catch (e: SecurityException) {
-            log.info("Invalid JWT signature-SecurityException, 유효하지 않는 JWT 서명 입니다. token : $token");
+            log.info("Invalid JWT signature-SecurityException, 유효하지 않는 JWT 서명 입니다. token : $token")
             false
         } catch (e: ExpiredJwtException) {
             log.info(e.message)
-            log.info("Expired JWT token, 만료된 JWT token 입니다. token : $token");
+            log.info("Expired JWT token, 만료된 JWT token 입니다. token : $token")
             log.info("Exp Time : ${ Jwts.parser().verifyWith(secretKey).build()
                 .parseSignedClaims(token).payload.expiration}")
             false
         } catch (e: UnsupportedJwtException) {
-            log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다. token : $token");
+            log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다. token : $token")
             false
         } catch (e: IllegalArgumentException) {
-            log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다. token : $token");
+            log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다. token : $token")
             false
         } catch (e: MalformedJwtException) {
-            log.info("Invalid JWT signature-MalformedJwtException, 유효하지 않는 JWT 서명 입니다. token : $token");
+            log.info("Invalid JWT signature-MalformedJwtException, 유효하지 않는 JWT 서명 입니다. token : $token")
             false
         } catch (e: Exception) {
             log.info(e.message)

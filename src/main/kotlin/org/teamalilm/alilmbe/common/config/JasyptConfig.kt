@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.security.config
+package org.teamalilm.alilmbe.common.config
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 import org.jasypt.encryption.StringEncryptor

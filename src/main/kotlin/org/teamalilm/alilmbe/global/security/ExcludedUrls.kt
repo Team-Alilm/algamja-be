@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.enums
+package org.teamalilm.alilmbe.global.security
 
 import org.springframework.http.HttpMethod
 

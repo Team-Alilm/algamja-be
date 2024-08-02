@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.quartz.config
+package org.teamalilm.alilmbe.common.config
 
 import jakarta.annotation.PostConstruct
 import org.quartz.Scheduler

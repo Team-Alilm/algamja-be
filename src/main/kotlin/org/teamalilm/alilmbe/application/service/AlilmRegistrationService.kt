@@ -11,7 +11,6 @@ import org.teamalilm.alilmbe.application.port.out.LoadProductPort
 import org.teamalilm.alilmbe.common.error.BasketAlreadyExistsException
 import org.teamalilm.alilmbe.common.error.ErrorMessage
 import org.teamalilm.alilmbe.domain.Basket
-import org.teamalilm.alilmbe.domain.Member.*
 import org.teamalilm.alilmbe.domain.Product
 
 @Service
@@ -47,7 +46,8 @@ class AlilmRegistrationService(
                 basket = Basket(
                     id = Basket.BasketId(null),
                     memberId = command.member.id,
-                    productId = product.id
+                    productId = product.id,
+                    isHidden = false
                 ),
                 member = command.member,
                 product = product

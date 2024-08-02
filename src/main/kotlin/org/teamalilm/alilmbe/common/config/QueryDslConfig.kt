@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.querydsl
+package org.teamalilm.alilmbe.common.config
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import jakarta.persistence.EntityManager
