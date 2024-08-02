@@ -7,4 +7,5 @@ interface LoadMemberPort {
     fun loadMember(phoneNumber: String): Member?
 
     fun loadMember(id: Long): Member?
+
 }

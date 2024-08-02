@@ -5,4 +5,5 @@ import org.teamalilm.alilmbe.domain.Member
 interface AddMemberPort {
 
     fun addMember(member: Member): Member
+
 }

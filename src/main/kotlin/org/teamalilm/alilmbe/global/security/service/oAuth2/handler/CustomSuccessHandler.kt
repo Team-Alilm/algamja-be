@@ -17,7 +17,7 @@ import org.teamalilm.alilmbe.common.error.ErrorMessage
 import org.teamalilm.alilmbe.common.error.NotFoundRoleException
 import org.teamalilm.alilmbe.domain.Member
 import org.teamalilm.alilmbe.domain.Role
-import org.teamalilm.alilmbe.global.email.service.EmailService
+import org.teamalilm.alilmbe.adapter.out.gateway.EmailService
 import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 import org.teamalilm.alilmbe.global.slack.service.SlackService

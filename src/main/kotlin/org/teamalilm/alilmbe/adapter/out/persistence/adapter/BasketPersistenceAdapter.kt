@@ -12,6 +12,8 @@ import org.teamalilm.alilmbe.adapter.out.persistence.repository.spring_data.Spri
 import org.teamalilm.alilmbe.application.port.out.AddBasketPort
 import org.teamalilm.alilmbe.application.port.out.LoadBasketPort
 import org.teamalilm.alilmbe.application.port.out.LoadBasketSlicePort
+import org.teamalilm.alilmbe.application.port.out.LoadMyBasketPort
+import org.teamalilm.alilmbe.application.port.out.LoadMyBasketPort.*
 import org.teamalilm.alilmbe.domain.Basket
 import org.teamalilm.alilmbe.domain.Member
 import org.teamalilm.alilmbe.domain.Member.*
@@ -25,7 +27,11 @@ class BasketPersistenceAdapter(
     private val basketMapper: BasketMapper,
     private val productMapper: ProductMapper,
     private val memberMapper: MemberMapper
-) : AddBasketPort, LoadBasketPort, LoadBasketSlicePort {
+) :
+    AddBasketPort,
+    LoadBasketPort,
+    LoadBasketSlicePort,
+    LoadMyBasketPort {
 
     override fun addBasket(
         basket: Basket,
@@ -55,22 +61,27 @@ class BasketPersistenceAdapter(
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
-    override fun loadBasketSlice(pageRequest: PageRequest): Slice<BasketCountData> {
+    override fun loadBasketSlice(pageRequest: PageRequest): Slice<LoadBasketSlicePort.BasketCountData> {
         val basketCountProjectionSlice = basketRepository.loadBasketSlice(pageRequest)
 
         return basketCountProjectionSlice.map {
             val productJpaEntity = it.get("productJpaEntity", ProductJpaEntity::class.java)!!
             val waitingCount = it.get("waitingCount", Long::class.java)!!
 
-            BasketCountData(
+            LoadBasketSlicePort.BasketCountData(
                 product = productMapper.mapToDomainEntity(productJpaEntity),
                 waitingCount = waitingCount
             )
         }
     }
 
-    data class BasketCountData(
-        val product: Product,
-        val waitingCount: Long
-    )
+    override fun loadMyBaskets(member: Member) : List<BasketAndProduct> {
+        return springDataBasketRepository.findAllByMemberJpaEntity(
+            memberMapper.mapToJpaEntity(member)
+        ).map { BasketAndProduct(
+            basket = basketMapper.mapToDomainEntity(it),
+            product = productMapper.mapToDomainEntity(it.productJpaEntity)
+        ) }
+    }
+
 }

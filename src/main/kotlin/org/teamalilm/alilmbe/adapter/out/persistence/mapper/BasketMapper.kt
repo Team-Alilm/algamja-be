@@ -15,7 +15,8 @@ class BasketMapper {
         return BasketJpaEntity(
             id = basket.id?.value,
             memberJpaEntity = memberJpaEntity,
-            productJpaEntity = productJpaEntity
+            productJpaEntity = productJpaEntity,
+            isHidden = basket.isHidden
         )
     }
 
@@ -25,7 +26,8 @@ class BasketMapper {
         return Basket(
             id = Basket.BasketId(basketJpaEntity.id),
             memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id!!),
-            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!)
+            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!),
+            isHidden = basketJpaEntity.isHidden
         )
     }
 
@@ -33,7 +35,8 @@ class BasketMapper {
         return Basket(
             id = Basket.BasketId(basketJpaEntity.id),
             memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id!!),
-            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!)
+            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!),
+            isHidden = basketJpaEntity.isHidden
         )
     }
 }

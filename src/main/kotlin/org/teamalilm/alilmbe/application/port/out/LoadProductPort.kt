@@ -11,4 +11,5 @@ interface LoadProductPort {
         option2: String?,
         option3: String?
     ): Product?
+
 }

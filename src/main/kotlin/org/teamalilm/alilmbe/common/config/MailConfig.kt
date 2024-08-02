@@ -1,4 +1,4 @@
-package org.teamalilm.alilmbe.global.email.config
+package org.teamalilm.alilmbe.common.config
 
 import java.util.Properties
 import org.springframework.beans.factory.annotation.Value

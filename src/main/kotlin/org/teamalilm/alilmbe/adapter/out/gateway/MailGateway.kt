@@ -1,20 +1,21 @@
-package org.teamalilm.alilmbe.global.email.service
+package org.teamalilm.alilmbe.adapter.out.gateway
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
+import org.teamalilm.alilmbe.application.port.out.gateway.SendMailGateway
 
 @Service
-class EmailService(
+class MailGateway(
     @Value("\${spring.mail.subject}") private val subject: String,
     @Value("\${spring.mail.from}") private val from: String,
     @Value("\${spring.mail.username}") private val emailId: String,
 
     private val emailSender: JavaMailSender,
-) {
+) : SendMailGateway {
 
-    fun sendMail(message: String, to: String) {
+    override fun sendMail(message: String, to: String) {
         val mimeMessage = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
 
