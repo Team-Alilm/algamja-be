@@ -1,5 +1,6 @@
 package org.teamalilm.alilmbe.adapter.`in`.web.controller
 
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,11 +11,12 @@ import org.teamalilm.alilmbe.application.port.`in`.use_case.MyBasketsUseCase
 
 @RestController
 @RequestMapping("/api/v1/baskets")
+@Tag(name = "나의 장바구니 조회 API", description = "나의 알림 page에서 사용하는 API를 제공합니다.")
 class MyBasketsController(
     private val myBasketsUseCase: MyBasketsUseCase
 ) {
 
-    @GetMapping()
+    @GetMapping("/my")
     fun myBasket(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ) : ResponseEntity<List<MyBasketsResponse>> {
@@ -23,7 +25,6 @@ class MyBasketsController(
                 MyBasketsUseCase.MyBasketCommand(customMemberDetails.member)
             ).map { MyBasketsResponse.from(it) }
         )
-
     }
 
     data class MyBasketsResponse(

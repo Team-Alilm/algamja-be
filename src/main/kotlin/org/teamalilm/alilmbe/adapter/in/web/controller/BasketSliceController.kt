@@ -18,7 +18,7 @@ import org.teamalilm.alilmbe.common.error.RequestValidateException
 
 @RestController
 @RequestMapping("/api/v1/baskets")
-@Tag(name = "장바구니 API", description = "장바구니와 연관되어 있는 API를 제공합니다.")
+@Tag(name = "장바구니 메인 조회 API", description = "메인 page에서 사용하는 API를 제공합니다.")
 class BasketSliceController(
     private val basketSliceUseCase: BasketSliceUseCase
 ) {
