@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import org.teamalilm.alilmbe.application.port.`in`.use_case.CrawlingUseCase
-import org.teamalilm.alilmbe.application.port.out.ProductCrawlingGateway
-import org.teamalilm.alilmbe.application.port.out.ProductCrawlingGateway.*
+import org.teamalilm.alilmbe.application.port.out.gateway.CrawlingGateway
+import org.teamalilm.alilmbe.application.port.out.gateway.CrawlingGateway.*
 import org.teamalilm.alilmbe.domain.Product
 import org.teamalilm.alilmbe.global.quartz.data.SoldoutCheckResponse
 import java.net.URI
@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets
 @Service
 @Transactional(readOnly = true)
 class CrawlingService(
-    private val productCrawlingGateway: ProductCrawlingGateway,
+    private val crawlingGateway: CrawlingGateway,
     private val restClient: RestClient
 ) : CrawlingUseCase {
 
@@ -31,7 +31,7 @@ class CrawlingService(
     override fun productCrawling(command: CrawlingUseCase.ProductCrawlingCommand): CrawlingUseCase.CrawlingResult {
         val decodedUrl = decodeUrl(command.url)
         val productNumber = extractProductNumber(decodedUrl)
-        val document = productCrawlingGateway.crawling(ProductDataGatewayRequest(decodedUrl)).document
+        val document = crawlingGateway.crawling(CrawlingGatewayRequest(decodedUrl)).document
 
         val (category, name, price) = parseDescription(document)
         val soldoutCheckResponse = fetchSoldoutCheckResponse(decodedUrl)
