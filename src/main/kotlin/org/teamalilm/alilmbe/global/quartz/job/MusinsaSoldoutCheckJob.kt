@@ -5,9 +5,9 @@ import org.quartz.JobExecutionContext
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
+import org.teamalilm.alilmbe.adapter.out.gateway.MailGateway
 import org.teamalilm.alilmbe.adapter.out.persistence.entity.BasketJpaEntity
 import org.teamalilm.alilmbe.adapter.out.persistence.repository.BasketRepository
-import org.teamalilm.alilmbe.adapter.out.gateway.EmailService
 import org.teamalilm.alilmbe.global.slack.service.SlackService
 
 /**
@@ -18,7 +18,7 @@ import org.teamalilm.alilmbe.global.slack.service.SlackService
 @Transactional(readOnly = true)
 class MusinsaSoldoutCheckJob(
     val basketRepository: BasketRepository,
-    val emailService: EmailService,
+    val mailGateway: MailGateway,
     val slackService: SlackService,
 ) : Job {
 

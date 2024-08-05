@@ -30,21 +30,22 @@ interface MyBasketsUseCase {
         companion object {
             fun from(basket: Basket, product: Product) : MyBasketsResult {
                 return MyBasketsResult(
-                    id = basket.id.value,
-                            number = basket.
-                            name =
-                            brand =
-                            imageUrl =
-                            store =
-                            price =
-                            category =
-                            option1 =
-                            option2 =
-                            option3 =
-                            isHidden =
+                    id = basket.id?.value!!,
+                    number = product.number,
+                    name = product.name,
+                    brand = product.brand,
+                    imageUrl = product.imageUrl,
+                    store = product.store.name,
+                    price = product.price,
+                    category = product.category,
+                    option1 = product.option1,
+                    option2 = product.option2,
+                    option3 = product.option3,
+                    isHidden = basket.isHidden
                 )
             }
         }
+
     }
 
 }

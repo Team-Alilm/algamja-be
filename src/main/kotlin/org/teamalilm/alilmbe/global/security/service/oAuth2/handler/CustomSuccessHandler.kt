@@ -17,7 +17,7 @@ import org.teamalilm.alilmbe.common.error.ErrorMessage
 import org.teamalilm.alilmbe.common.error.NotFoundRoleException
 import org.teamalilm.alilmbe.domain.Member
 import org.teamalilm.alilmbe.domain.Role
-import org.teamalilm.alilmbe.adapter.out.gateway.EmailService
+import org.teamalilm.alilmbe.adapter.out.gateway.MailGateway
 import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
 import org.teamalilm.alilmbe.global.slack.service.SlackService
@@ -33,7 +33,7 @@ class CustomSuccessHandler(
     private val addMemberRoleMappingPort: AddMemberRoleMappingPort,
     private val loadRolePort: LoadRolePort,
     private val slackService: SlackService,
-    private val emailService: EmailService
+    private val mailGateway: MailGateway
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -86,7 +86,7 @@ class CustomSuccessHandler(
         val nickname = attributes["nickname"] as? String ?: throw IllegalStateException("")
 
         slackService.sendSlackMessage("새로운 회원이 가입했습니다. \nemail: $email \nphoneNumber: $phoneNumber \nnickname: $nickname")
-        emailService.sendMail("알림 회원가입을 환영합니다. 😊", email)
+        mailGateway.sendMail("알림 회원가입을 환영합니다. 😊", email)
 
         return addMemberPort.addMember(
             Member(
