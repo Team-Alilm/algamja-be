@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.teamalilm.alilmbe.adapter.out.persistence.entity.MemberJpaEntity
 import org.teamalilm.alilmbe.adapter.out.security.CustomMemberDetails
 import org.teamalilm.alilmbe.application.port.`in`.use_case.AlilmRegistrationUseCase
 import org.teamalilm.alilmbe.common.error.RequestValidateException
