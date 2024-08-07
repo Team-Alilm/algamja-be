@@ -1,0 +1,24 @@
+{
+  "brandNm": "굿라이프웍스",
+  "category": {
+    "categoryDepth1": "001",
+    "categoryDepth1Title": "상의",
+    "categoryDepth2": "001002",
+    "categoryDepth2Title": "셔츠/블라우스",
+    "categoryDepth3": "",
+    "categoryDepth3Title": ""
+  },
+  "goodsNm": "오버사이즈 립 포켓 하프 셔츠 블랙",
+  "goodsNo": 3262292,
+  "goodsPrice": {
+    "minPrice": 28765,
+    "maxPrice": 31300,
+    "originPrice": 44800,
+    "memberPrice": 30956,
+    "discountRate": 30,
+    "type": "DEFAULT",
+    "isSale": true,
+    "partnerInformation": null
+  },
+  "thumbnailImageUrl": "/images/goods_img/20230426/3262292/3262292_16885217563686_500.jpg"
+}

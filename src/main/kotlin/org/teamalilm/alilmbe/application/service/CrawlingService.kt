@@ -1,5 +1,7 @@
 package org.teamalilm.alilmbe.application.service
 
+import com.google.gson.JsonParser
+import org.aspectj.util.LangUtil.extractOptions
 import org.jsoup.nodes.Document
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -8,7 +10,7 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import org.teamalilm.alilmbe.application.port.`in`.use_case.CrawlingUseCase
 import org.teamalilm.alilmbe.application.port.out.gateway.CrawlingGateway
-import org.teamalilm.alilmbe.application.port.out.gateway.CrawlingGateway.*
+import org.teamalilm.alilmbe.application.port.out.gateway.CrawlingGateway.CrawlingGatewayRequest
 import org.teamalilm.alilmbe.domain.Product
 import org.teamalilm.alilmbe.global.quartz.data.SoldoutCheckResponse
 import java.net.URI
@@ -30,21 +32,21 @@ class CrawlingService(
 
     override fun productCrawling(command: CrawlingUseCase.ProductCrawlingCommand): CrawlingUseCase.CrawlingResult {
         val decodedUrl = decodeUrl(command.url)
-        val productNumber = extractProductNumber(decodedUrl)
         val document = crawlingGateway.crawling(CrawlingGatewayRequest(decodedUrl)).document
+        val scriptContent = document.getElementsByTag("script").html()
+        val jsonData = extractJsonData(scriptContent, "window.__MSS__.product.state")
+        val jsonObject = JsonParser.parseString(jsonData).asJsonObject
 
-        val (category, name, price) = parseDescription(document)
         val soldoutCheckResponse = fetchSoldoutCheckResponse(decodedUrl)
-
         val options = extractOptions(soldoutCheckResponse)
 
         return CrawlingUseCase.CrawlingResult(
-            number = productNumber,
-            name = name,
-            brand = fetchBrand(document),
-            imageUrl = fetchImageUrl(document),
-            category = category,
-            price = price,
+            number = jsonObject.get("goodsNo").asLong,
+            name = jsonObject.get("goodsNm").asString,
+            brand = jsonObject.get("brandNm").asString,
+            imageUrl = "https://image.msscdn.net${jsonObject.get("thumbnailImageUrl").asString}",
+            category = jsonObject.get("category").asJsonObject.get("categoryDepth1Title").asString,
+            price = jsonObject.get("goodsPrice").asJsonObject.get("maxPrice").asInt,
             store = Product.Store.MUSINSA,
             option1List = options.first,
             option2List = options.second,
@@ -56,22 +58,6 @@ class CrawlingService(
         return URLDecoder.decode(url, StandardCharsets.UTF_8.toString()).let {
             URI.create(it).toString()
         }
-    }
-
-    private fun extractProductNumber(url: String): Long {
-        val regex = Regex("goods/(\\d+)")
-
-        return regex.find(url)?.groupValues?.get(1)?.toLongOrNull() ?: throw IllegalArgumentException("상품 번호를 찾을 수 없습니다.")
-    }
-
-    private fun parseDescription(descriptionDoc: Document): Triple<String, String, Int> {
-        val description = descriptionDoc.select("meta[property=og:description]").attr("content").split(" : ")
-        log.info("description: $description")
-
-        val category = description[1].replace(" 브랜드", "")
-        val name = description[4].split(" - ")[0]
-        val price = description[4].split(" - ")[1].replace(",", "").replace(" ", "").toInt()
-        return Triple(category, name, price)
     }
 
     private fun fetchSoldoutCheckResponse(url: String): SoldoutCheckResponse? {
@@ -92,12 +78,27 @@ class CrawlingService(
         return Triple(option1s, option2s, option3s)
     }
 
-    private fun fetchBrand(descriptionDoc: Document): String {
-        return descriptionDoc.select("meta[property=product:brand]").attr("content").ifBlank { "없음" }
-    }
+    private fun extractJsonData(scriptContent: String, variableName: String): String? {
+        var jsonString: String? = null
 
-    private fun fetchImageUrl(descriptionDoc: Document): String {
-        return descriptionDoc.getElementById("fbOgImage")?.attr("content") ?: "null"
+        // 자바스크립트 내 변수 선언 패턴
+        val pattern = "$variableName = "
+
+        // 패턴의 시작 위치 찾기
+        val startIndex = scriptContent.indexOf(pattern)
+
+        if (startIndex != -1) {
+            // 패턴 이후 부분 추출
+            val substring = scriptContent.substring(startIndex + pattern.length)
+
+            // JSON 데이터의 끝 위치 찾기
+            val endIndex = substring.indexOf("};") + 1
+
+            // JSON 문자열 추출
+            jsonString = substring.substring(0, endIndex)
+        }
+
+        return jsonString
     }
 
 }
