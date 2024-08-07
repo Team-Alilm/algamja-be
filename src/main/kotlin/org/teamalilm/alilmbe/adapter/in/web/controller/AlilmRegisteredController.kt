@@ -26,7 +26,7 @@ class AlilmRegisteredController(
 ) {
 
     @Operation(
-        summary = "상품 등록을 실행하는 API",
+        summary = "상품 등록 API",
         description = """
             사용자의 URL을 받아서 상품의 정보를 등록하는 API 입니다.
         """
