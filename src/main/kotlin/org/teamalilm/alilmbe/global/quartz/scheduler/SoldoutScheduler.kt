@@ -7,6 +7,7 @@ import org.quartz.SimpleScheduleBuilder
 import org.quartz.TriggerBuilder
 import org.quartz.TriggerKey
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import org.teamalilm.alilmbe.global.quartz.job.MusinsaSoldoutCheckJob
 
 /**
@@ -17,7 +18,7 @@ import org.teamalilm.alilmbe.global.quartz.job.MusinsaSoldoutCheckJob
  **/
 class SoldoutScheduler(
     val scheduler: Scheduler,
-    @Value("\${quartz.job.interval-minutes}") private val intervalMinutes: Int
+    val intervalMinutes: Int
 ) {
 
     fun startTracing() {

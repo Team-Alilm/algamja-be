@@ -47,7 +47,8 @@ class AlilmRegistrationService(
                     id = Basket.BasketId(null),
                     memberId = command.member.id,
                     productId = product.id,
-                    isHidden = false
+                    isHidden = false,
+                    createdDate = System.currentTimeMillis()
                 ),
                 member = command.member,
                 product = product
