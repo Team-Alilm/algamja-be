@@ -3,16 +3,16 @@ package org.teamalilm.alilmbe.application.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilmbe.application.port.`in`.use_case.MyBasketsUseCase
-import org.teamalilm.alilmbe.application.port.out.LoadMyBasketPort
+import org.teamalilm.alilmbe.application.port.out.LoadMyBasketsPort
 
 @Service
 @Transactional
 class MyBasketsService (
-    val loadMyBasketPort: LoadMyBasketPort
+    val loadMyBasketsPort: LoadMyBasketsPort
 ) : MyBasketsUseCase {
 
     override fun myBasket(command: MyBasketsUseCase.MyBasketCommand): List<MyBasketsUseCase.MyBasketsResult> {
-        val myBasketAndProductList = loadMyBasketPort.loadMyBaskets(command.member)
+        val myBasketAndProductList = loadMyBasketsPort.loadMyBaskets(command.member)
 
         return myBasketAndProductList.map {
             MyBasketsUseCase.MyBasketsResult(

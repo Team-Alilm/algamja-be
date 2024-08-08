@@ -32,3 +32,7 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+
+  quartz:
+    job-store-type: jdbc
+    job-interval-minutes: 30
