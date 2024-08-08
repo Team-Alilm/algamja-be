@@ -6,7 +6,8 @@ import org.quartz.Scheduler
 import org.quartz.SimpleScheduleBuilder
 import org.quartz.TriggerBuilder
 import org.quartz.TriggerKey
-import org.teamalilm.alilmbe.domain.tracer.MusinsaSoldoutCheckJob
+import org.springframework.beans.factory.annotation.Value
+import org.teamalilm.alilmbe.global.quartz.job.MusinsaSoldoutCheckJob
 
 /**
  *  SoldoutScheduler
@@ -15,7 +16,8 @@ import org.teamalilm.alilmbe.domain.tracer.MusinsaSoldoutCheckJob
  *  @date 2024-03-21
  **/
 class SoldoutScheduler(
-    val scheduler: Scheduler
+    val scheduler: Scheduler,
+    @Value("\${quartz.job.interval-minutes}") private val intervalMinutes: Int
 ) {
 
     fun startTracing() {
@@ -33,7 +35,7 @@ class SoldoutScheduler(
                 .startNow()
                 .withSchedule(
                     SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInMinutes(10)
+                        .withIntervalInMinutes(intervalMinutes)
                         .repeatForever()
                 )
                 .build()

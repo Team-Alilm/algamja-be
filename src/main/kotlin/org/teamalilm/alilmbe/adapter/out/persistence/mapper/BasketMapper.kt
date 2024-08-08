@@ -12,12 +12,14 @@ import org.teamalilm.alilmbe.domain.Product
 class BasketMapper {
 
     fun mapToJpaEntity(basket: Basket, memberJpaEntity: MemberJpaEntity, productJpaEntity: ProductJpaEntity): BasketJpaEntity {
-        return BasketJpaEntity(
+        val basketJpaEntity = BasketJpaEntity(
             id = basket.id?.value,
             memberJpaEntity = memberJpaEntity,
             productJpaEntity = productJpaEntity,
-            isHidden = basket.isHidden
+            isHidden = basket.isHidden,
         )
+
+        return basketJpaEntity
     }
 
     fun mapToDomainEntityOrNull(basketJpaEntity: BasketJpaEntity?): Basket? {
@@ -27,7 +29,8 @@ class BasketMapper {
             id = Basket.BasketId(basketJpaEntity.id),
             memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id!!),
             productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!),
-            isHidden = basketJpaEntity.isHidden
+            isHidden = basketJpaEntity.isHidden,
+            createdDate = basketJpaEntity.createdDate,
         )
     }
 
@@ -36,7 +39,8 @@ class BasketMapper {
             id = Basket.BasketId(basketJpaEntity.id),
             memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id!!),
             productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!),
-            isHidden = basketJpaEntity.isHidden
+            isHidden = basketJpaEntity.isHidden,
+            createdDate = basketJpaEntity.createdDate,
         )
     }
 }
