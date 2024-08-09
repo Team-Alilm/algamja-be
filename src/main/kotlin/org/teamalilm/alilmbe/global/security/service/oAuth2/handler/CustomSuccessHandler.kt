@@ -18,9 +18,9 @@ import org.teamalilm.alilmbe.common.error.NotFoundRoleException
 import org.teamalilm.alilmbe.domain.Member
 import org.teamalilm.alilmbe.domain.Role
 import org.teamalilm.alilmbe.adapter.out.gateway.MailGateway
+import org.teamalilm.alilmbe.adapter.out.gateway.SlackGateway
 import org.teamalilm.alilmbe.global.security.jwt.JwtUtil
 import org.teamalilm.alilmbe.global.security.service.oAuth2.data.Provider
-import org.teamalilm.alilmbe.global.slack.service.SlackService
 
 private const val BASE_URL = """https://alilm.co.kr"""
 
@@ -32,7 +32,7 @@ class CustomSuccessHandler(
     private val addMemberPort: AddMemberPort,
     private val addMemberRoleMappingPort: AddMemberRoleMappingPort,
     private val loadRolePort: LoadRolePort,
-    private val slackService: SlackService,
+    private val slackGateway: SlackGateway,
     private val mailGateway: MailGateway
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
@@ -64,7 +64,7 @@ class CustomSuccessHandler(
             val jwt = jwtUtil.createJwt(memberId!!, 1000 * 60 * 60)
             log.info("jwt: $jwt")
 //
-            val redirectUri = UriComponentsBuilder.fromOriginHeader(BASE_URL)
+            val redirectUri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
                 .path("/oauth/kakao")
                 .queryParam("Authorization", jwtUtil.createJwt(memberId, 1000 * 60 * 60))
                 .build()
@@ -85,7 +85,7 @@ class CustomSuccessHandler(
         val phoneNumber = attributes["phoneNumber"] as? String ?: throw IllegalStateException("")
         val nickname = attributes["nickname"] as? String ?: throw IllegalStateException("")
 
-        slackService.sendSlackMessage("새로운 회원이 가입했습니다. \nemail: $email \nphoneNumber: $phoneNumber \nnickname: $nickname")
+        slackGateway.sendMessage("새로운 회원이 가입했습니다. \nemail: $email \nphoneNumber: $phoneNumber \nnickname: $nickname")
         mailGateway.sendMail("알림 회원가입을 환영합니다. 😊", email)
 
         return addMemberPort.addMember(
@@ -111,7 +111,7 @@ class CustomSuccessHandler(
 
     private fun updateMember(attributes: Map<String, Any>, member: Member): Member {
         // Slack 메시지 전송
-        slackService.sendSlackMessage("기존 회원이 로그인했습니다. \nemail: ${member.email} \nphoneNumber: ${member.phoneNumber} \nnickname: ${member.nickname}")
+        slackGateway.sendMessage("기존 회원이 로그인했습니다. \nemail: ${member.email} \nphoneNumber: ${member.phoneNumber} \nnickname: ${member.nickname}")
 
         // OAuth2 응답에서 가져온 정보 추출
         val newPhoneNumber = attributes["phoneNumber"] as? String ?: throw IllegalStateException("OAuth2 응답에 전화번호가 없습니다.")

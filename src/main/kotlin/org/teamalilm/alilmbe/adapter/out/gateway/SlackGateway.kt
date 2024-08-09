@@ -1,30 +1,31 @@
-package org.teamalilm.alilmbe.global.slack.service
+package org.teamalilm.alilmbe.adapter.out.gateway
 
 import com.slack.api.Slack
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.teamalilm.alilmbe.application.port.out.gateway.SendSlackGateway
 
 @Service
-class SlackService(
+class SlackGateway(
     @Value("\${webhook.slack.url}")
-    private val SLACK_WEBHOOK_URL: String,
-) {
+    private val SLACK_NOTICE_CH_WEBHOOK_URL: String,
+) : SendSlackGateway {
 
-    private val log: Logger = LoggerFactory.getLogger(SlackService::class.java)
+    private val log: Logger = LoggerFactory.getLogger(SlackGateway::class.java)
 
     private val slackClient: Slack = Slack.getInstance()
         ?: throw IllegalStateException("Slack client is not initialized")
 
-    fun sendSlackMessage(message: String) {
+    override fun sendMessage(message: String) {
         val payload = """
             {
                 "text": "$message"
             }
         """.trimIndent()
 
-        log.info("SLACK_WEBHOOK_URL : $SLACK_WEBHOOK_URL")
-        slackClient.send(SLACK_WEBHOOK_URL, payload)
+        log.info("SLACK_WEBHOOK_URL : $SLACK_NOTICE_CH_WEBHOOK_URL")
+        slackClient.send(SLACK_NOTICE_CH_WEBHOOK_URL, payload)
     }
 }
