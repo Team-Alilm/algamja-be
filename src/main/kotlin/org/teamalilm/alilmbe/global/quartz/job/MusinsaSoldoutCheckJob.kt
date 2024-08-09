@@ -26,7 +26,7 @@ import java.time.ZoneId
 class MusinsaSoldoutCheckJob(
     val loadAllBasketsPort: LoadAllBasketsPort,
     val restClient: RestClient,
-    val emailService: MailGateway,
+    val mailGateway: MailGateway,
     val slackGateway: SlackGateway,
     val updateBasketPort: UpdateBasketPort
 ) : Job {
@@ -56,7 +56,7 @@ class MusinsaSoldoutCheckJob(
     }
 
     private fun sendNotifications(basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct) {
-        emailService.sendMail(getEmailMessage(basketAndMemberAndProduct), basketAndMemberAndProduct.member.email)
+        mailGateway.sendMail(getEmailMessage(basketAndMemberAndProduct), basketAndMemberAndProduct.member.email)
         slackGateway.sendMessage(getSlackMessage(basketAndMemberAndProduct))
     }
 
