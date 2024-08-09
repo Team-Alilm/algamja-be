@@ -71,33 +71,103 @@ class MusinsaSoldoutCheckJob(
 
     private fun getEmailMessage(basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): String {
         return """
-            <html>
-                <body>
-                    <h1>Alilm</h1>
-                    <div style="width:580px; height:252px; background-color: #F3F3F3; display: flex; flex-direction: column; gap: 40px;">
-                        <div style="display: flex; flex-direction: column;">
-                            <h2>${basketAndMemberAndProduct.member.nickname}님이 등록하신 제품이</h2>
-                            <h2>재입고 되었습니다!</h2>
-                        </div>
-                        <div style="display: flex; gap: 12px;">
-                            <img src="${basketAndMemberAndProduct.product.imageUrl} width="68px" height="80px" />
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>재입고 알림</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .container {
+                        width: 100%;
+                        max-width: 600px;
+                        margin: 20px auto;
+                        background-color: #ffffff;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        overflow: hidden;
+                    }
+                    .header {
+                        background-color: #1B1A3B;
+                        color: #ffffff;
+                        text-align: center;
+                        padding: 20px;
+                    }
+                    .header h1 {
+                        margin: 0;
+                    }
+                    .content {
+                        padding: 20px;
+                    }
+                    .product-info {
+                        display: flex;
+                        gap: 20px;
+                        margin-bottom: 20px;
+                    }
+                    .product-info img {
+                        border-radius: 4px;
+                        width: 68px;
+                        height: 80px;
+                    }
+                    .product-info div {
+                        flex: 1;
+                    }
+                    .button {
+                        display: block;
+                        width: 100%;
+                        max-width: 560px;
+                        margin: 20px auto;
+                        padding: 15px;
+                        background-color: #1B1A3B;
+                        color: #ffffff;
+                        text-align: center;
+                        text-decoration: none;
+                        border-radius: 4px;
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
+                    .footer {
+                        background-color: #f4f4f4;
+                        text-align: center;
+                        padding: 10px;
+                        font-size: 14px;
+                        color: #555555;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Alilm</h1>
+                    </div>
+                    <div class="content">
+                        <h2>${basketAndMemberAndProduct.member.nickname}님이 등록하신 제품이 재입고 되었습니다!</h2>
+                        <div class="product-info">
+                            <img src="${basketAndMemberAndProduct.product.imageUrl}" alt="Product Image"/>
                             <div>
-                                <p>상품 옵션 : ${basketAndMemberAndProduct.product.name}//</p>
-                                <p>재입고 시각 : ${LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime()}</p>
+                                <p><strong>상품 옵션:</strong> ${basketAndMemberAndProduct.product.name}</p>
+                                <p><strong>재입고 시각:</strong> ${LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime()}</p>
                             </div>
                         </div>
-                    </div>
-                    <div>
                         <p>${basketAndMemberAndProduct.member.nickname}님이 등록하신 상품의 재입고 소식을 알려드리러 왔어요.</p>
-                        <p>상품은 재입고 시각으로 부터 다시 품절이 될 수 있음을 유의해주세요!</p>
-                        <p>저희 알림 서비스를 이용해주셔서 감사합니다 :) </p>
+                        <p>상품은 재입고 시각으로부터 다시 품절이 될 수 있음을 유의해주세요!</p>
+                        <p>저희 알림 서비스를 이용해주셔서 감사합니다 :)</p>
+                        <a href="https://www.musinsa.com/app/goods/${basketAndMemberAndProduct.product.number}" class="button">
+                            재입고 상품 구매하러 가기 👉
+                        </a>
                     </div>
-                   <a href="https://www.musinsa.com/app/goods/${basketAndMemberAndProduct.product.number}" style="display: inline-block; width: 580px; height: 252px; background-color: #1B1A3B; text-align: center; color: white; text-decoration: none; line-height: 252px;">
-                    <h2>재입고 상품 구매하러 가기 👉</h2>
-                </a>
-                </body>
+                    <div class="footer">
+                        알림 서비스 © 2024 Alilm
+                    </div>
+                </div>
+            </body>
             </html>
-
         """.trimIndent()
     }
 

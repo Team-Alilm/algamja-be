@@ -17,7 +17,7 @@ import org.teamalilm.alilmbe.domain.Product
 
 @RestController
 @RequestMapping("/api/v1/products")
-@Tag(name = "product-crawling", description = "상품 정보를 쇼핑몰에서 가져오는 API (현재 무신사만 지원)")
+@Tag(name = "상품 크롤링", description = "상품 정보를 쇼핑몰에서 가져오는 API (현재 무신사만 지원)")
 class CrawlingController(
     private val crawlingUseCase: CrawlingUseCase
 ) {

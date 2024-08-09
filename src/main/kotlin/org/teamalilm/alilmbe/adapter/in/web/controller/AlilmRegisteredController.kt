@@ -20,7 +20,7 @@ import org.teamalilm.alilmbe.domain.Product
 
 @RestController
 @RequestMapping("/api/v1/alilms")
-@Tag(name = "product-registered", description = "상품 정보를 등록하는 API")
+@Tag(name = "상품 등록 API", description = "상품 정보를 등록하는 API")
 class AlilmRegisteredController(
     private val alilmRegistrationUseCase: AlilmRegistrationUseCase
 ) {
