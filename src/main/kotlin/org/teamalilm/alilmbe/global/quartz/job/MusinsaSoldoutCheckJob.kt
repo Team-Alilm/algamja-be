@@ -9,10 +9,10 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
 import org.teamalilm.alilmbe.adapter.out.gateway.MailGateway
+import org.teamalilm.alilmbe.adapter.out.gateway.SlackGateway
 import org.teamalilm.alilmbe.application.port.out.LoadAllBasketsPort
 import org.teamalilm.alilmbe.application.port.out.UpdateBasketPort
 import org.teamalilm.alilmbe.global.quartz.data.SoldoutCheckResponse
-import org.teamalilm.alilmbe.global.slack.service.SlackService
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -27,7 +27,7 @@ class MusinsaSoldoutCheckJob(
     val loadAllBasketsPort: LoadAllBasketsPort,
     val restClient: RestClient,
     val emailService: MailGateway,
-    val slackService: SlackService,
+    val slackGateway: SlackGateway,
     val updateBasketPort: UpdateBasketPort
 ) : Job {
 
@@ -57,7 +57,7 @@ class MusinsaSoldoutCheckJob(
 
     private fun sendNotifications(basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct) {
         emailService.sendMail(getEmailMessage(basketAndMemberAndProduct), basketAndMemberAndProduct.member.email)
-        slackService.sendSlackMessage(getSlackMessage(basketAndMemberAndProduct))
+        slackGateway.sendMessage(getSlackMessage(basketAndMemberAndProduct))
     }
 
     private fun checkIfSoldOut(requestUri: String, basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): Boolean {
