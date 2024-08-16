@@ -8,7 +8,7 @@ class Basket(
     val memberId: MemberId,
     val productId: ProductId,
     var isAlilm: Boolean = false,
-    var alilmDate: Long?,
+    var alilmDate: Long? = null,
     val isHidden: Boolean,
     val createdDate: Long,
 ) {
