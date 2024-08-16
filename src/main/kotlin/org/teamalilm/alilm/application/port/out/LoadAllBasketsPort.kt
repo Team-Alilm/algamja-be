@@ -6,11 +6,12 @@ import org.teamalilm.alilm.domain.Product
 
 interface LoadAllBasketsPort {
 
-    fun loadAllBaskets() : List<BasketAndMemberAndProduct>
+    fun getAllBaskets() : List<BasketAndMemberAndProduct>
 
     data class BasketAndMemberAndProduct(
         val basket: Basket,
         val member: Member,
         val product: Product
     )
+
 }

@@ -12,35 +12,30 @@ import org.teamalilm.alilm.domain.Product
 class BasketMapper {
 
     fun mapToJpaEntity(basket: Basket, memberJpaEntity: MemberJpaEntity, productJpaEntity: ProductJpaEntity): BasketJpaEntity {
-        val basketJpaEntity = BasketJpaEntity(
+        return BasketJpaEntity(
             id = basket.id?.value,
             memberJpaEntity = memberJpaEntity,
             productJpaEntity = productJpaEntity,
+            isAlilm = basket.isAlilm,
+            alilmDate = basket.alilmDate,
             isHidden = basket.isHidden,
-        )
-
-        return basketJpaEntity
-    }
-
-    fun mapToDomainEntityOrNull(basketJpaEntity: BasketJpaEntity?): Basket? {
-        basketJpaEntity ?: return null
-
-        return Basket(
-            id = Basket.BasketId(basketJpaEntity.id),
-            memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id!!),
-            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!),
-            isHidden = basketJpaEntity.isHidden,
-            createdDate = basketJpaEntity.createdDate,
         )
     }
 
     fun mapToDomainEntity(basketJpaEntity: BasketJpaEntity): Basket {
         return Basket(
             id = Basket.BasketId(basketJpaEntity.id),
-            memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id!!),
-            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id!!),
+            memberId = Member.MemberId(basketJpaEntity.memberJpaEntity.id ?: error("Member ID is null")),
+            productId = Product.ProductId(basketJpaEntity.productJpaEntity.id ?: error("Product ID is null")),
+            isAlilm = basketJpaEntity.isAlilm,
+            alilmDate = basketJpaEntity.alilmDate,
             isHidden = basketJpaEntity.isHidden,
             createdDate = basketJpaEntity.createdDate,
         )
     }
+
+    fun mapToDomainEntityOrNull(basketJpaEntity: BasketJpaEntity?): Basket? {
+        return basketJpaEntity?.let { mapToDomainEntity(it) }
+    }
+
 }

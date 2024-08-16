@@ -11,7 +11,7 @@ import org.springframework.web.client.body
 import org.teamalilm.alilm.adapter.out.gateway.MailGateway
 import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
 import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort
-import org.teamalilm.alilm.application.port.out.UpdateBasketPort
+import org.teamalilm.alilm.application.port.out.SendAlilmBasketPort
 import org.teamalilm.alilm.global.quartz.data.SoldoutCheckResponse
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -28,14 +28,14 @@ class MusinsaSoldoutCheckJob(
     val restClient: RestClient,
     val mailGateway: MailGateway,
     val slackGateway: SlackGateway,
-    val updateBasketPort: UpdateBasketPort
+    val sendAlilmBasketPort: SendAlilmBasketPort
 ) : Job {
 
     private val log = LoggerFactory.getLogger(MusinsaSoldoutCheckJob::class.java)
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
-        val baskets = loadAllBasketsPort.loadAllBaskets()
+        val baskets = loadAllBasketsPort.getAllBaskets()
 
         baskets.forEach { basketAndMemberAndProduct ->
             val productId = basketAndMemberAndProduct.product.id ?: return@forEach
@@ -50,7 +50,12 @@ class MusinsaSoldoutCheckJob(
 
             if (!isSoldOut) {
                 sendNotifications(basketAndMemberAndProduct)
-                updateBasketPort.deleteBasket(basketAndMemberAndProduct.basket.id!!)
+                basketAndMemberAndProduct.basket.sendAlilm()
+                sendAlilmBasketPort.sendAlilmBasket(
+                    basketAndMemberAndProduct.basket,
+                    basketAndMemberAndProduct.member,
+                    basketAndMemberAndProduct.product
+                )
             }
         }
     }

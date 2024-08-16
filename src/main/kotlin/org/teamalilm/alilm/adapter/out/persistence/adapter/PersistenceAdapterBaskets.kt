@@ -13,11 +13,16 @@ import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.Spring
 import org.teamalilm.alilm.application.port.out.*
 import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort.*
 import org.teamalilm.alilm.application.port.out.LoadMyBasketsPort.*
+import org.teamalilm.alilm.common.error.ErrorMessage
+import org.teamalilm.alilm.common.error.NotFoundBasketException
 import org.teamalilm.alilm.domain.Basket
 import org.teamalilm.alilm.domain.Member
 import org.teamalilm.alilm.domain.Member.*
 import org.teamalilm.alilm.domain.Product
 import org.teamalilm.alilm.domain.Product.*
+import java.time.LocalDate
+import java.time.ZoneOffset
+
 
 @Component
 class PersistenceAdapterBaskets(
@@ -32,7 +37,9 @@ class PersistenceAdapterBaskets(
     LoadSliceBasketPort,
     LoadMyBasketsPort,
     LoadAllBasketsPort,
-    UpdateBasketPort{
+    SendAlilmBasketPort,
+    LoadAllAndDailyCountPort
+{
 
     override fun addBasket(
         basket: Basket,
@@ -85,7 +92,7 @@ class PersistenceAdapterBaskets(
         ) }
     }
 
-    override fun loadAllBaskets() : List<BasketAndMemberAndProduct> {
+    override fun getAllBaskets() : List<BasketAndMemberAndProduct> {
         return springDataBasketRepository.findAllByIsDeleteFalse().map { BasketAndMemberAndProduct(
             basket = basketMapper.mapToDomainEntity(it),
             member = memberMapper.mapToDomainEntity(it.memberJpaEntity),
@@ -93,12 +100,29 @@ class PersistenceAdapterBaskets(
         ) }
     }
 
-    override fun deleteBasket(basketId: Basket.BasketId) {
-        val basketJpaEntity = basketRepository.findByIdOrNull(basketId.value)
-            ?: throw IllegalArgumentException("Basket not found")
+    override fun sendAlilmBasket(basket: Basket, member: Member, product: Product) {
+        val basketJpaEntity = basketMapper
+            .mapToJpaEntity(
+                basket,
+                memberMapper.mapToJpaEntity(member),
+                productMapper.mapToJpaEntity(product)
+            )
 
-        basketJpaEntity.delete()
         basketRepository.save(basketJpaEntity)
+    }
+
+    override fun getAllAndDailyCount(): LoadAllAndDailyCountPort.AllAndDailyCount {
+        val today = LocalDate.now()
+        val midnight = today.atStartOfDay()
+        val midnightMillis = midnight.toInstant(ZoneOffset.UTC).toEpochMilli()
+
+        val allIsAlilmTrueBaskets = springDataBasketRepository.findByIsAlilmTrue()
+        val dailyAlilmTrueBaskets = springDataBasketRepository.findByIsAlilmTrueAndAlilmDateGreaterThanEqual(midnightMillis)
+
+        return LoadAllAndDailyCountPort.AllAndDailyCount(
+            allCount = allIsAlilmTrueBaskets.size.toLong(),
+            dailyCount = dailyAlilmTrueBaskets.size.toLong()
+        )
     }
 
 }
