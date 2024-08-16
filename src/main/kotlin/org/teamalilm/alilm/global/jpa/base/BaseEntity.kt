@@ -26,4 +26,5 @@ abstract class BaseEntity : BaseTimeEntity() {
     fun delete() {
         this.isDelete = true
     }
+
 }

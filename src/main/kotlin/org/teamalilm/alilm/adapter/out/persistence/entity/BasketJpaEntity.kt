@@ -26,5 +26,11 @@ class BasketJpaEntity(
     val productJpaEntity: ProductJpaEntity,
 
     @Column(nullable = false)
+    val isAlilm: Boolean = false,
+
+    @Column
+    val alilmDate: Long? = null,
+
+    @Column(nullable = false)
     val isHidden: Boolean = false
 ) : BaseEntity()
