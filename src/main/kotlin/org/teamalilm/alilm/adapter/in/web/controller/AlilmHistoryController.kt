@@ -10,7 +10,7 @@ import org.teamalilm.alilm.application.port.`in`.use_case.AlilmHistoryUseCase
 
 @RestController
 @RequestMapping("/api/v1/alilms")
-@Tag(name = "알림 API", description = "알림 관련 API")
+@Tag(name = "알림 히스토리 API", description = "알림 히스토리 관련 API")
 class AlilmHistoryController(
     private val alilmHistoryUseCase: AlilmHistoryUseCase
 ) {
