@@ -1,6 +1,6 @@
 package org.teamalilm.alilm.application.port.`in`.use_case
 
-import org.teamalilm.alilm.adapter.`in`.web.controller.CrawlingController.CrawlingRequest
+import org.teamalilm.alilm.adapter.`in`.web.controller.products.CrawlingController.CrawlingRequest
 import org.teamalilm.alilm.domain.Product
 
 interface CrawlingUseCase {

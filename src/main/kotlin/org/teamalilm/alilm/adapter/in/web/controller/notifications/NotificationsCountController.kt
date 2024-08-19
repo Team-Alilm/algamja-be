@@ -1,4 +1,4 @@
-package org.teamalilm.alilm.adapter.`in`.web.controller
+package org.teamalilm.alilm.adapter.`in`.web.controller.notifications
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController
 import org.teamalilm.alilm.application.port.`in`.use_case.AlilmHistoryUseCase
 
 @RestController
-@RequestMapping("/api/v1/alilms")
+@RequestMapping("/api/v1/notifications")
 @Tag(name = "알림 히스토리 API", description = "알림 히스토리 관련 API")
-class AlilmHistoryController(
+class NotificationsCountController(
     private val alilmHistoryUseCase: AlilmHistoryUseCase
 ) {
 
@@ -23,7 +23,7 @@ class AlilmHistoryController(
             실질적으로 장바구니에서 카운팅 해서 내려가는 데이터 입니다.
             장바구니에 대한 알림을 조회합니다.
     """)
-    @GetMapping("/alilm-history")
+    @GetMapping("/count")
     fun alilmHistory(): ResponseEntity<AlilmHistoryResponse> {
         val result = alilmHistoryUseCase.alilmHistory()
 

@@ -1,7 +1,7 @@
 package org.teamalilm.alilm.application.port.`in`.use_case
 
 import org.springframework.data.domain.Slice
-import org.teamalilm.alilm.adapter.`in`.web.controller.BasketSliceController
+import org.teamalilm.alilm.adapter.`in`.web.controller.baskets.BasketSliceController
 
 interface BasketSliceUseCase {
 

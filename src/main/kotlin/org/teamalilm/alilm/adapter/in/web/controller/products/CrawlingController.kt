@@ -1,4 +1,4 @@
-package org.teamalilm.alilm.adapter.`in`.web.controller
+package org.teamalilm.alilm.adapter.`in`.web.controller.products
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
@@ -93,5 +93,4 @@ class CrawlingController(
             }
         }
     }
-
 }

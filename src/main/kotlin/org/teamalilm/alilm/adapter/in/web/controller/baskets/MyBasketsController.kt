@@ -1,4 +1,4 @@
-package org.teamalilm.alilm.adapter.`in`.web.controller
+package org.teamalilm.alilm.adapter.`in`.web.controller.baskets
 
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
