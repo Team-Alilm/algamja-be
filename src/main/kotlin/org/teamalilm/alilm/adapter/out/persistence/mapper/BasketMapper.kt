@@ -30,7 +30,6 @@ class BasketMapper {
             isAlilm = basketJpaEntity.isAlilm,
             alilmDate = basketJpaEntity.alilmDate,
             isHidden = basketJpaEntity.isHidden,
-            createdDate = basketJpaEntity.createdDate,
         )
     }
 

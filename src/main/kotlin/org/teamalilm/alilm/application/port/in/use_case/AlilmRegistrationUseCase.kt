@@ -1,6 +1,6 @@
 package org.teamalilm.alilm.application.port.`in`.use_case
 
-import org.teamalilm.alilm.adapter.`in`.web.controller.notifications.NotificationsRegisteredController.*
+import org.teamalilm.alilm.adapter.`in`.web.controller.baskets.BasketsRegisteredController.*
 import org.teamalilm.alilm.domain.Member
 import org.teamalilm.alilm.domain.Product
 

@@ -48,7 +48,6 @@ class AlilmRegistrationService(
                     memberId = command.member.id,
                     productId = product.id,
                     isHidden = false,
-                    createdDate = System.currentTimeMillis()
                 ),
                 member = command.member,
                 product = product

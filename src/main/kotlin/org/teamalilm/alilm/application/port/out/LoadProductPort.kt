@@ -12,4 +12,7 @@ interface LoadProductPort {
         option3: String?
     ): Product?
 
+    fun loadProduct(
+        productId: Product.ProductId,
+    ): Product?
 }

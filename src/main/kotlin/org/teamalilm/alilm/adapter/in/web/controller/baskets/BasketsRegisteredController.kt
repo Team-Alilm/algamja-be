@@ -1,4 +1,4 @@
-package org.teamalilm.alilm.adapter.`in`.web.controller.notifications
+package org.teamalilm.alilm.adapter.`in`.web.controller.baskets
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
@@ -19,9 +19,9 @@ import org.teamalilm.alilm.common.error.RequestValidateException
 import org.teamalilm.alilm.domain.Product
 
 @RestController
-@RequestMapping("/api/v1/notifications")
+@RequestMapping("/api/v1/baskets")
 @Tag(name = "상품 등록 API", description = "상품 정보를 등록하는 API")
-class NotificationsRegisteredController(
+class BasketsRegisteredController(
     private val alilmRegistrationUseCase: AlilmRegistrationUseCase
 ) {
 
