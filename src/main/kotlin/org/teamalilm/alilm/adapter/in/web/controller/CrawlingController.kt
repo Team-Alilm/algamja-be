@@ -71,9 +71,9 @@ class CrawlingController(
         val category: String,
         val price: Int,
         val store: Product.Store,
-        val option1List: List<String>,
-        val option2List: List<String>,
-        val option3List: List<String>
+        val firstOptions: List<String>,
+        val secondOptions: List<String>,
+        val thirdOptions: List<String>
     ) {
 
         companion object {
@@ -86,9 +86,9 @@ class CrawlingController(
                     category = result.category,
                     price = result.price,
                     store = result.store,
-                    option1List = result.option1List,
-                    option2List = result.option2List,
-                    option3List = result.option3List
+                    firstOptions = result.firstOptions,
+                    secondOptions = result.secondOptions,
+                    thirdOptions = result.thirdOptions
                 )
             }
         }
