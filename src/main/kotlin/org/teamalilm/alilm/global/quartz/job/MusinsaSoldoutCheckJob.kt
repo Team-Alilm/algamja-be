@@ -12,6 +12,7 @@ import org.teamalilm.alilm.adapter.out.gateway.MailGateway
 import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
 import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort
 import org.teamalilm.alilm.application.port.out.SendAlilmBasketPort
+import org.teamalilm.alilm.common.error.MusinsaSoldoutCheckException
 import org.teamalilm.alilm.global.quartz.data.SoldoutCheckResponse
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -67,11 +68,8 @@ class MusinsaSoldoutCheckJob(
 
     private fun checkIfSoldOut(requestUri: String, basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): Boolean {
         val response = restClient.get().uri(requestUri).retrieve().body<SoldoutCheckResponse>()
-        val basicOption = response?.data?.basic?.firstOrNull { item -> item.name == basketAndMemberAndProduct.product.option1 }
-        return basicOption?.subOptions?.any { subOption ->
-            subOption.name == basketAndMemberAndProduct.product.option2 &&
-                    subOption.subOptions.any { it.name == basketAndMemberAndProduct.product.option3 }
-        } ?: true
+        val optionItem = response?.data?.optionItems?.firstOrNull { it.managedCode == basketAndMemberAndProduct.product.option1+'^'+basketAndMemberAndProduct.product.option2+'^'+basketAndMemberAndProduct.product.option3 }
+        return optionItem?.outOfStock ?: throw MusinsaSoldoutCheckException()
     }
 
     private fun getEmailMessage(basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): String {

@@ -9,6 +9,7 @@ import org.springframework.web.client.body
 import org.teamalilm.alilm.application.port.`in`.use_case.CrawlingUseCase
 import org.teamalilm.alilm.application.port.out.gateway.CrawlingGateway
 import org.teamalilm.alilm.application.port.out.gateway.CrawlingGateway.CrawlingGatewayRequest
+import org.teamalilm.alilm.common.error.MusinsaSoldoutCheckException
 import org.teamalilm.alilm.domain.Product
 import org.teamalilm.alilm.global.quartz.data.SoldoutCheckResponse
 import java.net.URI
@@ -35,20 +36,22 @@ class CrawlingService(
         val jsonData = extractJsonData(scriptContent, "window.__MSS__.product.state")
         val jsonObject = JsonParser.parseString(jsonData).asJsonObject
 
+        log.info("Extracted JSON data: $jsonObject")
+
         val soldoutCheckResponse = fetchSoldoutCheckResponse(decodedUrl)
         val options = extractOptions(soldoutCheckResponse)
 
         return CrawlingUseCase.CrawlingResult(
             number = jsonObject.get("goodsNo").asLong,
             name = jsonObject.get("goodsNm").asString,
-            brand = jsonObject.get("brandNm").asString,
+            brand = jsonObject.get("brand").asString,
             imageUrl = "https://image.msscdn.net${jsonObject.get("thumbnailImageUrl").asString}",
             category = jsonObject.get("category").asJsonObject.get("categoryDepth1Title").asString,
             price = jsonObject.get("goodsPrice").asJsonObject.get("maxPrice").asInt,
             store = Product.Store.MUSINSA,
-            option1List = options.first,
-            option2List = options.second,
-            option3List = options.third
+            firstOptions = options.first,
+            secondOptions = options.second,
+            thirdOptions = options.third
         )
     }
 
@@ -58,22 +61,22 @@ class CrawlingService(
         }
     }
 
-    private fun fetchSoldoutCheckResponse(url: String): SoldoutCheckResponse? {
+    private fun fetchSoldoutCheckResponse(url: String): SoldoutCheckResponse {
         val uri = buildSoldoutCheckUri(url)
         log.info("Fetching soldout check response from URI: $uri")
 
-        return restClient.get().uri(uri).retrieve().body<SoldoutCheckResponse>()
+        return restClient.get().uri(uri).retrieve().body<SoldoutCheckResponse>() ?: throw MusinsaSoldoutCheckException()
     }
 
     private fun buildSoldoutCheckUri(url: String): String {
-        return url.replace("www", "goods-detail").replace("/app", "") + "/options?goodsSaleType=SALE"
+        return url.replace("www", "goods-detail").replace("products","").replace("/app", "/api2") + "/options?goodsSaleType=SALE"
     }
 
-    private fun extractOptions(response: SoldoutCheckResponse?): Triple<List<String>, List<String>, List<String>> {
-        val option1s = response?.data?.basic?.map { it.name } ?: emptyList()
-        val option2s = response?.data?.basic?.firstOrNull()?.subOptions?.map { it.name } ?: emptyList()
-        val option3s = response?.data?.basic?.firstOrNull()?.subOptions?.firstOrNull()?.subOptions?.map { it.name } ?: emptyList()
-        return Triple(option1s, option2s, option3s)
+    private fun extractOptions(response: SoldoutCheckResponse): Triple<List<String>, List<String>, List<String>> {
+        val firstOptions = response.data.basic[0].optionValues.map { it.name }
+        val secondOptions = response.data.basic.getOrNull(1)?.optionValues?.map { it.name } ?: emptyList()
+        val thirdOptions = response.data.basic.getOrNull(2)?.optionValues?.map { it.name } ?: emptyList()
+        return Triple(firstOptions, secondOptions, thirdOptions)
     }
 
     private fun extractJsonData(scriptContent: String, variableName: String): String? {

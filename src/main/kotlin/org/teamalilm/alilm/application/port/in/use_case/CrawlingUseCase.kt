@@ -26,9 +26,9 @@ interface CrawlingUseCase {
         val category: String,
         val price: Int,
         val store: Product.Store,
-        val option1List: List<String>,
-        val option2List: List<String>,
-        val option3List: List<String>
+        val firstOptions: List<String>,
+        val secondOptions: List<String>,
+        val thirdOptions: List<String>
     )
 }
 
