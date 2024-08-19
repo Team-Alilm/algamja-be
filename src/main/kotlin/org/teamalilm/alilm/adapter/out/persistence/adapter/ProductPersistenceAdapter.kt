@@ -42,4 +42,10 @@ class ProductPersistenceAdapter(
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
     }
 
+    override fun loadProduct(productId: Product.ProductId): Product? {
+        val productJpaEntity = springDataProductRepository.findById(productId.value).orElse(null)
+
+        return productMapper.mapToDomainEntityOrNull(productJpaEntity)
+    }
+
 }
