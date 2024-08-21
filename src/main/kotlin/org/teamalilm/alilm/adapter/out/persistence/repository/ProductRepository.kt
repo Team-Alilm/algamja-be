@@ -6,7 +6,7 @@ import org.teamalilm.alilm.domain.Product
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
-    fun findByNumberAndStoreAndOption1AndOption2AndOption3(
+    fun findByNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
         number: Long,
         store: Product.Store,
         option1: String,

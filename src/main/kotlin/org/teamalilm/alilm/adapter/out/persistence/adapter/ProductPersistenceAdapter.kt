@@ -31,7 +31,7 @@ class ProductPersistenceAdapter(
         option2: String?,
         option3: String?,
     ): Product? {
-        val productJpaEntity = productRepository.findByNumberAndStoreAndOption1AndOption2AndOption3(
+        val productJpaEntity = productRepository.findByNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
             number = number,
             store = store,
             option1 = option1,
