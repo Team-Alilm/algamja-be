@@ -21,9 +21,9 @@ interface MyBasketsUseCase {
         val store: String,
         val price: Int,
         val category: String,
-        val option1: String,
-        val option2: String?,
-        val option3: String?,
+        val firstOption: String,
+        val secondOption: String?,
+        val thirdOption: String?,
         val isHidden: Boolean
     ) {
 
@@ -38,9 +38,9 @@ interface MyBasketsUseCase {
                     store = product.store.name,
                     price = product.price,
                     category = product.category,
-                    option1 = product.option1,
-                    option2 = product.option2,
-                    option3 = product.option3,
+                    firstOption = product.firstOption,
+                    secondOption = product.secondOption,
+                    thirdOption = product.thirdOption,
                     isHidden = basket.isHidden
                 )
             }

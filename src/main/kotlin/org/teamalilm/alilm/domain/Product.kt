@@ -10,9 +10,9 @@ class Product (
     val price: Int,
     val store: Store,
     val waitingCount: Int = 0,
-    val option1: String,
-    val option2: String?,
-    val option3: String?
+    val firstOption: String,
+    val secondOption: String?,
+    val thirdOption: String?
 ) {
     init {
         require(number > 0) { "Product number must be positive" }
@@ -21,7 +21,7 @@ class Product (
         require(imageUrl.isNotBlank()) { "Product image URL must not be blank" }
         require(category.isNotBlank()) { "Product category must not be blank" }
         require(price >= 0) { "Product price must be non-negative" }
-        require(option1.isNotBlank()) { "Product option1 must not be blank" }
+        require(firstOption.isNotBlank()) { "Product option1 must not be blank" }
         require(waitingCount >= 0) { "Product waiting count must be non-negative" }
     }
 

@@ -16,9 +16,9 @@ interface AlilmRegistrationUseCase {
         val imageUrl: String,
         val category: String,
         val price: Int,
-        val option1: String,
-        val option2: String?,
-        val option3: String?,
+        val firstOption: String,
+        val secondOption: String?,
+        val thirdOption: String?,
         val member: Member
     ) {
 
@@ -32,9 +32,9 @@ interface AlilmRegistrationUseCase {
                     imageUrl = request.imageUrl,
                     category = request.category,
                     price = request.price,
-                    option1 = request.option1,
-                    option2 = request.option2,
-                    option3 = request.option3,
+                    firstOption = request.firstOption,
+                    secondOption = request.secondOption,
+                    thirdOption = request.thirdOption,
                     member = member
                 )
             }
