@@ -10,8 +10,11 @@ import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
 import org.teamalilm.alilm.adapter.out.gateway.MailGateway
 import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
+import org.teamalilm.alilm.application.port.out.AddBasketPort
+import org.teamalilm.alilm.application.port.out.AddProductPort
 import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort
 import org.teamalilm.alilm.application.port.out.SendAlilmBasketPort
+import org.teamalilm.alilm.common.companion.StringConstant
 import org.teamalilm.alilm.common.error.MusinsaSoldoutCheckException
 import org.teamalilm.alilm.global.quartz.data.SoldoutCheckResponse
 import java.time.LocalDateTime
@@ -26,6 +29,7 @@ import java.time.ZoneId
 @Transactional(readOnly = true)
 class MusinsaSoldoutCheckJob(
     val loadAllBasketsPort: LoadAllBasketsPort,
+    val addBasketPort: AddBasketPort,
     val restClient: RestClient,
     val mailGateway: MailGateway,
     val slackGateway: SlackGateway,
@@ -36,11 +40,11 @@ class MusinsaSoldoutCheckJob(
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
-        val baskets = loadAllBasketsPort.getAllBaskets()
+        val basketAndMemberAndProducts = loadAllBasketsPort.getAllBaskets()
 
-        baskets.forEach { basketAndMemberAndProduct ->
-            val productId = basketAndMemberAndProduct.product.id ?: return@forEach
-            val requestUri = MUSINSA_API_URL_TEMPLATE.format(basketAndMemberAndProduct.product.number)
+        basketAndMemberAndProducts.forEach { basketAndMemberAndProduct ->
+            val productId = basketAndMemberAndProduct.product.number
+            val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(productId)
 
             val isSoldOut = try {
                 checkIfSoldOut(requestUri, basketAndMemberAndProduct)
@@ -52,6 +56,13 @@ class MusinsaSoldoutCheckJob(
             if (!isSoldOut) {
                 sendNotifications(basketAndMemberAndProduct)
                 basketAndMemberAndProduct.basket.sendAlilm()
+
+                addBasketPort.addBasket(
+                    basketAndMemberAndProduct.basket,
+                    basketAndMemberAndProduct.member,
+                    basketAndMemberAndProduct.product
+                )
+
                 sendAlilmBasketPort.sendAlilmBasket(
                     basketAndMemberAndProduct.basket,
                     basketAndMemberAndProduct.member,
@@ -68,7 +79,7 @@ class MusinsaSoldoutCheckJob(
 
     private fun checkIfSoldOut(requestUri: String, basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): Boolean {
         val response = restClient.get().uri(requestUri).retrieve().body<SoldoutCheckResponse>()
-        val optionItem = response?.data?.optionItems?.firstOrNull { it.managedCode == basketAndMemberAndProduct.product.firstOption+'^'+basketAndMemberAndProduct.product.store+'^'+basketAndMemberAndProduct.product.thirdOption }
+        val optionItem = response?.data?.optionItems?.firstOrNull { it.managedCode == basketAndMemberAndProduct.getManagedCode() }
         return optionItem?.outOfStock ?: throw MusinsaSoldoutCheckException()
     }
 
@@ -181,8 +192,4 @@ class MusinsaSoldoutCheckJob(
         """.trimIndent()
     }
 
-    companion object {
-        const val MUSINSA_API_URL_TEMPLATE =
-            "https://goods-detail.musinsa.com/goods/%s/options?goodsSaleType=SALE"
-    }
 }
