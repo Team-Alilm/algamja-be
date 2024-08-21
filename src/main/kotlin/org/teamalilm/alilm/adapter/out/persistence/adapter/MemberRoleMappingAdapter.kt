@@ -10,7 +10,7 @@ import org.teamalilm.alilm.domain.Member
 import org.teamalilm.alilm.domain.Role
 
 @Component
-class MemberRoleMappingPersistenceAdapter(
+class MemberRoleMappingAdapter(
     val springDataMemberRoleMappingRepository: SpringDataMemberRoleMappingRepository,
     val memberRoleMappingMapper: MemberRoleMappingMapper,
     val memberMapper: MemberMapper,

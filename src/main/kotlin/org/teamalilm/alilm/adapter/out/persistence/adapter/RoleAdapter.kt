@@ -7,7 +7,7 @@ import org.teamalilm.alilm.application.port.out.LoadRolePort
 import org.teamalilm.alilm.domain.Role
 
 @Component
-class RolePersistenceAdapter(
+class RoleAdapter(
     val springDataRoleRepository: SpringDataRoleRepository,
     val roleMapper: RoleMapper
 ) : LoadRolePort {
