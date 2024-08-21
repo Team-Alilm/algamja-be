@@ -2,8 +2,8 @@ package org.teamalilm.alilm.adapter.out.persistence.adapter
 
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import org.teamalilm.alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.teamalilm.alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.teamalilm.alilm.adapter.out.persistence.mapper.BasketMapper
 import org.teamalilm.alilm.adapter.out.persistence.mapper.MemberMapper
@@ -13,8 +13,6 @@ import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.Spring
 import org.teamalilm.alilm.application.port.out.*
 import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort.*
 import org.teamalilm.alilm.application.port.out.LoadMyBasketsPort.*
-import org.teamalilm.alilm.common.error.ErrorMessage
-import org.teamalilm.alilm.common.error.NotFoundBasketException
 import org.teamalilm.alilm.domain.Basket
 import org.teamalilm.alilm.domain.Member
 import org.teamalilm.alilm.domain.Member.*
@@ -25,7 +23,7 @@ import java.time.ZoneOffset
 
 
 @Component
-class PersistenceAdapterBaskets(
+class BasketAdapter(
     private val springDataBasketRepository: SpringDataBasketRepository,
     private val basketRepository: BasketRepository,
     private val basketMapper: BasketMapper,
@@ -38,7 +36,8 @@ class PersistenceAdapterBaskets(
     LoadMyBasketsPort,
     LoadAllBasketsPort,
     SendAlilmBasketPort,
-    LoadAllAndDailyCountPort
+    LoadAllAndDailyCountPort,
+    IsNotSoldOutBasketPort
 {
 
     override fun addBasket(
@@ -46,15 +45,7 @@ class PersistenceAdapterBaskets(
         member: Member,
         product: Product
     ): Basket {
-        val basketJpaEntity = springDataBasketRepository.save(
-            basketMapper.mapToJpaEntity(
-                basket,
-                memberMapper.mapToJpaEntity(member),
-                productMapper.mapToJpaEntity(product)
-            )
-        )
-
-        basketJpaEntity.isDelete = basket.isDeleted
+        val basketJpaEntity = basketJpaEntity(basket, member, product)
 
         return basketMapper.mapToDomainEntity(basketJpaEntity)
     }
@@ -103,12 +94,7 @@ class PersistenceAdapterBaskets(
     }
 
     override fun sendAlilmBasket(basket: Basket, member: Member, product: Product) {
-        val basketJpaEntity = basketMapper
-            .mapToJpaEntity(
-                basket,
-                memberMapper.mapToJpaEntity(member),
-                productMapper.mapToJpaEntity(product)
-            )
+        val basketJpaEntity = basketJpaEntity(basket, member, product)
 
         basketRepository.save(basketJpaEntity)
     }
@@ -125,6 +111,29 @@ class PersistenceAdapterBaskets(
             allCount = allIsAlilmTrueBaskets.size.toLong(),
             dailyCount = dailyAlilmTrueBaskets.size.toLong()
         )
+    }
+
+    override fun isNotSoldOut(basket: Basket,  member: Member, product: Product) {
+        val basketJpaEntity = basketJpaEntity(basket, member, product)
+
+        basketJpaEntity.isDelete = true
+
+        basketRepository.save(basketJpaEntity)
+    }
+
+    private fun basketJpaEntity(
+        basket: Basket,
+        member: Member,
+        product: Product
+    ): BasketJpaEntity {
+        val basketJpaEntity = basketMapper
+            .mapToJpaEntity(
+                basket,
+                memberMapper.mapToJpaEntity(member),
+                productMapper.mapToJpaEntity(product)
+            )
+
+        return basketJpaEntity
     }
 
 }

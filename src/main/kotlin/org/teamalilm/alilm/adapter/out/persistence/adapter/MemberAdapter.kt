@@ -9,7 +9,7 @@ import org.teamalilm.alilm.application.port.out.LoadMemberPort
 import org.teamalilm.alilm.domain.Member
 
 @Component
-class MemberPersistenceAdapter (
+class MemberAdapter (
     private val springDataMemberRepository: SpringDataMemberRepository,
     private val memberMapper: MemberMapper
 ) : LoadMemberPort, AddMemberPort {

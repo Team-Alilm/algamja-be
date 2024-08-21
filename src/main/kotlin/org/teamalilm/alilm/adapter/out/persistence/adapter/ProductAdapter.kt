@@ -6,17 +6,14 @@ import org.teamalilm.alilm.adapter.out.persistence.repository.ProductRepository
 import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
 import org.teamalilm.alilm.application.port.out.AddProductPort
 import org.teamalilm.alilm.application.port.out.LoadProductPort
-import org.teamalilm.alilm.application.port.out.SoldOutProductPort
-import org.teamalilm.alilm.common.error.ErrorMessage
-import org.teamalilm.alilm.common.error.NotFoundProductException
 import org.teamalilm.alilm.domain.Product
 
 @Component
-class ProductPersistenceAdapter(
+class ProductAdapter(
     private val springDataProductRepository: SpringDataProductRepository,
     private val productRepository: ProductRepository,
-    private val productMapper: ProductMapper
-) : AddProductPort, LoadProductPort, SoldOutProductPort {
+    private val productMapper: ProductMapper,
+) : AddProductPort, LoadProductPort {
 
     override fun addProduct(product: Product) : Product {
         return productMapper
@@ -49,13 +46,6 @@ class ProductPersistenceAdapter(
         val productJpaEntity = springDataProductRepository.findById(productId.value).orElse(null)
 
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
-    }
-
-    override fun soldOut(product: Product) {
-        springDataProductRepository.findById(productId.value)
-            .orElseThrow(NotFoundProductException(ErrorMessage.NOT_FOUND_PRODUCT))
-
-        springDataProductRepository.deleteById(productId.value)
     }
 
 }
