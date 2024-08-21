@@ -59,9 +59,9 @@ class AlilmRegistrationService(
         loadProductPort.loadProduct(
             number = command.number,
             store = command.store,
-            option1 = command.option1,
-            option2 = command.option2,
-            option3 = command.option3
+            firstOption = command.firstOption,
+            secondOption = command.secondOption,
+            thirdOption = command.thirdOption
         ) ?: run {
             addProductPort.addProduct(
                 Product(
@@ -73,9 +73,9 @@ class AlilmRegistrationService(
                     imageUrl = command.imageUrl,
                     category = command.category,
                     price = command.price,
-                    option1 = command.option1,
-                    option2 = command.option2,
-                    option3 = command.option3
+                    firstOption = command.firstOption,
+                    secondOption = command.secondOption,
+                    thirdOption = command.thirdOption
                 )
             )
         }

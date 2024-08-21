@@ -68,7 +68,7 @@ class MusinsaSoldoutCheckJob(
 
     private fun checkIfSoldOut(requestUri: String, basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): Boolean {
         val response = restClient.get().uri(requestUri).retrieve().body<SoldoutCheckResponse>()
-        val optionItem = response?.data?.optionItems?.firstOrNull { it.managedCode == basketAndMemberAndProduct.product.option1+'^'+basketAndMemberAndProduct.product.option2+'^'+basketAndMemberAndProduct.product.option3 }
+        val optionItem = response?.data?.optionItems?.firstOrNull { it.managedCode == basketAndMemberAndProduct.product.firstOption+'^'+basketAndMemberAndProduct.product.store+'^'+basketAndMemberAndProduct.product.thirdOption }
         return optionItem?.outOfStock ?: throw MusinsaSoldoutCheckException()
     }
 

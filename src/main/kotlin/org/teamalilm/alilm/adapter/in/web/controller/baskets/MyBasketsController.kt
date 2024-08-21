@@ -36,9 +36,9 @@ class MyBasketsController(
         val store: String,
         val price: Int,
         val category: String,
-        val option1: String,
-        val option2: String?,
-        val option3: String?,
+        val firstOption: String,
+        val secondOption: String?,
+        val thirdOption: String?,
         val isHidden: Boolean
     ) {
 
@@ -53,9 +53,9 @@ class MyBasketsController(
                     store = myBasketsResult.store,
                     price = myBasketsResult.price,
                     category = myBasketsResult.category,
-                    option1 = myBasketsResult.option1,
-                    option2 = myBasketsResult.option2,
-                    option3 = myBasketsResult.option3,
+                    firstOption = myBasketsResult.firstOption,
+                    secondOption = myBasketsResult.secondOption,
+                    thirdOption = myBasketsResult.thirdOption,
                     isHidden = myBasketsResult.isHidden
                 )
             }

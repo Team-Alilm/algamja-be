@@ -33,9 +33,9 @@ class BasketSliceService (
                 store = it.product.store.name,
                 price = it.product.price,
                 category = it.product.category,
-                option1 = it.product.option1,
-                option2 = it.product.option2,
-                option3 = it.product.option3,
+                option1 = it.product.firstOption,
+                option2 = it.product.secondOption,
+                option3 = it.product.thirdOption,
                 waitingCount = it.waitingCount
             )
         }

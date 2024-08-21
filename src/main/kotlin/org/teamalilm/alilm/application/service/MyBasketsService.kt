@@ -24,9 +24,9 @@ class MyBasketsService (
                 store = it.product.store.name,
                 price = it.product.price,
                 category = it.product.category,
-                option1 = it.product.option1,
-                option2 = it.product.option2,
-                option3 = it.product.option3,
+                firstOption = it.product.firstOption,
+                secondOption = it.product.secondOption,
+                thirdOption = it.product.thirdOption,
                 isHidden = it.basket.isHidden
             )
         }

@@ -39,13 +39,13 @@ class ProductJpaEntity(
     var waitingCount: Int = 0,
 
     @Column(nullable = false)
-    val option1: String,
+    val firstOption: String,
 
     @Column
-    val option2: String?,
+    val secondOption: String?,
 
     @Column
-    val option3: String?,
+    val thirdOption: String?,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
