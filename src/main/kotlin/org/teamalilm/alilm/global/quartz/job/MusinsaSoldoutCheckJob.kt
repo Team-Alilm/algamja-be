@@ -86,7 +86,7 @@ class MusinsaSoldoutCheckJob(
 
             it.managedCode == basketAndMemberAndProduct.getManagedCode()
         }
-        return optionItem?.outOfStock ?: throw MusinsaSoldoutCheckException()
+        return optionItem?.outOfStock ?: true
     }
 
     private fun getEmailMessage(basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): String {
