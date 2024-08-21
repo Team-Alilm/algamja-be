@@ -54,6 +54,8 @@ class PersistenceAdapterBaskets(
             )
         )
 
+        basketJpaEntity.isDelete = basket.isDeleted
+
         return basketMapper.mapToDomainEntity(basketJpaEntity)
     }
 

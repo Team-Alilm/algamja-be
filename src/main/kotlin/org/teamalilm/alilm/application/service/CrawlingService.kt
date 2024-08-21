@@ -2,6 +2,7 @@ package org.teamalilm.alilm.application.service
 
 import com.google.gson.JsonParser
 import org.slf4j.LoggerFactory
+import org.springframework.http.converter.StringHttpMessageConverter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
@@ -9,6 +10,7 @@ import org.springframework.web.client.body
 import org.teamalilm.alilm.application.port.`in`.use_case.CrawlingUseCase
 import org.teamalilm.alilm.application.port.out.gateway.CrawlingGateway
 import org.teamalilm.alilm.application.port.out.gateway.CrawlingGateway.CrawlingGatewayRequest
+import org.teamalilm.alilm.common.companion.StringConstant
 import org.teamalilm.alilm.common.error.MusinsaSoldoutCheckException
 import org.teamalilm.alilm.domain.Product
 import org.teamalilm.alilm.global.quartz.data.SoldoutCheckResponse
@@ -24,7 +26,7 @@ import java.nio.charset.StandardCharsets
 @Transactional(readOnly = true)
 class CrawlingService(
     private val crawlingGateway: CrawlingGateway,
-    private val restClient: RestClient
+    private val restClient: RestClient,
 ) : CrawlingUseCase {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -38,7 +40,7 @@ class CrawlingService(
 
         log.info("Extracted JSON data: $jsonObject")
 
-        val soldoutCheckResponse = fetchSoldoutCheckResponse(decodedUrl)
+        val soldoutCheckResponse = fetchSoldoutCheckResponse(decodedUrl, jsonObject.get("goodsNo").asString)
         val options = extractOptions(soldoutCheckResponse)
 
         return CrawlingUseCase.CrawlingResult(
@@ -61,15 +63,15 @@ class CrawlingService(
         }
     }
 
-    private fun fetchSoldoutCheckResponse(url: String): SoldoutCheckResponse {
-        val uri = buildSoldoutCheckUri(url)
+    private fun fetchSoldoutCheckResponse(url: String, number: String): SoldoutCheckResponse {
+        val uri = buildSoldoutCheckUri(number)
         log.info("Fetching soldout check response from URI: $uri")
 
         return restClient.get().uri(uri).retrieve().body<SoldoutCheckResponse>() ?: throw MusinsaSoldoutCheckException()
     }
 
-    private fun buildSoldoutCheckUri(url: String): String {
-        return url.replace("www", "goods-detail").replace("products","api2/goods") + "/options?goodsSaleType=SALE"
+    private fun buildSoldoutCheckUri(number: String): String {
+        return StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(number)
     }
 
     private fun extractOptions(response: SoldoutCheckResponse): Triple<List<String>, List<String>, List<String>> {
