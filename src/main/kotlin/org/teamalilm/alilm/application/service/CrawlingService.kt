@@ -69,7 +69,7 @@ class CrawlingService(
     }
 
     private fun buildSoldoutCheckUri(url: String): String {
-        return url.replace("www", "goods-detail").replace("products","").replace("/app", "/api2") + "/options?goodsSaleType=SALE"
+        return url.replace("www", "goods-detail").replace("products","api2/goods") + "/options?goodsSaleType=SALE"
     }
 
     private fun extractOptions(response: SoldoutCheckResponse): Triple<List<String>, List<String>, List<String>> {

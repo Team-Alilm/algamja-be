@@ -110,17 +110,17 @@ class BasketsRegisteredController(
             example = "M",
             required = true
         )
-        val option1: String,
+        val firstOption: String,
         @field:Schema(
             description = "옵션2",
             example = "블랙"
         )
-        val option2: String?,
+        val secondOption: String?,
         @field:Schema(
             description = "옵션3",
             example = "포켓"
         )
-        val option3: String?
+        val thirdOption: String?
     )
 
 }
