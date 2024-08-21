@@ -46,6 +46,7 @@ class BasketAdapter(
         product: Product
     ): Basket {
         val basketJpaEntity = basketJpaEntity(basket, member, product)
+        springDataBasketRepository.save(basketJpaEntity)
 
         return basketMapper.mapToDomainEntity(basketJpaEntity)
     }

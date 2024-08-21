@@ -11,7 +11,6 @@ import org.springframework.web.client.body
 import org.teamalilm.alilm.adapter.out.gateway.MailGateway
 import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
 import org.teamalilm.alilm.application.port.out.AddBasketPort
-import org.teamalilm.alilm.application.port.out.AddProductPort
 import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort
 import org.teamalilm.alilm.application.port.out.SendAlilmBasketPort
 import org.teamalilm.alilm.common.companion.StringConstant
@@ -43,6 +42,8 @@ class MusinsaSoldoutCheckJob(
         val basketAndMemberAndProducts = loadAllBasketsPort.getAllBaskets()
 
         basketAndMemberAndProducts.forEach { basketAndMemberAndProduct ->
+            log.info("Checking product: ${basketAndMemberAndProduct.product}")
+
             val productId = basketAndMemberAndProduct.product.number
             val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(productId)
 
@@ -79,7 +80,12 @@ class MusinsaSoldoutCheckJob(
 
     private fun checkIfSoldOut(requestUri: String, basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): Boolean {
         val response = restClient.get().uri(requestUri).retrieve().body<SoldoutCheckResponse>()
-        val optionItem = response?.data?.optionItems?.firstOrNull { it.managedCode == basketAndMemberAndProduct.getManagedCode() }
+        val optionItem = response?.data?.optionItems?.firstOrNull {
+            log.info("ManagedCode: ${it.managedCode}")
+            log.info("BasketAndMemberAndProduct: ${basketAndMemberAndProduct.getManagedCode()}")
+
+            it.managedCode == basketAndMemberAndProduct.getManagedCode()
+        }
         return optionItem?.outOfStock ?: throw MusinsaSoldoutCheckException()
     }
 
