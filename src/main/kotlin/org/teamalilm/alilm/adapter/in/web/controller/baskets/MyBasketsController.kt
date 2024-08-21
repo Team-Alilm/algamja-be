@@ -1,5 +1,6 @@
 package org.teamalilm.alilm.adapter.`in`.web.controller.baskets
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -17,6 +18,13 @@ class MyBasketsController(
 ) {
 
     @GetMapping("/my")
+    @Operation(
+        summary = "나의 장바구니 조회 API",
+        description = """
+            사용자가 등록한 상품을 조회할 수 있는 기능을 제공해요.
+            등록한 상품을 조회할 수 있어요.
+        """
+    )
     fun myBasket(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ) : ResponseEntity<List<MyBasketsResponse>> {
