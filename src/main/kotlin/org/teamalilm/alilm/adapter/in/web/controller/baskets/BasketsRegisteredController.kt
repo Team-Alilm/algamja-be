@@ -53,7 +53,7 @@ class BasketsRegisteredController(
     data class AlilmRegistrationRequest(
         @field:NotNull(message = "URL은 필수입니다.")
         @field:Schema(
-            example = "3262292",
+            example = "4235404",
             description = "상품 번호",
             format = "int64",
             required = true,
@@ -62,35 +62,35 @@ class BasketsRegisteredController(
         val number: Long,
         @field:NotBlank(message = "상품 이름은 필수입니다.")
         @field:Schema(
-            example = "오버사이즈 립 포켓 하프 셔츠 블랙",
+            example = "YEEZY BOOST 380 GZ0454",
             description = "상품 이름",
             required = true
         )
         val name: String,
         @field:NotBlank(message = "브랜드는 필수입니다.")
         @field:Schema(
-            example = "굿라이프웍스",
+            example = "adidas",
             description = "브랜드",
             required = true
         )
         val brand: String,
         @field:NotBlank(message = "이미지 URL은 필수입니다.")
         @field:Schema(
-            example = "https://image.msscdn.net/images/goods_img/20230426/3262292/3262292_16885217563686_500.jpg",
+            example = "https://image.msscdn.net/images/goods_img/20240705/4235404/4235404_17201553979081_500.jpg",
             description = "이미지 URL",
             required = true
         )
         val imageUrl: String,
         @field:NotBlank(message = "카테고리는 필수입니다.")
         @field:Schema(
-            example = "상의 > 셔츠/블라우스",
+            example = "신발",
             description = "카테고리",
             required = true
         )
         val category: String,
         @field:NotNull(message = "가격은 필수입니다.")
         @field:Schema(
-            example = "31300",
+            example = "95700",
             description = "가격",
             format = "int32",
             required = true,
@@ -107,18 +107,18 @@ class BasketsRegisteredController(
         @field:NotBlank(message = "옵션은 필수입니다.")
         @field:Schema(
             description = "옵션1",
-            example = "M",
+            example = "220",
             required = true
         )
         val firstOption: String,
         @field:Schema(
             description = "옵션2",
-            example = "블랙"
+            example = ""
         )
         val secondOption: String?,
         @field:Schema(
             description = "옵션3",
-            example = "포켓"
+            example = ""
         )
         val thirdOption: String?
     )

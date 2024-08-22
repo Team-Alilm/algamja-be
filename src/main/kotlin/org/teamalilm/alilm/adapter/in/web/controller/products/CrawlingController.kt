@@ -54,7 +54,7 @@ class CrawlingController(
     @Schema(description = "Scraping 요청")
     data class CrawlingRequest(
         @field:NotBlank(message = "URL은 필수입니다.")
-        @field:Schema(description = "상품 URL (무신사 URL만 지원해요)", example = "https://www.musinsa.com/app/goods/3262292")
+        @field:Schema(description = "상품 URL (무신사 URL만 지원해요) 앱 공유 링크도 지원해요.", example = "https://musinsaapp.page.link/ymDEcMU5pFeQDvea9")
         val _url: String?
     ) {
 
