@@ -13,7 +13,7 @@ interface SpringDataBasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
     fun findAllByMemberJpaEntityAndIsDeleteFalse(mapToJpaEntity: MemberJpaEntity) : List<BasketJpaEntity>
 
-    fun findAllByIsDeleteFalse(): List<BasketJpaEntity>
+    fun findAllByIsDeleteFalseAndIsAlilmFalse(): List<BasketJpaEntity>
 
     fun findByIsAlilmTrue() : List<BasketJpaEntity>
 

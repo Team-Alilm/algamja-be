@@ -14,6 +14,9 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
             SELECT p as productJpaEntity, COUNT(b) as waitingCount
             FROM BasketJpaEntity b
             JOIN b.productJpaEntity p
+            where b.isDelete = false
+            and p.isDelete = false
+            and b.isAlilm = false
             GROUP BY p.id
             ORDER BY COUNT(b) DESC
         """

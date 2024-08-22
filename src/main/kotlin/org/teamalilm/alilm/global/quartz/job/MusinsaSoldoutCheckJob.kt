@@ -14,7 +14,6 @@ import org.teamalilm.alilm.application.port.out.AddBasketPort
 import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort
 import org.teamalilm.alilm.application.port.out.SendAlilmBasketPort
 import org.teamalilm.alilm.common.companion.StringConstant
-import org.teamalilm.alilm.common.error.MusinsaSoldoutCheckException
 import org.teamalilm.alilm.global.quartz.data.SoldoutCheckResponse
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -39,7 +38,7 @@ class MusinsaSoldoutCheckJob(
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
-        val basketAndMemberAndProducts = loadAllBasketsPort.getAllBaskets()
+        val basketAndMemberAndProducts = loadAllBasketsPort.loadAllBaskets()
 
         basketAndMemberAndProducts.forEach { basketAndMemberAndProduct ->
             log.info("Checking product: ${basketAndMemberAndProduct.product}")
