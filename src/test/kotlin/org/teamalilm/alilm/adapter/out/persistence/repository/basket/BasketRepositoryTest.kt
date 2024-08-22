@@ -34,9 +34,9 @@ class BasketRepositoryTest @Autowired constructor(
             store = Product.Store.MUSINSA,
             category = "Category 1",
             price = 10000,
-            option1 = "Option 1",
-            option2 = "Option 2",
-            option3 = "Option 3"
+            firstOption = "Option 1",
+            secondOption = "Option 2",
+            thirdOption = "Option 3"
         )
         val product2 = ProductJpaEntity(
             number = 35687L,
@@ -46,9 +46,9 @@ class BasketRepositoryTest @Autowired constructor(
             store = Product.Store.MUSINSA,
             category = "Category 2",
             price = 10000,
-            option1 = "Option 1",
-            option2 = "Option 2",
-            option3 = "Option 3"
+            firstOption = "Option 1",
+            secondOption = "Option 2",
+            thirdOption = "Option 3"
         )
         productRepository.saveAll(listOf(product1, product2))
 
@@ -86,7 +86,7 @@ class BasketRepositoryTest @Autowired constructor(
 
             println("count: $count")
             println(
-                "product: ${product.id}, ${product.number}, ${product.name}, ${product.brand}, ${product.imageUrl}, ${product.store}, ${product.category}, ${product.price}, ${product.option1}, ${product.option2}, ${product.option3}"
+                "product: ${product.id}, ${product.number}, ${product.name}, ${product.brand}, ${product.imageUrl}, ${product.store}, ${product.category}, ${product.price}, ${product.firstOption}, ${product.secondOption}, ${product.thirdOption}"
             )
 
             assert(product.id != null)
