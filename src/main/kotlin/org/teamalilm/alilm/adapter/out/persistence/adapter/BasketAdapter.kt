@@ -36,9 +36,7 @@ class BasketAdapter(
     LoadMyBasketsPort,
     LoadAllBasketsPort,
     SendAlilmBasketPort,
-    LoadAllAndDailyCountPort,
-    IsNotSoldOutBasketPort
-{
+    LoadAllAndDailyCountPort {
 
     override fun addBasket(
         basket: Basket,
@@ -86,8 +84,8 @@ class BasketAdapter(
         ) }
     }
 
-    override fun getAllBaskets() : List<BasketAndMemberAndProduct> {
-        return springDataBasketRepository.findAllByIsDeleteFalse().map { BasketAndMemberAndProduct(
+    override fun loadAllBaskets() : List<BasketAndMemberAndProduct> {
+        return springDataBasketRepository.findAllByIsDeleteFalseAndIsAlilmFalse().map { BasketAndMemberAndProduct(
             basket = basketMapper.mapToDomainEntity(it),
             member = memberMapper.mapToDomainEntity(it.memberJpaEntity),
             product = productMapper.mapToDomainEntity(it.productJpaEntity)
@@ -112,14 +110,6 @@ class BasketAdapter(
             allCount = allIsAlilmTrueBaskets.size.toLong(),
             dailyCount = dailyAlilmTrueBaskets.size.toLong()
         )
-    }
-
-    override fun isNotSoldOut(basket: Basket,  member: Member, product: Product) {
-        val basketJpaEntity = basketJpaEntity(basket, member, product)
-
-        basketJpaEntity.isDelete = true
-
-        basketRepository.save(basketJpaEntity)
     }
 
     private fun basketJpaEntity(
