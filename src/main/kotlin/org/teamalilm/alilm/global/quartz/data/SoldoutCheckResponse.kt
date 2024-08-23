@@ -34,7 +34,7 @@ data class SoldoutCheckResponse(
             val code: String,
             val sequence: Int,
             val standardOptionValueNo: Int,
-            val color: String?,
+            val color: ColorDetail?, // color 필드를 ColorDetail?로 정의
             val isDeleted: Boolean
         )
 
@@ -62,6 +62,11 @@ data class SoldoutCheckResponse(
 
         data class Color(
             val optionItemNo: Int,
+            val colorCode: String,
+            val colorType: String
+        )
+
+        data class ColorDetail( // ColorDetail 클래스 추가
             val colorCode: String,
             val colorType: String
         )
