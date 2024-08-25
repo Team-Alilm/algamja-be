@@ -7,38 +7,40 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- *  SoldoutQuartzListener
+ * SoldoutQuartzListener
  *
- *  @author SkyLabs
- *  @version 1.0.0
- *  @date 2024-03-21
+ * @version 1.0.0
+ * @date 2024-03-21
  **/
 class SoldoutQuartzListener(
-    val log: Logger = LoggerFactory.getLogger(SoldoutQuartzListener::class.java)!!
+    private val log: Logger = LoggerFactory.getLogger(SoldoutQuartzListener::class.java)
 ) : JobListener {
 
     override fun getName(): String {
-        return this.name
+        return "SoldoutQuartzListener"
     }
 
     /**
      * Job 실행 이전 수행
      */
-    override fun jobToBeExecuted(p0: JobExecutionContext?) {
+    override fun jobToBeExecuted(context: JobExecutionContext?) {
         log.info("Job is going to be executed")
     }
 
     /**
      * Job 실행 취소 시점 수행
      */
-    override fun jobExecutionVetoed(p0: JobExecutionContext?) {
+    override fun jobExecutionVetoed(context: JobExecutionContext?) {
         log.info("Job execution is vetoed")
     }
 
     /**
      * Job 실행 완료 시점 수행
      */
-    override fun jobWasExecuted(p0: JobExecutionContext?, p1: JobExecutionException?) {
-        TODO("Not yet implemented")
+    override fun jobWasExecuted(context: JobExecutionContext?, exception: JobExecutionException?) {
+        log.info("Job was executed")
+        if (exception != null) {
+            log.error("Job execution failed", exception)
+        }
     }
 }
