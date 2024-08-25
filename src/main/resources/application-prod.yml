@@ -35,4 +35,4 @@ spring:
 
   quartz:
     job-store-type: jdbc
-    job-interval-minutes: 1
+    job-interval-minutes: 5
