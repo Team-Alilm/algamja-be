@@ -11,7 +11,7 @@ interface SpringDataBasketRepository : JpaRepository<BasketJpaEntity, Long> {
         productJpaEntityId: Long
     ): BasketJpaEntity?
 
-    fun findAllByMemberJpaEntityAndIsDeleteFalse(mapToJpaEntity: MemberJpaEntity) : List<BasketJpaEntity>
+    fun findAllByMemberJpaEntityAndIsDeleteFalseAndOrderByCreatedDateDesc(mapToJpaEntity: MemberJpaEntity) : List<BasketJpaEntity>
 
     fun findAllByIsDeleteFalseAndIsAlilmFalse(): List<BasketJpaEntity>
 
