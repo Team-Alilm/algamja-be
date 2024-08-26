@@ -21,6 +21,9 @@ spring:
 
     open-in-view: true
 
+  mail:
+    subject: 안녕하세요 Team Alilm dev 서버 입니다.
+
   h2:
     console:
       enabled: true
@@ -52,3 +55,7 @@ spring:
   quartz:
     job-store-type: jdbc
     job-interval-minutes: 1
+
+webhook:
+  slack:
+    url: ENC(ZaEdZrZmyxJlGPIk0zgsxBR7D2K8h/F5nqyHyEDh2XIsn0mpi4+UE/jL7zvDAyiewcDDIsd1xc+HspuW3FWd84mebkC4k0H0vXciOaARckAz7xgu/c6+1kRy0hDbLLXP)
