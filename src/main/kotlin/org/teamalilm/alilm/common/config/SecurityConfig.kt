@@ -33,8 +33,6 @@ class SecurityConfig(
         introspector: HandlerMappingIntrospector
     ): SecurityFilterChain {
         http
-            .cors { it.disable() }
-
             .formLogin {
                 it.disable()
             }

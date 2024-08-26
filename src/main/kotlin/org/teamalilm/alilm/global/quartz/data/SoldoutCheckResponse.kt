@@ -70,5 +70,7 @@ data class SoldoutCheckResponse(
             val colorCode: String,
             val colorType: String
         )
+
     }
+
 }
