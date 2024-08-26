@@ -20,6 +20,7 @@ import org.teamalilm.alilm.domain.Product
 import org.teamalilm.alilm.domain.Product.*
 import java.time.LocalDate
 import java.time.ZoneOffset
+import kotlin.math.log
 
 
 @Component
@@ -38,6 +39,8 @@ class BasketAdapter(
     SendAlilmBasketPort,
     LoadAllAndDailyCountPort {
 
+        private val log = { msg: String -> println(msg) }
+
     override fun addBasket(
         basket: Basket,
         member: Member,
@@ -53,7 +56,7 @@ class BasketAdapter(
         memberId: MemberId,
         productId: ProductId
     ): Basket? {
-        val basketJpaEntity = springDataBasketRepository.findByMemberJpaEntityIdAndProductJpaEntityIdAndIsDeleteFalse(
+        val basketJpaEntity = springDataBasketRepository.findByMemberJpaEntityIdAndIsDeleteFalseAndProductJpaEntityId(
             memberJpaEntityId = memberId.value,
             productJpaEntityId = productId.value
         )
@@ -76,7 +79,7 @@ class BasketAdapter(
     }
 
     override fun loadMyBaskets(member: Member) : List<BasketAndProduct> {
-        return springDataBasketRepository.findAllByMemberJpaEntityAndIsDeleteFalseAndOrderByCreatedDateDesc(
+        return springDataBasketRepository.findAllByMemberJpaEntityAndIsDeleteFalseOrderByCreatedDateDesc(
             memberMapper.mapToJpaEntity(member)
         ).map { BasketAndProduct(
             basket = basketMapper.mapToDomainEntity(it),
@@ -99,12 +102,12 @@ class BasketAdapter(
     }
 
     override fun getAllAndDailyCount(): LoadAllAndDailyCountPort.AllAndDailyCount {
-        val today = LocalDate.now()
-        val midnight = today.atStartOfDay()
-        val midnightMillis = midnight.toInstant(ZoneOffset.UTC).toEpochMilli()
+        val today = LocalDate.now(ZoneOffset.UTC)
+        val midnight = today.atStartOfDay(ZoneOffset.UTC)
+        val midnightMillis = midnight.toInstant().toEpochMilli()
 
-        val allIsAlilmTrueBaskets = springDataBasketRepository.findByIsAlilmTrue()
-        val dailyAlilmTrueBaskets = springDataBasketRepository.findByIsAlilmTrueAndAlilmDateGreaterThanEqual(midnightMillis)
+        val allIsAlilmTrueBaskets = springDataBasketRepository.findByIsAlilmTrueAndIsDeleteFalse()
+        val dailyAlilmTrueBaskets = springDataBasketRepository.findByIsAlilmTrueAndAlilmDateGreaterThanEqualAndIsDeleteFalse(midnightMillis)
 
         return LoadAllAndDailyCountPort.AllAndDailyCount(
             allCount = allIsAlilmTrueBaskets.size.toLong(),

@@ -52,8 +52,8 @@ class BasketAdapterTest {
             )
         )
 
-        `when`(springDataBasketRepository.findByIsAlilmTrue()).thenReturn(allBaskets)
-        `when`(springDataBasketRepository.findByIsAlilmTrueAndAlilmDateGreaterThanEqual(midnightMillis))
+        `when`(springDataBasketRepository.findByIsAlilmTrueAndIsDeleteFalse()).thenReturn(allBaskets)
+        `when`(springDataBasketRepository.findByIsAlilmTrueAndAlilmDateGreaterThanEqualAndIsDeleteFalse(midnightMillis))
             .thenReturn(dailyBaskets)
 
         val result = basketAdapter.getAllAndDailyCount()
