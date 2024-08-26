@@ -6,17 +6,17 @@ import org.teamalilm.alilm.adapter.out.persistence.entity.MemberJpaEntity
 
 interface SpringDataBasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
-    fun findByMemberJpaEntityIdAndProductJpaEntityIdAndIsDeleteFalse(
+    fun findByMemberJpaEntityIdAndIsDeleteFalseAndProductJpaEntityId(
         memberJpaEntityId: Long,
         productJpaEntityId: Long
     ): BasketJpaEntity?
 
-    fun findAllByMemberJpaEntityAndIsDeleteFalseAndOrderByCreatedDateDesc(mapToJpaEntity: MemberJpaEntity) : List<BasketJpaEntity>
+    fun findAllByMemberJpaEntityAndIsDeleteFalseOrderByCreatedDateDesc(mapToJpaEntity: MemberJpaEntity) : List<BasketJpaEntity>
 
     fun findAllByIsDeleteFalseAndIsAlilmFalse(): List<BasketJpaEntity>
 
-    fun findByIsAlilmTrue() : List<BasketJpaEntity>
+    fun findByIsAlilmTrueAndIsDeleteFalse() : List<BasketJpaEntity>
 
-    fun findByIsAlilmTrueAndAlilmDateGreaterThanEqual(midnightMillis: Long): List<BasketJpaEntity>
+    fun findByIsAlilmTrueAndAlilmDateGreaterThanEqualAndIsDeleteFalse(midnightMillis: Long): List<BasketJpaEntity>
 }
 
