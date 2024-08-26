@@ -71,9 +71,9 @@ class BasketSliceController(
         val imageUrl: String,
         val category: String,
         val price: Int,
-        val option1: String,
-        val option2: String?,
-        val option3: String?,
+        val firstOption: String,
+        val secondOption: String?,
+        val thirdOption: String?,
         val waitingCount: Long,
     ) {
 
@@ -87,9 +87,9 @@ class BasketSliceController(
                     imageUrl = result.imageUrl,
                     category = result.category,
                     price = result.price,
-                    option1 = result.option1,
-                    option2 = result.option2,
-                    option3 = result.option3,
+                    firstOption = result.firstOption,
+                    secondOption = result.secondOption,
+                    thirdOption = result.thirdOption,
                     waitingCount = result.waitingCount,
                 )
             }

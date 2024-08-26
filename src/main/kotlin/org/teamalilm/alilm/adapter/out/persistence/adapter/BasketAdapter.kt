@@ -76,7 +76,7 @@ class BasketAdapter(
     }
 
     override fun loadMyBaskets(member: Member) : List<BasketAndProduct> {
-        return springDataBasketRepository.findAllByMemberJpaEntityAndIsDeleteFalse(
+        return springDataBasketRepository.findAllByMemberJpaEntityAndIsDeleteFalseAndOrderByCreatedDateDesc(
             memberMapper.mapToJpaEntity(member)
         ).map { BasketAndProduct(
             basket = basketMapper.mapToDomainEntity(it),

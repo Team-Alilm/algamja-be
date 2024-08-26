@@ -31,9 +31,9 @@ interface BasketSliceUseCase {
         val store: String,
         val price: Int,
         val category: String,
-        val option1: String,
-        val option2: String?,
-        val option3: String?,
+        val firstOption: String,
+        val secondOption: String?,
+        val thirdOption: String?,
         val waitingCount: Long
     )
 }
