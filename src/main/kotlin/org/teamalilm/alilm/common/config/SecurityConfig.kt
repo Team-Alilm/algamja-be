@@ -1,5 +1,6 @@
 package org.teamalilm.alilm.common.config
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -85,12 +86,13 @@ class SecurityConfig(
 
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer {
+        // 정적 리소스 spring security 대상에서 제외
         return WebSecurityCustomizer { web: WebSecurity ->
-            // Spring Security에서 무시할 경로 패턴을 정의
-            web.ignoring()
-                .requestMatchers("/resources/**", "/static/**", "/public/**", "/webjars/**")
-                .requestMatchers("/h2-console/**") // H2 콘솔 예시
-                .requestMatchers("/swagger-ui/**")
+            web
+                .ignoring()
+                .requestMatchers(
+                    PathRequest.toStaticResources().atCommonLocations()
+                )
         }
     }
 
