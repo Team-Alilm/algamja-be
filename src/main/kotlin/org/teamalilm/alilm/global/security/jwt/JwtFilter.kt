@@ -33,8 +33,6 @@ class JwtFilter(
                 UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
 
             SecurityContextHolder.getContext().authentication = authToken
-        } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
         }
 
         filterChain.doFilter(request, response)
