@@ -8,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import org.teamalilm.alilm.global.security.ExcludedUrls
 import org.teamalilm.alilm.application.service.security.CustomUserDetailsService
 
 @Component
@@ -17,39 +16,23 @@ class JwtFilter(
     private val userDetailsService: CustomUserDetailsService,
 ) : OncePerRequestFilter() {
 
-    private val log = LoggerFactory.getLogger(JwtFilter::class.java)
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
 
-        log.info(" request.requestURI : ${request.requestURI}")
+        val parserToken = request.getHeader("Authorization")?.replace("Bearer ", "") ?: ""
 
-        val shouldFilter =
-            ExcludedUrls.entries.toTypedArray()
-                .none { (it.path) == request.requestURI }
+        if (jwtUtil.validate(parserToken)) {
+            val memberId = jwtUtil.getMemberId(parserToken)
 
-        if (shouldFilter) {
-            val parserToken = request.getHeader("Authorization")?.replace("Bearer ", "") ?: ""
-            log.info("token : $parserToken")
+            val userDetails = userDetailsService.loadUserByUsername(memberId.toString())
 
-            if (jwtUtil.validate(parserToken)) {
-                val memberId = jwtUtil.getMemberId(parserToken)
+            val authToken =
+                UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
 
-                val userDetails = userDetailsService.loadUserByUsername(memberId.toString())
-
-                val authToken =
-                    UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-                log.info("authToken : $authToken")
-
-                SecurityContextHolder.getContext().authentication = authToken
-
-                log.info("SecurityContextHolder.getContext().authentication : ${SecurityContextHolder.getContext().authentication}")
-            } else {
-                logger.info("JWT claims is empty, 잘못된 JWT 토큰 입니다. token : $parserToken")
-            }
+            SecurityContextHolder.getContext().authentication = authToken
         }
 
         filterChain.doFilter(request, response)
