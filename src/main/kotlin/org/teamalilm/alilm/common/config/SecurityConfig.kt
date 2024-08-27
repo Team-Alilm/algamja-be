@@ -90,6 +90,7 @@ class SecurityConfig(
             web.ignoring()
                 .requestMatchers("/resources/**", "/static/**", "/public/**", "/webjars/**")
                 .requestMatchers("/h2-console/**") // H2 콘솔 예시
+                .requestMatchers("/swagger-ui/**")
         }
     }
 
