@@ -3,12 +3,13 @@ package org.teamalilm.alilm.domain
 import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
 
 class Member(
-    val id: MemberId?,
+    val id: MemberId? = null,
     val provider: Provider,
     val providerId: Long,
     val email: String,
     var phoneNumber: String,
     var nickname: String,
+    var fcmToken: String? = null
     ) {
 
     init {

@@ -15,6 +15,7 @@ class MemberMapper {
             nickname = member.nickname,
             providerId = member.providerId,
             provider = member.provider,
+            fcmToken = member.fcmToken
         )
     }
 
@@ -27,7 +28,8 @@ class MemberMapper {
             phoneNumber = memberJpaEntity.phoneNumber,
             nickname = memberJpaEntity.nickname,
             providerId = memberJpaEntity.providerId,
-            provider = memberJpaEntity.provider
+            provider = memberJpaEntity.provider,
+            fcmToken = memberJpaEntity.fcmToken
         )
     }
 
@@ -38,7 +40,8 @@ class MemberMapper {
             phoneNumber = memberJpaEntity.phoneNumber,
             nickname = memberJpaEntity.nickname,
             providerId = memberJpaEntity.providerId,
-            provider = memberJpaEntity.provider
+            provider = memberJpaEntity.provider,
+            fcmToken = memberJpaEntity.fcmToken
         )
     }
 }
