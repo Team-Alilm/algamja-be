@@ -67,6 +67,11 @@ class SecurityConfig(
                 authorizeRequest.anyRequest().authenticated()
             }
 
+            // Custom Authentication Entry Point 설정
+            .exceptionHandling {
+                it.authenticationEntryPoint(customAuthenticationEntryPoint)
+            }
+
             .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
 
             .oauth2Login { oauth2LoginCustomizer ->
