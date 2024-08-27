@@ -79,21 +79,10 @@ class SecurityConfig(
                     }
 
                     .successHandler(customSuccessHandler)
+
             }
 
         return http.build()
-    }
-
-    @Bean
-    fun webSecurityCustomizer(): WebSecurityCustomizer {
-        // 정적 리소스 spring security 대상에서 제외
-        return WebSecurityCustomizer { web: WebSecurity ->
-            web
-                .ignoring()
-                .requestMatchers(
-                    PathRequest.toStaticResources().atCommonLocations()
-                )
-        }
     }
 
 }
