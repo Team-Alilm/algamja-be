@@ -76,6 +76,7 @@ class SecurityConfig(
                     }
 
                     .successHandler(customSuccessHandler)
+
             }
 
             .exceptionHandling { exceptionHandling ->
