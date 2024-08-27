@@ -82,6 +82,10 @@ class SecurityConfig(
 
             }
 
+            .exceptionHandling { exceptionHandling ->
+                exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint)
+            }
+
         return http.build()
     }
 
