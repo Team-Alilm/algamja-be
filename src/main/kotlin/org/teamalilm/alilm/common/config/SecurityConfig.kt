@@ -3,7 +3,9 @@ package org.teamalilm.alilm.common.config
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -67,11 +69,6 @@ class SecurityConfig(
                 authorizeRequest.anyRequest().authenticated()
             }
 
-            // Custom Authentication Entry Point 설정
-            .exceptionHandling {
-                it.authenticationEntryPoint(customAuthenticationEntryPoint)
-            }
-
             .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
 
             .oauth2Login { oauth2LoginCustomizer ->
@@ -83,9 +80,17 @@ class SecurityConfig(
                     .successHandler(customSuccessHandler)
             }
 
-
-
         return http.build()
+    }
+
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { web: WebSecurity ->
+            // Spring Security에서 무시할 경로 패턴을 정의
+            web.ignoring()
+                .requestMatchers("/resources/**", "/static/**", "/public/**", "/webjars/**")
+                .requestMatchers("/h2-console/**") // H2 콘솔 예시
+        }
     }
 
 }
