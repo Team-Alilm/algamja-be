@@ -61,7 +61,7 @@ class CustomSuccessHandler(
             log.info("member: $member")
 
             val memberId = member.id
-            val jwt = jwtUtil.createJwt(memberId!!, 1000 * 60 * 60)
+            val jwt = jwtUtil.createJwt(memberId!!, 1000 * 60 * 60 * 24 * 30)
             log.info("jwt: $jwt")
 //
             val redirectUri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
