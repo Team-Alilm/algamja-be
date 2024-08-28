@@ -65,6 +65,11 @@ jobs:
           mkdir -p src/main/resources/firebase
           echo ${{ secrets.FIREBASE_SECRET_KEY }} > base64 -d > src/main/resources/firebase/FirebaseSecretKey.json
 
+      - name: show firebase service key
+        run: |
+            cat src/main/resources/firebase/FirebaseSecretKey.json
+            ls -al src/main/resources/firebase
+
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
