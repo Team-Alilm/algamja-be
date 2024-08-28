@@ -23,9 +23,7 @@ class JwtFilter(
     ) {
 
         ExcludedUrls.entries.forEach { excludedUrl ->
-            val url = excludedUrl.path
-
-            if (request.requestURI.contains(url)) {
+            if (excludedUrl.path.contains(request.requestURI)) {
                 filterChain.doFilter(request, response)
                 return
             }
