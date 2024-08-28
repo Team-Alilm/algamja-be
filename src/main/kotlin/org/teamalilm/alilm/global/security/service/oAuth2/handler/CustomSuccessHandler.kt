@@ -50,10 +50,13 @@ class CustomSuccessHandler(
             val attributes = oAuth2User.attributes
             log.info("attributes: $attributes")
 
-            val phoneNumber = attributes["phoneNumber"]?.toString()
+            val providerId = attributes["id"]?.toString()
                 ?: throw IllegalStateException("OAuth2 응답에 이메일이 없습니다.")
 
-            val member = when (val member = loadMemberPort.loadMember(phoneNumber)) {
+            val provider = attributes["provider"]?.toString()
+                ?: throw IllegalStateException("OAuth2 응답에 공급자가 없습니다.")
+
+            val member = when (val member = loadMemberPort.loadMember(provider, providerId)) {
                 null -> saveMember(attributes)
                     .also { saveMemberRoleMapping(it) }
                 else -> updateMember(attributes, member)
