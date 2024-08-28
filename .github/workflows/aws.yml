@@ -69,6 +69,7 @@ jobs:
         run: |
             cat src/main/resources/firebase/FirebaseSecretKey.json
             ls -al src/main/resources/firebase
+            echo src/main/resources/firebase/FirebaseSecretKey.json
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
