@@ -1,4 +1,4 @@
-FROM --platform=linux/x86_64 openjdk:21-jdk-alpine3.14
+FROM openjdk:21-jdk
 
 ARG JAR_FILE=/build/libs/alilm-0.0.1-SNAPSHOT.jar
 
