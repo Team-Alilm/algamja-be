@@ -8,4 +8,5 @@ interface LoadMemberPort {
 
     fun loadMember(id: Long): Member?
 
+    fun loadMember(provider: String, providerId: String): Member?
 }
