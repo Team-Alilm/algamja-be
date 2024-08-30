@@ -31,7 +31,6 @@ class SecurityConfig(
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 리소스 무시
-                .requestMatchers(PathRequest.toH2Console()) // H2 콘솔 무시
         }
     }
 
