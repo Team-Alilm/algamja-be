@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.teamalilm.alilm.application.service.security.CustomUserDetailsService
@@ -13,6 +14,7 @@ import org.teamalilm.alilm.application.service.security.CustomUserDetailsService
 class JwtFilter(
     private val jwtUtil: JwtUtil,
     private val userDetailsService: CustomUserDetailsService,
+    private val excludedPaths: List<String> // 제외할 경로 리스트 주입
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -20,19 +22,24 @@ class JwtFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        val requestURI = request.requestURI
+
+        // 만약 현재 요청이 excludedPaths에 포함된다면 필터를 건너뜁니다.
+        if (excludedPaths.any { AntPathRequestMatcher(it).matches(request) }) {
+            filterChain.doFilter(request, response)
+            return
+        }
+
+        // 이하 JWT 검증 로직...
         val parserToken = request.getHeader("Authorization")?.replace("Bearer ", "") ?: ""
 
         if (jwtUtil.validate(parserToken)) {
             val memberId = jwtUtil.getMemberId(parserToken)
-
             val userDetails = userDetailsService.loadUserByUsername(memberId.toString())
-
-            val authToken =
-                UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-
+            val authToken = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
             SecurityContextHolder.getContext().authentication = authToken
         } else {
-            // JWT가 유효하지 않으면 401 응답을 반환하고 필터 체인 중단
+            // JWT가 유효하지 않으면 401 응답 반환
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             response.writer.write("Unauthorized")
             response.writer.flush()
@@ -41,5 +48,4 @@ class JwtFilter(
 
         filterChain.doFilter(request, response)
     }
-
 }
