@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.teamalilm.alilm.application.service.security.CustomUserDetailsService
-import org.teamalilm.alilm.global.security.ExcludedUrls
 
 @Component
 class JwtFilter(
@@ -21,16 +20,6 @@ class JwtFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-
-        ExcludedUrls.entries.forEach { excludedUrl ->
-            val url = excludedUrl.path
-
-            if (request.requestURI.contains(url)) {
-                filterChain.doFilter(request, response)
-                return
-            }
-        }
-
         val parserToken = request.getHeader("Authorization")?.replace("Bearer ", "") ?: ""
 
         if (jwtUtil.validate(parserToken)) {
@@ -42,6 +31,12 @@ class JwtFilter(
                 UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
 
             SecurityContextHolder.getContext().authentication = authToken
+        } else {
+            // JWT가 유효하지 않으면 401 응답을 반환하고 필터 체인 중단
+            response.status = HttpServletResponse.SC_UNAUTHORIZED
+            response.writer.write("Unauthorized")
+            response.writer.flush()
+            return
         }
 
         filterChain.doFilter(request, response)

@@ -7,6 +7,7 @@ import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.Spring
 import org.teamalilm.alilm.application.port.out.AddMemberPort
 import org.teamalilm.alilm.application.port.out.LoadMemberPort
 import org.teamalilm.alilm.domain.Member
+import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
 
 @Component
 class MemberAdapter (
@@ -23,6 +24,12 @@ class MemberAdapter (
     override fun loadMember(id: Long): Member? {
         return memberMapper.mapToDomainEntityOrNull(
             springDataMemberRepository.findByIdOrNull(id)
+        )
+    }
+
+    override fun loadMember(provider: Provider, providerId: String): Member? {
+        return memberMapper.mapToDomainEntityOrNull(
+            springDataMemberRepository.findByIsDeleteFalseAndProviderAndProviderId(provider, providerId.toLong())
         )
     }
 

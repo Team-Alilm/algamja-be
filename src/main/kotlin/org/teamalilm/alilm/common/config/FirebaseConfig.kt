@@ -8,13 +8,12 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 
-
 @Configuration
 class FirebaseConfig {
 
     @Bean
     fun firebaseApp(): FirebaseApp {
-        val firebaseSecretKey = ClassPathResource("firebase/FirebaseSecretKey.json")
+        val firebaseSecretKey = ClassPathResource("/firebase/FirebaseSecretKey.json")
         val firebaseOptions = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(firebaseSecretKey.inputStream))
             .build()
