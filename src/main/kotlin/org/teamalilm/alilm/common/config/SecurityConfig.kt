@@ -13,11 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector
-import org.teamalilm.alilm.global.security.CustomAuthenticationEntryPoint
-import org.teamalilm.alilm.global.security.ExcludedUrls
 import org.teamalilm.alilm.global.security.jwt.JwtFilter
 import org.teamalilm.alilm.global.security.service.oAuth2.handler.CustomSuccessHandler
 import org.teamalilm.alilm.global.security.service.oAuth2.service.CustomOAuth2UserService
+
 
 @Configuration
 @EnableWebSecurity
@@ -25,8 +24,17 @@ class SecurityConfig(
     private val customOAuth2UserService: CustomOAuth2UserService,
     private val customSuccessHandler: CustomSuccessHandler,
     private val jwtFilter: JwtFilter,
-    private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint
 ) {
+
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { web: WebSecurity ->
+            web.ignoring()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 리소스 무시
+                .requestMatchers(PathRequest.toH2Console()) // H2 콘솔 무시
+        }
+    }
+
 
     @Bean
     fun passwordEncoder(): PasswordEncoder =
@@ -55,22 +63,17 @@ class SecurityConfig(
             }
 
             .authorizeHttpRequests { authorizeRequest ->
-                // ExcludedUrls에서 허용된 URL은 permitAll()로 설정
-                ExcludedUrls.entries.forEach { excludedUrl ->
-                    val method = excludedUrl.methode
-
-                    if (method == null) {
-                        authorizeRequest.requestMatchers(excludedUrl.path).permitAll()
-                    } else {
-                        authorizeRequest.requestMatchers(method, excludedUrl.path).permitAll()
-                    }
-                }
-
-                // 나머지 요청은 인증이 필요
-                authorizeRequest.anyRequest().authenticated()
+                authorizeRequest
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/baskets").permitAll()
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/notifications/count").permitAll()
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/health-check").permitAll()
+                    .requestMatchers("/swagger-ui/**").permitAll()
+                    .requestMatchers("/swagger-resources/**").permitAll()
+                    .requestMatchers("/api-docs/**").permitAll()
+                    .anyRequest().authenticated()
             }
 
-            .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
 
             .oauth2Login { oauth2LoginCustomizer ->
                 oauth2LoginCustomizer
@@ -80,10 +83,6 @@ class SecurityConfig(
 
                     .successHandler(customSuccessHandler)
 
-            }
-
-            .exceptionHandling { exceptionHandling ->
-                exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint)
             }
 
         return http.build()

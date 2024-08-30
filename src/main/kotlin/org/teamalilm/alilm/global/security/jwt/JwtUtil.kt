@@ -18,6 +18,8 @@ class JwtUtil(
     private val secret: String,
 ) {
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     private val secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))
 
     fun getMemberId(token: String): Long {
@@ -55,6 +57,7 @@ class JwtUtil(
 
     fun createJwt(memberId: MemberId, expireMs: Long): String {
         val now = System.currentTimeMillis()
+        // now 값을 원하는 형식으로 변환
 
         return "Bearer " + Jwts.builder()
             .claim(MEMBER_ID_KEY, memberId.value)
@@ -65,8 +68,6 @@ class JwtUtil(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(JwtUtil::class.java)
-
         const val MEMBER_ID_KEY = "memberId"
     }
 }

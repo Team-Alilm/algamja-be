@@ -1,7 +1,5 @@
 package org.teamalilm.alilm.global.security.service.oAuth2.data
 
-import org.teamalilm.alilm.domain.Member
-
 class OAuth2Attribute(
     private val attributes: Map<String, Any>,
     private val provider: String,
@@ -22,17 +20,6 @@ class OAuth2Attribute(
             it["phoneNumber"] = this.phoneNumber
             it["email"] = this.email
         }
-    }
-
-    fun toEntity(): Member {
-        return Member(
-            id = null,
-            provider = Provider.from(this.provider),
-            providerId = attributes[attributeKey] as Long,
-            email = this._email,
-            phoneNumber = this.phoneNumber,
-            nickname = this.nickname,
-        )
     }
 
     companion object {
