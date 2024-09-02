@@ -36,7 +36,8 @@ class SecurityConfig(
             "/health-check",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/api-docs/**"
+            "/api-docs/**",
+            "/favicon.ico",
         )
     }
 
