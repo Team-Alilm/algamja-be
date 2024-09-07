@@ -2,7 +2,6 @@ package org.teamalilm.alilm.application.service
 
 import com.google.gson.JsonParser
 import org.slf4j.LoggerFactory
-import org.springframework.http.converter.StringHttpMessageConverter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
@@ -40,7 +39,7 @@ class CrawlingService(
 
         log.info("Extracted JSON data: $jsonObject")
 
-        val soldoutCheckResponse = fetchSoldoutCheckResponse(decodedUrl, jsonObject.get("goodsNo").asString)
+        val soldoutCheckResponse = fetchSoldoutCheckResponse(decodedUrl)
         val options = extractOptions(soldoutCheckResponse)
 
         return CrawlingUseCase.CrawlingResult(
@@ -63,7 +62,7 @@ class CrawlingService(
         }
     }
 
-    private fun fetchSoldoutCheckResponse(url: String, number: String): SoldoutCheckResponse {
+    private fun fetchSoldoutCheckResponse(number: String): SoldoutCheckResponse {
         val uri = buildSoldoutCheckUri(number)
         log.info("Fetching soldout check response from URI: $uri")
 

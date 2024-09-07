@@ -85,10 +85,9 @@ class CustomSuccessHandler(
         val providerId = attributes["id"] as? Long ?: throw IllegalStateException("")
         log.info("providerId: $providerId")
         val email = attributes["email"] as? String ?: throw IllegalStateException("")
-        val phoneNumber = attributes["phoneNumber"] as? String ?: throw IllegalStateException("")
         val nickname = attributes["nickname"] as? String ?: throw IllegalStateException("")
 
-        slackGateway.sendMessage("새로운 회원이 가입했습니다. \nemail: $email \nphoneNumber: $phoneNumber \nnickname: $nickname")
+        slackGateway.sendMessage("새로운 회원이 가입했습니다. \nemail: $email \nnickname: $nickname")
         mailGateway.sendMail("알림 회원가입을 환영합니다. 😊", email)
 
         return addMemberPort.addMember(
@@ -97,7 +96,6 @@ class CustomSuccessHandler(
                 provider = Provider.from(provider),
                 providerId = providerId,
                 email = email,
-                phoneNumber = phoneNumber,
                 nickname = nickname,
             )
         )
@@ -114,14 +112,13 @@ class CustomSuccessHandler(
 
     private fun updateMember(attributes: Map<String, Any>, member: Member): Member {
         // Slack 메시지 전송
-        slackGateway.sendMessage("기존 회원이 로그인했습니다. \nemail: ${member.email} \nphoneNumber: ${member.phoneNumber} \nnickname: ${member.nickname}")
+        slackGateway.sendMessage("기존 회원이 로그인했습니다. \nemail: ${member.email} \nnickname: ${member.nickname}")
 
         // OAuth2 응답에서 가져온 정보 추출
-        val newPhoneNumber = attributes["phoneNumber"] as? String ?: throw IllegalStateException("OAuth2 응답에 전화번호가 없습니다.")
         val newNickname = attributes["nickname"] as? String ?: throw IllegalStateException("OAuth2 응답에 닉네임이 없습니다.")
 
         // 기존 회원 정보 업데이트
-        member.update(newNickname, newPhoneNumber)
+        member.update(newNickname)
 
         return member
     }

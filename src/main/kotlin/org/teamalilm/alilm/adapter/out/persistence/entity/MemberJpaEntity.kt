@@ -11,9 +11,6 @@ import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
         UniqueConstraint(
             columnNames = ["provider", "provider_id"]
         ),
-        UniqueConstraint(
-            columnNames = ["phone_number"]
-        ),
     ]
 
 )
@@ -27,9 +24,6 @@ class MemberJpaEntity(
 
     @Column(nullable = false, length = 30)
     var email: String,
-
-    @Column(nullable = false, length = 20, unique = true)
-    var phoneNumber: String,
 
     @Column(nullable = false, length = 10)
     var nickname: String,

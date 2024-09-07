@@ -11,7 +11,6 @@ class MemberMapper {
         return MemberJpaEntity(
             id = member.id?.value,
             email = member.email,
-            phoneNumber = member.phoneNumber,
             nickname = member.nickname,
             providerId = member.providerId,
             provider = member.provider,
@@ -25,7 +24,6 @@ class MemberMapper {
         return Member(
             id = Member.MemberId(memberJpaEntity.id!!),
             email = memberJpaEntity.email,
-            phoneNumber = memberJpaEntity.phoneNumber,
             nickname = memberJpaEntity.nickname,
             providerId = memberJpaEntity.providerId,
             provider = memberJpaEntity.provider,
@@ -37,7 +35,6 @@ class MemberMapper {
         return Member(
             id = Member.MemberId(memberJpaEntity.id!!),
             email = memberJpaEntity.email,
-            phoneNumber = memberJpaEntity.phoneNumber,
             nickname = memberJpaEntity.nickname,
             providerId = memberJpaEntity.providerId,
             provider = memberJpaEntity.provider,

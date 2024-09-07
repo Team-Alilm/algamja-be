@@ -6,7 +6,5 @@ import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
 
 interface SpringDataMemberRepository : JpaRepository<MemberJpaEntity, Long> {
 
-    fun findByPhoneNumberAndIsDeleteFalse(phoneNumber: String): MemberJpaEntity?
-
     fun findByIsDeleteFalseAndProviderAndProviderId(provider: Provider, providerId: Long): MemberJpaEntity?
 }
