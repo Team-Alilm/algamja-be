@@ -15,12 +15,6 @@ class MemberAdapter (
     private val memberMapper: MemberMapper
 ) : LoadMemberPort, AddMemberPort {
 
-    override fun loadMember(phoneNumber: String): Member? {
-        return memberMapper.mapToDomainEntityOrNull(
-            springDataMemberRepository.findByPhoneNumberAndIsDeleteFalse(phoneNumber)
-        )
-    }
-
     override fun loadMember(id: Long): Member? {
         return memberMapper.mapToDomainEntityOrNull(
             springDataMemberRepository.findByIdOrNull(id)
