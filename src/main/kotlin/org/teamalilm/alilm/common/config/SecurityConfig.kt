@@ -38,6 +38,7 @@ class SecurityConfig(
             "/swagger-resources/**",
             "/api-docs/**",
             "/favicon.ico",
+            "/login/**"
         )
     }
 

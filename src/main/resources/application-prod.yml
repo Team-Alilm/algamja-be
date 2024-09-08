@@ -9,16 +9,30 @@ spring:
     username: ENC(R1FpK3IkTBlUqe6UGu9ASA==)
     password: ENC(Xg2/I1uWGCs6SKi2H21oNAazYU4qObrp)
 
-  quartz:
-    job-store-type: jdbc
-    job-interval-minutes: 5
-
   security:
     oauth2:
       client:
         registration:
           kakao:
+            client-name: Kakao
+            client-id: ENC(OSM6Nh+CSTo+F3C5H08o6ogJ8hybjMlrsTbN6+zA6RXPDQmbBiRmrJMEtFIrbx39)
+            client-secret: ENC(zWQDCX266I8wJvl+rKHmKY2UCaE8HIqbANOCwJuQcawQ5aHRDzCMXU/lh0XNVQKg)
             redirect-uri: https://alilm.store/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            scope:
+              - profile_nickname
+              - account_email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+  quartz:
+    job-store-type: jdbc
+    job-interval-minutes: 5
 
 webhook:
   slack:
