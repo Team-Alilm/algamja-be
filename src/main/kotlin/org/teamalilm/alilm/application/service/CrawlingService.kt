@@ -37,9 +37,7 @@ class CrawlingService(
         val jsonData = extractJsonData(scriptContent, "window.__MSS__.product.state")
         val jsonObject = JsonParser.parseString(jsonData).asJsonObject
 
-        log.info("Extracted JSON data: $jsonObject")
-
-        val soldoutCheckResponse = fetchSoldoutCheckResponse(decodedUrl)
+        val soldoutCheckResponse = fetchSoldoutCheckResponse(jsonObject.get("goodsNo").toString())
         val options = extractOptions(soldoutCheckResponse)
 
         return CrawlingUseCase.CrawlingResult(
