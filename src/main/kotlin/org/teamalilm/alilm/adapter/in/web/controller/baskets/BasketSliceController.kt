@@ -90,7 +90,7 @@ class BasketSliceController(
                     firstOption = result.firstOption,
                     secondOption = result.secondOption,
                     thirdOption = result.thirdOption,
-                    waitingCount = result.waitingCount,
+                    waitingCount = result.waitingCount
                 )
             }
         }

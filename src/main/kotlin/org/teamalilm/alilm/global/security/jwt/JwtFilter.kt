@@ -22,9 +22,6 @@ class JwtFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val requestURI = request.requestURI
-
-        // 만약 현재 요청이 excludedPaths에 포함된다면 필터를 건너뜁니다.
         if (excludedPaths.any { AntPathRequestMatcher(it).matches(request) }) {
             filterChain.doFilter(request, response)
             return
