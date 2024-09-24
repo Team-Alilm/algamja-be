@@ -1,5 +1,6 @@
 package org.teamalilm.alilm.global.quartz.job
 
+import com.google.gson.JsonParser
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.slf4j.LoggerFactory
@@ -8,11 +9,13 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
+import org.teamalilm.alilm.adapter.out.gateway.JsoupProductDataGateway
 import org.teamalilm.alilm.adapter.out.gateway.MailGateway
 import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
 import org.teamalilm.alilm.application.port.out.AddBasketPort
 import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort
 import org.teamalilm.alilm.application.port.out.SendAlilmBasketPort
+import org.teamalilm.alilm.application.port.out.gateway.CrawlingGateway
 import org.teamalilm.alilm.common.companion.StringConstant
 import org.teamalilm.alilm.global.quartz.data.SoldoutCheckResponse
 import java.time.LocalDateTime
@@ -31,7 +34,8 @@ class MusinsaSoldoutCheckJob(
     val restClient: RestClient,
     val mailGateway: MailGateway,
     val slackGateway: SlackGateway,
-    val sendAlilmBasketPort: SendAlilmBasketPort
+    val sendAlilmBasketPort: SendAlilmBasketPort,
+    val jsoupProductDataGateway: JsoupProductDataGateway
 ) : Job {
 
     private val log = LoggerFactory.getLogger(MusinsaSoldoutCheckJob::class.java)
@@ -45,6 +49,15 @@ class MusinsaSoldoutCheckJob(
 
             val productId = basketAndMemberAndProduct.product.number
             val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(productId)
+            val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(productId)
+
+            // 상품의 전체 품절 시 확인 하는 로직을 가지고 있어요.
+            val document = jsoupProductDataGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl)).document
+            val scriptContent = document.getElementsByTag("script").html()
+            val jsonData = extractJsonData(scriptContent, "window.__MSS__.product.state")
+            val jsonObject = JsonParser.parseString(jsonData).asJsonObject
+
+            val isAllSoldout = jsonObject.get("goodsSaleType").asString == "SOLDOUT"
 
             val isSoldOut = try {
                 checkIfSoldOut(requestUri, basketAndMemberAndProduct)
@@ -53,7 +66,7 @@ class MusinsaSoldoutCheckJob(
                 true
             }
 
-            if (!isSoldOut) {
+            if (!isSoldOut && !isAllSoldout) {
                 sendNotifications(basketAndMemberAndProduct)
                 basketAndMemberAndProduct.basket.sendAlilm()
 
@@ -79,7 +92,9 @@ class MusinsaSoldoutCheckJob(
 
     private fun checkIfSoldOut(requestUri: String, basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): Boolean {
         val response = restClient.get().uri(requestUri).retrieve().body<SoldoutCheckResponse>()
-        val optionItem = response?.data?.optionItems?.firstOrNull { it.managedCode == basketAndMemberAndProduct.getManagedCode() }
+        val optionItem = response?.data?.optionItems?.firstOrNull {
+            it.managedCode == basketAndMemberAndProduct.getManagedCode() }
+
         return optionItem?.outOfStock ?: true
     }
 
@@ -137,6 +152,29 @@ class MusinsaSoldoutCheckJob(
             ${basketAndMemberAndProduct.product.name} 상품이 재 입고 되었습니다.
             바구니에서 삭제되었습니다.
         """.trimIndent()
+    }
+
+    private fun extractJsonData(scriptContent: String, variableName: String): String? {
+        var jsonString: String? = null
+
+        // 자바스크립트 내 변수 선언 패턴
+        val pattern = "$variableName = "
+
+        // 패턴의 시작 위치 찾기
+        val startIndex = scriptContent.indexOf(pattern)
+
+        if (startIndex != -1) {
+            // 패턴 이후 부분 추출
+            val substring = scriptContent.substring(startIndex + pattern.length)
+
+            // JSON 데이터의 끝 위치 찾기
+            val endIndex = substring.indexOf("};") + 1
+
+            // JSON 문자열 추출
+            jsonString = substring.substring(0, endIndex)
+        }
+
+        return jsonString
     }
 
 }
