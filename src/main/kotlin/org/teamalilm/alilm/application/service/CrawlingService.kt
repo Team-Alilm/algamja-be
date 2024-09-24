@@ -1,5 +1,6 @@
 package org.teamalilm.alilm.application.service
 
+import com.google.api.pathtemplate.ValidationException
 import com.google.gson.JsonParser
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -55,8 +56,13 @@ class CrawlingService(
     }
 
     private fun decodeUrl(url: String): String {
-        return URLDecoder.decode(url, StandardCharsets.UTF_8.toString()).let {
-            URI.create(it).toString()
+        return URLDecoder.decode(url, StandardCharsets.UTF_8.toString()).let { decodedUrl ->
+            // 무신사 URL만 허용하는 필터링 로직
+            if (decodedUrl.contains("musinsa")) {
+                URI.create(decodedUrl).toString()
+            } else {
+                throw ValidationException("지원하지 않는 URL 입니다.")
+            }
         }
     }
 
