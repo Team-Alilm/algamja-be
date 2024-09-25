@@ -59,14 +59,19 @@ class MusinsaSoldoutCheckJob(
 
             val isAllSoldout = jsonObject.get("goodsSaleType").asString == "SOLDOUT"
 
-            val isSoldOut = try {
-                checkIfSoldOut(requestUri, basketAndMemberAndProduct)
-            } catch (e: RestClientException) {
-                log.info("Failed to check soldout status of product: $productId")
+            // isAllSoldout이 true일 경우 API 호출 생략
+            val isSoldOut = if (isAllSoldout) {
                 true
+            } else {
+                try {
+                    checkIfSoldOut(requestUri, basketAndMemberAndProduct)
+                } catch (e: RestClientException) {
+                    log.info("Failed to check soldout status of product: $productId")
+                    true
+                }
             }
 
-            if (!isSoldOut && !isAllSoldout) {
+            if (!isSoldOut) {
                 sendNotifications(basketAndMemberAndProduct)
                 basketAndMemberAndProduct.basket.sendAlilm()
 
