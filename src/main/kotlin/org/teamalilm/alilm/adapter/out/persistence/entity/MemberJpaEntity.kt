@@ -1,7 +1,7 @@
 package org.teamalilm.alilm.adapter.out.persistence.entity
 
 import jakarta.persistence.*
-import org.teamalilm.alilm.global.jpa.base.BaseEntity
+import org.teamalilm.alilm.global.jpa.base.BaseTimeEntity
 import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
 
 @Entity
@@ -29,9 +29,9 @@ class MemberJpaEntity(
     var nickname: String,
 
     @Column
-    var fcmToken: String? = null,
+    var fcmToken: String?,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-) : BaseEntity()
+) : BaseTimeEntity()
