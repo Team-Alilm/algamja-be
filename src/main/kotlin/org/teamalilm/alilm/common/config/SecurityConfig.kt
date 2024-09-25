@@ -38,7 +38,8 @@ class SecurityConfig(
             "/swagger-resources/**",
             "/api-docs/**",
             "/favicon.ico",
-            "/login/**"
+            "/login/**",
+            "/h2-console/**",
         )
     }
 
