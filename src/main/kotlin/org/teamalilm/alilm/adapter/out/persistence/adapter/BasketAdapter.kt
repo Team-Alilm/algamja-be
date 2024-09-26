@@ -20,7 +20,6 @@ import org.teamalilm.alilm.domain.Product
 import org.teamalilm.alilm.domain.Product.*
 import java.time.LocalDate
 import java.time.ZoneOffset
-import kotlin.math.log
 
 
 @Component
@@ -95,7 +94,7 @@ class BasketAdapter(
         ) }
     }
 
-    override fun sendAlilmBasket(basket: Basket, member: Member, product: Product) {
+    override fun addAlilmBasket(basket: Basket, member: Member, product: Product) {
         val basketJpaEntity = basketJpaEntity(basket, member, product)
 
         basketRepository.save(basketJpaEntity)
