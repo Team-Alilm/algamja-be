@@ -81,11 +81,13 @@ class MusinsaSoldoutCheckJob(
                     basketAndMemberAndProduct.product
                 )
 
-                sendAlilmBasketPort.sendAlilmBasket(
+                sendAlilmBasketPort.addAlilmBasket(
                     basketAndMemberAndProduct.basket,
                     basketAndMemberAndProduct.member,
                     basketAndMemberAndProduct.product
                 )
+
+
             }
         }
     }

@@ -6,5 +6,5 @@ import org.teamalilm.alilm.domain.Product
 
 interface SendAlilmBasketPort {
 
-    fun sendAlilmBasket(basket: Basket, member: Member, product: Product)
+    fun addAlilmBasket(basket: Basket, member: Member, product: Product)
 }
