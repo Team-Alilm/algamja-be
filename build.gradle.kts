@@ -78,7 +78,7 @@ dependencies {
     kapt("jakarta.persistence:jakarta.persistence-api")
 
     // fcm
-    implementation("com.google.firebase:firebase-admin:9.2.0")
+    implementation("com.google.firebase:firebase-admin:9.3.0")
 }
 
 configurations {
