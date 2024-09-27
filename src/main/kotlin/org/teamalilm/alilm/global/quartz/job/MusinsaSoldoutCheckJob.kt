@@ -1,5 +1,6 @@
 package org.teamalilm.alilm.global.quartz.job
 
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonParser
 import org.quartz.Job
 import org.quartz.JobExecutionContext
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
+import org.teamalilm.alilm.adapter.out.gateway.FcmSendGateway
 import org.teamalilm.alilm.adapter.out.gateway.JsoupProductDataGateway
 import org.teamalilm.alilm.adapter.out.gateway.MailGateway
 import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
@@ -35,6 +37,7 @@ class MusinsaSoldoutCheckJob(
     val mailGateway: MailGateway,
     val slackGateway: SlackGateway,
     val sendAlilmBasketPort: SendAlilmBasketPort,
+    val fcmSendGateway: FcmSendGateway,
     val jsoupProductDataGateway: JsoupProductDataGateway
 ) : Job {
 
@@ -87,7 +90,10 @@ class MusinsaSoldoutCheckJob(
                     basketAndMemberAndProduct.product
                 )
 
-
+                fcmSendGateway.sendFcmMessage(
+                    basketAndMemberAndProduct.member,
+                    basketAndMemberAndProduct.product
+                )
             }
         }
     }
