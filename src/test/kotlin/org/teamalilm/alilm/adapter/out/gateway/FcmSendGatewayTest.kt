@@ -24,6 +24,7 @@ class FcmSendGatewayTest {
                 Notification.builder()
                     .setTitle("테스트 알림")
                     .setBody("테스트 메시지가 도착했습니다.")
+                    .setImage("https://alilm.store/alilm.png")
                     .build()
             )
             .setToken(actualToken)
