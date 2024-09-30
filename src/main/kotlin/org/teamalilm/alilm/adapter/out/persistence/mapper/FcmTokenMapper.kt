@@ -12,7 +12,7 @@ class FcmTokenMapper {
         return FcmTokenJpaEntity(
             id = fcmToken.id?.value,
             token = fcmToken.token,
-            memberId = memberJpaEntity,
+            member = memberJpaEntity,
         )
     }
 
