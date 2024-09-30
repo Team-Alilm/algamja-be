@@ -2,7 +2,7 @@ package org.teamalilm.alilm.domain
 
 class FcmToken(
     val token: String,
-    val member: Member,
+    val memberId: Member.MemberId,
     val id: FcmTokenId? = null
 ) {
     init {
