@@ -28,9 +28,6 @@ class MemberJpaEntity(
     @Column(nullable = false, length = 10)
     var nickname: String,
 
-    @Column
-    var fcmToken: String?,
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null

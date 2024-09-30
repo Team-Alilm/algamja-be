@@ -14,7 +14,6 @@ class MemberMapper {
             nickname = member.nickname,
             providerId = member.providerId,
             provider = member.provider,
-            fcmToken = member.fcmToken
         )
     }
 
@@ -27,7 +26,6 @@ class MemberMapper {
             nickname = memberJpaEntity.nickname,
             providerId = memberJpaEntity.providerId,
             provider = memberJpaEntity.provider,
-            fcmToken = memberJpaEntity.fcmToken
         )
     }
 
@@ -38,7 +36,6 @@ class MemberMapper {
             nickname = memberJpaEntity.nickname,
             providerId = memberJpaEntity.providerId,
             provider = memberJpaEntity.provider,
-            fcmToken = memberJpaEntity.fcmToken
         )
     }
 }

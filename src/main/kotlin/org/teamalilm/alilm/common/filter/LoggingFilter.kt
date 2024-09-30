@@ -14,7 +14,7 @@ class LoggingFilter : OncePerRequestFilter() {
         "docs",
         "swagger",
         "config",
-        "/health-check"
+        "health"
     )
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
