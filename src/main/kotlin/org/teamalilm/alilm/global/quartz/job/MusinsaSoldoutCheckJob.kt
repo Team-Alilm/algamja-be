@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
+import org.teamalilm.alilm.adapter.out.gateway.FcmSendGateway
 import org.teamalilm.alilm.adapter.out.gateway.JsoupProductDataGateway
 import org.teamalilm.alilm.adapter.out.gateway.MailGateway
 import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
@@ -35,7 +36,8 @@ class MusinsaSoldoutCheckJob(
     val mailGateway: MailGateway,
     val slackGateway: SlackGateway,
     val sendAlilmBasketPort: SendAlilmBasketPort,
-    val jsoupProductDataGateway: JsoupProductDataGateway
+    val jsoupProductDataGateway: JsoupProductDataGateway,
+    val fcmSendGateway: FcmSendGateway
 ) : Job {
 
     private val log = LoggerFactory.getLogger(MusinsaSoldoutCheckJob::class.java)
@@ -87,7 +89,10 @@ class MusinsaSoldoutCheckJob(
                     basketAndMemberAndProduct.product
                 )
 
-
+                fcmSendGateway.sendFcmMessage(
+                    member = basketAndMemberAndProduct.member,
+                    product = basketAndMemberAndProduct.product,
+                )
             }
         }
     }
