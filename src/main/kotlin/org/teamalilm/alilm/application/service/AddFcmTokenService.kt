@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.teamalilm.alilm.application.port.`in`.use_case.AddFcmTokenUseCase
 import org.teamalilm.alilm.application.port.out.AddFcmTokenPort
-import org.teamalilm.alilm.application.port.out.AddMemberPort
 import org.teamalilm.alilm.domain.FcmToken
 
 @Service
@@ -18,7 +17,7 @@ class AddFcmTokenService(
         val member = command.member
         val token = command.token
 
-        val fcmToken = FcmToken(token, member)
+        val fcmToken = FcmToken(token, member.id!!)
 
         addFcmTokenPort.addFcmToken(fcmToken)
     }
