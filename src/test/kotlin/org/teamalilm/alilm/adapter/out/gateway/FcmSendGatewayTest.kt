@@ -17,7 +17,7 @@ class FcmSendGatewayTest {
     @Test
     fun sendFcmMessage() {
         // 실제 FCM 토큰을 여기에 넣으세요
-        val actualToken = "cJ44UljjiXlgFJFub412-9:APA91bEEQED0DxXj3ETdjpRyuY4p8coNp2RI2Oxyl_dL1JRi6qCg8pzdVw3-zoXyVjJy8uvktYyKIgjd3jdDCCrU7MEUXxVjrRETthfW5Zp7IGBZuErEYdmYFqasAuUI40dSzG62yhx0";
+        val actualToken = "etll5vw0oRdKviqnC4vZc9:APA91bHqTccME2T5Ob5FJSHddLWky-pLl8JPuZvNg9qc5rAjS4M9j4Kubq7I2CH11yykKFrLAH2nU7Aw60kD18Q654PaYa0VftPgUUpPLB2RggCW9W0HNbTks0XEyfTZgRSAtt2eDrjZ";
 
         val message = Message.builder()
             .setNotification(
