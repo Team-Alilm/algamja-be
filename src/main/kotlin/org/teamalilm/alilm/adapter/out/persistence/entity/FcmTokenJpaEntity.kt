@@ -9,7 +9,7 @@ class FcmTokenJpaEntity(
     val token: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    val memberId: MemberJpaEntity,
+    val member: MemberJpaEntity,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
