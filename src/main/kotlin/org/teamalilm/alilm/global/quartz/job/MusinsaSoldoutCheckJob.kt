@@ -13,8 +13,10 @@ import org.teamalilm.alilm.adapter.out.gateway.FcmSendGateway
 import org.teamalilm.alilm.adapter.out.gateway.JsoupProductDataGateway
 import org.teamalilm.alilm.adapter.out.gateway.MailGateway
 import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
+import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataFcmTokenRepository
 import org.teamalilm.alilm.application.port.out.AddBasketPort
 import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort
+import org.teamalilm.alilm.application.port.out.LoadFcmTokenPort
 import org.teamalilm.alilm.application.port.out.SendAlilmBasketPort
 import org.teamalilm.alilm.application.port.out.gateway.CrawlingGateway
 import org.teamalilm.alilm.common.companion.StringConstant
@@ -37,7 +39,8 @@ class MusinsaSoldoutCheckJob(
     val slackGateway: SlackGateway,
     val sendAlilmBasketPort: SendAlilmBasketPort,
     val jsoupProductDataGateway: JsoupProductDataGateway,
-    val fcmSendGateway: FcmSendGateway
+    val fcmSendGateway: FcmSendGateway,
+    val loadFcmTokenPort: LoadFcmTokenPort,
 ) : Job {
 
     private val log = LoggerFactory.getLogger(MusinsaSoldoutCheckJob::class.java)
@@ -89,10 +92,15 @@ class MusinsaSoldoutCheckJob(
                     basketAndMemberAndProduct.product
                 )
 
-                fcmSendGateway.sendFcmMessage(
-                    member = basketAndMemberAndProduct.member,
-                    product = basketAndMemberAndProduct.product,
-                )
+                val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(basketAndMemberAndProduct.member)
+
+                fcmTokenList.forEach() { fcmToken ->
+                    fcmSendGateway.sendFcmMessage(
+                        member = basketAndMemberAndProduct.member,
+                        product = basketAndMemberAndProduct.product,
+                        fcmToken = fcmToken
+                    )
+                }
             }
         }
     }

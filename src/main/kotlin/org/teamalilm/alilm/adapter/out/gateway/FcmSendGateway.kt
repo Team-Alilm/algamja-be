@@ -5,6 +5,7 @@ import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.teamalilm.alilm.domain.FcmToken
 import org.teamalilm.alilm.domain.Member
 import org.teamalilm.alilm.domain.Product
 
@@ -17,7 +18,8 @@ class FcmSendGateway(
 
     fun sendFcmMessage(
         member: Member,
-        product: Product
+        product: Product,
+        fcmToken: FcmToken
     ) {
         // 옵션들 중 null이 아닌 값을 필터링하여 메시지에 포함
         val options = listOfNotNull(product.firstOption, product.secondOption, product.thirdOption)
@@ -41,7 +43,7 @@ class FcmSendGateway(
                         .setImage(imageUrl)
                         .build()
                 )
-                .setToken("token")  // 실제 FCM 토큰을 설정해야 함
+                .setToken(fcmToken.token)  // 실제 FCM 토큰을 설정해야 함
                 .build()
         )
 
