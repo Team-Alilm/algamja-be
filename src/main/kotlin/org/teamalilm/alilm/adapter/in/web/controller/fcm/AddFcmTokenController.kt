@@ -1,4 +1,4 @@
-package org.teamalilm.alilm.adapter.`in`.web.controller
+package org.teamalilm.alilm.adapter.`in`.web.controller.fcm
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.Valid
@@ -24,7 +24,7 @@ class AddFcmTokenController(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ) : ResponseEntity<Unit> {
         val command = AddFcmTokenUseCase.AddFcmTokenCommand(
-            fcmToken = fcmTokenRequest.fcmToken,
+            token = fcmTokenRequest.fcmToken,
             member = customMemberDetails.member
         )
 

@@ -17,13 +17,14 @@ class FcmSendGatewayTest {
     @Test
     fun sendFcmMessage() {
         // 실제 FCM 토큰을 여기에 넣으세요
-        val actualToken = "cJ44UljjiXlgFJFub412-9:APA91bEEQED0DxXj3ETdjpRyuY4p8coNp2RI2Oxyl_dL1JRi6qCg8pzdVw3-zoXyVjJy8uvktYyKIgjd3jdDCCrU7MEUXxVjrRETthfW5Zp7IGBZuErEYdmYFqasAuUI40dSzG62yhx0";
+        val actualToken = "fpAvwbzb-HNpwBb_odzt9c:APA91bF04uKrm0YYlx5Pj0tnJs_XXAYmPES6XOQrjprHoZpe8T1i0WDAoZxGasgYNH12LZKbCX8OhYTEjyfOb5vyNoHN95Z49FJ4tC0DfH7IjHYt0Ju3n0l8-HVRbQ77uZh1LpHAhJgH";
 
         val message = Message.builder()
             .setNotification(
                 Notification.builder()
                     .setTitle("테스트 알림")
                     .setBody("테스트 메시지가 도착했습니다.")
+                    .setImage("https://alilm.store/alilm.png")
                     .build()
             )
             .setToken(actualToken)

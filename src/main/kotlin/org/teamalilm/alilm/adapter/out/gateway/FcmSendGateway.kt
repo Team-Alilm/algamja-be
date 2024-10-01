@@ -5,6 +5,7 @@ import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.teamalilm.alilm.domain.FcmToken
 import org.teamalilm.alilm.domain.Member
 import org.teamalilm.alilm.domain.Product
 
@@ -17,30 +18,35 @@ class FcmSendGateway(
 
     fun sendFcmMessage(
         member: Member,
-        product: Product
+        product: Product,
+        fcmToken: FcmToken
     ) {
-        // send fcm message
-        val message = firebaseMessaging.send(Message.builder()
-            .setNotification(
-                Notification.builder()
-                    .setTitle("Alilm")
-                    .setBody("""
-                        상품 명 : ${product.name} 
-                        option1 : ${product.firstOption}
-                        option2 : ${product.secondOption}
-                        option3 : ${product.thirdOption}
+        // 옵션들 중 null이 아닌 값을 필터링하여 메시지에 포함
+        val options = listOfNotNull(product.firstOption, product.secondOption, product.thirdOption)
+            .joinToString(" / ")
 
-                        상품이 재고가 있습니다.
-                        바로 구매하러 가시겠습니까?
-                        링크 : ${"https://www.musinsa.com/products/${product.number}"}
-                    """.trimIndent())
-                    .setImage("https://file.notion.so/f/f/c345e317-1a77-4e86-8b67-b491a5db92b8/732799dc-6ad9-46f8-8864-22308c10cdb8/free-icon-bells-7124213.png?table=block&id=1037b278-57a0-8022-8a73-ea04c03ae27e&spaceId=c345e317-1a77-4e86-8b67-b491a5db92b8&expirationTimestamp=1727503200000&signature=0rc_Pnx_oo5sGx7AD6GGMtFvxlhbv2yrh4VxDoVke_o&downloadName=free-icon-bells-7124213.png")
-                    .build()
-                ).setToken(member.fcmToken)
-            .build()
+        val imageUrl = "https://alilm.store/alilm.png"
+
+        // FCM 메시지 구성
+        val message = firebaseMessaging.send(
+            Message.builder()
+                .setNotification(
+                    Notification.builder()
+                        .setTitle("알림 : 등록 하신 상품이 재 입고 되었어요.")
+                        .setBody("""
+                            ${product.name} 상품이 재입고 되었습니다.
+                            ${if (options.isNotBlank()) "option : $options" else ""}
+                           
+                            바로 확인해보세요!
+                            https://www.musinsa.com/products/${product.number}
+                        """.trimIndent())
+                        .setImage(imageUrl)
+                        .build()
+                )
+                .setToken(fcmToken.token)  // 실제 FCM 토큰을 설정해야 함
+                .build()
         )
 
         log.info("Successfully sent message: $message")
     }
-
 }
