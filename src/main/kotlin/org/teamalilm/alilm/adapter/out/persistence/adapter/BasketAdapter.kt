@@ -63,14 +63,14 @@ class BasketAdapter(
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
-    override fun loadBasketSlice(pageRequest: PageRequest): Slice<LoadSliceBasketPort.BasketCountData> {
+    override fun loadBasketSlice(pageRequest: PageRequest): Slice<LoadSliceBasketPort.BasketAndCountProjection> {
         val basketCountProjectionSlice = basketRepository.loadBasketSlice(pageRequest)
 
         return basketCountProjectionSlice.map {
             val productJpaEntity = it.get("productJpaEntity", ProductJpaEntity::class.java)!!
             val waitingCount = it.get("waitingCount", Long::class.java)!!
 
-            LoadSliceBasketPort.BasketCountData(
+            LoadSliceBasketPort.BasketAndCountProjection(
                 product = productMapper.mapToDomainEntity(productJpaEntity),
                 waitingCount = waitingCount
             )

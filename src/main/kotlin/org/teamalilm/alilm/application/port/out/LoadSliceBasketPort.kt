@@ -6,9 +6,9 @@ import org.teamalilm.alilm.domain.Product
 
 interface LoadSliceBasketPort {
 
-    fun loadBasketSlice(pageRequest: PageRequest): Slice<BasketCountData>
+    fun loadBasketSlice(pageRequest: PageRequest): Slice<BasketAndCountProjection>
 
-    data class BasketCountData(
+    data class BasketAndCountProjection(
         val product: Product,
         val waitingCount: Long
     )

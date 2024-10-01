@@ -16,14 +16,14 @@ class BasketSliceService (
 
     override fun basketSlice(command: BasketListCommand): Slice<BasketListResult> {
 
-        val basketCountProjection = loadProductSlicePort.loadBasketSlice(
+        val basketCountProjectionSlice = loadProductSlicePort.loadBasketSlice(
             PageRequest.of(
                 command.page,
                 command.size,
             )
         )
 
-        return basketCountProjection.map {
+        return basketCountProjectionSlice.map {
             BasketListResult(
                 id = it.product.id?.value!!,
                 number = it.product.number,
