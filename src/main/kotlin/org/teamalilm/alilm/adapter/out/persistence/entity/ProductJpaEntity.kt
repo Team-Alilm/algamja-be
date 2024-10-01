@@ -36,9 +36,6 @@ class ProductJpaEntity(
     val price: Int,
 
     @Column(nullable = false)
-    var waitingCount: Int = 0,
-
-    @Column(nullable = false)
     val firstOption: String,
 
     @Column
