@@ -9,7 +9,7 @@ import org.teamalilm.alilm.global.jpa.base.BaseEntity
     name = "product",
     uniqueConstraints = [UniqueConstraint(
         name = "tag_key_number_size_color",
-        columnNames = ["store", "number", "firstOption", "secondOption", "thirdOption"]
+        columnNames = ["store", "number", "first_option", "second_option", "third_option"]
     )]
 )
 class ProductJpaEntity(
