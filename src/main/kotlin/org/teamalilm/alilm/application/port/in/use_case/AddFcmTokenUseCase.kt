@@ -7,7 +7,7 @@ interface AddFcmTokenUseCase {
     fun addFcmToken(command: AddFcmTokenCommand)
 
     data class AddFcmTokenCommand(
-        val fcmToken: String,
+        val token: String,
         val member: Member
     )
 }
