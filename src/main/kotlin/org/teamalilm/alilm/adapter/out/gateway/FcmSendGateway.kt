@@ -11,7 +11,7 @@ import org.teamalilm.alilm.domain.Product
 
 @Service
 class FcmSendGateway(
-    val firebaseMessaging: FirebaseMessaging
+    private val firebaseMessaging: FirebaseMessaging
 ) {
 
     private val log = LoggerFactory.getLogger(FcmSendGateway::class.java)
