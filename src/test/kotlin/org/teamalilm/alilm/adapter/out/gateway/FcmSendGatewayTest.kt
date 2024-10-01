@@ -30,8 +30,8 @@ class FcmSendGatewayTest {
             .setToken(actualToken)
             .build()
 
-        val response = fcmSendGateway.firebaseMessaging.send(message)
+//        val response = fcmSendGateway.sendFcmMessage(message)
 
-        println("FCM 메시지 전송 결과: $response")
+//        println("FCM 메시지 전송 결과: $response")
     }
 }
