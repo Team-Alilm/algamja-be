@@ -8,7 +8,6 @@ class Member(
     val providerId: Long,
     val email: String,
     var nickname: String,
-    var fcmToken: String? = null
     ) {
 
     init {
