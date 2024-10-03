@@ -2,12 +2,11 @@ package org.teamalilm.alilm.adapter.out.gateway
 
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-@Disabled
+//@Disabled
 @SpringBootTest
 class FcmSendGatewayTest {
 
@@ -17,7 +16,7 @@ class FcmSendGatewayTest {
     @Test
     fun sendFcmMessage() {
         // 실제 FCM 토큰을 여기에 넣으세요
-        val actualToken = "fpAvwbzb-HNpwBb_odzt9c:APA91bF04uKrm0YYlx5Pj0tnJs_XXAYmPES6XOQrjprHoZpe8T1i0WDAoZxGasgYNH12LZKbCX8OhYTEjyfOb5vyNoHN95Z49FJ4tC0DfH7IjHYt0Ju3n0l8-HVRbQ77uZh1LpHAhJgH";
+        val actualToken = "fWrHsgPQPHkDTqZbo3vGKz:APA91bEFzjkXD4QIbg4YxD1-ICSLKXUmjyXllPdgTCWase_WvvgiNGXGNnRbiv8naCyb84gvEY3a7psSccL2YJXjHs6lMwnuvpPbjczqWWCufI5PflgjG0cMOH3qNkEOlwfxorfb-OtV"
 
         val message = Message.builder()
             .setNotification(
