@@ -15,4 +15,4 @@ class FcmTokenJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
-): BaseTimeEntity()
+) : BaseTimeEntity()
