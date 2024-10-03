@@ -1,5 +1,8 @@
 package org.teamalilm.alilm.adapter.out.gateway
 
+
+import com.google.firebase.messaging.Message
+import com.google.firebase.messaging.Notification
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -8,6 +11,8 @@ import org.teamalilm.alilm.domain.Member
 import org.teamalilm.alilm.domain.Product
 import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
 
+
+//@Disabled
 @SpringBootTest
 class FcmSendGatewayTest {
 

@@ -19,13 +19,12 @@ class LoggingFilter : OncePerRequestFilter() {
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         // Check if the request URL is excluded
-        logger.info("request.requestURI : ${request.requestURI}")
-
         if (isExcludedUrl(request.requestURI)) {
-            logger.info("isExcludedUrl request.requestURI : ${request.requestURI}")
             filterChain.doFilter(request, response)
             return
         }
+
+        logger.info("request.requestURI : ${request.requestURI}")
 
         // Wrap the request and response
         val wrappedRequest = ContentCachingRequestWrapper(request)

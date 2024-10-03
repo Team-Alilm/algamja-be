@@ -73,7 +73,11 @@ class CustomSuccessHandler(
                 .build()
                 .toUriString()
 
-            redirectStrategy.sendRedirect(request, response, redirectUri)
+            try{
+                redirectStrategy.sendRedirect(request, response, redirectUri)
+            }catch (e: Exception){
+                log.error("error: $e")
+            }
         }
 
     }
