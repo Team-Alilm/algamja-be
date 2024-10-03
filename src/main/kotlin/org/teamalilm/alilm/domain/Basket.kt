@@ -15,7 +15,6 @@ class Basket(
     fun sendAlilm() {
         isAlilm = true
         alilmDate = System.currentTimeMillis()
-        isDeleted = true
     }
 
     data class BasketId(val value: Long?)
