@@ -20,7 +20,7 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
             and b.isAlilm = false
             and b.isHidden = false
             GROUP BY p.id
-            ORDER BY COUNT(b) DESC
+            ORDER BY COUNT(b) DESC, b.id ASC
         """
     )
     fun loadBasketSlice(pageRequest: PageRequest): Slice<Tuple>
