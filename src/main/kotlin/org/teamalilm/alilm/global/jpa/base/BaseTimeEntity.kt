@@ -21,13 +21,6 @@ abstract class BaseTimeEntity {
     @Column(nullable = false)
     var lastModifiedDate: Long = 0
 
-    @Column(nullable = false)
-    var isDelete: Boolean = false
-
-    fun delete() {
-        this.isDelete = true
-    }
-
     @PrePersist
     fun prePersist() {
         val now = System.currentTimeMillis()

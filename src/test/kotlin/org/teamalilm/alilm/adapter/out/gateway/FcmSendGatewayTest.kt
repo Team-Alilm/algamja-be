@@ -1,10 +1,16 @@
 package org.teamalilm.alilm.adapter.out.gateway
 
+
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.teamalilm.alilm.domain.FcmToken
+import org.teamalilm.alilm.domain.Member
+import org.teamalilm.alilm.domain.Product
+import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
+
 
 //@Disabled
 @SpringBootTest
@@ -15,21 +21,33 @@ class FcmSendGatewayTest {
 
     @Test
     fun sendFcmMessage() {
-        // 실제 FCM 토큰을 여기에 넣으세요
-        val actualToken = "fWrHsgPQPHkDTqZbo3vGKz:APA91bEFzjkXD4QIbg4YxD1-ICSLKXUmjyXllPdgTCWase_WvvgiNGXGNnRbiv8naCyb84gvEY3a7psSccL2YJXjHs6lMwnuvpPbjczqWWCufI5PflgjG0cMOH3qNkEOlwfxorfb-OtV"
+        var member = Member(
+            provider = Provider.KAKAO,
+            providerId = 1L,
+            email = "c",
+            nickname = "c",
+        )
 
-        val message = Message.builder()
-            .setNotification(
-                Notification.builder()
-                    .setTitle("테스트 알림")
-                    .setBody("테스트 메시지가 도착했습니다.")
-                    .setImage("https://alilm.store/alilm.png")
-                    .build()
-            )
-            .setToken(actualToken)
-            .build()
+        var product = Product(
+            id = Product.ProductId(1L),
+            number = 1L,
+            name = "c",
+            brand = "c",
+            imageUrl = "c",
+            category = "c",
+            price = 1,
+            store = Product.Store.MUSINSA,
+            firstOption = "c",
+            secondOption = "c",
+            thirdOption = "c"
+        )
 
-        val response = fcmSendGateway.firebaseMessaging.send(message)
+        val fcmToken = FcmToken(
+            token = "fm3LCU4VwnHXsbQpCC9_f4:APA91bGEDgfJTgx8PCc1ZKpEBPvkcz9kPVSfOpI9c3X7ZLIPa5ujaf8eMoU0jX3s3EnMI2IEVWHWJkQAhtIqzhaQzlS1JgW5wbftNwvIzBw12JuSkPtwF0PIVxm-_8oaFPgoFR4t19fc",
+            memberId = Member.MemberId(1L)
+        )
+
+        val response = fcmSendGateway.sendFcmMessage(member, product ,fcmToken)
 
         println("FCM 메시지 전송 결과: $response")
     }

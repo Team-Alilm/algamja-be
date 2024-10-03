@@ -3,6 +3,7 @@ package org.teamalilm.alilm.global.security.service.oAuth2.handler
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
@@ -22,8 +23,6 @@ import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
 import org.teamalilm.alilm.global.security.jwt.JwtUtil
 import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
 
-private const val BASE_URL = """https://alilm.co.kr"""
-
 @Component
 @Transactional(readOnly = true)
 class CustomSuccessHandler(
@@ -33,7 +32,8 @@ class CustomSuccessHandler(
     private val addMemberRoleMappingPort: AddMemberRoleMappingPort,
     private val loadRolePort: LoadRolePort,
     private val slackGateway: SlackGateway,
-    private val mailGateway: MailGateway
+    private val mailGateway: MailGateway,
+    @Value("\${app.base-url}") private val baseUrl: String // baseUrl을 동적으로 주입
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -66,8 +66,8 @@ class CustomSuccessHandler(
             val memberId = member.id
             val jwt = jwtUtil.createJwt(memberId!!, 1000L * 60 * 60 * 24 * 30)
             log.info("jwt: $jwt")
-//
-            val redirectUri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
+
+            val redirectUri = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .path("/oauth/kakao")
                 .queryParam("Authorization", jwt)
                 .build()

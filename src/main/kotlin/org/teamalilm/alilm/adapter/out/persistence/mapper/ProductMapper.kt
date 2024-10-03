@@ -17,7 +17,6 @@ class ProductMapper {
             store = product.store,
             category = product.category,
             price = product.price,
-            waitingCount = product.waitingCount,
             firstOption = product.firstOption,
             secondOption = product.secondOption,
             thirdOption = product.thirdOption
@@ -36,7 +35,6 @@ class ProductMapper {
             store = productJpaEntity.store,
             category = productJpaEntity.category,
             price = productJpaEntity.price,
-            waitingCount = productJpaEntity.waitingCount,
             firstOption = productJpaEntity.firstOption,
             secondOption = productJpaEntity.secondOption,
             thirdOption = productJpaEntity.thirdOption
@@ -53,7 +51,6 @@ class ProductMapper {
             store = productJpaEntity.store,
             category = productJpaEntity.category,
             price = productJpaEntity.price,
-            waitingCount = productJpaEntity.waitingCount,
             firstOption = productJpaEntity.firstOption,
             secondOption = productJpaEntity.secondOption,
             thirdOption = productJpaEntity.thirdOption
