@@ -63,6 +63,12 @@ class BasketAdapter(
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
+    override fun loadBasket(memberId: MemberId): List<Basket> {
+        val basketJpaEntityList = springDataBasketRepository.findByMemberJpaEntityIdAndIsDeleteFalse(memberId.value)
+
+        return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
+    }
+
     override fun loadBasketSlice(pageRequest: PageRequest): Slice<LoadSliceBasketPort.BasketAndCountProjection> {
         val basketCountProjectionSlice = basketRepository.loadBasketSlice(pageRequest)
 
