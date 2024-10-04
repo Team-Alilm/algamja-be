@@ -72,6 +72,13 @@ class MusinsaSoldoutCheckJob(
                     checkIfSoldOut(requestUri, basketAndMemberAndProduct)
                 } catch (e: RestClientException) {
                     log.info("Failed to check soldout status of product: $productId")
+                    slackGateway.sendMessage("""
+                        Failed to check soldout status of 
+                        product number : $productId
+                        store : musinsa
+                        
+                        ${e.message}
+                    """.trimIndent())
                     true
                 }
             }
