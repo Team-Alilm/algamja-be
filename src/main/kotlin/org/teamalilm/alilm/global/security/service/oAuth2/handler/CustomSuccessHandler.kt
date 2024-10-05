@@ -75,6 +75,7 @@ class CustomSuccessHandler(
 
             try{
                 redirectStrategy.sendRedirect(request, response, redirectUri)
+
             }catch (e: Exception){
                 log.error("error: $e")
             }
