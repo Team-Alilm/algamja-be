@@ -13,11 +13,7 @@ import org.teamalilm.alilm.adapter.out.gateway.FcmSendGateway
 import org.teamalilm.alilm.adapter.out.gateway.JsoupProductDataGateway
 import org.teamalilm.alilm.adapter.out.gateway.MailGateway
 import org.teamalilm.alilm.adapter.out.gateway.SlackGateway
-import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataFcmTokenRepository
-import org.teamalilm.alilm.application.port.out.AddBasketPort
-import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort
-import org.teamalilm.alilm.application.port.out.LoadFcmTokenPort
-import org.teamalilm.alilm.application.port.out.SendAlilmBasketPort
+import org.teamalilm.alilm.application.port.out.*
 import org.teamalilm.alilm.application.port.out.gateway.CrawlingGateway
 import org.teamalilm.alilm.common.companion.StringConstant
 import org.teamalilm.alilm.global.quartz.data.SoldoutCheckResponse
@@ -34,6 +30,7 @@ import java.time.ZoneId
 class MusinsaSoldoutCheckJob(
     val loadAllBasketsPort: LoadAllBasketsPort,
     val addBasketPort: AddBasketPort,
+    val addPricePort: AddPricePort,
     val restClient: RestClient,
     val mailGateway: MailGateway,
     val slackGateway: SlackGateway,
@@ -63,6 +60,13 @@ class MusinsaSoldoutCheckJob(
             val jsonObject = JsonParser.parseString(jsonData).asJsonObject
 
             val isAllSoldout = jsonObject.get("goodsSaleType").asString == "SOLDOUT"
+            val price = jsonObject.get("goodsPrice").asJsonObject.get("salePrice").asInt
+
+            // salePrice 기준으로 가격 히스토리를 저장해요.
+            addPricePort.addPrice(
+                price,
+                basketAndMemberAndProduct.product
+            )
 
             // isAllSoldout이 true일 경우 API 호출 생략
             val isSoldOut = if (isAllSoldout) {
