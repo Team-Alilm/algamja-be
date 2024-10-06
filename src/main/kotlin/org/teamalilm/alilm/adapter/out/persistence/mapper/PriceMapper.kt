@@ -21,7 +21,7 @@ class PriceMapper {
         return Price(
             id = Price.PriceId(priceJpaEntity.id),
             price = priceJpaEntity.price,
-            productId = Product.ProductId(priceJpaEntity.productJpaEntity.id ?: error("Product ID is null"))
+            productId = Product.ProductId(priceJpaEntity.productJpaEntity.id!!)
         )
     }
 
