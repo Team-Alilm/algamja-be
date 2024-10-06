@@ -7,8 +7,12 @@ import org.teamalilm.alilm.adapter.out.persistence.mapper.ProductMapper
 import org.teamalilm.alilm.adapter.out.persistence.repository.PriceRepository
 import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataPriceRepository
 import org.teamalilm.alilm.application.port.out.AddPricePort
+import org.teamalilm.alilm.application.port.out.LoadPricePort
+import org.teamalilm.alilm.application.port.out.LoadPricePort.PriceHistory
 import org.teamalilm.alilm.domain.Price
 import org.teamalilm.alilm.domain.Product
+import org.teamalilm.alilm.domain.Product.ProductId
+import org.teamalilm.alilm.global.util.DateFormatter.dateFormatter
 
 
 @Component
@@ -18,9 +22,8 @@ class PriceAdapter(
     private val priceMapper: PriceMapper,
     private val productMapper: ProductMapper
 ) :
-    AddPricePort {
-
-        private val log = { msg: String -> println(msg) }
+    AddPricePort,
+    LoadPricePort {
 
     override fun addPrice(
         price: Int,
@@ -30,6 +33,19 @@ class PriceAdapter(
         springDataPriceRepository.save(priceJpaEntity)
 
         return priceMapper.mapToDomainEntity(priceJpaEntity)
+    }
+
+    override fun loadPrice (
+        productId: ProductId
+    ): List<PriceHistory>? {
+        return springDataPriceRepository.findAllByProductJpaEntityIdAndIsDeleteFalseOrderByCreatedDateDesc(
+            productId.value
+        )?.let {
+            it.map { PriceHistory(
+                price = it.price,
+                date = dateFormatter(it.createdDate)
+            ) }
+        }
     }
 
     private fun priceJpaEntity(
@@ -44,5 +60,4 @@ class PriceAdapter(
 
         return priceJpaEntity
     }
-
 }
