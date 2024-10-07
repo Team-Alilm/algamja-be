@@ -62,11 +62,11 @@ class MusinsaSoldoutCheckJob(
             val isAllSoldout = jsonObject.get("goodsSaleType").asString == "SOLDOUT"
             val price = jsonObject.get("goodsPrice").asJsonObject.get("salePrice").asInt
 
-            // salePrice 기준으로 가격 히스토리를 저장해요.
-            addPricePort.addPrice(
-                price,
-                basketAndMemberAndProduct.product
-            )
+            // salePrice 기준으로 가격 히스토리를 저장해요. (임시 주석처리)
+//            addPricePort.addPrice(
+//                price,
+//                basketAndMemberAndProduct.product
+//            )
 
             // isAllSoldout이 true일 경우 API 호출 생략
             val isSoldOut = if (isAllSoldout) {
