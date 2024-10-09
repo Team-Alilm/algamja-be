@@ -1,0 +1,83 @@
+package org.team_alilm.application.service
+
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase
+import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase.*
+import org.team_alilm.application.port.out.AddBasketPort
+import org.team_alilm.application.port.out.LoadBasketPort
+import org.team_alilm.application.port.out.AddProductPort
+import org.team_alilm.application.port.out.LoadProductPort
+import org.teamalilm.alilm.common.error.BasketAlreadyExistsException
+import org.teamalilm.alilm.common.error.ErrorMessage
+import org.teamalilm.alilm.domain.Basket
+import org.teamalilm.alilm.domain.Product
+
+@Service
+@Transactional(readOnly = true)
+class AlilmRegistrationService(
+    private val loadProductPort: org.team_alilm.application.port.out.LoadProductPort,
+    private val addProductPort: org.team_alilm.application.port.out.AddProductPort,
+    private val loadBasketPort: org.team_alilm.application.port.out.LoadBasketPort,
+    private val addBasketPort: org.team_alilm.application.port.out.AddBasketPort
+) : org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase {
+
+    private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
+
+    @Transactional
+    override fun alilmRegistration(command: AlilmRegistrationCommand) {
+        val product = getProduct(command)
+        saveBasket(command, product)
+    }
+
+    private fun saveBasket(
+        command: AlilmRegistrationCommand,
+        product: Product,
+    ) {
+        loadBasketPort.loadBasket(
+            memberId = command.member.id!!,
+            productId = product.id!!
+        ) ?.let {
+            log.info("장바구니가 이미 존재합니다. memberId: ${command.member.id}, productId: ${product.id}")
+            throw BasketAlreadyExistsException(ErrorMessage.BASKET_ALREADY_EXISTS)
+        } ?: run {
+            log.info("장바구니를 등록 합니다.")
+            addBasketPort.addBasket(
+                basket = Basket(
+                    id = Basket.BasketId(null),
+                    memberId = command.member.id,
+                    productId = product.id,
+                    isHidden = false,
+                ),
+                member = command.member,
+                product = product
+            )
+        }
+    }
+
+    private fun getProduct(command: AlilmRegistrationCommand) =
+        loadProductPort.loadProduct(
+            number = command.number,
+            store = command.store,
+            firstOption = command.firstOption,
+            secondOption = command.secondOption,
+            thirdOption = command.thirdOption
+        ) ?: run {
+            addProductPort.addProduct(
+                Product(
+                    id = null,
+                    number = command.number,
+                    name = command.name,
+                    brand = command.brand,
+                    store = command.store,
+                    imageUrl = command.imageUrl,
+                    category = command.category,
+                    price = command.price,
+                    firstOption = command.firstOption,
+                    secondOption = command.secondOption,
+                    thirdOption = command.thirdOption
+                )
+            )
+        }
+
+}
