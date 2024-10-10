@@ -1,0 +1,52 @@
+name: Detect Changes and Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  detect-changes:
+    name: Detect Changes in Each Server
+    runs-on: ubuntu-latest
+    outputs:
+      api-changed: ${{ steps.detect-api.outputs.api-changed }}
+      worker-changed: ${{ steps.detect-worker.outputs.worker-changed }}
+      proxy-changed: ${{ steps.detect-proxy.outputs.proxy-changed }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changes in API server
+        id: detect-api
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '^api/'; then
+            echo "api-changed=true" >> $GITHUB_ENV
+            echo "::set-output name=api-changed::true"
+          else
+            echo "api-changed=false" >> $GITHUB_ENV
+            echo "::set-output name=api-changed::false"
+          fi
+
+      - name: Detect changes in Worker server
+        id: detect-worker
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '^worker/'; then
+            echo "worker-changed=true" >> $GITHUB_ENV
+            echo "::set-output name=worker-changed::true"
+          else
+            echo "worker-changed=false" >> $GITHUB_ENV
+            echo "::set-output name=worker-changed::false"
+          fi
+
+      - name: Detect changes in Proxy server
+        id: detect-proxy
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '^proxy/'; then
+            echo "proxy-changed=true" >> $GITHUB_ENV
+            echo "::set-output name=proxy-changed::true"
+          else
+            echo "proxy-changed=false" >> $GITHUB_ENV
+            echo "::set-output name=proxy-changed::false"
+          fi
