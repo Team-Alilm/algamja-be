@@ -5,9 +5,9 @@ import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.teamalilm.alilm.domain.FcmToken
-import org.teamalilm.alilm.domain.Member
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.domain.FcmToken
+import org.team_alilm.domain.Member
+import org.team_alilm.domain.Product
 
 @Service
 class FcmSendGateway(
@@ -25,8 +25,6 @@ class FcmSendGateway(
         val options = listOfNotNull(product.firstOption, product.secondOption, product.thirdOption)
             .joinToString(" / ")
 
-        val imageUrl = "https://www.alilm.co.kr/icons/alilm.svg?width=100px&height=100px"
-
         // FCM 메시지 구성
         val message = Message.builder()
             // Notification 메시지에 이미지 포함
@@ -39,7 +37,6 @@ class FcmSendGateway(
                 
                         바로 확인해보세요!
                     """.trimIndent())
-                    .setImage("https://www.alilm.co.kr/icons/alilm.svg?width=100px&height=100px")  // 이미지 포함
                     .build()
                 )
 

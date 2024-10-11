@@ -38,16 +38,12 @@ class CrawlingController(
 
         bindingResult: BindingResult
     ) : ResponseEntity<CrawlingResponse> {
-        if (bindingResult.hasErrors()) {
-            throw RequestValidateException(bindingResult)
-        }
+        if (bindingResult.hasErrors()) throw RequestValidateException(bindingResult)
+
+        val command = CrawlingUseCase.ProductCrawlingCommand(url = request.url)
 
         return ResponseEntity.ok(
-            CrawlingResponse.from(
-                crawlingUseCase.productCrawling(
-                    CrawlingUseCase.ProductCrawlingCommand.from(request)
-                )
-            )
+            CrawlingResponse.from(crawlingUseCase.productCrawling(command))
         )
     }
 

@@ -1,9 +1,7 @@
 package org.team_alilm.application.service
 
 import org.springframework.stereotype.Service
-import org.team_alilm.application.port.`in`.use_case.MyAlilmCountUseCase
 import org.team_alilm.application.port.`in`.use_case.MyAlilmCountUseCase.MyAlilmCountResult
-import org.team_alilm.application.port.out.LoadBasketPort
 
 @Service
 class MyAlilmCountService(

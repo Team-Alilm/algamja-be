@@ -1,10 +1,10 @@
 package org.team_alilm.application.port.out
 
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.domain.Product
 
 interface LoadPricePort {
 
-    fun loadPrice(productId: Product.ProductId) : List<org.team_alilm.application.port.out.LoadPricePort.PriceHistory>?
+    fun loadPrice(productId: Product.ProductId) : List<PriceHistory>?
 
     data class PriceHistory(
         val price: Int,

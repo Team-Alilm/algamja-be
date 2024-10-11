@@ -3,21 +3,17 @@ package org.team_alilm.adapter.out.persistence.adapter
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.entity.BasketJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.entity.ProductJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.mapper.BasketMapper
-import org.teamalilm.alilm.adapter.out.persistence.mapper.MemberMapper
-import org.teamalilm.alilm.adapter.out.persistence.mapper.ProductMapper
-import org.teamalilm.alilm.adapter.out.persistence.repository.BasketRepository
-import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataBasketRepository
-import org.teamalilm.alilm.application.port.out.*
-import org.teamalilm.alilm.application.port.out.LoadAllBasketsPort.*
-import org.teamalilm.alilm.application.port.out.LoadMyBasketsPort.*
-import org.teamalilm.alilm.domain.Basket
-import org.teamalilm.alilm.domain.Member
-import org.teamalilm.alilm.domain.Member.*
-import org.teamalilm.alilm.domain.Product
-import org.teamalilm.alilm.domain.Product.*
+import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
+import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
+import org.team_alilm.adapter.out.persistence.mapper.MemberMapper
+import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
+import org.team_alilm.adapter.out.persistence.repository.BasketRepository
+import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataBasketRepository
+import org.team_alilm.application.port.out.*
+import org.team_alilm.domain.Basket
+import org.team_alilm.domain.Member
+import org.team_alilm.domain.Product
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -29,16 +25,14 @@ class BasketAdapter(
     private val basketMapper: BasketMapper,
     private val productMapper: ProductMapper,
     private val memberMapper: MemberMapper
-) :
-    AddBasketPort,
+) : AddBasketPort,
     LoadBasketPort,
     LoadSliceBasketPort,
     LoadMyBasketsPort,
     LoadAllBasketsPort,
     SendAlilmBasketPort,
-    LoadAllAndDailyCountPort {
-
-        private val log = { msg: String -> println(msg) }
+    LoadAllAndDailyCountPort
+{
 
     override fun addBasket(
         basket: Basket,
@@ -52,8 +46,8 @@ class BasketAdapter(
     }
 
     override fun loadBasket(
-        memberId: MemberId,
-        productId: ProductId
+        memberId: Member.MemberId,
+        productId: Product.ProductId
     ): Basket? {
         val basketJpaEntity = springDataBasketRepository.findByMemberJpaEntityIdAndIsDeleteFalseAndProductJpaEntityId(
             memberJpaEntityId = memberId.value,
@@ -63,7 +57,7 @@ class BasketAdapter(
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
-    override fun loadBasket(memberId: MemberId): List<Basket> {
+    override fun loadBasket(memberId: Member.MemberId): List<Basket> {
         val basketJpaEntityList = springDataBasketRepository.findByMemberJpaEntityIdAndIsDeleteFalseAndIsAlilmTrue(memberId.value)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
@@ -83,21 +77,25 @@ class BasketAdapter(
         }
     }
 
-    override fun loadMyBaskets(member: Member) : List<BasketAndProduct> {
+    override fun loadMyBaskets(member: Member) : List<LoadMyBasketsPort.BasketAndProduct> {
         return springDataBasketRepository.findAllByMemberJpaEntityAndIsDeleteFalseOrderByCreatedDateDesc(
             memberMapper.mapToJpaEntity(member)
-        ).map { BasketAndProduct(
-            basket = basketMapper.mapToDomainEntity(it),
-            product = productMapper.mapToDomainEntity(it.productJpaEntity)
-        ) }
+        ).map {
+            LoadMyBasketsPort.BasketAndProduct(
+                basket = basketMapper.mapToDomainEntity(it),
+                product = productMapper.mapToDomainEntity(it.productJpaEntity)
+            )
+        }
     }
 
-    override fun loadAllBaskets() : List<BasketAndMemberAndProduct> {
-        return springDataBasketRepository.findAllByIsDeleteFalseAndIsAlilmFalse().map { BasketAndMemberAndProduct(
-            basket = basketMapper.mapToDomainEntity(it),
-            member = memberMapper.mapToDomainEntity(it.memberJpaEntity),
-            product = productMapper.mapToDomainEntity(it.productJpaEntity)
-        ) }
+    override fun loadAllBaskets() : List<LoadAllBasketsPort.BasketAndMemberAndProduct> {
+        return springDataBasketRepository.findAllByIsDeleteFalseAndIsAlilmFalse().map {
+            LoadAllBasketsPort.BasketAndMemberAndProduct(
+                basket = basketMapper.mapToDomainEntity(it),
+                member = memberMapper.mapToDomainEntity(it.memberJpaEntity),
+                product = productMapper.mapToDomainEntity(it.productJpaEntity)
+            )
+        }
     }
 
     override fun addAlilmBasket(basket: Basket, member: Member, product: Product) {

@@ -1,7 +1,7 @@
 package org.team_alilm.application.port.out
 
-import org.teamalilm.alilm.domain.Role
-import org.teamalilm.alilm.domain.Role.*
+import org.team_alilm.domain.Role
+import org.team_alilm.domain.Role.*
 
 interface LoadRolePort {
 

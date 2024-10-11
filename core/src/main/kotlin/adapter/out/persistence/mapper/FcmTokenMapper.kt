@@ -1,10 +1,10 @@
 package org.team_alilm.adapter.out.persistence.mapper
 
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.entity.FcmTokenJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.entity.MemberJpaEntity
-import org.teamalilm.alilm.domain.FcmToken
-import org.teamalilm.alilm.domain.Member
+import org.team_alilm.adapter.out.persistence.entity.FcmTokenJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.MemberJpaEntity
+import org.team_alilm.domain.FcmToken
+import org.team_alilm.domain.Member
 
 @Component
 class FcmTokenMapper {

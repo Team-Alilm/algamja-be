@@ -2,11 +2,9 @@ package org.team_alilm.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.team_alilm.application.port.`in`.use_case.PriceHistoryUseCase
-import org.team_alilm.application.port.out.LoadPricePort
-import org.teamalilm.alilm.common.error.ErrorMessage
-import org.teamalilm.alilm.common.error.NotFoundPriceException
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.domain.Product
+import org.team_alilm.global.error.ErrorMessage
+import org.team_alilm.global.error.NotFoundPriceException
 
 @Service
 @Transactional(readOnly = true)

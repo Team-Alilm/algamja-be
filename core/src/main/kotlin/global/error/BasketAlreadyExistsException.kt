@@ -1,9 +1,7 @@
 package org.team_alilm.global.error
 
-class BasketAlreadyExistsException(
-    private val errorMessage: ErrorMessage
-) : RuntimeException() {
+class BasketAlreadyExistsException : RuntimeException() {
 
     override val message: String
-        get() { return errorMessage.message }
+        get() { return ErrorMessage.BASKET_ALREADY_EXISTS.message }
 }

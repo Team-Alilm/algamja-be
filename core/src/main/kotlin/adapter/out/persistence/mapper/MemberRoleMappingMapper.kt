@@ -1,9 +1,9 @@
 package org.team_alilm.adapter.out.persistence.mapper
 
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.entity.MemberJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.entity.MemberRoleMappingJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.entity.RoleJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.MemberJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.MemberRoleMappingJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.RoleJpaEntity
 
 @Component
 class MemberRoleMappingMapper {

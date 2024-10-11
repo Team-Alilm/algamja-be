@@ -2,13 +2,10 @@ package org.team_alilm.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.team_alilm.application.port.`in`.use_case.CopyBasketUseCase
-import org.team_alilm.application.port.out.AddBasketPort
-import org.team_alilm.application.port.out.LoadProductPort
-import org.teamalilm.alilm.common.error.ErrorMessage
-import org.teamalilm.alilm.common.error.NotFoundProductException
-import org.teamalilm.alilm.domain.Basket
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.domain.Basket
+import org.team_alilm.domain.Product
+import org.team_alilm.global.error.ErrorMessage
+import org.team_alilm.global.error.NotFoundProductException
 
 @Service
 @Transactional(readOnly = true)
