@@ -12,7 +12,7 @@ interface CrawlingGateway {
     )
 
     data class CrawlingGatewayResponse(
-        val document: Document
+        val html: String
     )
 }
 

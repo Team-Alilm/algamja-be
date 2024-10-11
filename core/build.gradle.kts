@@ -11,8 +11,6 @@ dependencies {
     // slack
     implementation("com.slack.api:slack-api-client:1.42.0")
 
-
-
     // jasypt
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 

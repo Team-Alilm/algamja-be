@@ -1,6 +1,7 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.adapter.out.security.CustomMemberDetails
+import org.team_alilm.domain.Member
+
 
 interface CopyBasketUseCase {
 
@@ -8,6 +9,6 @@ interface CopyBasketUseCase {
 
     data class CopyBasketCommand(
         val productId: Long,
-        val customMemberDetails: CustomMemberDetails
+        val member: Member
     )
 }
