@@ -9,7 +9,7 @@ class JsoupProductDataGateway : CrawlingGateway {
 
     override fun crawling(request: CrawlingGateway.CrawlingGatewayRequest): CrawlingGateway.CrawlingGatewayResponse {
         return Jsoup.connect(request.url).get().let {
-            CrawlingGateway.CrawlingGatewayResponse(document = it)
+            CrawlingGateway.CrawlingGatewayResponse(html = it.getElementsByTag("script").html())
         }
     }
 

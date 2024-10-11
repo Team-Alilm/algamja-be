@@ -16,7 +16,7 @@ import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.port.out.*
 import org.team_alilm.application.port.out.gateway.CrawlingGateway
 import org.team_alilm.global.util.StringConstant
-import org.team_alilm.global.quartz.data.SoldoutCheckResponse
+import org.team_alilm.quartz.data.SoldoutCheckResponse
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -58,9 +58,8 @@ class MusinsaSoldoutCheckJob(
             val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(productId)
 
             // 상품의 전체 품절 시 확인 하는 로직을 가지고 있어요.
-            val document = jsoupProductDataGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl)).document
-            val scriptContent = document.getElementsByTag("script").html()
-            val jsonData = extractJsonData(scriptContent, "window.__MSS__.product.state")
+            val response = jsoupProductDataGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
+            val jsonData = extractJsonData(response.html, "window.__MSS__.product.state")
             val jsonObject = JsonParser.parseString(jsonData).asJsonObject
 
             val isAllSoldout = jsonObject.get("goodsSaleType").asString == "SOLDOUT"
