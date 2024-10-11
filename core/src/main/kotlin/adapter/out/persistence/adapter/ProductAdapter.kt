@@ -1,12 +1,12 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.mapper.ProductMapper
-import org.teamalilm.alilm.adapter.out.persistence.repository.ProductRepository
-import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
-import org.teamalilm.alilm.application.port.out.AddProductPort
-import org.teamalilm.alilm.application.port.out.LoadProductPort
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
+import org.team_alilm.adapter.out.persistence.repository.ProductRepository
+import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
+import org.team_alilm.application.port.out.AddProductPort
+import org.team_alilm.application.port.out.LoadProductPort
+import org.team_alilm.domain.Product
 
 @Component
 class ProductAdapter(

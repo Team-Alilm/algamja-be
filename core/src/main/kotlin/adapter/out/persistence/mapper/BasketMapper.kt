@@ -1,12 +1,12 @@
 package org.team_alilm.adapter.out.persistence.mapper
 
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.entity.BasketJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.entity.MemberJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.entity.ProductJpaEntity
-import org.teamalilm.alilm.domain.Basket
-import org.teamalilm.alilm.domain.Member
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.MemberJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
+import org.team_alilm.domain.Basket
+import org.team_alilm.domain.Member
+import org.team_alilm.domain.Product
 
 @Component
 class BasketMapper {

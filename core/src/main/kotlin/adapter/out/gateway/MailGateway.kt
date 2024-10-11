@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
-import org.teamalilm.alilm.application.port.out.gateway.SendMailGateway
+import org.team_alilm.application.port.out.gateway.SendMailGateway
 
 @Service
 class MailGateway(

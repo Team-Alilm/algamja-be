@@ -2,7 +2,7 @@ package org.team_alilm.adapter.out.gateway
 
 import org.jsoup.Jsoup
 import org.springframework.stereotype.Service
-import org.teamalilm.alilm.application.port.out.gateway.CrawlingGateway
+import org.team_alilm.application.port.out.gateway.CrawlingGateway
 
 @Service
 class JsoupProductDataGateway : CrawlingGateway {

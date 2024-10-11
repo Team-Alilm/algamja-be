@@ -7,13 +7,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
-import org.team_alilm.application.port.`in`.use_case.CrawlingUseCase
-import org.team_alilm.application.port.out.gateway.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.CrawlingGateway.CrawlingGatewayRequest
-import org.teamalilm.alilm.common.util.StringConstant
-import org.teamalilm.alilm.common.error.MusinsaSoldoutCheckException
-import org.teamalilm.alilm.domain.Product
-import org.teamalilm.alilm.global.quartz.data.SoldoutCheckResponse
+import org.team_alilm.domain.Product
+import org.team_alilm.global.error.MusinsaSoldoutCheckException
+import org.team_alilm.global.quartz.data.SoldoutCheckResponse
+import org.team_alilm.global.util.StringConstant
 import java.net.URI
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets

@@ -1,7 +1,5 @@
 package org.team_alilm.domain
 
-import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
-
 class Member(
     val id: MemberId? = null,
     val provider: Provider,
@@ -20,5 +18,16 @@ class Member(
     }
 
     data class MemberId(val value: Long)
+
+    enum class Provider {
+
+        KAKAO;
+
+        companion object {
+            fun from(provider: String): Provider {
+                return Provider.valueOf(provider.uppercase())
+            }
+        }
+    }
 
 }

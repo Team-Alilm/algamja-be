@@ -1,7 +1,7 @@
 package org.team_alilm.application.port.out
 
-import org.teamalilm.alilm.domain.FcmToken
-import org.teamalilm.alilm.domain.Member
+import org.team_alilm.domain.FcmToken
+import org.team_alilm.domain.Member
 
 interface LoadFcmTokenPort {
 

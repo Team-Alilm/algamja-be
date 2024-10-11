@@ -2,12 +2,11 @@ package org.team_alilm.adapter.out.persistence.adapter
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.mapper.MemberMapper
-import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataMemberRepository
-import org.teamalilm.alilm.application.port.out.AddMemberPort
-import org.teamalilm.alilm.application.port.out.LoadMemberPort
-import org.teamalilm.alilm.domain.Member
-import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
+import org.team_alilm.adapter.out.persistence.mapper.MemberMapper
+import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataMemberRepository
+import org.team_alilm.application.port.out.AddMemberPort
+import org.team_alilm.application.port.out.LoadMemberPort
+import org.team_alilm.domain.Member
 
 @Component
 class MemberAdapter (
@@ -21,7 +20,7 @@ class MemberAdapter (
         )
     }
 
-    override fun loadMember(provider: Provider, providerId: String): Member? {
+    override fun loadMember(provider: Member.Provider, providerId: String): Member? {
         return memberMapper.mapToDomainEntityOrNull(
             springDataMemberRepository.findByIsDeleteFalseAndProviderAndProviderId(provider, providerId.toLong())
         )

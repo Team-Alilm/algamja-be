@@ -1,7 +1,7 @@
 package org.team_alilm.adapter.out.persistence.entity
 
 import jakarta.persistence.*
-import org.teamalilm.alilm.global.jpa.base.BaseTimeEntity
+import org.team_alilm.global.jpa.base.BaseTimeEntity
 
 @Entity
 @Table(name = "fcm_token")

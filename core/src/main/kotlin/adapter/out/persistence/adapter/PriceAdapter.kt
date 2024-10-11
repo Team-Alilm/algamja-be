@@ -1,18 +1,16 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.entity.PriceJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.mapper.PriceMapper
-import org.teamalilm.alilm.adapter.out.persistence.mapper.ProductMapper
-import org.teamalilm.alilm.adapter.out.persistence.repository.PriceRepository
-import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataPriceRepository
-import org.teamalilm.alilm.application.port.out.AddPricePort
-import org.teamalilm.alilm.application.port.out.LoadPricePort
-import org.teamalilm.alilm.application.port.out.LoadPricePort.PriceHistory
-import org.teamalilm.alilm.domain.Price
-import org.teamalilm.alilm.domain.Product
-import org.teamalilm.alilm.domain.Product.ProductId
-import org.teamalilm.alilm.global.util.DateFormatter.dateFormatter
+import org.team_alilm.adapter.out.persistence.entity.PriceJpaEntity
+import org.team_alilm.adapter.out.persistence.mapper.PriceMapper
+import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
+import org.team_alilm.adapter.out.persistence.repository.PriceRepository
+import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataPriceRepository
+import org.team_alilm.application.port.out.AddPricePort
+import org.team_alilm.application.port.out.LoadPricePort
+import org.team_alilm.domain.Price
+import org.team_alilm.domain.Product
+import org.team_alilm.global.util.DateFormatter.dateFormatter
 
 
 @Component
@@ -36,15 +34,17 @@ class PriceAdapter(
     }
 
     override fun loadPrice (
-        productId: ProductId
-    ): List<PriceHistory>? {
+        productId: Product.ProductId
+    ): List<LoadPricePort.PriceHistory>? {
         return springDataPriceRepository.findAllByProductJpaEntityIdAndIsDeleteFalseOrderByCreatedDateDesc(
             productId.value
         )?.let {
-            it.map { PriceHistory(
-                price = it.price,
-                date = dateFormatter(it.createdDate)
-            ) }
+            it.map {
+                LoadPricePort.PriceHistory(
+                    price = it.price,
+                    date = dateFormatter(it.createdDate)
+                )
+            }
         }
     }
 

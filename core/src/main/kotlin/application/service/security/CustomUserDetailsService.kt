@@ -4,9 +4,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.teamalilm.alilm.adapter.out.security.CustomMemberDetails
-import org.team_alilm.application.port.out.LoadMemberPort
-import org.teamalilm.alilm.common.error.NotFoundMemberException
+import org.team_alilm.adapter.out.security.CustomMemberDetails
+import org.team_alilm.global.error.NotFoundMemberException
 
 @Service
 @Transactional(readOnly = true)

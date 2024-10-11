@@ -1,8 +1,8 @@
 package org.team_alilm.adapter.out.persistence.entity
 
 import jakarta.persistence.*
-import org.teamalilm.alilm.global.jpa.base.BaseEntity
-import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
+import org.team_alilm.domain.Member
+import org.team_alilm.global.jpa.base.BaseEntity
 
 @Entity
 @Table(
@@ -17,7 +17,7 @@ import org.teamalilm.alilm.global.security.service.oAuth2.data.Provider
 class MemberJpaEntity(
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val provider: Provider,
+    val provider: Member.Provider,
 
     @Column(nullable = false)
     val providerId: Long,

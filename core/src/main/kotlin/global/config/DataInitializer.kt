@@ -3,9 +3,9 @@ package org.team_alilm.global.config
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.entity.RoleJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataRoleRepository
-import org.teamalilm.alilm.domain.Role
+import org.team_alilm.adapter.out.persistence.entity.RoleJpaEntity
+import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataRoleRepository
+import org.team_alilm.domain.Role
 
 @Component
 class DataInitializer(

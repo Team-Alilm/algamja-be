@@ -1,12 +1,12 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.teamalilm.alilm.domain.Basket
-import org.teamalilm.alilm.domain.Member
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.domain.Basket
+import org.team_alilm.domain.Member
+import org.team_alilm.domain.Product
 
 interface MyBasketsUseCase {
 
-    fun myBasket(command: org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.MyBasketCommand) : List<org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.MyBasketsResult>
+    fun myBasket(command: MyBasketCommand) : List<MyBasketsResult>
 
     data class MyBasketCommand(
         val member: Member
@@ -28,8 +28,8 @@ interface MyBasketsUseCase {
     ) {
 
         companion object {
-            fun from(basket: Basket, product: Product) : org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.MyBasketsResult {
-                return org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.MyBasketsResult(
+            fun from(basket: Basket, product: Product) : MyBasketsResult {
+                return MyBasketsResult(
                     id = basket.id?.value!!,
                     number = product.number,
                     name = product.name,

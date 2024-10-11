@@ -1,8 +1,8 @@
 package org.team_alilm.adapter.out.persistence.repository.spring_data
 
 import org.springframework.data.jpa.repository.JpaRepository
-import org.teamalilm.alilm.adapter.out.persistence.entity.BasketJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.entity.MemberJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.MemberJpaEntity
 
 interface SpringDataBasketRepository : JpaRepository<BasketJpaEntity, Long> {
 

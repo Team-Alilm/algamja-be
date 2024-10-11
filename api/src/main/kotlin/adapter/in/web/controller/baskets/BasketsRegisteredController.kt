@@ -40,9 +40,21 @@ class BasketsRegisteredController(
     ): ResponseEntity<Unit> {
         if (bindingResult.hasErrors()) throw RequestValidateException(bindingResult)
 
-        alilmRegistrationUseCase.alilmRegistration(
-            AlilmRegistrationUseCase.AlilmRegistrationCommand.from(request, customMemberDetails.member)
+
+        val command = AlilmRegistrationUseCase.AlilmRegistrationCommand(
+            number = request.number,
+            name = request.name,
+            brand = request.brand,
+            imageUrl = request.imageUrl,
+            category = request.category,
+            price = request.price,
+            store = request.store,
+            firstOption = request.firstOption,
+            secondOption = request.secondOption,
+            thirdOption = request.thirdOption,
+            member = customMemberDetails.member
         )
+        alilmRegistrationUseCase.alilmRegistration(command)
 
         return ResponseEntity.ok().build()
     }

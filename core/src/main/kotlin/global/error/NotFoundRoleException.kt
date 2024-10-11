@@ -1,9 +1,8 @@
 package org.team_alilm.global.error
 
 class NotFoundRoleException(
-    val errorMessage: ErrorMessage
 ) : RuntimeException() {
 
     override val message: String
-        get() { return errorMessage.message }
+        get() { return ErrorMessage.NOT_FOUND_ROLE.message }
 }

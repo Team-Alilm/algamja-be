@@ -1,7 +1,7 @@
 package org.team_alilm.application.port.out
 
-import org.teamalilm.alilm.domain.Price
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.domain.Price
+import org.team_alilm.domain.Product
 
 interface AddPricePort {
 

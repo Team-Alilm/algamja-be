@@ -2,14 +2,14 @@ package org.team_alilm.adapter.out.persistence.adapter
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.mapper.FcmTokenMapper
-import org.teamalilm.alilm.adapter.out.persistence.mapper.MemberMapper
-import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataFcmTokenRepository
-import org.teamalilm.alilm.adapter.out.persistence.repository.spring_data.SpringDataMemberRepository
-import org.teamalilm.alilm.application.port.out.AddFcmTokenPort
-import org.teamalilm.alilm.application.port.out.LoadFcmTokenPort
-import org.teamalilm.alilm.domain.FcmToken
-import org.teamalilm.alilm.domain.Member
+import org.team_alilm.adapter.out.persistence.mapper.FcmTokenMapper
+import org.team_alilm.adapter.out.persistence.mapper.MemberMapper
+import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataFcmTokenRepository
+import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataMemberRepository
+import org.team_alilm.application.port.out.AddFcmTokenPort
+import org.team_alilm.application.port.out.LoadFcmTokenPort
+import org.team_alilm.domain.FcmToken
+import org.team_alilm.domain.Member
 
 @Component
 class FcmTokenAdapter(

@@ -1,10 +1,10 @@
 package org.team_alilm.adapter.out.persistence.mapper
 
 import org.springframework.stereotype.Component
-import org.teamalilm.alilm.adapter.out.persistence.entity.PriceJpaEntity
-import org.teamalilm.alilm.adapter.out.persistence.entity.ProductJpaEntity
-import org.teamalilm.alilm.domain.Price
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.adapter.out.persistence.entity.PriceJpaEntity
+import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
+import org.team_alilm.domain.Price
+import org.team_alilm.domain.Product
 
 @Component
 class PriceMapper {

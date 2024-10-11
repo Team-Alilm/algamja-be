@@ -1,13 +1,12 @@
 package org.team_alilm.application.port.out
 
-import org.teamalilm.alilm.domain.Basket
-import org.teamalilm.alilm.domain.FcmToken
-import org.teamalilm.alilm.domain.Member
-import org.teamalilm.alilm.domain.Product
+import org.team_alilm.domain.Basket
+import org.team_alilm.domain.Member
+import org.team_alilm.domain.Product
 
 interface LoadAllBasketsPort {
 
-    fun loadAllBaskets() : List<org.team_alilm.application.port.out.LoadAllBasketsPort.BasketAndMemberAndProduct>
+    fun loadAllBaskets() : List<BasketAndMemberAndProduct>
 
     data class BasketAndMemberAndProduct(
         val basket: Basket,

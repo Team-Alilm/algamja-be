@@ -1,8 +1,8 @@
 package org.team_alilm.adapter.out.persistence.entity
 
 import jakarta.persistence.*
-import org.teamalilm.alilm.domain.Product
-import org.teamalilm.alilm.global.jpa.base.BaseEntity
+import org.team_alilm.domain.Product
+import org.team_alilm.global.jpa.base.BaseEntity
 
 @Entity
 @Table(
