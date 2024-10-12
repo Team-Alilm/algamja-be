@@ -8,9 +8,6 @@ dependencies {
     // quartz
     implementation("org.springframework.boot:spring-boot-starter-quartz")
 
-    // firebase
-    implementation("com.google.firebase:firebase-admin:8.1.0")
-
     // web
     implementation("org.springframework.boot:spring-boot-starter-web")
 

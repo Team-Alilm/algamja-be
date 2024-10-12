@@ -20,4 +20,7 @@ dependencies {
     //mysql
     runtimeOnly("com.mysql:mysql-connector-j")
 
+    // firebase
+    implementation("com.google.firebase:firebase-admin:8.1.0")
+
 }

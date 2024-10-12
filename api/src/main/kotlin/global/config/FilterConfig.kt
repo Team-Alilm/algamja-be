@@ -1,9 +1,9 @@
-package org.team_alilm.adapter.`in`.web.global.config
+package org.team_alilm.global.config
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.team_alilm.adapter.`in`.web.global.filter.LoggingFilter
+import org.team_alilm.global.filter.LoggingFilter
 
 @Configuration
 class FilterConfig {
