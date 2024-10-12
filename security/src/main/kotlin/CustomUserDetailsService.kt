@@ -1,14 +1,12 @@
-package org.team_alilm.application.service.security
+package org.team_alilm
 
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-import org.team_alilm.adapter.out.security.CustomMemberDetails
+import org.team_alilm.data.CustomMemberDetails
 import org.team_alilm.global.error.NotFoundMemberException
 
 @Service
-@Transactional(readOnly = true)
 class CustomUserDetailsService(
     private val loadMemberPort: org.team_alilm.application.port.out.LoadMemberPort
 ) : UserDetailsService {

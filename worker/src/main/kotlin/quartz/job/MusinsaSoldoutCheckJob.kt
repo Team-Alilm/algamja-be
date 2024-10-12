@@ -1,6 +1,6 @@
 package org.team_alilm.quartz.job
 
-import com.google.gson.JsonParser
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.slf4j.LoggerFactory
@@ -60,9 +60,9 @@ class MusinsaSoldoutCheckJob(
             // 상품의 전체 품절 시 확인 하는 로직을 가지고 있어요.
             val response = jsoupProductDataGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
             val jsonData = extractJsonData(response.html, "window.__MSS__.product.state")
-            val jsonObject = JsonParser.parseString(jsonData).asJsonObject
+            val jsonObject = ObjectMapper().readTree(jsonData)
 
-            val isAllSoldout = jsonObject.get("goodsSaleType").asString == "SOLDOUT"
+            val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "SOLDOUT"
 //            val price = jsonObject.get("goodsPrice").asJsonObject.get("salePrice").asInt
 
             // salePrice 기준으로 가격 히스토리를 저장해요. (임시 주석처리)

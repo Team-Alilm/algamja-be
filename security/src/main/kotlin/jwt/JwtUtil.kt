@@ -1,4 +1,4 @@
-package org.team_alilm.adapter.`in`.web.global.security.jwt
+package org.team_alilm.jwt
 
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts

@@ -1,4 +1,4 @@
-package org.team_alilm.adapter.`in`.web.global.security.oAuth2.handler
+package org.team_alilm.handler
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -8,10 +8,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
-import org.team_alilm.adapter.`in`.web.global.security.jwt.JwtUtil
 import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.service.OauthLoginMemberService
 import org.team_alilm.domain.Member
+import org.team_alilm.jwt.JwtUtil
 
 @Component
 class CustomSuccessHandler(

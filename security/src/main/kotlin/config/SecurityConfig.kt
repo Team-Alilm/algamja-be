@@ -1,4 +1,4 @@
-package org.team_alilm.adapter.`in`.web.global.config
+package org.team_alilm.config
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
@@ -12,11 +12,11 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.team_alilm.application.service.security.CustomUserDetailsService
-import org.team_alilm.adapter.`in`.web.global.security.jwt.JwtFilter
-import org.team_alilm.adapter.`in`.web.global.security.jwt.JwtUtil
-import org.team_alilm.adapter.`in`.web.global.security.oAuth2.handler.CustomSuccessHandler
-import org.team_alilm.adapter.`in`.web.global.security.oAuth2.service.CustomOAuth2UserService
+import org.team_alilm.CustomUserDetailsService
+import org.team_alilm.handler.CustomSuccessHandler
+import org.team_alilm.jwt.JwtFilter
+import org.team_alilm.jwt.JwtUtil
+import org.team_alilm.oauth2.service.CustomOAuth2UserService
 
 @Configuration
 @EnableWebSecurity

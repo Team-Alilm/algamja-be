@@ -1,4 +1,4 @@
-package org.team_alilm.adapter.`in`.web.global.security.jwt
+package org.team_alilm.jwt
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import org.team_alilm.application.service.security.CustomUserDetailsService
+import org.team_alilm.global.security.CustomUserDetailsService
 
 @Component
 class JwtFilter(

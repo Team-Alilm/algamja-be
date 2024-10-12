@@ -1,9 +1,8 @@
-package org.team_alilm.global.config
+package org.team_alilm.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.AuditorAware
-import org.team_alilm.global.jpa.config.AuditorAwareImpl
 
 
 @Configuration

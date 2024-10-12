@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.adapter.`in`.web.global.security.CustomMemberDetails
+import org.team_alilm.global.security.CustomMemberDetails
 import org.team_alilm.application.port.`in`.use_case.CopyBasketUseCase
 import org.team_alilm.global.error.RequestValidateException
 

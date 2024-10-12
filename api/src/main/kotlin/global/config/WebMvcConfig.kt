@@ -1,4 +1,4 @@
-package org.team_alilm.adapter.`in`.web.global.config
+package org.team_alilm.global.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry

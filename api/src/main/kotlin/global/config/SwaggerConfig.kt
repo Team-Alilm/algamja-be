@@ -1,4 +1,4 @@
-package org.team_alilm.adapter.`in`.web.global.config
+package org.team_alilm.global.config
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.info.Info

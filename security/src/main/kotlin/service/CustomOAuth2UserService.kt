@@ -1,4 +1,4 @@
-package org.team_alilm.adapter.`in`.web.global.security.oAuth2.service
+package org.team_alilm.oauth2.service
 
 import java.util.Collections
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Component
-import org.team_alilm.adapter.`in`.web.global.security.oAuth2.data.OAuth2Attribute
+import org.team_alilm.oauth2.data.OAuth2Attribute
 import org.team_alilm.domain.Role
 
 @Component

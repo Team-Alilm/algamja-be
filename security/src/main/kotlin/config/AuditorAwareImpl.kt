@@ -1,4 +1,4 @@
-package org.team_alilm.global.jpa.config
+package org.team_alilm.config
 
 import org.springframework.data.domain.AuditorAware
 import org.springframework.security.core.context.SecurityContextHolder
