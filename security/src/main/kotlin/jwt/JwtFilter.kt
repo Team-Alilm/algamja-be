@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import org.team_alilm.global.security.CustomUserDetailsService
+import org.team_alilm.CustomUserDetailsService
 
 @Component
 class JwtFilter(

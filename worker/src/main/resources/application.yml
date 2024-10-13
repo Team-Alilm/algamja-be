@@ -2,7 +2,3 @@ spring:
   profiles:
     include:
       - core
-
----
-
-spring:

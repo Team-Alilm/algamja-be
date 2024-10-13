@@ -23,7 +23,7 @@ import org.team_alilm.quartz.listener.SoldoutQuartzListener
 @Component
 class SoldoutScheduler(
     private val scheduler: Scheduler,
-    @Value("\${quartz.intervalMinutes}")
+    @Value("\${spring.quartz.job-interval-minutes}")
     private val intervalMinutes: Int
 ) {
     private val log = LoggerFactory.getLogger(SoldoutScheduler::class.java)

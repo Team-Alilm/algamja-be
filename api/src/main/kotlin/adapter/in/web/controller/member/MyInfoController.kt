@@ -7,8 +7,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.adapter.out.security.CustomMemberDetails
 import org.team_alilm.application.port.`in`.use_case.MyInfoUseCase
+import org.team_alilm.data.CustomMemberDetails
 
 @RestController
 @RequestMapping("/api/v1/member")
