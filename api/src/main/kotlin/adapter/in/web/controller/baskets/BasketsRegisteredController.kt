@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.adapter.out.security.CustomMemberDetails
 import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase
+import org.team_alilm.data.CustomMemberDetails
 import org.team_alilm.domain.Product
 import org.team_alilm.global.error.RequestValidateException
 

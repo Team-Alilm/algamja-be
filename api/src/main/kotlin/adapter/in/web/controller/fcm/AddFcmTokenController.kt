@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.adapter.out.security.CustomMemberDetails
 import org.team_alilm.application.port.`in`.use_case.AddFcmTokenUseCase
+import org.team_alilm.data.CustomMemberDetails
 
 @RestController
 @RequestMapping("/api/v1/fcm-tokens")
