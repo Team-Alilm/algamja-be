@@ -9,15 +9,15 @@ on:
 env:
   AWS_REGION: ap-northeast-2                   # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: alilm-worker/prod-repository
-  ECS_SERVICE: alilm-worker-prod-ecs-service                 # set this to your Amazon ECS service name
-  ECS_CLUSTER: alilm-prod-cluster-ec2                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: alilm-worker-task-prod-family-ec2-revision1.json       # set this to the path to your Amazon ECS task definition
+  ECS_SERVICE: alilm-worker-prod-ecs-service   # set this to your Amazon ECS service name
+  ECS_CLUSTER: alilm-prod-cluster-ec2          # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION: alilm-worker-task-prod-family-ec2  # Set this to the name of your Amazon ECS Task Definition family (not a file path)
   CONTAINER_NAME: alilm-worker-prod-container
 
 jobs:
-  deploy-api:
-    if: ${{ github.event.workflow_run.outputs.api-changed == 'true' }}
-    name: Deploy API Server
+  deploy-worker:
+    if: ${{ github.event.workflow_run.outputs.worker-changed == 'true' }}
+    name: Deploy WORKER Server
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +31,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+        uses: gradle/actions/setup-gradle@v3.1.0
 
       - name: Build with Gradle Wrapper
         run: ./gradlew :worker:build
@@ -57,7 +57,7 @@ jobs:
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
+      - name: Update ECS service with new image
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
