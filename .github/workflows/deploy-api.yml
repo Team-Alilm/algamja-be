@@ -16,17 +16,9 @@ env:
 
 jobs:
   deploy-api:
-    if: ${{ github.event.workflow_run.outputs.api-changed == 'true' }}
-    name: Deploy API Server
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug Environment Variable
-        run:
-          echo "API Changed from Env: $API_CHANGED"
-        env:
-          API_CHANGED: ${{ steps.detect-api.outputs.api-changed }}
-
       - name: Checkout
         uses: actions/checkout@v4
 
