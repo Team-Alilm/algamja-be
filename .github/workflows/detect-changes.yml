@@ -62,6 +62,6 @@ jobs:
       - name: Echo outputs
         id: echo-outputs
         run: |
-          echo "${{ steps.detect-api.outputs.api-changed }}"
-          echo "${{ steps.detect-worker.outputs.worker-changed }}"
-          echo "${{ steps.detect-proxy.outputs.proxy-changed }}"
+          echo "${{ github.event.workflow_run.outputs.api-changed }}"
+          echo "${{ github.event.workflow_run.outputs.worker-changed }}"
+          echo "${{ github.event.workflow_run.outputs.proxy-changed }}"
