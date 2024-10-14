@@ -59,8 +59,8 @@ jobs:
             echo "proxy-changed=false" >> $GITHUB_OUTPUT  # Set output using Environment File
           fi
 
-      - name: Set outputs
-        id: set-outputs
+      - name: Echo outputs
+        id: echo-outputs
         run: |
           echo "${{ steps.detect-api.outputs.api-changed }}"
           echo "${{ steps.detect-worker.outputs.worker-changed }}"
