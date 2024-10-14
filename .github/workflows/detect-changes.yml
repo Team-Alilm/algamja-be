@@ -9,10 +9,6 @@ jobs:
   detect-changes:
     name: Detect Changes in Each Server
     runs-on: ubuntu-latest
-    outputs:
-      api-changed: ${{ steps.detect-api.outputs.api-changed }}
-      worker-changed: ${{ steps.detect-worker.outputs.worker-changed }}
-      proxy-changed: ${{ steps.detect-proxy.outputs.proxy-changed }}
 
     steps:
       - name: Checkout
@@ -26,11 +22,9 @@ jobs:
           if git diff --name-only HEAD^ HEAD | grep -q 'api/'; then
             echo "API server has changed."
             echo "api-changed=true" >> $GITHUB_ENV
-            echo "api-changed=true" >> $GITHUB_OUTPUT  # Set output using Environment File
           else
             echo "No changes in API server."
             echo "api-changed=false" >> $GITHUB_ENV
-            echo "api-changed=false" >> $GITHUB_OUTPUT  # Set output using Environment File
           fi
 
       - name: Detect changes in Worker server
@@ -39,11 +33,9 @@ jobs:
           if git diff --name-only HEAD^ HEAD | grep -q 'worker/'; then
             echo "Worker server has changed."
             echo "worker-changed=true" >> $GITHUB_ENV
-            echo "worker-changed=true" >> $GITHUB_OUTPUT  # Set output using Environment File
           else
             echo "No changes in Worker server."
             echo "worker-changed=false" >> $GITHUB_ENV
-            echo "worker-changed=false" >> $GITHUB_OUTPUT  # Set output using Environment File
           fi
 
       - name: Detect changes in Proxy server
@@ -52,16 +44,13 @@ jobs:
           if git diff --name-only HEAD^ HEAD | grep -q 'proxy/'; then
             echo "Proxy server has changed."
             echo "proxy-changed=true" >> $GITHUB_ENV
-            echo "proxy-changed=true" >> $GITHUB_OUTPUT  # Set output using Environment File
           else
             echo "No changes in Proxy server."
             echo "proxy-changed=false" >> $GITHUB_ENV
-            echo "proxy-changed=false" >> $GITHUB_OUTPUT  # Set output using Environment File
           fi
 
       - name: Echo outputs
-        id: echo-outputs
         run: |
-          echo "${{ github.event.workflow_run.outputs.api-changed }}"
-          echo "${{ github.event.workflow_run.outputs.worker-changed }}"
-          echo "${{ github.event.workflow_run.outputs.proxy-changed }}"
+          echo "API Changed: ${{ env.api-changed }}"
+          echo "Worker Changed: ${{ env.worker-changed }}"
+          echo "Proxy Changed: ${{ env.proxy-changed }}"
