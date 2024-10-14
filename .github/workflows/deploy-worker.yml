@@ -11,12 +11,12 @@ env:
   ECR_REPOSITORY: alilm-worker/prod-repository
   ECS_SERVICE: alilm-worker-prod-ecs-service                 # set this to your Amazon ECS service name
   ECS_CLUSTER: alilm-prod-cluster-ec2                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: worker/alilm-worker-task-prod-family-ec2-revision1.json       # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION: alilm-worker-task-prod-family-ec2-revision1.json       # set this to the path to your Amazon ECS task definition
   CONTAINER_NAME: alilm-worker-prod-container
 
 jobs:
   deploy-api:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.outputs.api-changed == 'true' }}
+    if: ${{ github.event.workflow_run.outputs.api-changed == 'true' }}
     name: Deploy API Server
     runs-on: ubuntu-latest
 
