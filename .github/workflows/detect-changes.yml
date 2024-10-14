@@ -21,7 +21,7 @@ jobs:
       - name: Detect changes in API server
         id: detect-api
         run: |
-          if git diff --name-only HEAD^ HEAD | grep -q '^api/'; then
+          if git diff --name-only HEAD^ HEAD | grep -q 'api/'; then
             echo "API server has changed."
             echo "api-changed=true" >> $GITHUB_ENV
             echo "api-changed=true" >> $GITHUB_OUTPUT  # Set output using Environment File
@@ -34,7 +34,7 @@ jobs:
       - name: Detect changes in Worker server
         id: detect-worker
         run: |
-          if git diff --name-only HEAD^ HEAD | grep -q '^worker/'; then
+          if git diff --name-only HEAD^ HEAD | grep -q 'worker/'; then
             echo "Worker server has changed."
             echo "worker-changed=true" >> $GITHUB_ENV
             echo "worker-changed=true" >> $GITHUB_OUTPUT  # Set output using Environment File
@@ -47,7 +47,7 @@ jobs:
       - name: Detect changes in Proxy server
         id: detect-proxy
         run: |
-          if git diff --name-only HEAD^ HEAD | grep -q '^proxy/'; then
+          if git diff --name-only HEAD^ HEAD | grep -q 'proxy/'; then
             echo "Proxy server has changed."
             echo "proxy-changed=true" >> $GITHUB_ENV
             echo "proxy-changed=true" >> $GITHUB_OUTPUT  # Set output using Environment File
