@@ -24,11 +24,11 @@ jobs:
           if git diff --name-only HEAD^ HEAD | grep -q '^api/'; then
             echo "API server has changed."
             echo "api-changed=true" >> $GITHUB_ENV
-            echo "::set-output name=api-changed::true"  # outputs
+            echo "api-changed=true" >> $GITHUB_OUTPUT  # Set output using Environment File
           else
             echo "No changes in API server."
             echo "api-changed=false" >> $GITHUB_ENV
-            echo "::set-output name=api-changed::false"  # outputs
+            echo "api-changed=false" >> $GITHUB_OUTPUT  # Set output using Environment File
           fi
 
       - name: Detect changes in Worker server
@@ -37,11 +37,11 @@ jobs:
           if git diff --name-only HEAD^ HEAD | grep -q '^worker/'; then
             echo "Worker server has changed."
             echo "worker-changed=true" >> $GITHUB_ENV
-            echo "::set-output name=worker-changed::true"  # outputs
+            echo "worker-changed=true" >> $GITHUB_OUTPUT  # Set output using Environment File
           else
             echo "No changes in Worker server."
             echo "worker-changed=false" >> $GITHUB_ENV
-            echo "::set-output name=worker-changed::false"  # outputs
+            echo "worker-changed=false" >> $GITHUB_OUTPUT  # Set output using Environment File
           fi
 
       - name: Detect changes in Proxy server
@@ -50,9 +50,9 @@ jobs:
           if git diff --name-only HEAD^ HEAD | grep -q '^proxy/'; then
             echo "Proxy server has changed."
             echo "proxy-changed=true" >> $GITHUB_ENV
-            echo "::set-output name=proxy-changed::true"  # outputs
+            echo "proxy-changed=true" >> $GITHUB_OUTPUT  # Set output using Environment File
           else
             echo "No changes in Proxy server."
             echo "proxy-changed=false" >> $GITHUB_ENV
-            echo "::set-output name=proxy-changed::false"  # outputs
+            echo "proxy-changed=false" >> $GITHUB_OUTPUT  # Set output using Environment File
           fi
