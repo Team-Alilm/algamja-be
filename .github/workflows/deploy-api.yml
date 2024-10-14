@@ -6,6 +6,14 @@ on:
     types:
       - completed
 
+env:
+  AWS_REGION: ap-northeast-2                   # set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: alilm-api/prod-repository
+  ECS_SERVICE: alilm-api-prod-ecs-service                 # set this to your Amazon ECS service name
+  ECS_CLUSTER: alilm-prod-cluster-ec2                 # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION: api/alilm-api-task-prod-family-ec2-revision2.json      # set this to the path to your Amazon ECS task definition
+  CONTAINER_NAME: alilm-api-prod-container
+
 jobs:
   deploy-api:
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.outputs.api-changed == 'true' }}
