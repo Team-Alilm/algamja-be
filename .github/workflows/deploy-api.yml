@@ -7,16 +7,16 @@ on:
       - completed
 
 env:
-  AWS_REGION: ap-northeast-2                   # set this to your preferred AWS region, e.g. us-west-1
+  AWS_REGION: ap-northeast-2                   # AWS 리전 설정
   ECR_REPOSITORY: alilm-api/prod-repository
-  ECS_SERVICE: alilm-api-prod-ecs-service                 # set this to your Amazon ECS service name
-  ECS_CLUSTER: alilm-prod-cluster-ec2                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: alilm-api-task-prod-family-ec2-revision2.json      # set this to the path to your Amazon ECS task definition
+  ECS_SERVICE: alilm-api-prod-ecs-service      # Amazon ECS 서비스 이름
+  ECS_CLUSTER: alilm-prod-cluster-ec2          # Amazon ECS 클러스터 이름
+  ECS_TASK_DEFINITION: alilm-api-task-prod-family-ec2  # AWS에서 관리하는 Task Definition 이름
   CONTAINER_NAME: alilm-api-prod-container
 
 jobs:
   deploy-api:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.outputs.api-changed == 'true' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.outputs.api-changed == 'true' }}
     name: Deploy API Server
     runs-on: ubuntu-latest
 
@@ -31,7 +31,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+        uses: gradle/actions/setup-gradle@v3.1.0
 
       - name: Build with Gradle Wrapper
         run: ./gradlew :api:build
