@@ -48,9 +48,3 @@ jobs:
             echo "No changes in Proxy server."
             echo "proxy-changed=false" >> $GITHUB_ENV
           fi
-
-      - name: Echo outputs
-        run: |
-          echo "API Changed: ${{ env.api-changed }}"
-          echo "Worker Changed: ${{ env.worker-changed }}"
-          echo "Proxy Changed: ${{ env.proxy-changed }}"
