@@ -7,11 +7,11 @@ on:
       - completed
 
 env:
-  AWS_REGION: ap-northeast-2                   # set this to your preferred AWS region, e.g. us-west-1
+  AWS_REGION: ap-northeast-2                   # AWS 리전 설정
   ECR_REPOSITORY: alilm-worker/prod-repository
-  ECS_SERVICE: alilm-worker-prod-ecs-service   # set this to your Amazon ECS service name
-  ECS_CLUSTER: alilm-prod-cluster-ec2          # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: alilm-worker-task-prod-family-ec2  # Set this to the name of your Amazon ECS Task Definition family (not a file path)
+  ECS_SERVICE: alilm-worker-prod-ecs-service    # Amazon ECS 서비스 이름
+  ECS_CLUSTER: alilm-prod-cluster-ec2           # Amazon ECS 클러스터 이름
+  ECS_TASK_DEFINITION: alilm-worker-task-prod-family-ec2  # AWS에서 관리하는 Task Definition 이름
   CONTAINER_NAME: alilm-worker-prod-container
 
 jobs:
@@ -21,11 +21,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name : echo github event
-        run: echo ${{ github.event.workflow_run.outputs }}
       - name: Checkout
         uses: actions/checkout@v4
-#
+
+      - name: Echo outputs
+        run: |
+          echo "API Changed: ${{ github.event.workflow_run.outputs.api_changed }}"
+          echo "Worker Changed: ${{ github.event.workflow_run.outputs.worker_changed }}"
+          echo "Proxy Changed: ${{ github.event.workflow_run.outputs.proxy_changed }}"
+
 #      - name: Setup Java JDK
 #        uses: actions/setup-java@v4.2.1
 #        with:
