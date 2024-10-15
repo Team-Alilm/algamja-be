@@ -26,6 +26,8 @@ jobs:
 
       - name: Echo outputs
         run: |
+          echo "API Changed: ${{ toJson(github.event.workflow_run) }}"
+          
           echo "API Changed: ${{ github.event.workflow_run.outputs.api_changed }}"
           echo "Worker Changed: ${{ github.event.workflow_run.outputs.worker_changed }}"
           echo "Proxy Changed: ${{ github.event.workflow_run.outputs.proxy_changed }}"
