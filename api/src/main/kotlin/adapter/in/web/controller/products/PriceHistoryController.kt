@@ -3,7 +3,9 @@ package org.team_alilm.adapter.`in`.web.controller.products
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -26,13 +28,15 @@ class PriceHistoryController(
         """
     )
     fun priceHistory(
-        productId: Long
+        @ParameterObject
+        @Valid
+        request: PriceHistoryRequest,
     ) : ResponseEntity<PriceHistoryResponse> {
         return ResponseEntity.ok(
             PriceHistoryResponse.from(
-                productId,
+                request.productId,
                 priceHistoryUseCase.priceHistory(
-                    PriceHistoryUseCase.PriceHistoryCommand(productId)
+                    PriceHistoryUseCase.PriceHistoryCommand(request.productId)
                 )
             )
         )
