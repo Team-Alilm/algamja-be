@@ -17,6 +17,11 @@ jobs:
         with:
           fetch-depth: 0  # 전체 커밋 이력 가져오기
 
+      - name: Setup Firebase service key
+        run: |
+          mkdir -p src/main/resources/firebase
+          echo ${{ secrets.FIREBASE_SECRET_KEY }} | base64 -d > core/src/main/resources/firebase/FirebaseSecretKey.json
+
       - name: Detect changes in API server
         id: detect-api
         run: |
