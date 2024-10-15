@@ -7,7 +7,6 @@ on:
 
 jobs:
   detect-changes:
-    name: Detect Changes in Each Server
     runs-on: ubuntu-latest
 
     steps:
@@ -21,12 +20,10 @@ jobs:
         run: |
           if git diff --name-only HEAD^ HEAD | grep -q 'api/'; then
             echo "API server has changed."
-            echo "api-changed=true" >> $GITHUB_ENV
-            echo "api_changed=true" >> $GITHUB_OUTPUT
+            echo "api_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           else
             echo "No changes in API server."
-            echo "api-changed=false" >> $GITHUB_ENV
-            echo "api_changed=false" >> $GITHUB_OUTPUT
+            echo "api_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
 
       - name: Detect changes in Worker server
@@ -34,12 +31,10 @@ jobs:
         run: |
           if git diff --name-only HEAD^ HEAD | grep -q 'worker/'; then
             echo "Worker server has changed."
-            echo "worker-changed=true" >> $GITHUB_ENV
-            echo "worker_changed=true" >> $GITHUB_OUTPUT
+            echo "worker_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           else
             echo "No changes in Worker server."
-            echo "worker-changed=false" >> $GITHUB_ENV
-            echo "worker_changed=false" >> $GITHUB_OUTPUT
+            echo "worker_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
 
       - name: Detect changes in Proxy server
@@ -47,10 +42,14 @@ jobs:
         run: |
           if git diff --name-only HEAD^ HEAD | grep -q 'proxy/'; then
             echo "Proxy server has changed."
-            echo "proxy-changed=true" >> $GITHUB_ENV
-            echo "proxy_changed=false" >> $GITHUB_OUTPUT
+            echo "proxy_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           else
             echo "No changes in Proxy server."
-            echo "proxy-changed=false" >> $GITHUB_ENV
-            echo "proxy_changed=false" >> $GITHUB_OUTPUT
+            echo "proxy_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
+
+      - name: Echo outputs
+        run: |
+          echo "API Changed: ${{ steps.detect-api.outputs.api_changed }}"
+          echo "Worker Changed: ${{ steps.detect-worker.outputs.worker_changed }}"
+          echo "Proxy Changed: ${{ steps.detect-proxy.outputs.proxy_changed }}"
