@@ -43,6 +43,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Firebase service key
+        run: |
+          mkdir -p src/main/resources/firebase
+          echo ${{ secrets.FIREBASE_SECRET_KEY }} | base64 -d > core/src/main/resources/firebase/FirebaseSecretKey.json
+
       - name: Build with Gradle Wrapper
         run: ./gradlew :worker:build
 
