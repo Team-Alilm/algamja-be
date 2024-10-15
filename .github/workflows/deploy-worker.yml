@@ -16,11 +16,13 @@ env:
 
 jobs:
   deploy-worker:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.env.worker-changed == 'true' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy WORKER Server
     runs-on: ubuntu-latest
 
     steps:
+      - name : echo github event
+        run: echo ${{ toJson(github.event.workflow_run) }}
       - name: Checkout
         uses: actions/checkout@v4
 
