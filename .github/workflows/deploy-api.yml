@@ -17,7 +17,7 @@ env:
 
 jobs:
   deploy-api:
-    if: ${{ secrets.api-changed }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.env.api-changed == 'true' }}
     name: Deploy API Server
     runs-on: ubuntu-latest
 
