@@ -48,8 +48,9 @@ jobs:
           if git diff --name-only HEAD^ HEAD | grep -q 'proxy/'; then
             echo "Proxy server has changed."
             echo "proxy-changed=true" >> $GITHUB_ENV
+            echo "proxy_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           else
             echo "No changes in Proxy server."
             echo "proxy-changed=false" >> $GITHUB_ENV
-            
+            echo "proxy_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
