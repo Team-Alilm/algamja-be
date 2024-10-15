@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: detect-worker
     if: ${{ needs.detect-worker.outputs.worker_changed == 'true' }}  # outputs 사용
-    name: deploy worker
+    name: deploy worker server
     env:
       AWS_REGION: ap-northeast-2                   # AWS 리전 설정
       ECR_REPOSITORY: alilm-worker/prod-repository
