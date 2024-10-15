@@ -18,7 +18,7 @@ jobs:
       - name: Detect changes in API server
         id: detect-api
         run: |
-          if git diff --name-only HEAD^ HEAD | grep -q './api/'; then
+          if git diff --name-only HEAD^ HEAD | grep -q 'api/'; then
             echo "API server has changed."
             echo "api_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           else
