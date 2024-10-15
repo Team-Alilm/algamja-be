@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 전체 커밋 이력 가져오기
 
       - name: Detect changes in API server
         id: detect-api
