@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name : echo github event
-        run: echo ${{ toJson(github.event.workflow_run.env) }}
+        run: echo ${{ toJson(github.event.workflow_run.outputs.api_changed) }}
       - name: Checkout
         uses: actions/checkout@v4
 #
