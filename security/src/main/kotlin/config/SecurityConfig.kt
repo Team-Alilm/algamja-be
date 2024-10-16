@@ -27,7 +27,6 @@ class SecurityConfig(
     private val userDetailsService: CustomUserDetailsService
 ) {
 
-    @Bean
     fun excludedPaths(): List<String> {
         return listOf(
             "/api/v1/baskets",
@@ -44,21 +43,12 @@ class SecurityConfig(
     }
 
     @Bean
-    fun jwtFilter(): JwtFilter {
-        return JwtFilter(jwtUtil, userDetailsService, excludedPaths())
-    }
-
-    @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer {
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 리소스 무시
         }
     }
-
-    @Bean
-    fun passwordEncoder(): PasswordEncoder =
-        PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -73,7 +63,13 @@ class SecurityConfig(
                     .requestMatchers(*excludedPaths().toTypedArray()).permitAll()
                     .anyRequest().authenticated()
             }
-            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(
+                JwtFilter(
+                    jwtUtil = jwtUtil,
+                    userDetailsService = userDetailsService,
+                    excludedPaths = excludedPaths()
+                ),
+                UsernamePasswordAuthenticationFilter::class.java)
             .oauth2Login { oauth2LoginCustomizer ->
                 oauth2LoginCustomizer
                     .userInfoEndpoint { userInfoEndpointCustomizer ->

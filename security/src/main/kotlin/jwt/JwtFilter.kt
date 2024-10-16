@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.team_alilm.CustomUserDetailsService
 
-@Component
 class JwtFilter(
     private val jwtUtil: JwtUtil,
     private val userDetailsService: CustomUserDetailsService,
