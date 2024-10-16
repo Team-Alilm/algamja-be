@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.team_alilm.quartz.scheduler.SoldoutScheduler
 
+@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration
 class QuartzConfig(
     val scheduler: Scheduler,
