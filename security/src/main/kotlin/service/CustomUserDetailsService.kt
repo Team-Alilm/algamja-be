@@ -1,14 +1,15 @@
-package org.team_alilm
+package org.team_alilm.service
 
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
+import org.team_alilm.application.port.out.LoadMemberPort
 import org.team_alilm.data.CustomMemberDetails
 import org.team_alilm.global.error.NotFoundMemberException
 
 @Service
 class CustomUserDetailsService(
-    private val loadMemberPort: org.team_alilm.application.port.out.LoadMemberPort
+    private val loadMemberPort: LoadMemberPort
 ) : UserDetailsService {
 
     override fun loadUserByUsername(id: String): UserDetails {
