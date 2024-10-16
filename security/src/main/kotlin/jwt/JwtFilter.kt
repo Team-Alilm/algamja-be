@@ -6,9 +6,8 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import org.team_alilm.CustomUserDetailsService
+import org.team_alilm.service.CustomUserDetailsService
 
 class JwtFilter(
     private val jwtUtil: JwtUtil,

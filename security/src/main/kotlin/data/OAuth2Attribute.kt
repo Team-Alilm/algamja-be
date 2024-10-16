@@ -1,4 +1,4 @@
-package org.team_alilm.oauth2.data
+package org.team_alilm.data
 
 import org.team_alilm.domain.Member
 

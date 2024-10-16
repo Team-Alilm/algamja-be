@@ -1,9 +1,6 @@
 dependencies {
     implementation(project(":core"))
 
-    // jpa
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
     // web
     implementation("org.springframework.boot:spring-boot-starter-web")
 

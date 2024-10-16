@@ -8,15 +8,13 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.crypto.factory.PasswordEncoderFactories
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.team_alilm.CustomUserDetailsService
+import org.team_alilm.service.CustomUserDetailsService
 import org.team_alilm.handler.CustomSuccessHandler
 import org.team_alilm.jwt.JwtFilter
 import org.team_alilm.jwt.JwtUtil
-import org.team_alilm.oauth2.service.CustomOAuth2UserService
+import org.team_alilm.service.CustomOAuth2UserService
 
 @Configuration
 @EnableWebSecurity
