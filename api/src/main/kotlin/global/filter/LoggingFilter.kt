@@ -3,6 +3,8 @@ package org.team_alilm.global.filter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.util.ContentCachingRequestWrapper
 import org.springframework.web.util.ContentCachingResponseWrapper
@@ -24,7 +26,11 @@ class LoggingFilter : OncePerRequestFilter() {
             return
         }
 
-        logger.info("request.requestURI : ${request.requestURI}")
+        // ip
+        logger.info("""
+            request.remoteAddr : ${request.remoteAddr}
+            request.requestURI : ${request.requestURI}
+        """.trimIndent())
 
         // Wrap the request and response
         val wrappedRequest = ContentCachingRequestWrapper(request)
@@ -47,14 +53,18 @@ class LoggingFilter : OncePerRequestFilter() {
 
     private fun logRequest(request: ContentCachingRequestWrapper) {
         val requestBody = String(request.contentAsByteArray)
-        logger.info("Request URL: ${request.requestURI}")
-        logger.info("Request Method: ${request.method}")
-        logger.info("Request Body: $requestBody")
+        logger.info("""
+            Request URL: ${request.requestURI}
+            Request Method: ${request.method}
+            Request Body: $requestBody
+        """.trimIndent())
     }
 
     private fun logResponse(response: ContentCachingResponseWrapper) {
         val responseBody = String(response.contentAsByteArray)
-        logger.info("Response Status: ${response.status}")
-        logger.info("Response Body: $responseBody")
+        logger.info("""
+            Response Status: ${response.status}
+            Response Body: $responseBody
+        """.trimIndent())
     }
 }
