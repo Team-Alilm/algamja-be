@@ -1,3 +1,5 @@
+@file:Suppress("SpringJavaInjectionPointsAutowiringInspection")
+
 package org.team_alilm.config
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
