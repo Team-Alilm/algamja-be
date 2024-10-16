@@ -19,6 +19,7 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
 }
 
 subprojects {
@@ -45,7 +46,7 @@ subprojects {
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            freeCompilerArgs += "-Xjsr305=strict"
+            freeCompilerArgs += listOf("-Xjsr305=strict", "-Xlint:unchecked", "-Xlint:deprecation")
             jvmTarget = "21"
         }
     }
@@ -55,4 +56,5 @@ subprojects {
             extendsFrom(configurations.annotationProcessor.get())
         }
     }
+
 }
