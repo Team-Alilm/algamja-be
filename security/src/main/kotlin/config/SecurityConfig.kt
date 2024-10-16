@@ -1,7 +1,6 @@
-@file:Suppress("SpringJavaInjectionPointsAutowiringInspection")
-
 package org.team_alilm.config
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,9 +17,10 @@ import org.team_alilm.jwt.JwtFilter
 import org.team_alilm.jwt.JwtUtil
 import org.team_alilm.service.CustomOAuth2UserService
 
+@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration
 @EnableWebSecurity
-class SecurityConfig(
+class SecurityConfig (
     private val customOAuth2UserService: CustomOAuth2UserService,
     private val customSuccessHandler: CustomSuccessHandler,
     private val jwtUtil: JwtUtil,
