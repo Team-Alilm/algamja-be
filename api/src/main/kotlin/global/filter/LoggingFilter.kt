@@ -3,8 +3,6 @@ package org.team_alilm.global.filter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.util.ContentCachingRequestWrapper
 import org.springframework.web.util.ContentCachingResponseWrapper
