@@ -5,9 +5,6 @@ class FcmToken(
     val memberId: Member.MemberId,
     val id: FcmTokenId? = null
 ) {
-    init {
-        require(token.isNotBlank()) { "token must not be blank" }
-    }
 
     data class FcmTokenId(val value: Long)
 
