@@ -9,8 +9,8 @@ class FcmTokenJpaEntity(
     @Column(nullable = false, unique = true)
     val token: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    val member: MemberJpaEntity,
+    @Column(name = "member_id", nullable = false)
+    val memberJpaEntityId: Long,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

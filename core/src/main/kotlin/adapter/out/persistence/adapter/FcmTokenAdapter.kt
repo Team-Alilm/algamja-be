@@ -13,24 +13,19 @@ import org.team_alilm.domain.Member
 
 @Component
 class FcmTokenAdapter(
-    val springDataFcmTokenRepository: SpringDataFcmTokenRepository,
     val fcmTokenMapper: FcmTokenMapper,
     val memberMapper: MemberMapper,
-    private val springDataMemberRepository: SpringDataMemberRepository
+    private val springDataFcmTokenRepository: SpringDataFcmTokenRepository
 ) : AddFcmTokenPort, LoadFcmTokenPort {
 
     override fun addFcmToken(fcmToken: FcmToken) {
-        val memberJpaEntity = springDataMemberRepository.findByIdOrNull(fcmToken.memberId.value)
-            ?: error("Member ID is null")
-        val fcmTokenJpaEntity = fcmTokenMapper.mapToJpaEntity(fcmToken, memberJpaEntity)
-
+        val fcmTokenJpaEntity = fcmTokenMapper.mapToJpaEntity(fcmToken, fcmToken.id!!.value)
         springDataFcmTokenRepository.save(fcmTokenJpaEntity)
     }
 
     override fun loadFcmTokenAllByMember(member: Member): List<FcmToken> {
         val memberJpaEntity = memberMapper.mapToJpaEntity(member)
-
-        val fcmJpaEntityList = springDataFcmTokenRepository.findAllByMember(memberJpaEntity)
+        val fcmJpaEntityList = springDataFcmTokenRepository.findByMemberJpaEntityId(memberJpaEntity.id!!)
 
         return fcmJpaEntityList.map { fcmTokenMapper.mapToDomain(it) }
     }
