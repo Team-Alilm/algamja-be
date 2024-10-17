@@ -22,9 +22,7 @@ class OauthLoginMemberService(
 
     @Transactional
     override fun loginMember(provider: Member.Provider, providerId: String, attributes: Map<String, Any>): Member {
-        return loadMemberPort.loadMember(provider, providerId)?.let {
-            updateMember(it, attributes)
-        } ?: run {
+        return loadMemberPort.loadMember(provider, providerId)?: run {
             val newMember = saveMember(attributes)
             saveMemberRoleMapping(newMember)
             newMember
@@ -50,9 +48,4 @@ class OauthLoginMemberService(
         addMemberRoleMappingPort.addMemberRoleMapping(member, role)
     }
 
-    private fun updateMember(member: Member, attributes: Map<String, Any>): Member {
-        val newNickname = attributes["nickname"].toString()
-        member.update(newNickname)
-        return member
-    }
 }

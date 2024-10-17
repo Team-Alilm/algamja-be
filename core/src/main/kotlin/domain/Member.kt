@@ -4,7 +4,7 @@ class Member(
     val id: MemberId? = null,
     val provider: Provider,
     val providerId: Long,
-    val email: String,
+    var email: String,
     var nickname: String,
     ) {
 
@@ -13,8 +13,9 @@ class Member(
         require(nickname.isNotBlank()) { "nickname must not be blank" }
     }
 
-    fun update(newNickname: String) {
+    fun changeInfo(newNickname: String, newEmail: String) {
         this.nickname = newNickname
+        this.email = newEmail
     }
 
     data class MemberId(val value: Long)
