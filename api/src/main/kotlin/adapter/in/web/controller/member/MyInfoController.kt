@@ -59,7 +59,11 @@ class MyInfoController(
         @Valid @RequestBody
         request: UpdateMyInfoRequest
     ) : ResponseEntity<Unit> {
-        val command = MyInfoUseCase.UpdateMyInfoCommand(customMemberDetails.member, request.nickname, request.email)
+        val command = MyInfoUseCase.UpdateMyInfoCommand(
+            member = customMemberDetails.member,
+            nickname = request.nickname,
+            email = request.email
+        )
         myInfoUseCase.updateMyInfo(command)
 
         return ResponseEntity.ok().build()
@@ -79,7 +83,7 @@ class MyInfoController(
         @field:Pattern(
             // 한국어, 영어, 숫자 만 가능하고 1~12자로 제한
             regexp = "^[a-zA-Z0-9가-힣]{1,12}\$",
-            message = "닉네임은 4~12자의 영문 대소문자, 숫자로 이루어져야 합니다."
+            message = "닉네임은 1~12자의 영문 대소문자, 숫자로 이루어져야 합니다."
         )
         val nickname: String,
     )
