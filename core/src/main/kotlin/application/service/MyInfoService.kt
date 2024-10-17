@@ -21,7 +21,10 @@ class MyInfoService(
     @Transactional
     override fun updateMyInfo(command: MyInfoUseCase.UpdateMyInfoCommand) {
         val member = command.member
-        member.changeInfo(command.nickname, command.email)
+        member.changeInfo(
+            newNickname = command.nickname,
+            newEmail = command.email
+        )
 
         addMemberPort.addMember(member)
     }
