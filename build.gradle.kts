@@ -46,7 +46,7 @@ subprojects {
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            freeCompilerArgs += listOf("-Xjsr305=strict", "-Xlint:unchecked", "-Xlint:deprecation")
+            freeCompilerArgs += listOf("-Xjsr305=strict")
             jvmTarget = "21"
         }
     }
