@@ -81,7 +81,7 @@ jobs:
           echo ${{ secrets.FIREBASE_SECRET_KEY }} | base64 -d > core/src/main/resources/firebase/FirebaseSecretKey.json
 
       - name: Build with Gradle Wrapper
-        run: ./gradlew clean :api:build --refresh-dependencies
+        run: ./gradlew :api:build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
