@@ -20,11 +20,11 @@ class AddFcmTokenController(
 
     @PostMapping
     fun addFcmToken(
-        @RequestBody @Valid fcmTokenRequest: FcmTokenRequest,
+        @RequestBody @Valid request: FcmTokenRequest,
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ) : ResponseEntity<Unit> {
         val command = AddFcmTokenUseCase.AddFcmTokenCommand(
-            token = fcmTokenRequest.fcmToken,
+            token = request.fcmToken,
             member = customMemberDetails.member
         )
 
