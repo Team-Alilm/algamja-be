@@ -106,7 +106,7 @@ class MusinsaSoldoutCheckJob(
                     basketAndMemberAndProduct.product
                 )
 
-                val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(basketAndMemberAndProduct.member)
+                val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(basketAndMemberAndProduct.member.id!!.value)
 
                 fcmTokenList.forEach() { fcmToken ->
                     fcmSendGateway.sendFcmMessage(
