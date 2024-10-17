@@ -20,21 +20,21 @@ class RestControllerAdvice {
 
     @ExceptionHandler(value = [ValidationException::class])
     fun handleValidationException(e: ValidationException): ResponseEntity<String> {
-        log.info("error log : ${e.message}")
+        log.info("ValidationException error log : ${e.message}")
 
         return ResponseEntity.badRequest().body(e.message)
     }
 
     @ExceptionHandler(value = [RuntimeException::class])
     fun handleRuntimeException(e: RuntimeException): ResponseEntity<String> {
-        log.error("error log : ${e.message}")
+        log.error("RuntimeException error log : ${e.message}")
 
         return ResponseEntity.badRequest().body(e.message)
     }
 
     @ExceptionHandler(value = [Exception::class])
     fun handleException(e: Exception): ResponseEntity<String> {
-        log.error("error log : ${e.message}")
+        log.error("Exception error log : ${e.message}")
 
         return ResponseEntity.internalServerError().body(e.message)
     }

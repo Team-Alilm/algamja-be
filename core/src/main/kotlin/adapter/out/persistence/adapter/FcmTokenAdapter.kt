@@ -19,7 +19,10 @@ class FcmTokenAdapter(
 ) : AddFcmTokenPort, LoadFcmTokenPort {
 
     override fun addFcmToken(fcmToken: FcmToken) {
-        val fcmTokenJpaEntity = fcmTokenMapper.mapToJpaEntity(fcmToken, fcmToken.id!!.value)
+        val fcmTokenJpaEntity = fcmTokenMapper.mapToJpaEntity(
+            fcmToken = fcmToken,
+            memberJpaEntityId = fcmToken.memberId.value
+        )
         springDataFcmTokenRepository.save(fcmTokenJpaEntity)
     }
 
