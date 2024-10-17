@@ -19,11 +19,6 @@ abstract class BaseEntity : BaseTimeEntity() {
     @Column(nullable = false)
     var lastModifiedBy: String = ""
 
-    @Column(nullable = false)
-    var isDelete: Boolean = false
 
-    fun delete() {
-        this.isDelete = true
-    }
 
 }
