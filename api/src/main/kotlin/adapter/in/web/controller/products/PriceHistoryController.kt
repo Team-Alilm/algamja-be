@@ -28,13 +28,15 @@ class PriceHistoryController(
         """
     )
     fun priceHistory(
-        productId: Long
+        @ParameterObject
+        @Valid
+        request: PriceHistoryRequest,
     ) : ResponseEntity<PriceHistoryResponse> {
         return ResponseEntity.ok(
             PriceHistoryResponse.from(
-                productId,
+                request.productId,
                 priceHistoryUseCase.priceHistory(
-                    PriceHistoryUseCase.PriceHistoryCommand(productId)
+                    PriceHistoryUseCase.PriceHistoryCommand(request.productId)
                 )
             )
         )
