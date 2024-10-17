@@ -69,6 +69,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
       - name: Setup Firebase service key
         run: |
           mkdir -p core/src/main/resources/firebase
