@@ -14,4 +14,12 @@ interface MyInfoUseCase {
         val nickname: String,
         val email: String
     )
+
+    fun updateMyInfo(command: UpdateMyInfoCommand)
+
+    data class UpdateMyInfoCommand(
+        val member: Member,
+        val email: String,
+        val nickname: String
+    )
 }
