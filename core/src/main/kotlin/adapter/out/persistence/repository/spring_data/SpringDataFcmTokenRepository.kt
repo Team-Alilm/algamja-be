@@ -6,6 +6,6 @@ import org.team_alilm.adapter.out.persistence.entity.MemberJpaEntity
 
 interface SpringDataFcmTokenRepository : JpaRepository<FcmTokenJpaEntity, Long> {
 
-    fun findAllByMember(memberJpaEntity: MemberJpaEntity): List<FcmTokenJpaEntity>
+    fun findByMemberJpaEntityId(memberJpaEntityId: Long): List<FcmTokenJpaEntity>
 
 }

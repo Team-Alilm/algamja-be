@@ -14,7 +14,6 @@ class AddFcmTokenService(
     override fun addFcmToken(command: org.team_alilm.application.port.`in`.use_case.AddFcmTokenUseCase.AddFcmTokenCommand) {
         val member = command.member
         val token = command.token
-
         val fcmToken = FcmToken(token, member.id!!)
 
         addFcmTokenPort.addFcmToken(fcmToken)
