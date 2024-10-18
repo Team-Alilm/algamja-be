@@ -6,6 +6,7 @@ import jakarta.persistence.MappedSuperclass
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
@@ -18,7 +19,5 @@ abstract class BaseEntity : BaseTimeEntity() {
     @LastModifiedBy
     @Column(nullable = false)
     var lastModifiedBy: String = ""
-
-
 
 }

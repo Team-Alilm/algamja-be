@@ -14,6 +14,7 @@ import org.team_alilm.application.port.out.*
 import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Member
 import org.team_alilm.domain.Product
+import org.team_alilm.global.error.NotFoundBasketException
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -31,7 +32,8 @@ class BasketAdapter(
     LoadMyBasketsPort,
     LoadAllBasketsPort,
     SendAlilmBasketPort,
-    LoadAllAndDailyCountPort
+    LoadAllAndDailyCountPort,
+    DeleteBasketPort
 {
 
     override fun addBasket(
@@ -58,6 +60,7 @@ class BasketAdapter(
     }
 
     override fun loadBasket(memberId: Member.MemberId): List<Basket> {
+        // 나의 장바구니 중 알림 받은 상품 수
         val basketJpaEntityList = springDataBasketRepository.findByMemberJpaEntityIdAndIsDeleteFalseAndIsAlilmTrue(memberId.value)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
@@ -131,6 +134,13 @@ class BasketAdapter(
             )
 
         return basketJpaEntity
+    }
+
+    override fun deleteBasket(memberId: Long, basketId: Long) {
+        val basketJpaEntity = springDataBasketRepository.findByIdAndMemberJpaEntityId(memberId, basketId)
+            ?: throw NotFoundBasketException()
+
+        basketJpaEntity.delete()
     }
 
 }

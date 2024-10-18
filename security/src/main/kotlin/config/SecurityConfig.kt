@@ -3,6 +3,7 @@ package org.team_alilm.config
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -28,7 +29,7 @@ class SecurityConfig (
 
     fun excludedPaths(): List<String> {
         return listOf(
-            "/api/v1/baskets",
+
             "/api/v1/products/price",
             "/api/v1/notifications/count",
             "/health-check",
@@ -60,6 +61,7 @@ class SecurityConfig (
             .authorizeHttpRequests { authorizeRequest ->
                 authorizeRequest
                     .requestMatchers(*excludedPaths().toTypedArray()).permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/baskets/**").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(
