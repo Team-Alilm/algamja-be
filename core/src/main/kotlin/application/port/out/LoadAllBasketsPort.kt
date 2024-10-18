@@ -23,6 +23,16 @@ interface LoadAllBasketsPort {
                 product.firstOption
             }
         }
+
+        fun getEmailOption() : String {
+            return if (product.firstOption.isNotBlank() && product.secondOption?.isNotBlank() == true && product.thirdOption?.isNotBlank() == true) {
+                "${product.firstOption} / ${product.secondOption} / ${product.thirdOption}"
+            } else if (product.firstOption.isNotBlank() && product.secondOption?.isNotBlank() == true) {
+                "${product.firstOption} / ${product.secondOption}"
+            } else {
+                product.firstOption
+            }
+        }
     }
 
 }
