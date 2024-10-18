@@ -1,10 +1,8 @@
 package org.team_alilm.global.error
 
-class NotFoundBasketException(
-    val errorMessage: ErrorMessage
-) : RuntimeException() {
+class NotFoundBasketException : RuntimeException() {
 
     override val message: String
-        get() { return "${ErrorMessage.NOT_FOUND_MEMBER.code} : ${ErrorMessage.NOT_FOUND_MEMBER.message}" }
+        get() { return "${ErrorMessage.NOT_FOUND_BASKET.code} : ${ErrorMessage.NOT_FOUND_BASKET.message}" }
 
 }

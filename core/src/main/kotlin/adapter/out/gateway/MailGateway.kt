@@ -109,7 +109,7 @@ class MailGateway(
                 <div style="width: 100%; height: 20px;"></div>
                 <div style="width: 100%; height: 20px;"></div>
                 <div style="display: flex; flex-direction: row">
-                  <img style="object-fit: cover; height: 80px; width: 68px" src="${imageUrl}" alt="product-image">
+                  <img style="object-fit: cover; height: 80px; width: 68px" src="$imageUrl" alt="product-image">
                   <div style="width: 12px;"></div>
                   <div>
                       <div style="height: 28px; display: flex; align-items: center; font-weight: 500; font-size: 12px;">상품 옵션 : ${options}</div>
