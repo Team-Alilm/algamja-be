@@ -30,7 +30,6 @@ import java.time.ZoneId
 class MusinsaSoldoutCheckJob(
     val loadAllBasketsPort: LoadAllBasketsPort,
     val addBasketPort: AddBasketPort,
-    val addPricePort: AddPricePort,
     val restClient: RestClient,
     val mailGateway: MailGateway,
     val slackGateway: SlackGateway,
@@ -63,15 +62,7 @@ class MusinsaSoldoutCheckJob(
             val jsonObject = ObjectMapper().readTree(jsonData)
 
             val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "SOLDOUT"
-//            val price = jsonObject.get("goodsPrice").asJsonObject.get("salePrice").asInt
 
-            // salePrice 기준으로 가격 히스토리를 저장해요. (임시 주석처리)
-//            addPricePort.addPrice(
-//                price,
-//                basketAndMemberAndProduct.product
-//            )
-
-            // isAllSoldout이 true일 경우 API 호출 생략
             val isSoldOut = if (isAllSoldout) {
                 true
             } else {
@@ -120,7 +111,13 @@ class MusinsaSoldoutCheckJob(
     }
 
     private fun sendNotifications(basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct) {
-        mailGateway.sendMail(getEmailMessage(basketAndMemberAndProduct), basketAndMemberAndProduct.member.email)
+        mailGateway.sendMail(
+            basketAndMemberAndProduct.member.email,
+            basketAndMemberAndProduct.member.nickname,
+            basketAndMemberAndProduct.product.number,
+            basketAndMemberAndProduct.product.imageUrl,
+            basketAndMemberAndProduct.getEmailOption()
+        )
         slackGateway.sendMessage(getSlackMessage(basketAndMemberAndProduct))
     }
 
@@ -130,55 +127,6 @@ class MusinsaSoldoutCheckJob(
             it.managedCode == basketAndMemberAndProduct.getManagedCode() }
 
         return optionItem?.outOfStock ?: true
-    }
-
-    private fun getEmailMessage(basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): String {
-        return """
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>재입고 알림</title>
-            </head>
-            <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
-            <table style="width: 100%; max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                <tr>
-                    <td style="background-color: #1B1A3B; color: #ffffff; text-align: center; padding: 20px;">
-                        <h1 style="margin: 0;">Alilm</h1>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 20px;">
-                        <h2>${basketAndMemberAndProduct.member.nickname}님이 등록하신 제품이 재입고 되었습니다!</h2>
-                        <table style="width: 100%; margin-bottom: 20px;">
-                            <tr>
-                                <td style="width: 68px;">
-                                    <img src="${basketAndMemberAndProduct.product.imageUrl}" alt="Product Image" style="border-radius: 4px; width: 68px; height: 80px;">
-                                </td>
-                                <td style="padding-left: 20px;">
-                                    <p style="margin: 0;"><strong>상품 명:</strong> ${basketAndMemberAndProduct.product.name}</p>
-                                    <p style="margin: 0;"><strong>재입고 시각:</strong> ${LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime()}</p>
-                                </td>
-                            </tr>
-                        </table>
-                        <p>${basketAndMemberAndProduct.member.nickname}님이 등록하신 상품의 재입고 소식을 알려드리러 왔어요.</p>
-                        <p>상품은 재입고 시각으로부터 다시 품절이 될 수 있음을 유의해주세요!</p>
-                        <p>저희 알림 서비스를 이용해주셔서 감사합니다 :)</p>
-                        <a href="https://www.musinsa.com/app/goods/${basketAndMemberAndProduct.product.number}" style="display: block; width: 100%; max-width: 560px; margin: 20px auto; padding: 15px; background-color: #1B1A3B; color: #ffffff; text-align: center; text-decoration: none; border-radius: 4px; font-size: 18px; font-weight: bold;">
-                            재입고 상품 구매하러 가기 👉
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="background-color: #f4f4f4; text-align: center; padding: 10px; font-size: 14px; color: #555555;">
-                        알림 서비스 © 2024 Alilm
-                    </td>
-                </tr>
-            </table>
-            </body>
-            </html>
-        """.trimIndent()
     }
 
     private fun getSlackMessage(basketAndMemberAndProduct: LoadAllBasketsPort.BasketAndMemberAndProduct): String {
