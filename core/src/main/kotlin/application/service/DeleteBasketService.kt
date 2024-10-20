@@ -13,7 +13,10 @@ class DeleteBasketService(
 
     @Transactional
     override fun deleteBasket(command: DeleteBasketUseCase.DeleteBasketCommand) {
-        deleteBasketPort.deleteBasket(command.memberId, command.basketId)
+        deleteBasketPort.deleteBasket(
+            memberId = command.memberId,
+            basketId = command.basketId
+        )
     }
 
 }
