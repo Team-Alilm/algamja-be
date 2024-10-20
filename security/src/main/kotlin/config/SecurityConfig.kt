@@ -29,7 +29,6 @@ class SecurityConfig (
 
     fun excludedPaths(): List<String> {
         return listOf(
-
             "/api/v1/products/price",
             "/api/v1/notifications/count",
             "/health-check",
