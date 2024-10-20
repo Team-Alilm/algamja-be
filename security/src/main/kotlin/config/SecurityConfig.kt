@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.team_alilm.handler.CustomFailureHandler
 import org.team_alilm.service.CustomUserDetailsService
@@ -49,6 +48,8 @@ class SecurityConfig (
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 리소스 무시
+                .requestMatchers(excludedPaths().toString())
+                .requestMatchers(HttpMethod.GET, "/api/v1/baskets")
         }
     }
 
@@ -62,8 +63,6 @@ class SecurityConfig (
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { authorizeRequest ->
                 authorizeRequest
-                    .requestMatchers(*excludedPaths().toTypedArray()).permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/baskets/**").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(
