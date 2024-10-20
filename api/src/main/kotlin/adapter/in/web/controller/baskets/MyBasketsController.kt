@@ -50,7 +50,8 @@ class MyBasketsController(
         val firstOption: String,
         val secondOption: String?,
         val thirdOption: String?,
-        val isHidden: Boolean
+        val isHidden: Boolean,
+        val waitingCount: Long
     ) {
 
         companion object {
@@ -67,7 +68,8 @@ class MyBasketsController(
                     firstOption = myBasketsResult.firstOption,
                     secondOption = myBasketsResult.secondOption,
                     thirdOption = myBasketsResult.thirdOption,
-                    isHidden = myBasketsResult.isHidden
+                    isHidden = myBasketsResult.isHidden,
+                    waitingCount = myBasketsResult.waitingCount
                 )
             }
         }
