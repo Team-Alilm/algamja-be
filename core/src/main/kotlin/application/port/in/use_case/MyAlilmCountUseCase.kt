@@ -11,7 +11,9 @@ interface MyAlilmCountUseCase {
     )
 
     data class MyAlilmCountResult(
-        val count: Int
+        val count: Int,
+        val alilmCount: Int,
+        val basketCount: Int
     )
 
 }
