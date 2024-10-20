@@ -10,7 +10,8 @@ interface LoadMyBasketsPort {
 
     data class BasketAndProduct(
         val basket: Basket,
-        val product: Product
+        val product: Product,
+        val waitingCount: Long
     )
 
 }

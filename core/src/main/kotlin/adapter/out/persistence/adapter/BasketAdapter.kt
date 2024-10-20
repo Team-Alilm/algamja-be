@@ -81,12 +81,17 @@ class BasketAdapter(
     }
 
     override fun loadMyBaskets(member: Member) : List<LoadMyBasketsPort.BasketAndProduct> {
-        return springDataBasketRepository.findAllByMemberJpaEntityAndIsDeleteFalseOrderByCreatedDateDesc(
+        val basketJpaEntityList = basketRepository.myBasketList(
             memberMapper.mapToJpaEntity(member)
-        ).map {
+        )
+        return basketJpaEntityList.map {
+            val basketJpaEntity = it.get("basketJpaEntity", BasketJpaEntity::class.java)!!
+            val waitingCount = it.get("waitingCount", Long::class.java)!!
+
             LoadMyBasketsPort.BasketAndProduct(
-                basket = basketMapper.mapToDomainEntity(it),
-                product = productMapper.mapToDomainEntity(it.productJpaEntity)
+                basket = basketMapper.mapToDomainEntity(basketJpaEntity),
+                product = productMapper.mapToDomainEntity(basketJpaEntity.productJpaEntity),
+                waitingCount = waitingCount
             )
         }
     }

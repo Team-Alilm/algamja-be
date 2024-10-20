@@ -25,7 +25,8 @@ class MyBasketsService (
                 firstOption = it.product.firstOption,
                 secondOption = it.product.secondOption,
                 thirdOption = it.product.thirdOption,
-                isHidden = it.basket.isHidden
+                isHidden = it.basket.isHidden,
+                waitingCount = it.waitingCount
             )
         }
     }
