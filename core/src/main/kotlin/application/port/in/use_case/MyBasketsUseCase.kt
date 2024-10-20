@@ -24,11 +24,12 @@ interface MyBasketsUseCase {
         val firstOption: String,
         val secondOption: String?,
         val thirdOption: String?,
-        val isHidden: Boolean
+        val isHidden: Boolean,
+        val waitingCount: Long
     ) {
 
         companion object {
-            fun from(basket: Basket, product: Product) : MyBasketsResult {
+            fun from(basket: Basket, product: Product, waitingCount: Long) : MyBasketsResult {
                 return MyBasketsResult(
                     id = basket.id?.value!!,
                     number = product.number,
@@ -41,7 +42,8 @@ interface MyBasketsUseCase {
                     firstOption = product.firstOption,
                     secondOption = product.secondOption,
                     thirdOption = product.thirdOption,
-                    isHidden = basket.isHidden
+                    isHidden = basket.isHidden,
+                    waitingCount = waitingCount
                 )
             }
         }
