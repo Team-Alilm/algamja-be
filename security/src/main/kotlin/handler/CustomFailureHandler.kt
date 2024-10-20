@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
+import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
 
+@Component
 class CustomFailureHandler(
     @Value("\${app.base-url}") private val baseUrl: String
 ) : SimpleUrlAuthenticationFailureHandler() {
