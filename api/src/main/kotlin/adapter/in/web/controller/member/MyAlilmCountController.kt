@@ -1,6 +1,7 @@
 package org.team_alilm.adapter.`in`.web.controller.member
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -31,13 +32,25 @@ class MyAlilmCountController(
 
         val result = myAlilmCountUseCase.myAlilmCount(command)
 
-        val response = MyAlilmCountResponse(result.count)
+        val response = MyAlilmCountResponse(result.count, result.alilmCount, result.basketCount)
 
         return ResponseEntity.ok(response)
     }
 
     data class MyAlilmCountResponse(
-        val count: Int
+        @Schema(description = """
+            알림 개수
+            이제 비 활성화 될 거에요.
+            """)
+        val count: Int,
+        @Schema(description = """
+            내가 받은 알림 수
+            """)
+        val alilmCount: Int,
+        @Schema(description = """
+            내가 등록한 장바구니 수
+            """)
+        val basketCount: Int
     )
 
 }
