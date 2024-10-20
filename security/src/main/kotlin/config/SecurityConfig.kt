@@ -10,7 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.team_alilm.handler.CustomFailureHandler
 import org.team_alilm.service.CustomUserDetailsService
 import org.team_alilm.handler.CustomSuccessHandler
 import org.team_alilm.jwt.JwtFilter
@@ -24,7 +26,8 @@ class SecurityConfig (
     private val customOAuth2UserService: CustomOAuth2UserService,
     private val customSuccessHandler: CustomSuccessHandler,
     private val jwtUtil: JwtUtil,
-    private val userDetailsService: CustomUserDetailsService
+    private val userDetailsService: CustomUserDetailsService,
+    private val customFailureHandler: CustomFailureHandler
 ) {
 
     fun excludedPaths(): List<String> {
@@ -76,6 +79,7 @@ class SecurityConfig (
                         userInfoEndpointCustomizer.userService(customOAuth2UserService)
                     }
                     .successHandler(customSuccessHandler)
+                    .failureHandler(customFailureHandler)
             }
 
         return http.build()
