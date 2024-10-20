@@ -138,8 +138,8 @@ class BasketAdapter(
 
     override fun deleteBasket(memberId: Long, basketId: Long) {
         val basketJpaEntity = springDataBasketRepository.findByIdAndMemberJpaEntityId(
-            basketId = memberId,
-            memberId = basketId
+            basketId = basketId,
+            memberId = memberId
         ) ?: throw NotFoundBasketException()
 
         basketJpaEntity.delete()
