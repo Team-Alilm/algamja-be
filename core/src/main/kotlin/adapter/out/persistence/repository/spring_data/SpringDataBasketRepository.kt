@@ -23,4 +23,3 @@ interface SpringDataBasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
     fun findByIdAndMemberJpaEntityId(basketId: Long, memberId: Long): BasketJpaEntity?
 }
-
