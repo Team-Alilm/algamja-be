@@ -48,8 +48,8 @@ class SecurityConfig (
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 리소스 무시
-                .requestMatchers(excludedPaths().toString())
                 .requestMatchers(HttpMethod.GET, "/api/v1/baskets")
+                .requestMatchers("/health-check")
         }
     }
 
