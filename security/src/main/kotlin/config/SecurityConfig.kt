@@ -41,7 +41,6 @@ class SecurityConfig (
                 .requestMatchers("/swagger-resources/**")
                 .requestMatchers("/api-docs/**")
                 .requestMatchers("/favicon.ico")
-                .requestMatchers("/login/**")
                 .requestMatchers("/h2-console/**")
         }
     }
