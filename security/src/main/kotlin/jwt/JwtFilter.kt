@@ -13,7 +13,6 @@ import org.team_alilm.service.CustomUserDetailsService
 class JwtFilter(
     private val jwtUtil: JwtUtil,
     private val userDetailsService: CustomUserDetailsService,
-    private val excludedPaths: List<String> // 제외할 경로 리스트 주입
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -21,11 +20,6 @@ class JwtFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        if (excludedPaths.any { AntPathRequestMatcher(it).matches(request) }) {
-            filterChain.doFilter(request, response)
-            return
-        }
-
         try {
             val parserToken = request.getHeader("Authorization")?.replace("Bearer ", "") ?: throw Exception("Token not found")
 
