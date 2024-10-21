@@ -9,5 +9,6 @@ enum class ErrorMessage(
     NOT_FOUND_ROLE("ALILM-004", " 권환을 찾지 못했습니다."),
     NOT_FOUND_PRODUCT("ALILM-005", "상품을 찾지 못했습니다."),
     NOT_FOUND_PRICE("ALILM-006", "가격을 찾지 못했습니다."),
-    NOT_FOUND_BASKET("ALILM-007", "장바구니를 찾지 못했습니다.")
+    NOT_FOUND_BASKET("ALILM-007", "장바구니를 찾지 못했습니다."),
+    DUPLICATE_BASKET("ALILM-008", "장바구니에 이미 담긴 상품입니다."),
 }
