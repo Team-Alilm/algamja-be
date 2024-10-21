@@ -43,7 +43,7 @@ class ProductAdapter(
     }
 
     override fun loadProduct(productId: Product.ProductId): Product? {
-        val productJpaEntity = springDataProductRepository.findById(productId.value).orElse(null)
+        val productJpaEntity = springDataProductRepository.findByIdAndIsDeleteFalse(productId.value)
 
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
     }
