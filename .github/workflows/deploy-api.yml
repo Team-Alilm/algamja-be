@@ -55,7 +55,7 @@ jobs:
   deploy-api:
     runs-on: ubuntu-latest
     needs: detect-api
-    if: ${{ needs.detect-api.outputs.api_changed == 'true' || needs.detect-api.outputs.core_changed == 'true' || needs.detect-api.outputs.security_changed == 'true' }}  # outputs 사용
+    if: ${{ needs.detect-api.outputs.api_changed == 'true' || needs.detect-core.outputs.core_changed == 'true' || needs.detect-security.outputs.security_changed == 'true' }}  # outputs 사용
     name: deploy api server
     env:
       AWS_REGION: ap-northeast-2                   # AWS 리전 설정
