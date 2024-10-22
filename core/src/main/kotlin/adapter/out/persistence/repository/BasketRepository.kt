@@ -6,7 +6,6 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
-import org.team_alilm.adapter.out.persistence.entity.MemberJpaEntity
 
 interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
@@ -18,7 +17,7 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
                 BasketJpaEntity b
             JOIN 
                 ProductJpaEntity p
-                ON b.productJpaEntityId = p.id
+                ON b.productId = p.id
             WHERE 
                 b.isDelete = false
                 AND b.isHidden = false
@@ -39,16 +38,16 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
             BasketJpaEntity b
         JOIN 
             ProductJpaEntity p
-            ON b.productJpaEntityId = p.id
+            ON b.productId = p.id
         LEFT JOIN 
             BasketJpaEntity otherBaskets
-            ON otherBaskets.productJpaEntityId = b.productJpaEntityId 
+            ON otherBaskets.productId = b.productId 
             AND otherBaskets.isDelete = false
         WHERE 
             b.isDelete = false
-            AND b.memberJpaEntityId = :memberJpaEntityId
+            AND b.memberId = :memberJpaEntityId
         GROUP BY 
-            b.productJpaEntityId, 
+            b.productId, 
             b.id
         ORDER BY
             b.createdDate DESC
