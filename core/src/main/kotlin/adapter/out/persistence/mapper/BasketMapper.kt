@@ -2,8 +2,6 @@ package org.team_alilm.adapter.out.persistence.mapper
 
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
-import org.team_alilm.adapter.out.persistence.entity.MemberJpaEntity
-import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Member
 import org.team_alilm.domain.Product
@@ -14,8 +12,8 @@ class BasketMapper {
     fun mapToJpaEntity(basket: Basket, memberJpaEntityId: Long, productJpaEntityId: Long): BasketJpaEntity {
         return BasketJpaEntity(
             id = basket.id?.value,
-            memberJpaEntityId = memberJpaEntityId,
-            productJpaEntityId = productJpaEntityId,
+            memberId = memberJpaEntityId,
+            productId = productJpaEntityId,
             isAlilm = basket.isAlilm,
             alilmDate = basket.alilmDate,
             isHidden = basket.isHidden,
@@ -25,8 +23,8 @@ class BasketMapper {
     fun mapToDomainEntity(basketJpaEntity: BasketJpaEntity): Basket {
         return Basket(
             id = Basket.BasketId(basketJpaEntity.id),
-            memberId = Member.MemberId(basketJpaEntity.memberJpaEntityId),
-            productId = Product.ProductId(basketJpaEntity.productJpaEntityId),
+            memberId = Member.MemberId(basketJpaEntity.memberId),
+            productId = Product.ProductId(basketJpaEntity.productId),
             isAlilm = basketJpaEntity.isAlilm,
             alilmDate = basketJpaEntity.alilmDate,
             isHidden = basketJpaEntity.isHidden,
