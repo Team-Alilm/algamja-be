@@ -7,7 +7,7 @@ import org.team_alilm.domain.Member
 @Component
 class MemberMapper {
 
-    fun wmapToJpaEntity(member: Member) : MemberJpaEntity {
+    fun mapToJpaEntity(member: Member) : MemberJpaEntity {
         return MemberJpaEntity(
             id = member.id?.value,
             email = member.email,
