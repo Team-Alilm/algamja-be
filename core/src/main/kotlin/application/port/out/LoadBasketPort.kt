@@ -15,4 +15,7 @@ interface LoadBasketPort {
         memberId: Member.MemberId
     ): List<Basket>
 
+    fun loadBasket(
+        productId: Product.ProductId
+    ): List<Basket>
 }

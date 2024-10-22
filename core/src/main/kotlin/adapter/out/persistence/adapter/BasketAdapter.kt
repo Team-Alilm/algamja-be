@@ -15,6 +15,7 @@ import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Member
 import org.team_alilm.domain.Product
 import org.team_alilm.global.error.NotFoundBasketException
+import org.team_alilm.global.error.NotFoundMemberException
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -30,8 +31,6 @@ class BasketAdapter(
     LoadBasketPort,
     LoadSliceBasketPort,
     LoadMyBasketsPort,
-    LoadAllBasketsPort,
-    SendAlilmBasketPort,
     LoadAllAndDailyCountPort,
     DeleteBasketPort
 {
@@ -66,6 +65,12 @@ class BasketAdapter(
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
+    override fun loadBasket(productId: Product.ProductId): List<Basket> {
+        val basketJpaEntityList = springDataBasketRepository.findByProductJpaEntityIdAndIsDeleteFalseAndIsAlilmFalse(productId.value)
+
+        return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
+    }
+
     override fun loadBasketSlice(pageRequest: PageRequest): Slice<LoadSliceBasketPort.BasketAndCountProjection> {
         val basketCountProjectionSlice = basketRepository.loadBasketSlice(pageRequest)
 
@@ -81,35 +86,19 @@ class BasketAdapter(
     }
 
     override fun loadMyBaskets(member: Member) : List<LoadMyBasketsPort.BasketAndProduct> {
-        val basketJpaEntityList = basketRepository.myBasketList(
-            memberMapper.mapToJpaEntity(member)
-        )
-        return basketJpaEntityList.map {
-            val basketJpaEntity = it.get("basketJpaEntity", BasketJpaEntity::class.java)!!
-            val waitingCount = it.get("waitingCount", Long::class.java)!!
+        return basketRepository
+            .myBasketList(member.id?.value ?: throw NotFoundMemberException())
+            .map {
+                val basketJpaEntity = it.get("basketJpaEntity", BasketJpaEntity::class.java)!!
+                val productJpaEntity = it.get("productJpaEntity", ProductJpaEntity::class.java)!!
+                val waitingCount = it.get("waitingCount", Long::class.java)!!
 
-            LoadMyBasketsPort.BasketAndProduct(
-                basket = basketMapper.mapToDomainEntity(basketJpaEntity),
-                product = productMapper.mapToDomainEntity(basketJpaEntity.productJpaEntity),
-                waitingCount = waitingCount
-            )
-        }
-    }
-
-    override fun loadAllBaskets() : List<LoadAllBasketsPort.BasketAndMemberAndProduct> {
-        return springDataBasketRepository.findAllByIsDeleteFalseAndIsAlilmFalse().map {
-            LoadAllBasketsPort.BasketAndMemberAndProduct(
-                basket = basketMapper.mapToDomainEntity(it),
-                member = memberMapper.mapToDomainEntity(it.memberJpaEntity),
-                product = productMapper.mapToDomainEntity(it.productJpaEntity)
-            )
-        }
-    }
-
-    override fun addAlilmBasket(basket: Basket, member: Member, product: Product) {
-        val basketJpaEntity = basketJpaEntity(basket, member, product)
-
-        basketRepository.save(basketJpaEntity)
+                LoadMyBasketsPort.BasketAndProduct(
+                    basket = basketMapper.mapToDomainEntity(basketJpaEntity),
+                    product = productMapper.mapToDomainEntity(productJpaEntity),
+                    waitingCount = waitingCount
+                )
+            }
     }
 
     override fun getAllAndDailyCount(): LoadAllAndDailyCountPort.AllAndDailyCount {
@@ -134,8 +123,8 @@ class BasketAdapter(
         val basketJpaEntity = basketMapper
             .mapToJpaEntity(
                 basket,
-                memberMapper.mapToJpaEntity(member),
-                productMapper.mapToJpaEntity(product)
+                member.id?.value ?: throw NotFoundMemberException(),
+                product.id?.value ?: throw NotFoundBasketException()
             )
 
         return basketJpaEntity

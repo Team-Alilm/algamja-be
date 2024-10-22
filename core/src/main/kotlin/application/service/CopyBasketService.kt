@@ -30,7 +30,7 @@ class CopyBasketService(
 
         // 상품 조회 및 예외 처리
         val product = loadProductPort.loadProduct(productId)
-            ?: throw NotFoundProductException(ErrorMessage.NOT_FOUND_PRODUCT)
+            ?: throw NotFoundProductException()
 
         // 장바구니에 상품 추가
         val basket = Basket.create(

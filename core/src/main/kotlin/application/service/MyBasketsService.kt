@@ -2,18 +2,20 @@ package org.team_alilm.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase
+import org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.*
 
 @Service
 @Transactional
 class MyBasketsService (
     val loadMyBasketsPort: org.team_alilm.application.port.out.LoadMyBasketsPort
-) : org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase {
+) : MyBasketsUseCase {
 
-    override fun myBasket(command: org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.MyBasketCommand): List<org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.MyBasketsResult> {
+    override fun myBasket(command: MyBasketCommand): List<MyBasketsResult> {
         val myBasketAndProductList = loadMyBasketsPort.loadMyBaskets(command.member)
 
         return myBasketAndProductList.map {
-            org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.MyBasketsResult(
+            MyBasketsResult(
                 id = it.basket.id!!.value!!,
                 number = it.product.number,
                 name = it.product.name,
