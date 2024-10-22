@@ -17,7 +17,11 @@ import org.team_alilm.global.error.RequestValidateException
 
 @RestController
 @RequestMapping("/api/v1/baskets")
-@Tag(name = "장바구니 메인 조회 API", description = "메인 page에서 사용하는 API를 제공합니다.")
+@Tag(name = "장바구니 메인 조회 API", description = """
+    메인 page에서 사용하는 API를 제공합니다.
+    
+    
+""")
 class BasketSliceController(
     private val basketSliceUseCase: BasketSliceUseCase
 ) {
@@ -29,6 +33,8 @@ class BasketSliceController(
             정렬 조건, 페이지, 사이즈를 입력받아요.
             
             기본은 기다리는 사람이 많은 순 이에요.
+            
+            기다리는 사람이 0명인 상품도 조회되고 있어요.
     """
     )
     @GetMapping
