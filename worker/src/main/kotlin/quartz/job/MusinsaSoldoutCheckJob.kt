@@ -38,7 +38,8 @@ class MusinsaSoldoutCheckJob(
     val fcmSendGateway: FcmSendGateway,
     val loadFcmTokenPort: LoadFcmTokenPort,
     val loadBasketPort: LoadBasketPort,
-    val loadMemberPort: LoadMemberPort
+    val loadMemberPort: LoadMemberPort,
+    val objectMapper: ObjectMapper
 ) : Job {
 
     private val log = LoggerFactory.getLogger(MusinsaSoldoutCheckJob::class.java)
@@ -58,7 +59,7 @@ class MusinsaSoldoutCheckJob(
             // 상품의 전체 품절 시 확인 하는 로직을 가지고 있어요.
             val response = jsoupProductDataGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
             val jsonData = extractJsonData(response.html, "window.__MSS__.product.state")
-            val jsonObject = ObjectMapper().readTree(jsonData)
+            val jsonObject = objectMapper.readTree(jsonData)
 
             val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "SOLDOUT"
 
@@ -68,15 +69,10 @@ class MusinsaSoldoutCheckJob(
                 try {
                     checkIfSoldOut(requestUri, product)
                 } catch (e: RestClientException) {
-                    log.info("Failed to check soldout status of product: $productNumber")
-                    sendSlackGateway.sendMessage("""
-                        Failed to check soldout status of 
-                        product number : $productNumber
-                        store : musinsa
-                        
-                        ${e.message}
-                    """.trimIndent())
-                    true
+                    log.error("Failed to check soldout status of product: $productNumber", e)
+                    sendSlackGateway.sendMessage("Failed to check soldout status of product number: $productNumber\nError: ${e.message}")
+
+                    true // 상품이 품절로 간주
                 }
             }
 
@@ -116,6 +112,8 @@ class MusinsaSoldoutCheckJob(
         sendSlackGateway.sendMessage(getSlackMessage(product))
     }
 
+    // 무신사 서버를 찔러요. ip 차단 시 서버를 재 시작 해야합니다.
+    // 향후에는 비동기적으로 변경할 생각이에요.
     private fun checkIfSoldOut(requestUri: String, product: Product): Boolean {
         val response = restClient.get().uri(requestUri).retrieve().body<SoldoutCheckResponse>()
         val optionItem = response?.data?.optionItems?.firstOrNull {

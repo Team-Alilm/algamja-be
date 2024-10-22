@@ -17,11 +17,11 @@ class BasketJpaEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @Column(name = "member_id", nullable = false)
-    val memberJpaEntityId: Long,
+    @Column(nullable = false)
+    val memberId: Long,
 
-    @Column(name = "product_id", nullable = false)
-    val productJpaEntityId: Long,
+    @Column(nullable = false)
+    val productId: Long,
 
     @Column(nullable = false)
     val isAlilm: Boolean = false,

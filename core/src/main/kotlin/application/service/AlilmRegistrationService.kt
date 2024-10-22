@@ -28,25 +28,34 @@ class AlilmRegistrationService(
         command: AlilmRegistrationCommand,
         product: Product,
     ) {
-        loadBasketPort.loadBasket(
+        val basket = loadBasketPort.loadBasket(
             memberId = command.member.id!!,
             productId = product.id!!
         ) ?.let {
-            log.info("장바구니가 이미 존재합니다. memberId: ${command.member.id}, productId: ${product.id}")
-            throw BasketAlreadyExistsException()
+            if(it.isAlilm) {
+                it.isAlilm = false
+                it.alilmDate = null
+            } else {
+                log.info("장바구니가 이미 존재합니다. memberId: ${command.member.id}, productId: ${product.id}")
+                throw BasketAlreadyExistsException()
+            }
+
+            it
         } ?: run {
             log.info("장바구니를 등록 합니다.")
-            addBasketPort.addBasket(
-                basket = Basket(
-                    id = Basket.BasketId(null),
-                    memberId = command.member.id,
-                    productId = product.id,
-                    isHidden = false,
-                ),
-                member = command.member,
-                product = product
+            Basket(
+                id = Basket.BasketId(null),
+                memberId = command.member.id,
+                productId = product.id,
+                isHidden = false,
             )
         }
+
+        addBasketPort.addBasket(
+            basket = basket,
+            member = command.member,
+            product = product
+        )
     }
 
     private fun getProduct(command: AlilmRegistrationCommand) =
