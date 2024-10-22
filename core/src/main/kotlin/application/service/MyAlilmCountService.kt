@@ -14,7 +14,6 @@ class MyAlilmCountService(
         val basketList = loadBasketPort.loadBasket(command.member.id!!)
 
         val result = MyAlilmCountResult(
-            count = basketList.size,
             alilmCount = basketList.filter { it.isAlilm }.size,
             basketCount = basketList.size,
         )
