@@ -32,4 +32,24 @@ class Product (
         MUSINSA;
 
     }
+
+    fun getManagedCode() : String {
+        return if (this.firstOption.isNotBlank() && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {
+            "${firstOption}^${secondOption}^${thirdOption}"
+        } else if (firstOption.isNotBlank() && secondOption?.isNotBlank() == true) {
+            "${firstOption}^${secondOption}"
+        } else {
+            firstOption
+        }
+    }
+
+    fun getEmailOption() : String {
+        return if (this.firstOption.isNotBlank() && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {
+            "${this.firstOption} / ${this.secondOption} / ${this.thirdOption}"
+        } else if (this.firstOption.isNotBlank() && this.secondOption?.isNotBlank() == true) {
+            "${this.firstOption} / ${this.secondOption}"
+        } else {
+            this.firstOption
+        }
+    }
 }
