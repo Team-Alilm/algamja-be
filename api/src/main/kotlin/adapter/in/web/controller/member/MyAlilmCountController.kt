@@ -32,17 +32,12 @@ class MyAlilmCountController(
 
         val result = myAlilmCountUseCase.myAlilmCount(command)
 
-        val response = MyAlilmCountResponse(result.count, result.alilmCount, result.basketCount)
+        val response = MyAlilmCountResponse(result.alilmCount, result.basketCount)
 
         return ResponseEntity.ok(response)
     }
 
     data class MyAlilmCountResponse(
-        @Schema(description = """
-            알림 개수
-            이제 비 활성화 될 거에요.
-            """)
-        val count: Int,
         @Schema(description = """
             내가 받은 알림 수
             """)
