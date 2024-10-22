@@ -29,6 +29,10 @@ class BasketsRegisteredController(
         summary = "상품 등록 API",
         description = """
             사용자의 URL을 받아서 상품의 정보를 등록하는 API 입니다.
+            
+            - 새로운 상품 등록 시 : 정상 등록
+            - 이미 알림 받은 상품 등록 시 : 정상 등록
+            - 등록 되어 있지만 알림을 받지 못한 상태면 : 이미등록된 상품이 있다는 예외 400 응답
         """
     )
     @PostMapping("/registered")

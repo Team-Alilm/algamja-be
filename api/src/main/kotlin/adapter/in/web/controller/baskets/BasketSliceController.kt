@@ -48,8 +48,6 @@ class BasketSliceController(
             page = productListParameter.page
         )
 
-
-
         return ResponseEntity.ok(basketSliceUseCase.basketSlice(command))
     }
 

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
-import org.team_alilm.adapter.out.persistence.mapper.MemberMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.BasketRepository
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataBasketRepository
@@ -26,7 +25,6 @@ class BasketAdapter(
     private val basketRepository: BasketRepository,
     private val basketMapper: BasketMapper,
     private val productMapper: ProductMapper,
-    private val memberMapper: MemberMapper
 ) : AddBasketPort,
     LoadBasketPort,
     LoadSliceBasketPort,
