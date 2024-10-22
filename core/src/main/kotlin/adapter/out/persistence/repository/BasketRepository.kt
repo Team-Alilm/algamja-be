@@ -14,9 +14,9 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
                 p as productJpaEntity, 
                 COUNT(b) as waitingCount
             FROM 
-                BasketJpaEntity b
-            JOIN 
                 ProductJpaEntity p
+            JOIN 
+                BasketJpaEntity b
                 ON b.productId = p.id
             WHERE 
                 b.isDelete = false
