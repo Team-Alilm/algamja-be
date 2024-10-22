@@ -50,6 +50,8 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
         GROUP BY 
             b.productJpaEntityId, 
             b.id
+        ORDER BY
+            b.createdDate DESC
     """)
     fun myBasketList(memberJpaEntityId: Long): List<Tuple>
 }
