@@ -22,6 +22,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         join BasketJpaEntity b
         on p.id = b.productId
         where b.isDelete = false
+        and b.isAlilm = false
         """
     )
     fun findProductsInBaskets(): List<ProductJpaEntity>

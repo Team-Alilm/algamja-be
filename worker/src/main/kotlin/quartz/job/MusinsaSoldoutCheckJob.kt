@@ -63,6 +63,7 @@ class MusinsaSoldoutCheckJob(
             val jsonData = extractJsonData(response.html, "window.__MSS__.product.state")
             val jsonObject = objectMapper.readTree(jsonData)
 
+            // 상품의 전체 품절 여부
             val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "SOLDOUT"
             log.info("""
                 Product url = $musinsaProductHtmlRequestUrl
