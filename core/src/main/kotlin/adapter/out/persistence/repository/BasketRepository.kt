@@ -45,13 +45,13 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
             AND otherBaskets.isDelete = false
         WHERE 
             b.isDelete = false
-            AND b.memberId = :memberJpaEntityId
+            AND b.memberId = :memberId
         GROUP BY 
             b.productId, 
             b.id
         ORDER BY
             b.createdDate DESC
     """)
-    fun myBasketList(memberJpaEntityId: Long): List<Tuple>
+    fun myBasketList(memberId: Long): List<Tuple>
 }
 

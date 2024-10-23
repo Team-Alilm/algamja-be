@@ -20,7 +20,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         """
         select distinct p from ProductJpaEntity p
         join BasketJpaEntity b
-        on p.id = b.productJpaEntityId
+        on p.id = b.productId
         where b.isDelete = false
         """
     )

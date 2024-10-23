@@ -9,8 +9,8 @@ class FcmTokenJpaEntity(
     @Column(nullable = false, unique = true)
     val token: String,
 
-    @Column(name = "member_id", nullable = false)
-    val memberJpaEntityId: Long,
+    @Column(nullable = false)
+    val memberId: Long,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

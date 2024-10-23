@@ -9,11 +9,11 @@ import org.team_alilm.domain.Product
 @Component
 class BasketMapper {
 
-    fun mapToJpaEntity(basket: Basket, memberJpaEntityId: Long, productJpaEntityId: Long): BasketJpaEntity {
+    fun mapToJpaEntity(basket: Basket, memberId: Long, productId: Long): BasketJpaEntity {
         return BasketJpaEntity(
             id = basket.id?.value,
-            memberId = memberJpaEntityId,
-            productId = productJpaEntityId,
+            memberId = memberId,
+            productId = productId,
             isAlilm = basket.isAlilm,
             alilmDate = basket.alilmDate,
             isHidden = basket.isHidden,
