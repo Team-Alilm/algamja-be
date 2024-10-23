@@ -53,5 +53,21 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
             b.createdDate DESC
     """)
     fun myBasketList(memberId: Long): List<Tuple>
+
+    @Query("""
+        SELECT 
+            b as basketJpaEntity
+        FROM
+            BasketJpaEntity b
+        JOIN
+            ProductJpaEntity p
+            ON b.productId = p.id
+        WHERE
+            b.isDelete = false
+            AND p.isDelete = false
+            AND b.isAlilm = false
+            AND p.number = :productNumber
+    """)
+    fun findByProductNumber(productNumber: Number): List<BasketJpaEntity>
 }
 

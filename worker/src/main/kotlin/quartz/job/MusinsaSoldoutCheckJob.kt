@@ -85,7 +85,7 @@ class MusinsaSoldoutCheckJob(
             }
 
             if (!isSoldOut) {
-                val baskets = loadBasketPort.loadBasket(Product.ProductId(product.id?.value ?: 0))
+                val baskets = loadBasketPort.loadBasket(product.number)
 
                 baskets.forEach {
                     val member = loadMemberPort.loadMember(it.memberId.value) ?: throw NotFoundMemberException()
