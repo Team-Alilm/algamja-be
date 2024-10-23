@@ -48,9 +48,9 @@ class BasketAdapter(
         memberId: Member.MemberId,
         productId: Product.ProductId
     ): Basket? {
-        val basketJpaEntity = springDataBasketRepository.findByMemberJpaEntityIdAndIsDeleteFalseAndProductJpaEntityId(
-            memberJpaEntityId = memberId.value,
-            productJpaEntityId = productId.value
+        val basketJpaEntity = springDataBasketRepository.findByMemberIdAndIsDeleteFalseAndProductId(
+            memberId = memberId.value,
+            productId = productId.value
         )
 
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
@@ -58,13 +58,13 @@ class BasketAdapter(
 
     override fun loadBasket(memberId: Member.MemberId): List<Basket> {
         // 나의 장바구니 중 알림 받은 상품 수
-        val basketJpaEntityList = springDataBasketRepository.findByMemberJpaEntityIdAndIsDeleteFalse(memberId.value)
+        val basketJpaEntityList = springDataBasketRepository.findByMemberIdAndIsDeleteFalse(memberId.value)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
     override fun loadBasket(productId: Product.ProductId): List<Basket> {
-        val basketJpaEntityList = springDataBasketRepository.findByProductJpaEntityIdAndIsDeleteFalseAndIsAlilmFalse(productId.value)
+        val basketJpaEntityList = springDataBasketRepository.findByProductIdAndIsDeleteFalseAndIsAlilmFalse(productId.value)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
@@ -129,7 +129,7 @@ class BasketAdapter(
     }
 
     override fun deleteBasket(memberId: Long, basketId: Long) {
-        val basketJpaEntity = springDataBasketRepository.findByIdAndMemberJpaEntityId(
+        val basketJpaEntity = springDataBasketRepository.findByIdAndMemberId(
             basketId = basketId,
             memberId = memberId
         ) ?: throw NotFoundBasketException()

@@ -8,11 +8,11 @@ import org.team_alilm.domain.Member
 @Component
 class FcmTokenMapper {
 
-    fun mapToJpaEntity(fcmToken: FcmToken, memberJpaEntityId: Long): FcmTokenJpaEntity {
+    fun mapToJpaEntity(fcmToken: FcmToken, memberId: Long): FcmTokenJpaEntity {
         return FcmTokenJpaEntity(
             id = fcmToken.id?.value,
             token = fcmToken.token,
-            memberJpaEntityId = memberJpaEntityId,
+            memberId = memberId,
         )
     }
 
@@ -20,7 +20,7 @@ class FcmTokenMapper {
         return FcmToken(
             id = FcmToken.FcmTokenId(fcmTokenJpaEntity.id!!),
             token = fcmTokenJpaEntity.token,
-            memberId = Member.MemberId(fcmTokenJpaEntity.memberJpaEntityId),
+            memberId = Member.MemberId(fcmTokenJpaEntity.memberId),
         )
     }
 

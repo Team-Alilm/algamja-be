@@ -16,13 +16,13 @@ class FcmTokenAdapter(
     override fun addFcmToken(fcmToken: FcmToken) {
         val fcmTokenJpaEntity = fcmTokenMapper.mapToJpaEntity(
             fcmToken = fcmToken,
-            memberJpaEntityId = fcmToken.memberId.value
+            memberId = fcmToken.memberId.value
         )
         springDataFcmTokenRepository.save(fcmTokenJpaEntity)
     }
 
     override fun loadFcmTokenAllByMember(memberId: Long): List<FcmToken> {
-        val fcmJpaEntityList = springDataFcmTokenRepository.findByMemberJpaEntityId(memberId)
+        val fcmJpaEntityList = springDataFcmTokenRepository.findByMemberId(memberId)
 
         return fcmJpaEntityList.map { fcmTokenMapper.mapToDomain(it) }
     }
