@@ -18,4 +18,8 @@ interface LoadBasketPort {
     fun loadBasket(
         productId: Product.ProductId
     ): List<Basket>
+
+    fun loadBasket(
+        productNumber: Number
+    ): List<Basket>
 }

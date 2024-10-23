@@ -69,6 +69,12 @@ class BasketAdapter(
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
+    override fun loadBasket(productNumber: Number): List<Basket> {
+        val basketJpaEntityList = basketRepository.findByProductNumber(productNumber)
+
+        return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
+    }
+
     override fun loadBasketSlice(pageRequest: PageRequest): Slice<LoadSliceBasketPort.BasketAndCountProjection> {
         val basketCountProjectionSlice = basketRepository.loadBasketSlice(pageRequest)
 
