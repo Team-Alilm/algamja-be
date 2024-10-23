@@ -6,5 +6,6 @@ import org.team_alilm.domain.Member
 interface LoadFcmTokenPort {
 
     fun loadFcmTokenAllByMember(memberId: Long) : List<FcmToken>
+    fun loadFcmToken(token: String): FcmToken?
 
 }
