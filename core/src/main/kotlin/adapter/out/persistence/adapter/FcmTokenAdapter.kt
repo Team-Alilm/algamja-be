@@ -27,4 +27,10 @@ class FcmTokenAdapter(
         return fcmJpaEntityList.map { fcmTokenMapper.mapToDomain(it) }
     }
 
+    override fun loadFcmToken(token: String): FcmToken? {
+        val fcmJpaEntity = springDataFcmTokenRepository.findByToken(token) ?: return null
+
+        return fcmTokenMapper.mapToDomain(fcmJpaEntity)
+    }
+
 }
