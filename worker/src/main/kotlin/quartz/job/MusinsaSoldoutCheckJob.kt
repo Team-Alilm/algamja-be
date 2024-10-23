@@ -15,6 +15,7 @@ import org.team_alilm.adapter.out.gateway.MailGateway
 import org.team_alilm.application.port.out.*
 import org.team_alilm.application.port.out.gateway.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
+import org.team_alilm.domain.Alilm
 import org.team_alilm.domain.Member
 import org.team_alilm.domain.Product
 import org.team_alilm.global.error.NotFoundMemberException
@@ -39,7 +40,8 @@ class MusinsaSoldoutCheckJob(
     val loadFcmTokenPort: LoadFcmTokenPort,
     val loadBasketPort: LoadBasketPort,
     val loadMemberPort: LoadMemberPort,
-    val objectMapper: ObjectMapper
+    val objectMapper: ObjectMapper,
+    val addAlilmPort: AddAlilmPort
 ) : Job {
 
     private val log = LoggerFactory.getLogger(MusinsaSoldoutCheckJob::class.java)
@@ -86,6 +88,7 @@ class MusinsaSoldoutCheckJob(
                     // 바구니 알림 상태로 변경
                     it.sendAlilm()
                     addBasketPort.addBasket(it, member, product)
+                    addAlilmPort.addAlilm(Alilm.from(it))
 
                     val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(it.memberId.value)
 
