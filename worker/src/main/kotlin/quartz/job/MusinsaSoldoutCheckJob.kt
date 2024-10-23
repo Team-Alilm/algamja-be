@@ -64,6 +64,11 @@ class MusinsaSoldoutCheckJob(
             val jsonObject = objectMapper.readTree(jsonData)
 
             val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "SOLDOUT"
+            log.info("""
+                Product url = $musinsaProductHtmlRequestUrl
+                Product number: $productNumber
+                isAllSoldout: $isAllSoldout
+            """.trimIndent())
 
             val isSoldOut = if (isAllSoldout) {
                 true
