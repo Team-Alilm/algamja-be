@@ -2,7 +2,6 @@ spring:
   profiles:
     include:
       - core
-      - local
 
 server:
   port: 8081

@@ -8,6 +8,8 @@ import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataM
 import org.team_alilm.application.port.out.AddMemberRoleMappingPort
 import org.team_alilm.domain.Member
 import org.team_alilm.domain.Role
+import org.team_alilm.global.error.NotFoundMemberException
+import org.team_alilm.global.error.NotFoundRoleException
 
 @Component
 class MemberRoleMappingAdapter(
@@ -20,8 +22,8 @@ class MemberRoleMappingAdapter(
     override fun addMemberRoleMapping(member: Member, role: Role) {
         springDataMemberRoleMappingRepository.save(
             memberRoleMappingMapper.mapToJpaEntity(
-                memberMapper.mapToJpaEntity(member),
-                roleMapper.mapToJpaEntity(role)
+                member.id?.value ?: throw NotFoundMemberException(),
+                role.id?.value ?: throw NotFoundRoleException()
             )
         )
     }

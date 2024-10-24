@@ -8,10 +8,10 @@ import org.team_alilm.adapter.out.persistence.entity.RoleJpaEntity
 @Component
 class MemberRoleMappingMapper {
 
-    fun mapToJpaEntity(memberJpaEntity: MemberJpaEntity, roleJpaEntity: RoleJpaEntity) : MemberRoleMappingJpaEntity {
+    fun mapToJpaEntity(memberJpaEntityId: Long, roleJpaEntityId: Long) : MemberRoleMappingJpaEntity {
         return MemberRoleMappingJpaEntity(
-            memberJpaEntity = memberJpaEntity,
-            roleJpaEntity = roleJpaEntity
+            memberId = memberJpaEntityId,
+            roleId = roleJpaEntityId
         )
     }
 
