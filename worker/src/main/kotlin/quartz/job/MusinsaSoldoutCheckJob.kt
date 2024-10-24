@@ -48,7 +48,12 @@ class MusinsaSoldoutCheckJob(
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
-        loadProductsInBaskets.loadProductsInBaskets().forEach { product ->
+        val prodcutList = loadProductsInBaskets.loadProductsInBaskets()
+        log.info("""
+            products size: ${prodcutList.size}
+            """.trimIndent())
+
+        prodcutList.forEach { product ->
             log.debug("""
                 Checking product name: ${product.name}
                 id: ${product.id}
