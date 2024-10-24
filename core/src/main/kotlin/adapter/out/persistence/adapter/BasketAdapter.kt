@@ -79,12 +79,10 @@ class BasketAdapter(
         val basketCountProjectionSlice = basketRepository.loadBasketSlice(pageRequest)
 
         return basketCountProjectionSlice.map {
-            val productJpaEntity = it.get("productJpaEntity", ProductJpaEntity::class.java)!!
-            val waitingCount = it.get("waitingCount", Long::class.java)!!
 
             LoadSliceBasketPort.BasketAndCountProjection(
-                product = productMapper.mapToDomainEntity(productJpaEntity),
-                waitingCount = waitingCount
+                product = productMapper.mapToDomainEntity(it.productJpaEntity),
+                waitingCount = it.waitingCount
             )
         }
     }
@@ -93,9 +91,6 @@ class BasketAdapter(
         return basketRepository
             .myBasketList(member.id?.value ?: throw NotFoundMemberException())
             .map {
-                val basketJpaEntity = it.get("basketJpaEntity", BasketJpaEntity::class.java)!!
-                val productJpaEntity = it.get("productJpaEntity", ProductJpaEntity::class.java)!!
-                val waitingCount = it.get("waitingCount", Long::class.java)!!
 
                 LoadMyBasketsPort.BasketAndProduct(
                     basket = basketMapper.mapToDomainEntity(basketJpaEntity),
