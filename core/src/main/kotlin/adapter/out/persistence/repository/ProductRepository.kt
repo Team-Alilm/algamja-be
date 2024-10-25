@@ -5,6 +5,7 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
+import org.team_alilm.adapter.out.persistence.repository.product.ProductSliceProjection
 import org.team_alilm.domain.Product
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
@@ -30,15 +31,17 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     fun findProductsInBaskets(): List<ProductJpaEntity>
 
     @Query("""
-    SELECT new org.team_alilm.adapter.out.persistence.repository.ProductSliceProjection(p, COUNT(b)) 
-    FROM ProductJpaEntity p 
-    LEFT JOIN BasketJpaEntity b ON b.productId = p.id
-    GROUP BY p.id
-""")
+        SELECT 
+            new org.team_alilm.adapter.out.persistence.repository.product.ProductSliceProjection(p, COUNT(b)) 
+        FROM 
+            ProductJpaEntity p 
+        LEFT JOIN 
+            BasketJpaEntity b 
+        ON 
+            b.productId = p.id
+        GROUP BY p.id
+        order by COUNT(b) desc
+    """)
     fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductSliceProjection>
 }
 
-data class ProductSliceProjection(
-    val productJpaEntity: ProductJpaEntity,
-    val waitingCount: Long
-)
