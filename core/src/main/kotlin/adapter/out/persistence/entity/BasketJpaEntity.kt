@@ -12,7 +12,7 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
         )
     ]
 )
-class BasketJpaEntity(
+open class BasketJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -24,11 +24,11 @@ class BasketJpaEntity(
     val productId: Long,
 
     @Column(nullable = false)
-    val isAlilm: Boolean = false,
+    var isAlilm: Boolean = false,
 
     @Column
-    val alilmDate: Long? = null,
+    var alilmDate: Long? = null,
 
     @Column(nullable = false)
-    val isHidden: Boolean = false
+    var isHidden: Boolean = false
 ) : BaseTimeEntity()

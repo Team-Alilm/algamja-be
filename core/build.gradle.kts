@@ -24,3 +24,9 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:8.1.0")
 
 }
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}

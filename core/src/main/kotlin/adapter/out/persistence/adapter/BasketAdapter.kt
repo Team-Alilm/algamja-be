@@ -1,10 +1,10 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
-import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.BasketRepository
@@ -27,11 +27,12 @@ class BasketAdapter(
     private val productMapper: ProductMapper,
 ) : AddBasketPort,
     LoadBasketPort,
-    LoadSliceBasketPort,
     LoadMyBasketsPort,
     LoadAllAndDailyCountPort,
     DeleteBasketPort
 {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     override fun addBasket(
         basket: Basket,
@@ -75,27 +76,14 @@ class BasketAdapter(
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
-    override fun loadBasketSlice(pageRequest: PageRequest): Slice<LoadSliceBasketPort.BasketAndCountProjection> {
-        val basketCountProjectionSlice = basketRepository.loadBasketSlice(pageRequest)
-
-        return basketCountProjectionSlice.map {
-
-            LoadSliceBasketPort.BasketAndCountProjection(
-                product = productMapper.mapToDomainEntity(it.productJpaEntity),
-                waitingCount = it.waitingCount
-            )
-        }
-    }
-
     override fun loadMyBaskets(member: Member) : List<LoadMyBasketsPort.BasketAndProduct> {
         return basketRepository
             .myBasketList(member.id?.value ?: throw NotFoundMemberException())
             .map {
-
                 LoadMyBasketsPort.BasketAndProduct(
-                    basket = basketMapper.mapToDomainEntity(basketJpaEntity),
-                    product = productMapper.mapToDomainEntity(productJpaEntity),
-                    waitingCount = waitingCount
+                    basket = basketMapper.mapToDomainEntity(it.basketJpaEntity),
+                    product = productMapper.mapToDomainEntity(it.productJpaEntity),
+                    waitingCount = it.waitingCount
                 )
             }
     }

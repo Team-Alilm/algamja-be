@@ -14,7 +14,7 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
     ]
 
 )
-class MemberJpaEntity(
+open class MemberJpaEntity(
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     val provider: Member.Provider,

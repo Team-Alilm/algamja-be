@@ -1,35 +1,25 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.application.port.out.LoadSliceBasketPort
+import org.team_alilm.application.port.out.LoadProductSlicePort
 
-interface BasketSliceUseCase {
+interface ProductSliceUseCase {
 
-    fun basketSlice(command: BasketListCommand): CustomSlice
+    fun productSlice(command: ProductSliceCommand): CustomSlice
 
     data class CustomSlice(
-        val contents: List<BasketListResult>,
+        val contents: List<ProductSliceResult>,
         val hasNext: Boolean,
         val isLast: Boolean,
         val number: Int,
         val size: Int
     )
 
-    data class BasketListCommand(
+    data class ProductSliceCommand(
         val page: Int,
         val size: Int
-    ) {
+    )
 
-        companion object {
-            fun of(page: Int, size: Int): BasketListCommand {
-                return BasketListCommand(
-                    page = page,
-                    size = size
-                )
-            }
-        }
-    }
-
-    data class BasketListResult(
+    data class ProductSliceResult(
         val id: Long,
         val number: Long,
         val name: String,
@@ -45,8 +35,8 @@ interface BasketSliceUseCase {
     ) {
 
         companion object {
-            fun from (basketAndCountProjection: LoadSliceBasketPort.BasketAndCountProjection): BasketListResult {
-                return BasketListResult(
+            fun from (basketAndCountProjection: LoadProductSlicePort.ProductAndWaitingCount): ProductSliceResult {
+                return ProductSliceResult(
                     id = basketAndCountProjection.product.id!!.value,
                     number = basketAndCountProjection.product.number,
                     name = basketAndCountProjection.product.name,

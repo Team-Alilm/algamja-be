@@ -21,7 +21,7 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
         )
     ]
 )
-class AlilmJpaEntity(
+open class AlilmJpaEntity(
 
     @Column(nullable = false)
     val productId: Long,

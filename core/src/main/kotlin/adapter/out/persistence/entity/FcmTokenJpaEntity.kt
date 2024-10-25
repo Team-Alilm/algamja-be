@@ -5,7 +5,7 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
 
 @Entity
 @Table(name = "fcm_token")
-class FcmTokenJpaEntity(
+open class FcmTokenJpaEntity(
     @Column(nullable = false, unique = true)
     val token: String,
 
@@ -14,5 +14,5 @@ class FcmTokenJpaEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    open val id: Long? = null
 ) : BaseTimeEntity()

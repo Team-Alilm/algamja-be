@@ -1,12 +1,15 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.ProductRepository
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
 import org.team_alilm.application.port.out.AddProductPort
 import org.team_alilm.application.port.out.LoadProductPort
+import org.team_alilm.application.port.out.LoadProductSlicePort
 import org.team_alilm.application.port.out.LoadProductsInBasketsPort
 import org.team_alilm.domain.Product
 
@@ -15,7 +18,10 @@ class ProductAdapter(
     private val springDataProductRepository: SpringDataProductRepository,
     private val productRepository: ProductRepository,
     private val productMapper: ProductMapper,
-) : AddProductPort, LoadProductPort, LoadProductsInBasketsPort {
+) : AddProductPort,
+    LoadProductPort,
+    LoadProductsInBasketsPort,
+    LoadProductSlicePort {
 
     private val log = LoggerFactory.getLogger(ProductAdapter::class.java)
 
@@ -61,6 +67,13 @@ class ProductAdapter(
             log.error("Failed to load products in baskets", e)
             emptyList()
         }
+    }
+
+    override fun loadProductSlice(pageRequest: PageRequest): Slice<LoadProductSlicePort.ProductAndWaitingCount> {
+        return productRepository.findAllProductSlice(pageRequest).map { LoadProductSlicePort.ProductAndWaitingCount.of(
+            product = productMapper.mapToDomainEntity(it.productJpaEntity),
+            waitingCount = it.waitingCount
+        ) }
     }
 
 }
