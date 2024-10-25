@@ -3,21 +3,25 @@ package org.team_alilm.adapter.out.persistence.repository
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
-import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
+import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndProductProjection
 
 interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
     @Query("""
-        select BasketJpaEntity, ProductJpaEntity, COUNT(b.id) as waitingCount
-        from BasketJpaEntity b
-        join ProductJpaEntity p on b.productId = p.id
-        where b.memberId = :memberId
-        and b.isDelete = false
-        and p.isDelete = false
-        group by p.id
-        order by b.createdDate
-    """)
-    fun myBasketList(memberId: Long): List<BasketAndProduct>
+    select new org.team_alilm.adapter.out.persistence.repository.basket.BasketAndProductProjection(
+        b, 
+        p, 
+        count(b2)
+    )
+    from BasketJpaEntity b
+    join ProductJpaEntity p on b.productId = p.id
+    left join BasketJpaEntity b2 on b2.productId = p.id and b2.isDelete = false
+    where b.memberId = :memberId
+    and b.isDelete = false
+    and p.isDelete = false
+    group by b.id, p.id
+""")
+    fun myBasketList(memberId: Long): List<BasketAndProductProjection>
 
     @Query("""
         SELECT 
@@ -34,11 +38,5 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
             AND p.number = :productNumber
     """)
     fun findByProductNumber(productNumber: Number): List<BasketJpaEntity>
-
-    data class BasketAndProduct(
-        val basketJpaEntity: BasketJpaEntity,
-        val productJpaEntity: ProductJpaEntity,
-        val waitingCount: Long
-    )
 
 }

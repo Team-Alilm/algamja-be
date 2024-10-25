@@ -58,7 +58,6 @@ class BasketAdapter(
     }
 
     override fun loadBasket(memberId: Member.MemberId): List<Basket> {
-        // 나의 장바구니 중 알림 받은 상품 수
         val basketJpaEntityList = springDataBasketRepository.findByMemberIdAndIsDeleteFalse(memberId.value)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }

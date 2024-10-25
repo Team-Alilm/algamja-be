@@ -1,4 +1,4 @@
-package org.team_alilm.adapter.`in`.web.controller.baskets
+package org.team_alilm.adapter.`in`.web.controller.product
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
@@ -16,13 +16,14 @@ import org.team_alilm.application.port.`in`.use_case.ProductSliceUseCase
 import org.team_alilm.global.error.RequestValidateException
 
 @RestController
-@RequestMapping("/api/v1/baskets")
+@RequestMapping("/api/v1/baskets", "/api/v1/products")
 @Tag(name = "장바구니 메인 조회 API", description = """
     메인 page에서 사용하는 API를 제공합니다.
     
-    
+    2개의 url을 제공하고 있어요.
+    향후 /api/v1/baskets은 삭제 될 예정 입니다.
 """)
-class BasketSliceController(
+class ProductSliceController(
     private val productSliceUseCase: ProductSliceUseCase
 ) {
 
