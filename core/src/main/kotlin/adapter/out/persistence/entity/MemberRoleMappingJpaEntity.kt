@@ -5,7 +5,7 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
 
 @Entity
 @Table(name = "member_role_mapping")
-class MemberRoleMappingJpaEntity(
+open class MemberRoleMappingJpaEntity(
 
     @Column(nullable = false)
     val memberId: Long,

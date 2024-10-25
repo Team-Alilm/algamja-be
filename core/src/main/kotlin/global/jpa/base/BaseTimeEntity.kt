@@ -1,10 +1,6 @@
 package org.team_alilm.global.jpa.base
 
-import jakarta.persistence.Column
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.MappedSuperclass
-import jakarta.persistence.PrePersist
-import jakarta.persistence.PreUpdate
+import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -14,12 +10,18 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 abstract class BaseTimeEntity {
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
-    var createdDate: Long = 0
+    @Column(name = "created_date", nullable = false, updatable = false)
+    open var createdDate: Long = 0
+        protected set
 
     @LastModifiedDate
+    @Column(name = "last_modified_date", nullable = false)
+    open var lastModifiedDate: Long = 0
+        protected set
+
     @Column(nullable = false)
-    var lastModifiedDate: Long = 0
+    open var isDelete: Boolean = false
+        protected set
 
     @PrePersist
     fun prePersist() {
@@ -33,10 +35,9 @@ abstract class BaseTimeEntity {
         lastModifiedDate = System.currentTimeMillis()
     }
 
-    @Column(nullable = false)
-    var isDelete: Boolean = false
-
     fun delete() {
         this.isDelete = true
     }
 }
+
+

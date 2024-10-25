@@ -2,7 +2,6 @@ package org.team_alilm.adapter.out.persistence.entity
 
 import jakarta.persistence.*
 import org.team_alilm.domain.Product
-import org.team_alilm.global.jpa.base.BaseEntity
 import org.team_alilm.global.jpa.base.BaseTimeEntity
 
 @Entity
@@ -13,7 +12,7 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
         columnNames = ["store", "number", "first_option", "second_option", "third_option"]
     )]
 )
-class ProductJpaEntity(
+open class ProductJpaEntity(
     @Column(nullable = false)
     val number :Long,
 

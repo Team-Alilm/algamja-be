@@ -18,6 +18,8 @@ spring:
         use_sql_comments: true
 
     open-in-view: true
+    hibernate:
+      ddl-auto: update
 
   mail:
     subject: 안녕하세요 Team Alilm dev 서버 입니다.

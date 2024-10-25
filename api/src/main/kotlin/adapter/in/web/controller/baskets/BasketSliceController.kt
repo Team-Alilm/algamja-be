@@ -12,7 +12,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.application.port.`in`.use_case.BasketSliceUseCase
+import org.team_alilm.application.port.`in`.use_case.ProductSliceUseCase
 import org.team_alilm.global.error.RequestValidateException
 
 @RestController
@@ -23,7 +23,7 @@ import org.team_alilm.global.error.RequestValidateException
     
 """)
 class BasketSliceController(
-    private val basketSliceUseCase: BasketSliceUseCase
+    private val productSliceUseCase: ProductSliceUseCase
 ) {
 
     @Operation(
@@ -44,17 +44,17 @@ class BasketSliceController(
         productListParameter: ProductListParameter,
 
         bindingResult: BindingResult
-    ): ResponseEntity<BasketSliceUseCase.CustomSlice> {
+    ): ResponseEntity<ProductSliceUseCase.CustomSlice> {
         if (bindingResult.hasErrors()) {
             throw RequestValidateException(bindingResult)
         }
 
-        val command = BasketSliceUseCase.BasketListCommand.of(
+        val command = ProductSliceUseCase.ProductSliceCommand(
             size = productListParameter.size,
             page = productListParameter.page
         )
 
-        return ResponseEntity.ok(basketSliceUseCase.basketSlice(command))
+        return ResponseEntity.ok(productSliceUseCase.productSlice(command))
     }
 
     @Schema(description = "상품 조회 파라미터")
