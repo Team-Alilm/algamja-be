@@ -1,7 +1,13 @@
 spring:
   profiles:
-    include:
-      - core
+    group:
+      local:
+        - local
+        - core
+      prod:
+        - prod
+        - core
+    default: local
 
 server:
   port: 8081
