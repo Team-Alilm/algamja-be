@@ -19,16 +19,20 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     ): ProductJpaEntity?
 
     @Query(value = """
-        select p.id, p.number, p.brand, p.image_url, p.store, p.category, p.price, 
-               p.first_option, p.second_option, p.third_option, p.is_delete, 
-               p.created_date, p.last_modified_date, p.name
-        from product p
-        join basket b on p.id = b.product_id
-        where b.is_delete = false and b.is_alilm = false
-        group by p.number
-        """, nativeQuery = true
-    )
-    fun findProductsInBaskets(): List<ProductJpaEntity>
+        SELECT
+            p
+        FROM
+            ProductJpaEntity p
+        JOIN
+            BasketJpaEntity b
+        ON 
+            b.productId = p.id
+        and b.isAlilm = false
+        and p.isDelete = false
+        and b.isDelete = false
+        GROUP BY p.number
+    """)
+    fun findCrawlingProducts(): List<ProductJpaEntity>
 
     @Query("""
         SELECT 
@@ -39,6 +43,8 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
             BasketJpaEntity b 
         ON 
             b.productId = p.id
+        and b.isDelete = false
+        and p.isDelete = false
         GROUP BY p.id
         order by COUNT(b) desc
     """)

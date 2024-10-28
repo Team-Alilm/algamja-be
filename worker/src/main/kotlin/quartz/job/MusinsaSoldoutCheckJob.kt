@@ -19,6 +19,7 @@ import org.team_alilm.domain.Alilm
 import org.team_alilm.domain.Member
 import org.team_alilm.domain.Product
 import org.team_alilm.global.error.NotFoundMemberException
+import org.team_alilm.global.error.NotFoundProductException
 import org.team_alilm.global.util.StringConstant
 import org.team_alilm.quartz.data.SoldoutCheckResponse
 
@@ -30,7 +31,7 @@ import org.team_alilm.quartz.data.SoldoutCheckResponse
 @Component
 @Transactional(readOnly = true)
 class MusinsaSoldoutCheckJob(
-    val loadProductsInBaskets: LoadProductsInBasketsPort,
+    val loadCrawlingProductsPort: LoadCrawlingProductsPort,
     val addBasketPort: AddBasketPort,
     val restClient: RestClient,
     val mailGateway: MailGateway,
@@ -48,7 +49,7 @@ class MusinsaSoldoutCheckJob(
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
-        val prodcutList = loadProductsInBaskets.loadProductsInBaskets()
+        val prodcutList = loadCrawlingProductsPort.loadCrawlingProducts()
         log.info("""
             products size: ${prodcutList.size}
             """.trimIndent())
@@ -90,7 +91,10 @@ class MusinsaSoldoutCheckJob(
             }
 
             if (!isSoldOut) {
-                val baskets = loadBasketPort.loadBasket(product.number)
+                log.info("Product is not sold out. Product number: $productNumber")
+                val baskets = loadBasketPort.loadBasket(product.id ?: throw NotFoundProductException())
+
+                log.info("baskets size: ${baskets.size}")
 
                 baskets.forEach {
                     val member = loadMemberPort.loadMember(it.memberId.value) ?: throw NotFoundMemberException()

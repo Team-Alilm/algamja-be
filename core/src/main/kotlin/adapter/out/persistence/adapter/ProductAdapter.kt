@@ -8,9 +8,9 @@ import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.ProductRepository
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
 import org.team_alilm.application.port.out.AddProductPort
+import org.team_alilm.application.port.out.LoadCrawlingProductsPort
 import org.team_alilm.application.port.out.LoadProductPort
 import org.team_alilm.application.port.out.LoadProductSlicePort
-import org.team_alilm.application.port.out.LoadProductsInBasketsPort
 import org.team_alilm.domain.Product
 
 @Component
@@ -20,7 +20,7 @@ class ProductAdapter(
     private val productMapper: ProductMapper,
 ) : AddProductPort,
     LoadProductPort,
-    LoadProductsInBasketsPort,
+    LoadCrawlingProductsPort,
     LoadProductSlicePort {
 
     private val log = LoggerFactory.getLogger(ProductAdapter::class.java)
@@ -58,9 +58,9 @@ class ProductAdapter(
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
     }
 
-    override fun loadProductsInBaskets(): List<Product> {
+    override fun loadCrawlingProducts(): List<Product> {
         return try {
-            productRepository.findProductsInBaskets().map {
+            productRepository.findCrawlingProducts().map {
                 productMapper.mapToDomainEntity(it)
             }
         } catch (e: Exception) {
