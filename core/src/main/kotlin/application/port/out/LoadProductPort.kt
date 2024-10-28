@@ -15,4 +15,8 @@ interface LoadProductPort {
     fun loadProduct(
         productId: Product.ProductId,
     ): Product?
+
+    fun loadProductDetails(
+        productId: Product.ProductId,
+    ): LoadProductSlicePort.ProductAndWaitingCount?
 }

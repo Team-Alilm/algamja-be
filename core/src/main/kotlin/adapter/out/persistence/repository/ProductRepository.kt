@@ -5,7 +5,7 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
-import org.team_alilm.adapter.out.persistence.repository.product.ProductSliceProjection
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
 import org.team_alilm.domain.Product
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
@@ -36,7 +36,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
     @Query("""
         SELECT 
-            new org.team_alilm.adapter.out.persistence.repository.product.ProductSliceProjection(p, COUNT(b)) 
+            new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(p, COUNT(b)) 
         FROM 
             ProductJpaEntity p 
         LEFT JOIN 
@@ -48,6 +48,21 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         GROUP BY p.id
         order by COUNT(b) desc
     """)
-    fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductSliceProjection>
+    fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
+
+    @Query("""
+        SELECT 
+            new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(p, COUNT(b)) 
+        FROM 
+            ProductJpaEntity p 
+        JOIN 
+            BasketJpaEntity b 
+        ON 
+            b.productId = p.id
+        and b.isDelete = false
+        and p.isDelete = false
+        and p.id = :value
+    """)
+    fun findByIdAndIsDeleteFalseAndWaitingCount(value: Long): ProductAndWaitingCountProjection?
 }
 
