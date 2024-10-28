@@ -72,7 +72,7 @@ class MusinsaSoldoutCheckJob(
             val jsonObject = objectMapper.readTree(jsonData)
 
             // 상품의 전체 품절 여부
-            val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "SOLDOUT"
+            val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "\"SALE\""
 
             log.info("""
                 Product information
@@ -82,7 +82,7 @@ class MusinsaSoldoutCheckJob(
                 jsonObject.get("goodsSaleType").toString(): ${jsonObject.get("goodsSaleType")}
             """.trimIndent())
 
-            val isSoldOut = if (isAllSoldout) {
+            val isSoldOut = if (isAllSoldout.not()) {
                 true
             } else {
                 try {
@@ -90,7 +90,6 @@ class MusinsaSoldoutCheckJob(
                 } catch (e: RestClientException) {
                     log.error("Failed to check soldout status of product: $productNumber", e)
                     sendSlackGateway.sendMessage("Failed to check soldout status of product number: $productNumber\nError: ${e.message}")
-
                     true // 상품이 품절로 간주
                 }
             }
