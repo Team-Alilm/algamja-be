@@ -73,7 +73,14 @@ class MusinsaSoldoutCheckJob(
 
             // 상품의 전체 품절 여부
             val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "SOLDOUT"
-            log.info("Product url = $musinsaProductHtmlRequestUrl, Product number: $productNumber, isAllSoldout: $isAllSoldout")
+
+            log.info("""
+                Product information
+                Name: ${product.name}
+                Number: $productNumber
+                isAllSoldout: $isAllSoldout
+                jsonObject.get("goodsSaleType").toString(): ${jsonObject.get("goodsSaleType")}
+            """.trimIndent())
 
             val isSoldOut = if (isAllSoldout) {
                 true
