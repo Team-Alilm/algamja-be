@@ -12,6 +12,7 @@ import org.team_alilm.application.port.out.LoadCrawlingProductsPort
 import org.team_alilm.application.port.out.LoadProductPort
 import org.team_alilm.application.port.out.LoadProductSlicePort
 import org.team_alilm.domain.Product
+import org.team_alilm.global.error.NotFoundProductException
 
 @Component
 class ProductAdapter(
@@ -56,6 +57,14 @@ class ProductAdapter(
         val productJpaEntity = springDataProductRepository.findByIdAndIsDeleteFalse(productId.value)
 
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
+    }
+
+    override fun loadProductDetails(productId: Product.ProductId): LoadProductSlicePort.ProductAndWaitingCount? {
+        val productAndWaitingCountProjection = productRepository.findByIdAndIsDeleteFalseAndWaitingCount(productId.value)
+        return LoadProductSlicePort.ProductAndWaitingCount.of(
+            product = productMapper.mapToDomainEntity(productAndWaitingCountProjection?.productJpaEntity ?: throw NotFoundProductException()),
+            waitingCount = productAndWaitingCountProjection.waitingCount
+        )
     }
 
     override fun loadCrawlingProducts(): List<Product> {
