@@ -50,32 +50,30 @@ class MusinsaSoldoutCheckJob(
     @Transactional
     override fun execute(context: JobExecutionContext) {
         val prodcutList = loadCrawlingProductsPort.loadCrawlingProducts()
-        log.info("""
-            products size: ${prodcutList.size}
-            """.trimIndent())
+        log.info("products size: ${prodcutList.size}")
 
         prodcutList.forEach { product ->
-            log.debug("""
-                Checking product name: ${product.name}
-                id: ${product.id}
-            """.trimIndent())
+            log.debug("Checking product name: ${product.name}, id: ${product.id ?: "N/A"}")
+
+            if (product.id == null) {
+                log.warn("Product ID is null for product: ${product.name}")
+                return@forEach // Skip this product
+            }
 
             val productNumber = product.number
             val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(productNumber)
             val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(productNumber)
 
-            // 상품의 전체 품절 시 확인 하는 로직을 가지고 있어요.
             val response = jsoupProductDataGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
-            val jsonData = extractJsonData(response.html, "window.__MSS__.product.state")
+            val jsonData = extractJsonData(response.html, "window.__MSS__.product.state") ?: run {
+                log.warn("JSON data extraction failed for product: ${product.name}")
+                return@forEach // Skip this product
+            }
             val jsonObject = objectMapper.readTree(jsonData)
 
             // 상품의 전체 품절 여부
             val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "SOLDOUT"
-            log.info("""
-                Product url = $musinsaProductHtmlRequestUrl
-                Product number: $productNumber
-                isAllSoldout: $isAllSoldout
-            """.trimIndent())
+            log.info("Product url = $musinsaProductHtmlRequestUrl, Product number: $productNumber, isAllSoldout: $isAllSoldout")
 
             val isSoldOut = if (isAllSoldout) {
                 true
@@ -92,8 +90,7 @@ class MusinsaSoldoutCheckJob(
 
             if (!isSoldOut) {
                 log.info("Product is not sold out. Product number: $productNumber")
-                val baskets = loadBasketPort.loadBasket(product.id ?: throw NotFoundProductException())
-
+                val baskets = loadBasketPort.loadBasket(product.id!!)
                 log.info("baskets size: ${baskets.size}")
 
                 baskets.forEach {
@@ -118,6 +115,7 @@ class MusinsaSoldoutCheckJob(
             }
         }
     }
+
 
     private fun sendNotifications(product: Product, member: Member) {
         mailGateway.sendMail(
