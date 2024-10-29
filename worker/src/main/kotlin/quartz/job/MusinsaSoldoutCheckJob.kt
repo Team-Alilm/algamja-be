@@ -72,17 +72,17 @@ class MusinsaSoldoutCheckJob(
             val jsonObject = objectMapper.readTree(jsonData)
 
             // 상품의 전체 품절 여부
-            val isAllSoldout = jsonObject.get("goodsSaleType").toString() == "\"SALE\""
+            val isGoodsSaleTypeEqualsSALE = jsonObject.get("goodsSaleType").toString() == "\"SALE\""
 
             log.info("""
                 Product information
                 Name: ${product.name}
                 Number: $productNumber
-                isAllSoldout: $isAllSoldout
+                isGoodsSaleTypeEqualsSALE: $isGoodsSaleTypeEqualsSALE
                 jsonObject.get("goodsSaleType").toString(): ${jsonObject.get("goodsSaleType")}
             """.trimIndent())
 
-            val isSoldOut = if (isAllSoldout.not()) {
+            val isSoldOut = if (isGoodsSaleTypeEqualsSALE.not()) {
                 true
             } else {
                 try {
