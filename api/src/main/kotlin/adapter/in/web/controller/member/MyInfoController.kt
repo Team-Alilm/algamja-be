@@ -64,6 +64,7 @@ class MyInfoController(
             nickname = request.nickname,
             email = request.email
         )
+
         myInfoUseCase.updateMyInfo(command)
 
         return ResponseEntity.ok().build()
