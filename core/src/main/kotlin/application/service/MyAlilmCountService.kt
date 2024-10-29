@@ -11,7 +11,7 @@ class MyAlilmCountService(
 ) : org.team_alilm.application.port.`in`.use_case.MyAlilmCountUseCase {
 
     override fun myAlilmCount(command: org.team_alilm.application.port.`in`.use_case.MyAlilmCountUseCase.MyAlilmCountCommand): MyAlilmCountResult {
-        val basketList = loadBasketPort.loadBasket(command.member.id!!)
+        val basketList = loadBasketPort.loadMyBasket(command.member.id!!)
 
         val result = MyAlilmCountResult(
             alilmCount = basketList.filter { it.isAlilm }.size,

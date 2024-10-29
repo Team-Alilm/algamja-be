@@ -30,7 +30,8 @@ class FcmSendGateway(
             // Notification 메시지에 이미지 포함
             .setNotification(
                 Notification.builder()
-                    .setTitle("[${product.name}] 상품이 재입고되었습니다!")
+                    // [유니폼 브릿지 야상] 상품이 재 입고 되었습니다!
+                    .setTitle("[${product.name}] 상품이 재 입고 되었습니다!")
                     .setBody("""
                         ${if (options.isNotBlank()) "option : $options" else ""}
                         지금 바로 확인해보세요.
@@ -39,7 +40,7 @@ class FcmSendGateway(
                 )
 
                 // 데이터 메시지에 클릭 링크 추가
-                .putData("click_action", "https://www.alilm.co.kr")
+                .putData("click_action", "https://www.musinsa.com/products/${product.number}")
                 .setToken(fcmToken.token)
                 .build()
 

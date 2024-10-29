@@ -57,7 +57,7 @@ class BasketAdapter(
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
-    override fun loadBasket(memberId: Member.MemberId): List<Basket> {
+    override fun loadMyBasket(memberId: Member.MemberId): List<Basket> {
         val basketJpaEntityList = springDataBasketRepository.findByMemberIdAndIsDeleteFalse(memberId.value)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
