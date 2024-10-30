@@ -30,6 +30,7 @@ class FcmSendGateway(
             // Notification 메시지에 이미지 포함
             .setNotification(
                 Notification.builder()
+                    .setImage(product.imageUrl)
                     // [유니폼 브릿지 야상] 상품이 재 입고 되었습니다!
                     .setTitle("[${product.name}] 상품이 재 입고 되었습니다!")
                     .setBody("""
@@ -39,7 +40,6 @@ class FcmSendGateway(
                     .build()
                 )
 
-                // 데이터 메시지에 클릭 링크 추가
                 .setToken(fcmToken.token)
                 .build()
 
