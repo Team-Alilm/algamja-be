@@ -39,13 +39,13 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
             new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(p, COUNT(b))
         FROM 
             ProductJpaEntity p
-        JOIN 
+        left JOIN 
             BasketJpaEntity b
         ON 
             b.productId = p.id
         and b.isDelete = false
         and p.isDelete = false
-        GROUP BY p.id
+        group by b.productId
         order by COUNT(b) desc, p.id desc
     """)
     fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
