@@ -26,6 +26,7 @@ class FcmSendGateway(
 
         // FCM 메시지 구성 (Data 메시지로만)
         val message = Message.builder()
+            .putData("ico", "https://file.notion.so/f/f/c345e317-1a77-4e86-8b67-b491a5db92b8/732799dc-6ad9-46f8-8864-22308c10cdb8/free-icon-bells-7124213.png?table=block&id=1037b278-57a0-8022-8a73-ea04c03ae27e&spaceId=c345e317-1a77-4e86-8b67-b491a5db92b8&expirationTimestamp=1730354400000&signature=hBdHPuerhscY6rXIkAe40sWyyvEq22eyqZ7AqA2Gt5o&downloadName=free-icon-bells-7124213.png")
             .putData("title", "[${product.name}] 상품이 재 입고 되었습니다!")
             .putData("body", """
                 ${if (options.isNotBlank()) "option : $options" else ""}
