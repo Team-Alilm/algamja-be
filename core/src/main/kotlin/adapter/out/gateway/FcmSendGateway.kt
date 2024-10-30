@@ -34,13 +34,12 @@ class FcmSendGateway(
                     .setTitle("[${product.name}] 상품이 재 입고 되었습니다!")
                     .setBody("""
                         ${if (options.isNotBlank()) "option : $options" else ""}
-                        지금 바로 확인해보세요.
+                        지금 바로 확인해보세요. server에서 발송하는 fcm입니다.
                     """.trimIndent())
                     .build()
                 )
 
                 // 데이터 메시지에 클릭 링크 추가
-                .putData("click_action", "https://www.musinsa.com/products/${product.number}")
                 .setToken(fcmToken.token)
                 .build()
 

@@ -19,7 +19,6 @@ import org.team_alilm.domain.Alilm
 import org.team_alilm.domain.Member
 import org.team_alilm.domain.Product
 import org.team_alilm.global.error.NotFoundMemberException
-import org.team_alilm.global.error.NotFoundProductException
 import org.team_alilm.global.util.StringConstant
 import org.team_alilm.quartz.data.SoldoutCheckResponse
 
@@ -49,38 +48,19 @@ class MusinsaSoldoutCheckJob(
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
-        val prodcutList = loadCrawlingProductsPort.loadCrawlingProducts()
-        log.info("products size: ${prodcutList.size}")
+        val productList = loadCrawlingProductsPort.loadCrawlingProducts()
 
-        prodcutList.forEach { product ->
-            log.debug("Checking product name: ${product.name}, id: ${product.id ?: "N/A"}")
-
-            if (product.id == null) {
-                log.warn("Product ID is null for product: ${product.name}")
-                return@forEach // Skip this product
-            }
-
+        productList.forEach { product ->
             val productNumber = product.number
             val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(productNumber)
             val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(productNumber)
 
             val response = jsoupProductDataGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
-            val jsonData = extractJsonData(response.html, "window.__MSS__.product.state") ?: run {
-                log.warn("JSON data extraction failed for product: ${product.name}")
-                return@forEach // Skip this product
-            }
+            val jsonData = extractJsonData(response.html, "window.__MSS__.product.state")
             val jsonObject = objectMapper.readTree(jsonData)
 
             // 상품의 전체 품절 여부
             val isGoodsSaleTypeEqualsSALE = jsonObject.get("goodsSaleType").toString() == "\"SALE\""
-
-            log.info("""
-                Product information
-                Name: ${product.name}
-                Number: $productNumber
-                isGoodsSaleTypeEqualsSALE: $isGoodsSaleTypeEqualsSALE
-                jsonObject.get("goodsSaleType").toString(): ${jsonObject.get("goodsSaleType")}
-            """.trimIndent())
 
             val isSoldOut = if (isGoodsSaleTypeEqualsSALE.not()) {
                 true
@@ -95,9 +75,7 @@ class MusinsaSoldoutCheckJob(
             }
 
             if (!isSoldOut) {
-                log.info("Product is not sold out. Product number: $productNumber")
                 val baskets = loadBasketPort.loadBasket(product.id!!)
-                log.info("baskets size: ${baskets.size}")
 
                 baskets.forEach {
                     val member = loadMemberPort.loadMember(it.memberId.value) ?: throw NotFoundMemberException()
@@ -121,7 +99,6 @@ class MusinsaSoldoutCheckJob(
             }
         }
     }
-
 
     private fun sendNotifications(product: Product, member: Member) {
         mailGateway.sendMail(
