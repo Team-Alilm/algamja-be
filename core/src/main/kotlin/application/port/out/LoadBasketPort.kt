@@ -22,4 +22,10 @@ interface LoadBasketPort {
     fun loadBasket(
         productNumber: Number
     ): List<Basket>
+
+    fun loadBasket(
+        memberId: Member.MemberId,
+        productId: Product.ProductId,
+        isDeleted: Boolean
+    ): Basket?
 }
