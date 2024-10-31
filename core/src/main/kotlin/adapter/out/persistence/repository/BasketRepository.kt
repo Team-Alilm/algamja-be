@@ -20,6 +20,7 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
     and b.isDelete = false
     and p.isDelete = false
     group by b.id, p.id
+    order by b.lastModifiedDate desc, b.id desc
 """)
     fun myBasketList(memberId: Long): List<BasketAndProductProjection>
 
