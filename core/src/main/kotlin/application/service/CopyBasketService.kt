@@ -7,7 +7,6 @@ import org.team_alilm.application.port.out.LoadBasketPort
 import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Product
 import org.team_alilm.global.error.DuplicateBasketException
-import org.team_alilm.global.error.ErrorMessage
 import org.team_alilm.global.error.NotFoundProductException
 
 @Service
@@ -32,15 +31,29 @@ class CopyBasketService(
         val product = loadProductPort.loadProduct(productId)
             ?: throw NotFoundProductException()
 
-        // 장바구니에 상품 추가
-        val basket = Basket.create(
-            memberId = command.member.id,
-            productId = productId
-        )
-        addBasketPort.addBasket(
-            basket = basket,
-            product = product,
-            member = command.member
-        )
+        // 삭제된 장바구니가 존재하는 경우 복구
+        loadBasketPort.loadBasket(
+            memberId = command.member.id!!,
+            productId = productId,
+            isDeleted = true // 삭제된 장바구니 항목을 조회
+        )?.let { deletedBasket ->
+            // 삭제된 장바구니 항목을 복구
+            deletedBasket.isDelete = false
+            addBasketPort.addBasket(
+                basket = deletedBasket,
+                member = command.member,
+                product = product) // 장바구니 업데이트 메소드 추가
+        } ?: run {
+            // 삭제된 항목이 없다면 새로운 장바구니 생성
+            val basket = Basket.create(
+                memberId = command.member.id,
+                productId = productId
+            )
+            addBasketPort.addBasket(
+                basket = basket,
+                product = product,
+                member = command.member
+            )
+        }
     }
 }

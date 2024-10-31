@@ -9,7 +9,8 @@ class Basket(
     val productId: ProductId,
     var isAlilm: Boolean = false,
     var alilmDate: Long? = null,
-    val isHidden: Boolean = false,
+    var isHidden: Boolean = false,
+    var isDelete: Boolean = false
 ) {
     fun sendAlilm() {
         isAlilm = true
