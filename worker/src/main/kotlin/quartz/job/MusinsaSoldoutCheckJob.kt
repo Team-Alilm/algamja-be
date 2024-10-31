@@ -1,6 +1,7 @@
 package org.team_alilm.quartz.job
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.coroutines.*
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.slf4j.LoggerFactory
@@ -10,7 +11,6 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
 import org.team_alilm.adapter.out.gateway.FcmSendGateway
-import org.team_alilm.adapter.out.gateway.JsoupProductDataGateway
 import org.team_alilm.adapter.out.gateway.MailGateway
 import org.team_alilm.application.port.out.*
 import org.team_alilm.application.port.out.gateway.CrawlingGateway
@@ -30,18 +30,19 @@ import org.team_alilm.quartz.data.SoldoutCheckResponse
 @Component
 @Transactional(readOnly = true)
 class MusinsaSoldoutCheckJob(
-    val loadCrawlingProductsPort: LoadCrawlingProductsPort,
-    val addBasketPort: AddBasketPort,
-    val restClient: RestClient,
-    val mailGateway: MailGateway,
-    val sendSlackGateway: SendSlackGateway,
-    val jsoupProductDataGateway: JsoupProductDataGateway,
-    val fcmSendGateway: FcmSendGateway,
-    val loadFcmTokenPort: LoadFcmTokenPort,
-    val loadBasketPort: LoadBasketPort,
-    val loadMemberPort: LoadMemberPort,
-    val objectMapper: ObjectMapper,
-    val addAlilmPort: AddAlilmPort
+    private val loadCrawlingProductsPort: LoadCrawlingProductsPort,
+    private val addBasketPort: AddBasketPort,
+    private val restClient: RestClient,
+    private val mailGateway: MailGateway,
+    private val sendSlackGateway: SendSlackGateway,
+    private val crawlingGateway: CrawlingGateway,
+    private val fcmSendGateway: FcmSendGateway,
+    private val loadFcmTokenPort: LoadFcmTokenPort,
+    private val loadBasketPort: LoadBasketPort,
+    private val loadMemberPort: LoadMemberPort,
+    private val objectMapper: ObjectMapper,
+    private val addAlilmPort: AddAlilmPort,
+    private val coroutineScope: CoroutineScope
 ) : Job {
 
     private val log = LoggerFactory.getLogger(MusinsaSoldoutCheckJob::class.java)
@@ -50,53 +51,84 @@ class MusinsaSoldoutCheckJob(
     override fun execute(context: JobExecutionContext) {
         val productList = loadCrawlingProductsPort.loadCrawlingProducts()
 
-        productList.forEach { product ->
-            val productNumber = product.number
-            val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(productNumber)
-            val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(productNumber)
+        // 비동기 작업으로 전환해요.
+        coroutineScope.launch {
+            val soldoutCheckResults = productList.map { product ->
+                async(Dispatchers.IO) {
+                    checkIfSoldOutForProduct(product)
+                }
+            }.awaitAll()
 
-            val response = jsoupProductDataGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
-            val jsonData = extractJsonData(response.html, "window.__MSS__.product.state")
+            // 품절 상태를 체크한 후 알림 처리
+            val handleJobs = soldoutCheckResults.mapIndexedNotNull { index, isSoldOut ->
+                val product = productList[index]
+                if (!isSoldOut) {
+                    async(Dispatchers.IO) {
+                        handleAvailableProduct(product)
+                    }
+                } else {
+                    log.info("Product ${product.number} is sold out.")
+                    null
+                }
+            }
+
+            handleJobs.awaitAll() // 여기서 awaitAll() 사용
+        }
+    }
+
+    private suspend fun handleAvailableProduct(product: Product) {
+        val baskets = loadBasketPort.loadBasket(product.id!!)
+        baskets.forEach { basket ->
+            val member = loadMemberPort.loadMember(basket.memberId.value) ?: throw NotFoundMemberException()
+            sendNotifications(product, member)
+
+            // 바구니 알림 상태로 변경
+            basket.sendAlilm()
+            addBasketPort.addBasket(basket, member, product)
+            addAlilmPort.addAlilm(Alilm.from(basket))
+
+            val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(basket.memberId.value)
+
+            fcmTokenList.forEach { fcmToken ->
+                fcmSendGateway.sendFcmMessage(
+                    member = member,
+                    product = product,
+                    fcmToken = fcmToken
+                )
+            }
+        }
+    }
+
+
+    private suspend fun checkIfSoldOutForProduct(product: Product): Boolean {
+        val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(product.number)
+
+        // HTML 크롤링을 통한 품절 확인
+        val response = crawlingGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
+        val jsonData = extractJsonData(response.html, "window.__MSS__.product.state")
+
+        return if (jsonData != null) {
             val jsonObject = objectMapper.readTree(jsonData)
-
-            // 상품의 전체 품절 여부
             val isGoodsSaleTypeEqualsSALE = jsonObject.get("goodsSaleType").toString() == "\"SALE\""
 
-            val isSoldOut = if (isGoodsSaleTypeEqualsSALE.not()) {
-                true
+            if (isGoodsSaleTypeEqualsSALE.not()) {
+                true // SALE이 아니면 품절
             } else {
+                // API 호출로 재확인
+                val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(product.number)
                 try {
                     checkIfSoldOut(requestUri, product)
                 } catch (e: RestClientException) {
-                    log.error("Failed to check soldout status of product: $productNumber", e)
-                    sendSlackGateway.sendMessage("Failed to check soldout status of product number: $productNumber\nError: ${e.message}")
+                    log.error("Failed to check soldout status of product: ${product.number}", e)
+                    sendSlackGateway.sendMessage("Failed to check soldout status of product number: ${product.number}\nError: ${e.message}")
                     true // 상품이 품절로 간주
                 }
             }
-
-            if (!isSoldOut) {
-                val baskets = loadBasketPort.loadBasket(product.id!!)
-
-                baskets.forEach {
-                    val member = loadMemberPort.loadMember(it.memberId.value) ?: throw NotFoundMemberException()
-                    sendNotifications(product, member)
-
-                    // 바구니 알림 상태로 변경
-                    it.sendAlilm()
-                    addBasketPort.addBasket(it, member, product)
-                    addAlilmPort.addAlilm(Alilm.from(it))
-
-                    val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(it.memberId.value)
-
-                    fcmTokenList.forEach { fcmToken ->
-                        fcmSendGateway.sendFcmMessage(
-                            member = member,
-                            product = product,
-                            fcmToken = fcmToken
-                        )
-                    }
-                }
-            }
+        } else {
+            // JSON 데이터가 없을 경우 API 호출로 재확인
+            log.error("No JSON data found for product: ${product.number}")
+            val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(product.number)
+            checkIfSoldOut(requestUri, product)
         }
     }
 
