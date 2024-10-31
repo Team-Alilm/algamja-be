@@ -28,14 +28,22 @@ class AlilmRegistrationService(
         command: AlilmRegistrationCommand,
         product: Product,
     ) {
-        val basket = loadBasketPort.loadBasket(
+
+        val basket = loadBasketPort.loadBasketIncludeIsDelete(
             memberId = command.member.id!!,
             productId = product.id!!
         ) ?.let {
-            if(it.isAlilm) {
+            /*
+                알림을 이미 받은 상품
+                삭제한 상품은
+                재 등록 시 복구 합니다.
+            */
+            if(it.isAlilm || it.isDelete) {
                 it.isAlilm = false
                 it.alilmDate = null
+                it.isDelete = false
             } else {
+                // 알림을 받지도 삭제 하지도 않았다면 기다리는 상품이 있는 것 입니다.
                 log.info("장바구니가 이미 존재합니다. memberId: ${command.member.id}, productId: ${product.id}")
                 throw BasketAlreadyExistsException()
             }

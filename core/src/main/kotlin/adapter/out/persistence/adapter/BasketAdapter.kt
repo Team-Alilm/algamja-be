@@ -1,8 +1,6 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
 import org.slf4j.LoggerFactory
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
@@ -45,11 +43,11 @@ class BasketAdapter(
         return basketMapper.mapToDomainEntity(basketJpaEntity)
     }
 
-    override fun loadBasket(
+    override fun loadBasketIncludeIsDelete(
         memberId: Member.MemberId,
         productId: Product.ProductId
     ): Basket? {
-        val basketJpaEntity = springDataBasketRepository.findByMemberIdAndIsDeleteFalseAndProductId(
+        val basketJpaEntity = springDataBasketRepository.findByMemberIdAndProductId(
             memberId = memberId.value,
             productId = productId.value
         )
@@ -63,19 +61,19 @@ class BasketAdapter(
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
-    override fun loadBasket(productId: Product.ProductId): List<Basket> {
+    override fun loadBasketIncludeIsDelete(productId: Product.ProductId): List<Basket> {
         val basketJpaEntityList = springDataBasketRepository.findByProductIdAndIsDeleteFalseAndIsAlilmFalse(productId.value)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
-    override fun loadBasket(productNumber: Number): List<Basket> {
+    override fun loadBasketIncludeIsDelete(productNumber: Number): List<Basket> {
         val basketJpaEntityList = basketRepository.findByProductNumber(productNumber)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
-    override fun loadBasket(memberId: Member.MemberId, productId: Product.ProductId, isDeleted: Boolean): Basket? {
+    override fun loadBasketIncludeIsDelete(memberId: Member.MemberId, productId: Product.ProductId, isDeleted: Boolean): Basket? {
         val basketJpaEntity = springDataBasketRepository.findByMemberIdAndProductIdAndIsDelete(
             memberId = memberId.value,
             productId = productId.value,
