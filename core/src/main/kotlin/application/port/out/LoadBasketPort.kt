@@ -6,7 +6,7 @@ import org.team_alilm.domain.Product
 
 interface LoadBasketPort {
 
-    fun loadBasket(
+    fun loadBasketIncludeIsDelete(
         memberId: Member.MemberId,
         productId: Product.ProductId
     ): Basket?
@@ -15,15 +15,15 @@ interface LoadBasketPort {
         memberId: Member.MemberId
     ): List<Basket>
 
-    fun loadBasket(
+    fun loadBasketIncludeIsDelete(
         productId: Product.ProductId
     ): List<Basket>
 
-    fun loadBasket(
+    fun loadBasketIncludeIsDelete(
         productNumber: Number
     ): List<Basket>
 
-    fun loadBasket(
+    fun loadBasketIncludeIsDelete(
         memberId: Member.MemberId,
         productId: Product.ProductId,
         isDeleted: Boolean

@@ -77,7 +77,7 @@ class MusinsaSoldoutCheckJob(
     }
 
     private suspend fun handleAvailableProduct(product: Product) {
-        val baskets = loadBasketPort.loadBasket(product.id!!)
+        val baskets = loadBasketPort.loadBasketIncludeIsDelete(product.id!!)
         baskets.forEach { basket ->
             val member = loadMemberPort.loadMember(basket.memberId.value) ?: throw NotFoundMemberException()
             sendNotifications(product, member)

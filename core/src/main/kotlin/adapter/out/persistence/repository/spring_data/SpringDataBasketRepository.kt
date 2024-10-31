@@ -5,7 +5,7 @@ import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 
 interface SpringDataBasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
-    fun findByMemberIdAndIsDeleteFalseAndProductId(
+    fun findByMemberIdAndProductId(
         memberId: Long,
         productId: Long
     ): BasketJpaEntity?
