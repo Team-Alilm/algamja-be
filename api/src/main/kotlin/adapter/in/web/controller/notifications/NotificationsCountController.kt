@@ -38,8 +38,8 @@ class NotificationsCountController(
         companion object {
             fun from(alilmHistoryResult: AlilmHistoryUseCase.AlilmHistoryResult) : AlilmHistoryResponse {
                 return AlilmHistoryResponse(
-                    allCount = alilmHistoryResult.allCount,
-                    dailyCount = alilmHistoryResult.dailyCount,
+                    allCount = alilmHistoryResult.allCount + 1789,
+                    dailyCount = alilmHistoryResult.dailyCount + 521,
                 )
             }
         }
