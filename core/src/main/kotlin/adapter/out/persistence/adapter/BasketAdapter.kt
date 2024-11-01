@@ -1,6 +1,5 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
@@ -13,9 +12,6 @@ import org.team_alilm.domain.Member
 import org.team_alilm.domain.Product
 import org.team_alilm.global.error.NotFoundBasketException
 import org.team_alilm.global.error.NotFoundMemberException
-import java.time.LocalDate
-import java.time.ZoneOffset
-
 
 @Component
 class BasketAdapter(
@@ -26,11 +22,8 @@ class BasketAdapter(
 ) : AddBasketPort,
     LoadBasketPort,
     LoadMyBasketsPort,
-    LoadAllAndDailyCountPort,
     DeleteBasketPort
 {
-
-    private val log = LoggerFactory.getLogger(javaClass)
 
     override fun addBasket(
         basket: Basket,
@@ -93,20 +86,6 @@ class BasketAdapter(
                     waitingCount = it.waitingCount
                 )
             }
-    }
-
-    override fun getAllAndDailyCount(): LoadAllAndDailyCountPort.AllAndDailyCount {
-        val today = LocalDate.now(ZoneOffset.UTC)
-        val midnight = today.atStartOfDay(ZoneOffset.UTC)
-        val midnightMillis = midnight.toInstant().toEpochMilli()
-
-        val allIsAlilmTrueBaskets = springDataBasketRepository.findByIsAlilmTrueAndIsDeleteFalse()
-        val dailyAlilmTrueBaskets = springDataBasketRepository.findByIsAlilmTrueAndAlilmDateGreaterThanEqualAndIsDeleteFalse(midnightMillis)
-
-        return LoadAllAndDailyCountPort.AllAndDailyCount(
-            allCount = allIsAlilmTrueBaskets.size.toLong(),
-            dailyCount = dailyAlilmTrueBaskets.size.toLong()
-        )
     }
 
     private fun basketJpaEntity(
