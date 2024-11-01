@@ -64,5 +64,23 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         and p.id = :value
     """)
     fun findByIdAndIsDeleteFalseAndWaitingCount(value: Long): ProductAndWaitingCountProjection?
+
+    @Query("""
+        SELECT 
+            p
+        FROM 
+            ProductJpaEntity p 
+        JOIN 
+            AlilmJpaEntity a
+            on a.productId = p.id
+        WHERE 
+            p.isDelete = false
+        and a.productId = p.id
+        group by p.id
+        ORDER BY 
+            a.createdDate DESC
+        LIMIT 10
+    """)
+    fun findRecentProducts (): List<ProductJpaEntity>
 }
 

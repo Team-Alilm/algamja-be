@@ -59,6 +59,12 @@ class ProductAdapter(
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
     }
 
+    override fun loadRecentProduct(): List<Product> {
+        return productRepository.findRecentProducts().map {
+            productMapper.mapToDomainEntity(it)
+        }
+    }
+
     override fun loadProductDetails(productId: Product.ProductId): LoadProductSlicePort.ProductAndWaitingCount? {
         val productAndWaitingCountProjection = productRepository.findByIdAndIsDeleteFalseAndWaitingCount(productId.value)
         return LoadProductSlicePort.ProductAndWaitingCount.of(

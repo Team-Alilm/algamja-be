@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.AlilmHistoryUseCase
 
 @RestController
-@RequestMapping("/api/v1/notifications", "/api/v1/alilms")
+@RequestMapping( "/api/v1/alilms")
 @Tag(name = "알림 히스토리 API", description = """
     알림 히스토리 관련 API
     alilm 건 수를 반환하는 API 입니다.
@@ -17,7 +17,7 @@ import org.team_alilm.application.port.`in`.use_case.AlilmHistoryUseCase
     현재 2개의 주소로 운영되고 있으며
     향후 /api/v1/notifications는 사용을 종료 합니다.
     """)
-class NotificationsCountController(
+class AlilmCountController(
     private val alilmHistoryUseCase: AlilmHistoryUseCase
 ) {
     // 현재는 장바구니 테이블에 의존적으로 개발 합니다.
@@ -38,7 +38,7 @@ class NotificationsCountController(
 
     data class AlilmHistoryResponse(
         val allCount : Long,
-        val dailyCount : Long,
+        val dailyCount : Int,
     ) {
 
         companion object {
