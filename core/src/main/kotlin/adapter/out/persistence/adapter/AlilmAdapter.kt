@@ -1,5 +1,7 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import org.slf4j.LoggerFactory
+import org.springframework.boot.logging.LoggerGroup
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.AlilmMapper
 import org.team_alilm.adapter.out.persistence.repository.AlilmRepository
@@ -18,12 +20,15 @@ class AlilmAdapter(
 ) : AddAlilmPort,
     LoadAllAndDailyCountPort {
 
+        val log = LoggerFactory.getLogger(AlilmAdapter::class.java)
+
     override fun addAlilm(alilm: Alilm) {
         springDataAlilmRepository.save(alilmMapper.mapToJpaEntity(alilm))
     }
 
     override fun getAllAndDailyCount(): LoadAllAndDailyCountPort.AllAndDailyCount {
-        val midnightMillis: Long = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val midnightMillis = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        log.info("midnightMillis: $midnightMillis")
         val allCount = alilmRepository.allCountAndDailyCount(midnightMillis)
         return LoadAllAndDailyCountPort.AllAndDailyCount(
             allCount = allCount.allCount,

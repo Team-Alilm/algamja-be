@@ -37,6 +37,7 @@ class SecurityConfig (
                 .requestMatchers(HttpMethod.GET, "/api/v1/baskets")
                 .requestMatchers(HttpMethod.GET, "/api/v1/products/**")
                 .requestMatchers(HttpMethod.GET, "/api/v1/notifications/count")
+                .requestMatchers(HttpMethod.GET, "/api/v1/alilms/**")
                 .requestMatchers("/health-check")
                 .requestMatchers("/swagger-ui/**")
                 .requestMatchers("/swagger-resources/**")

@@ -19,4 +19,6 @@ interface LoadProductPort {
     fun loadProductDetails(
         productId: Product.ProductId,
     ): LoadProductSlicePort.ProductAndWaitingCount?
+
+    fun loadRecentProduct(): List<Product>
 }
