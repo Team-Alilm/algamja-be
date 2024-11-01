@@ -50,6 +50,7 @@ class MusinsaSoldoutCheckJob(
     @Transactional
     override fun execute(context: JobExecutionContext) {
         val productList = loadCrawlingProductsPort.loadCrawlingProducts()
+        log.info("Checking soldout status for ${productList.size} products.")
 
         // 비동기 작업으로 전환해요.
         coroutineScope.launch {

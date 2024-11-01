@@ -20,6 +20,22 @@ interface AlilmRegistrationUseCase {
         val thirdOption: String?,
         val member: Member
     )
+
+    fun alilmRegistrationV2(command: AlilmRegistrationCommandV2)
+
+    data class AlilmRegistrationCommandV2(
+        val number: Long,
+        val name: String,
+        val brand: String,
+        val store: Product.Store,
+        val imageUrl: List<String>,
+        val category: String,
+        val price: Int,
+        val firstOption: String,
+        val secondOption: String?,
+        val thirdOption: String?,
+        val member: Member
+    )
 }
 
 
