@@ -7,9 +7,10 @@ import org.team_alilm.adapter.out.persistence.repository.alilm.AlilmAllCountAndD
 
 interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
 
-    @Query("""SELECT new org.team_alilm.adapter.out.persistence.repository.alilm.AlilmAllCountAndDailyCount(
+    @Query("""
+        SELECT new org.team_alilm.adapter.out.persistence.repository.alilm.AlilmAllCountAndDailyCount(
         COUNT(*),
-        SUN(CASE WHEN a.createdDate >= :startOfToday THEN 1 ELSE 0 END)
+        SUM(CASE WHEN a.createdDate >= :startOfToday THEN 1 ELSE 0 END)
         )
         FROM AlilmJpaEntity a
     """)
