@@ -11,7 +11,7 @@ import org.team_alilm.application.port.`in`.use_case.AlilmRecentUseCase
 import org.team_alilm.domain.Product
 
 @RestController
-@RequestMapping("/api/v1/alilms", "/api/v1/notification")
+@RequestMapping("/api/v1/alilms", "/api/v1/notifications")
 @Tag(name = "알림 API", description = """
     알림 API 들을 모아둔 컨트롤러 입니다.
 """)
