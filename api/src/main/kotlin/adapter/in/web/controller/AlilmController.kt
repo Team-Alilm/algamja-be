@@ -75,8 +75,8 @@ class AlilmController(
         companion object {
             fun from(alilmHistoryResult: AlilmHistoryUseCase.AlilmHistoryResult): AlilmHistoryResponse {
                 return AlilmHistoryResponse(
-                    allCount = alilmHistoryResult.allCount + 10,
-                    dailyCount = alilmHistoryResult.dailyCount + 2,
+                    allCount = (alilmHistoryResult.allCount ?: 0) + 10,
+                    dailyCount = (alilmHistoryResult.dailyCount ?: 0) + 2,
                 )
             }
         }
