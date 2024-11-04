@@ -6,7 +6,7 @@ interface LoadAllAndDailyCountPort {
 
     data class AllAndDailyCount(
         val allCount : Long,
-        val dailyCount : Int
+        val dailyCount : Long
     )
 
 }

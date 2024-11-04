@@ -28,7 +28,7 @@ class AlilmAdapter(
 
     override fun getAllAndDailyCount(): LoadAllAndDailyCountPort.AllAndDailyCount {
         val midnightMillis = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
-        log.info("midnightMillis: $midnightMillis")
+
         val allCount = alilmRepository.allCountAndDailyCount(midnightMillis)
         return LoadAllAndDailyCountPort.AllAndDailyCount(
             allCount = allCount.allCount,

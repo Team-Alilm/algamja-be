@@ -6,6 +6,6 @@ interface AlilmHistoryUseCase {
 
     data class AlilmHistoryResult(
         val allCount : Long,
-        val dailyCount : Int,
+        val dailyCount : Long,
     )
 }
