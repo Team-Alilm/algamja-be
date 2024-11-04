@@ -23,6 +23,8 @@ class MyBasketsService (
                 imageUrl = it.product.imageUrl,
                 store = it.product.store.name,
                 price = it.product.price,
+                isAlilm = it.basket.isAlilm,
+                alilmDate = it.basket.alilmDate,
                 category = it.product.category,
                 firstOption = it.product.firstOption,
                 secondOption = it.product.secondOption,
