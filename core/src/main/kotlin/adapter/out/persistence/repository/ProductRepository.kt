@@ -20,7 +20,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
     @Query(value = """
         SELECT
-            p
+             distinct p
         FROM
             ProductJpaEntity p
         JOIN
@@ -30,7 +30,6 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         and b.isAlilm = false
         and p.isDelete = false
         and b.isDelete = false
-        GROUP BY p.number
     """)
     fun findCrawlingProducts(): List<ProductJpaEntity>
 

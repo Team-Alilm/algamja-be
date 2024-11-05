@@ -62,6 +62,12 @@ class MusinsaSoldoutCheckJob(
 
             // 품절 상태를 체크한 후 알림 처리
             val handleJobs = soldoutCheckResults.mapIndexedNotNull { index, isSoldOut ->
+                log.info("""
+                    ${productList[index].number}  
+                    ${productList[index].name}
+                    ${productList[index].firstOption}
+                    soldout status: $isSoldOut
+                """.trimIndent())
                 val product = productList[index]
                 if (!isSoldOut) {
                     async(Dispatchers.IO) {
