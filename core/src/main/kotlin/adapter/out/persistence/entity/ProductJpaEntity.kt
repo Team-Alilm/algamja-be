@@ -12,7 +12,7 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
         columnNames = ["store", "number", "first_option", "second_option", "third_option"]
     )]
 )
-open class ProductJpaEntity(
+class ProductJpaEntity(
     @Column(nullable = false)
     val number :Long,
 

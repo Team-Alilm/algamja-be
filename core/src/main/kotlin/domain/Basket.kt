@@ -12,9 +12,22 @@ class Basket(
     var isHidden: Boolean = false,
     var isDelete: Boolean = false
 ) {
+
     fun sendAlilm() {
         isAlilm = true
         alilmDate = System.currentTimeMillis()
+    }
+
+    // 장바구니를 보고 재 등록 여부를 확인 합니다.
+    fun isReRegisterable (): Boolean {
+        if (isAlilm || isDelete) {
+            isAlilm = false
+            alilmDate = null
+            isDelete = false
+            return true
+        } else {
+            return false
+        }
     }
 
     data class BasketId(val value: Long?)

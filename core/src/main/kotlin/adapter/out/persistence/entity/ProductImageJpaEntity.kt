@@ -4,7 +4,14 @@ import jakarta.persistence.*
 import org.team_alilm.global.jpa.base.BaseTimeEntity
 
 @Entity
-@Table(name = "product_image")
+@Table(name = "product_image",
+    indexes = [
+        Index(
+            name = "idx_product_id",
+            columnList = "product_id"
+        )
+    ]
+)
 class ProductImageJpaEntity(
 
     @Column(nullable = false)

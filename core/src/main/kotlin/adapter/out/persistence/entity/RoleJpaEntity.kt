@@ -5,7 +5,7 @@ import org.team_alilm.domain.Role
 
 @Entity
 @Table(name = "role")
-open class RoleJpaEntity (
+class RoleJpaEntity (
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
     var roleType: Role.RoleType,
