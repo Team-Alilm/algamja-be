@@ -33,6 +33,8 @@ class BasketsRegisteredController(
             - 새로운 상품 등록 시 : 정상 등록
             - 이미 알림 받은 상품 등록 시 : 정상 등록
             - 등록 되어 있지만 알림을 받지 못한 상태면 : 이미등록된 상품이 있다는 예외 400 응답
+            
+            24년 11월 5일 이후 배포에서는 v1을 사용하지 않을 예정 입니다.
         """
     )
     @PostMapping("/v1/baskets/registered")
@@ -165,12 +167,11 @@ class BasketsRegisteredController(
     ): ResponseEntity<Unit> {
         if (bindingResult.hasErrors()) throw RequestValidateException(bindingResult)
 
-
         val command = AlilmRegistrationUseCase.AlilmRegistrationCommandV2(
             number = request.number,
             name = request.name,
             brand = request.brand,
-            imageUrl = request.imageUrl,
+            imageUrlList = request.imageUrlList,
             category = request.category,
             price = request.price,
             store = request.store,
@@ -212,13 +213,11 @@ class BasketsRegisteredController(
         )
         val brand: String,
 
-        @field:NotBlank(message = "이미지 URL은 필수입니다.")
+        @field:NotBlank(message = "이미지 URL List는 필수입니다.")
         @field:Schema(
-            example = "https://image.msscdn.net/images/goods_img/20240705/4235404/4235404_17201553979081_500.jpg",
             description = "이미지 URL",
-            required = true
         )
-        val imageUrl: List<String>,
+        val imageUrlList: List<String>,
 
         @field:NotBlank(message = "카테고리는 필수입니다.")
         @field:Schema(

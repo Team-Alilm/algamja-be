@@ -6,6 +6,7 @@ import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase.*
 import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Product
+import org.team_alilm.domain.ProductV2
 import org.team_alilm.global.error.BasketAlreadyExistsException
 import org.team_alilm.global.util.StringConstant
 
@@ -29,6 +30,7 @@ class AlilmRegistrationService(
 
     override fun alilmRegistrationV2(command: AlilmRegistrationCommandV2) {
         val product = getProductV2(command)
+
         saveBasketV2(command, product)
     }
 
@@ -41,18 +43,7 @@ class AlilmRegistrationService(
             memberId = command.member.id!!,
             productId = product.id!!
         ) ?.let {
-            /*
-                알림을 이미 받은 상품
-                삭제한 상품은
-                재 등록 시 복구 합니다.
-            */
-            if(it.isAlilm || it.isDelete) {
-                it.isAlilm = false
-                it.alilmDate = null
-                it.isDelete = false
-            } else {
-                throw BasketAlreadyExistsException()
-            }
+            if(it.isReRegisterable().not()) throw BasketAlreadyExistsException()
 
             it
         } ?: run {
@@ -82,7 +73,7 @@ class AlilmRegistrationService(
 
     private fun saveBasketV2(
         command: AlilmRegistrationCommandV2,
-        product: Product,
+        product: ProductV2,
     ) {
 
         val basket = loadBasketPort.loadBasketIncludeIsDelete(
@@ -90,12 +81,7 @@ class AlilmRegistrationService(
             productId = product.id!!
         ) ?.let {
 
-            if(it.isAlilm || it.isDelete) {
-                it.isAlilm = false
-                it.alilmDate = null
-                it.isDelete = false
-            } else {
-                // 알림을 받지도 삭제 하지도 않았다면 기다리는 상품이 있는 것 입니다.
+            if(it.isReRegisterable()) {
                 log.info("장바구니가 이미 존재합니다. memberId: ${command.member.id}, productId: ${product.id}")
                 throw BasketAlreadyExistsException()
             }
@@ -116,8 +102,6 @@ class AlilmRegistrationService(
             member = command.member,
             product = product
         )
-
-
     }
 
     private fun getProductV2(command: AlilmRegistrationCommandV2) =
@@ -129,13 +113,12 @@ class AlilmRegistrationService(
             thirdOption = command.thirdOption
         ) ?: run {
             addProductPort.addProduct(
-                Product(
+                ProductV2(
                     id = null,
                     number = command.number,
                     name = command.name,
                     brand = command.brand,
                     store = command.store,
-                    imageUrl = command.imageUrl[0],
                     category = command.category,
                     price = command.price,
                     firstOption = command.firstOption,

@@ -9,7 +9,6 @@ class Product (
     val category: String,
     val price: Int,
     val store: Store,
-    val waitingCount: Int = 0,
     val firstOption: String,
     val secondOption: String?,
     val thirdOption: String?
@@ -22,16 +21,9 @@ class Product (
         require(category.isNotBlank()) { "Product category must not be blank" }
         require(price >= 0) { "Product price must be non-negative" }
         require(firstOption.isNotBlank()) { "Product option1 must not be blank" }
-        require(waitingCount >= 0) { "Product waiting count must be non-negative" }
     }
 
     data class ProductId(val value: Long)
-
-    enum class Store {
-
-        MUSINSA;
-
-    }
 
     fun getManagedCode() : String {
         return if (this.firstOption.isNotBlank() && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {

@@ -12,7 +12,7 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
         )
     ]
 )
-open class BasketJpaEntity(
+class BasketJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
