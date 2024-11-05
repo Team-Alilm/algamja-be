@@ -35,19 +35,26 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     fun findCrawlingProducts(): List<ProductJpaEntity>
 
     @Query("""
-        SELECT 
-            new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(p, COUNT(b))
-        FROM 
-            ProductJpaEntity p
-        left JOIN 
-            BasketJpaEntity b
-        ON 
-            b.productId = p.id
-        and b.isDelete = false
-        and p.isDelete = false
-        group by b.productId
-        order by COUNT(b) desc, p.id desc
-    """)
+    SELECT 
+        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(
+            p, 
+            COUNT(CASE WHEN b.isAlilm = false THEN 1 END)
+        )
+    FROM 
+        ProductJpaEntity p
+    LEFT JOIN 
+        BasketJpaEntity b 
+    ON 
+        b.productId = p.id
+    AND 
+        b.isDelete = false
+    WHERE 
+        p.isDelete = false
+    GROUP BY 
+        p.id
+    ORDER BY 
+        COUNT(CASE WHEN b.isAlilm = false THEN 1 END) DESC, p.id DESC
+""")
     fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 
     @Query("""
