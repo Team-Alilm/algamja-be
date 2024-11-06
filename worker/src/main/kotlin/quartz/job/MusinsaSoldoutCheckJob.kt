@@ -91,7 +91,7 @@ class MusinsaSoldoutCheckJob(
 
             // 바구니 알림 상태로 변경
             basket.sendAlilm()
-            addBasketPort.addBasket(basket, member, product)
+            addBasketPort.addBasket(basket, member.id!!, product.id!!)
             addAlilmPort.addAlilm(Alilm.from(basket))
 
             val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(basket.memberId.value)
