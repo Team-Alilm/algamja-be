@@ -96,10 +96,6 @@ class ProductAdapter(
         }
     }
 
-    override fun loadRelatedProductList(productId: ProductId): List<Product> {
-
-    }
-
     override fun loadProductDetails(productId: ProductId): LoadProductSlicePort.ProductAndWaitingCount? {
         val productAndWaitingCountProjection = productRepository.findByIdAndIsDeleteFalseAndWaitingCount(productId.value)
         return LoadProductSlicePort.ProductAndWaitingCount.of(
