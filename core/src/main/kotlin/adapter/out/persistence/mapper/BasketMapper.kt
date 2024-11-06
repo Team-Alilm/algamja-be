@@ -4,7 +4,8 @@ import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Member
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Product
+import org.team_alilm.domain.product.ProductId
 
 @Component
 class BasketMapper {
@@ -24,7 +25,7 @@ class BasketMapper {
         return Basket(
             id = Basket.BasketId(basketJpaEntity.id),
             memberId = Member.MemberId(basketJpaEntity.memberId),
-            productId = Product.ProductId(basketJpaEntity.productId),
+            productId = ProductId(basketJpaEntity.productId),
             isAlilm = basketJpaEntity.isAlilm,
             alilmDate = basketJpaEntity.alilmDate,
             isHidden = basketJpaEntity.isHidden,

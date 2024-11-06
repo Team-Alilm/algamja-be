@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase
 import org.team_alilm.data.CustomMemberDetails
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.RequestValidateException
 
 @RestController
@@ -125,7 +125,7 @@ class BasketsRegisteredController(
             example = "MUSINSA",
             required = true
         )
-        val store: Product.Store,
+        val store: Store,
 
         @field:NotBlank(message = "옵션은 필수입니다.")
         @field:Schema(
@@ -213,7 +213,6 @@ class BasketsRegisteredController(
         )
         val brand: String,
 
-        @field:NotBlank(message = "이미지 URL List는 필수입니다.")
         @field:Schema(
             description = "이미지 URL",
         )
@@ -243,7 +242,7 @@ class BasketsRegisteredController(
             example = "MUSINSA",
             required = true
         )
-        val store: Product.Store,
+        val store: Store,
 
         @field:NotBlank(message = "옵션은 필수입니다.")
         @field:Schema(

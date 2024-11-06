@@ -1,5 +1,7 @@
 package org.team_alilm.application.port.`in`.use_case
 
+import org.team_alilm.domain.product.Product
+
 interface ProductDetailsUseCase {
 
     fun productDetails(command: ProductDetailsCommand): ProductDetailsResponse
@@ -24,7 +26,7 @@ interface ProductDetailsUseCase {
     ) {
 
         companion object {
-            fun from (product: org.team_alilm.domain.Product, waitingCount: Long): ProductDetailsResponse {
+            fun from (product: Product, waitingCount: Long): ProductDetailsResponse {
                 return ProductDetailsResponse(
                     id = product.id!!.value,
                     number = product.number,

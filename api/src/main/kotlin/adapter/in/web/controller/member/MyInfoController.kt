@@ -32,7 +32,7 @@ class MyInfoController(
     """)
     @GetMapping
     fun myInfo(@AuthenticationPrincipal customMemberDetails: CustomMemberDetails) : ResponseEntity<MyInfoResponse> {
-        // todo alilm에 대한 로직이 복잡해 지면 테이블을 분리하고 고도화 작업을 진행하면 좋을 것 같습니다.
+        // alilm에 대한 로직이 복잡해 지면 테이블을 분리하고 고도화 작업을 진행하면 좋을 것 같습니다.
         // 현재는 장바구니 테이블에 의존적으로 개발 합니다.
         val command = MyInfoUseCase.MyInfoCommand(customMemberDetails.member)
         val result = myInfoUseCase.myInfo(command)

@@ -2,27 +2,24 @@ package org.team_alilm.application.port.out
 
 import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Member
-import org.team_alilm.domain.Product
-import org.team_alilm.domain.ProductV2
+import org.team_alilm.domain.product.Product
+import org.team_alilm.domain.product.ProductId
+import org.team_alilm.domain.product.ProductV2
 
 interface LoadBasketPort {
 
     fun loadBasketIncludeIsDelete(
         memberId: Member.MemberId,
-        productId: Product.ProductId
+        productId: ProductId
     ): Basket?
 
-    fun loadBasketIncludeIsDelete(
-        memberId: Member.MemberId,
-        productId: ProductV2.ProductV2Id
-    ): Basket?
 
     fun loadMyBasket(
         memberId: Member.MemberId
     ): List<Basket>
 
     fun loadBasketIncludeIsDelete(
-        productId: Product.ProductId
+        productId: ProductId
     ): List<Basket>
 
     fun loadBasketIncludeIsDelete(
@@ -31,7 +28,7 @@ interface LoadBasketPort {
 
     fun loadBasketIncludeIsDelete(
         memberId: Member.MemberId,
-        productId: Product.ProductId,
+        productId: ProductId,
         isDeleted: Boolean
     ): Basket?
 }

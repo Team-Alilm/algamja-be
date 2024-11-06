@@ -1,7 +1,7 @@
 package org.team_alilm.application.port.`in`.use_case
 
 import org.team_alilm.domain.Member
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Store
 
 interface AlilmRegistrationUseCase {
 
@@ -11,7 +11,7 @@ interface AlilmRegistrationUseCase {
         val number: Long,
         val name: String,
         val brand: String,
-        val store: Product.Store,
+        val store: Store,
         val imageUrl: String,
         val category: String,
         val price: Int,
@@ -27,7 +27,7 @@ interface AlilmRegistrationUseCase {
         val number: Long,
         val name: String,
         val brand: String,
-        val store: Product.Store,
+        val store: Store,
         val imageUrlList: List<String>,
         val category: String,
         val price: Int,

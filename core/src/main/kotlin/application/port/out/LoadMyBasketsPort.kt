@@ -2,7 +2,7 @@ package org.team_alilm.application.port.out
 
 import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Member
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Product
 
 interface LoadMyBasketsPort {
 

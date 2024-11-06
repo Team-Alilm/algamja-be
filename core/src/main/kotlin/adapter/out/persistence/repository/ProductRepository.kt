@@ -6,13 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Product
+import org.team_alilm.domain.product.Store
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
     fun findByNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
         number: Long,
-        store: Product.Store,
+        store: Store,
         firstOption: String,
         secondOption: String?,
         thirdOption: String?,

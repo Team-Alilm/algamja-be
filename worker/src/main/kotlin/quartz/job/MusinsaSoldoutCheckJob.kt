@@ -17,7 +17,7 @@ import org.team_alilm.application.port.out.gateway.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
 import org.team_alilm.domain.Alilm
 import org.team_alilm.domain.Member
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Product
 import org.team_alilm.global.error.NotFoundMemberException
 import org.team_alilm.global.util.StringConstant
 import org.team_alilm.quartz.data.SoldoutCheckResponse
