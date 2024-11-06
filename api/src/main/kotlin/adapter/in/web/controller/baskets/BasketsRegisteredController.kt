@@ -171,6 +171,7 @@ class BasketsRegisteredController(
             number = request.number,
             name = request.name,
             brand = request.brand,
+            thumbnailUrl = request.thumbnailUrl,
             imageUrlList = request.imageUrlList,
             category = request.category,
             price = request.price,
@@ -180,6 +181,7 @@ class BasketsRegisteredController(
             thirdOption = request.thirdOption,
             member = customMemberDetails.member
         )
+
         alilmRegistrationUseCase.alilmRegistrationV2(command)
 
         return ResponseEntity.ok().build()
@@ -213,8 +215,14 @@ class BasketsRegisteredController(
         )
         val brand: String,
 
+        @field:NotBlank(message = "썸네일 이미지 URL은 필수입니다.")
         @field:Schema(
-            description = "이미지 URL",
+            description = "썸네일 이미지 URL",
+        )
+        val thumbnailUrl: String,
+
+        @field:Schema(
+            description = "추가 이미지 URL",
         )
         val imageUrlList: List<String>,
 

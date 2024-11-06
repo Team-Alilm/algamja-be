@@ -15,10 +15,10 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
 class ProductImageJpaEntity(
 
     @Column(nullable = false)
-    private val productId: Long,
+    val productId: Long,
 
     @Column(nullable = false, unique = true)
-    private val imageUrl: String,
+    val imageUrl: String,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

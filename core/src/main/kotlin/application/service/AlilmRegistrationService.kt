@@ -5,9 +5,10 @@ import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase.*
 import org.team_alilm.domain.Basket
+import org.team_alilm.domain.Member.*
 import org.team_alilm.domain.product.Product
 import org.team_alilm.domain.product.ProductId
-import org.team_alilm.domain.product.ProductV2
+import org.team_alilm.domain.product.ProductImage
 import org.team_alilm.global.error.BasketAlreadyExistsException
 import org.team_alilm.global.util.StringConstant
 
@@ -18,48 +19,25 @@ class AlilmRegistrationService(
     private val addProductPort: org.team_alilm.application.port.out.AddProductPort,
     private val loadBasketPort: org.team_alilm.application.port.out.LoadBasketPort,
     private val addBasketPort: org.team_alilm.application.port.out.AddBasketPort,
-    private val slackGateway: SlackGateway
+    private val slackGateway: SlackGateway,
+    private val addProductImagePort: org.team_alilm.application.port.out.AddProductImagePort
 ) : org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase {
-
-    private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
     @Transactional
     override fun alilmRegistration(command: AlilmRegistrationCommand) {
         val product = getProduct(command)
-        saveBasket(command, product)
+        saveBasket(
+            memberId = command.member.id!!,
+            productId = product.id!!
+        )
     }
 
     @Transactional
     override fun alilmRegistrationV2(command: AlilmRegistrationCommandV2) {
         val product = getProductV2(command)
-        saveBasketV2(command, productV2Id = product.id!!)
-    }
-
-    private fun saveBasket(
-        command: AlilmRegistrationCommand,
-        product: Product,
-    ) {
-
-        val basket = loadBasketPort.loadBasketIncludeIsDelete(
+        saveBasket(
             memberId = command.member.id!!,
             productId = product.id!!
-        ) ?.let {
-            if(it.isReRegisterable().not()) throw BasketAlreadyExistsException()
-
-            it
-        } ?: run {
-            Basket(
-                id = Basket.BasketId(null),
-                memberId = command.member.id,
-                productId = product.id,
-                isHidden = false,
-            )
-        }
-
-        addBasketPort.addBasket(
-            basket = basket,
-            memberId = command.member.id,
-            productId = product.id
         )
 
         slackGateway.sendMessage(
@@ -72,54 +50,50 @@ class AlilmRegistrationService(
         )
     }
 
-    private fun saveBasketV2(
-        command: AlilmRegistrationCommandV2,
-        productV2Id: ProductId,
+    private fun saveBasket(
+        memberId: MemberId,
+        productId: ProductId,
     ) {
 
         val basket = loadBasketPort.loadBasketIncludeIsDelete(
-            memberId = command.member.id!!,
-            productId = productV2Id
+            memberId = memberId,
+            productId = productId
         ) ?.let {
-
-            if(it.isReRegisterable().not()) {
-                log.info("장바구니가 이미 존재합니다. memberId: ${command.member.id}, productId: ${productV2Id.value}")
-                throw BasketAlreadyExistsException()
-            }
+            if(it.isReRegisterable().not()) throw BasketAlreadyExistsException()
 
             it
         } ?: run {
-            log.info("장바구니를 등록 합니다.")
             Basket(
                 id = Basket.BasketId(null),
-                memberId = command.member.id,
-                productId = productV2Id,
+                memberId = memberId,
+                productId = productId,
                 isHidden = false,
             )
         }
 
         addBasketPort.addBasket(
             basket = basket,
-            memberId = command.member.id,
-            productId = productV2Id
+            memberId = memberId,
+            productId = productId
         )
     }
 
-    private fun getProductV2(command: AlilmRegistrationCommandV2) : ProductV2 =
-        loadProductPort.loadProductV2(
+    private fun getProductV2(command: AlilmRegistrationCommandV2) : Product =
+        loadProductPort.loadProduct(
             number = command.number,
             store = command.store,
             firstOption = command.firstOption,
             secondOption = command.secondOption,
             thirdOption = command.thirdOption
         ) ?: run {
-            addProductPort.addProduct(
-                ProductV2(
+            val product = addProductPort.addProduct(
+                Product(
                     id = null,
                     number = command.number,
                     name = command.name,
                     brand = command.brand,
                     store = command.store,
+                    imageUrl = command.thumbnailUrl,
                     category = command.category,
                     price = command.price,
                     firstOption = command.firstOption,
@@ -127,8 +101,19 @@ class AlilmRegistrationService(
                     thirdOption = command.thirdOption
                 )
             )
-        }
 
+            command.imageUrlList.forEach {
+                addProductImagePort.addProductImage(
+                    ProductImage(
+                        id = null,
+                        productId = product.id!!,
+                        imageUrl = it
+                    )
+                )
+            }
+
+            return product
+        }
 
     private fun getProduct(command: AlilmRegistrationCommand) =
         loadProductPort.loadProduct(
@@ -154,5 +139,4 @@ class AlilmRegistrationService(
                 )
             )
         }
-
 }
