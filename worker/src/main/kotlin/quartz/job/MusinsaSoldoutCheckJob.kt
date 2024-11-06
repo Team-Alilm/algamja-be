@@ -106,13 +106,12 @@ class MusinsaSoldoutCheckJob(
         }
     }
 
-
     private suspend fun checkIfSoldOutForProduct(product: Product): Boolean {
         val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(product.number)
 
         // HTML 크롤링을 통한 품절 확인
         val response = crawlingGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
-        val jsonData = extractJsonData(response.html, "window.__MSS__.product.state")
+        val jsonData = extractJsonData(response.html)
 
         return if (jsonData != null) {
             val jsonObject = objectMapper.readTree(jsonData)
@@ -174,11 +173,11 @@ class MusinsaSoldoutCheckJob(
         """.trimIndent()
     }
 
-    private fun extractJsonData(scriptContent: String, variableName: String): String? {
+    private fun extractJsonData(scriptContent: String): String? {
         var jsonString: String? = null
 
         // 자바스크립트 내 변수 선언 패턴
-        val pattern = "$variableName = "
+        val pattern = "window.__MSS__.product.state = "
 
         // 패턴의 시작 위치 찾기
         val startIndex = scriptContent.indexOf(pattern)

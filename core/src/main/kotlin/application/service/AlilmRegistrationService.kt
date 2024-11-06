@@ -29,6 +29,7 @@ class AlilmRegistrationService(
         saveBasket(command, product)
     }
 
+    @Transactional
     override fun alilmRegistrationV2(command: AlilmRegistrationCommandV2) {
         val product = getProductV2(command)
         saveBasketV2(command, productV2Id = product.id!!)
