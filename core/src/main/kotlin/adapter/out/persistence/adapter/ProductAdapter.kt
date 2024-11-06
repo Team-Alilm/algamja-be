@@ -13,7 +13,6 @@ import org.team_alilm.application.port.out.LoadProductPort
 import org.team_alilm.application.port.out.LoadProductSlicePort
 import org.team_alilm.domain.product.Product
 import org.team_alilm.domain.product.ProductId
-import org.team_alilm.domain.product.ProductV2
 import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotFoundProductException
 
@@ -38,16 +37,6 @@ class ProductAdapter(
             )
     }
 
-    override fun addProduct(product: ProductV2): ProductV2 {
-        return productMapper
-            .mapToDomainEntityV2(
-                springDataProductRepository.save(
-                    productMapper.mapToJpaEntityV2(product)
-                )
-            )
-    }
-
-
     override fun loadProduct(
         number: Long,
         store: Store,
@@ -70,24 +59,6 @@ class ProductAdapter(
         val productJpaEntity = springDataProductRepository.findByIdAndIsDeleteFalse(productId.value)
 
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
-    }
-
-    override fun loadProductV2(
-        number: Long,
-        store: Store,
-        firstOption: String,
-        secondOption: String?,
-        thirdOption: String?
-    ): ProductV2? {
-        val productJpaEntity = productRepository.findByNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
-            number = number,
-            store = store,
-            firstOption = firstOption,
-            secondOption = secondOption,
-            thirdOption = thirdOption
-        )
-
-        return productMapper.mapToDomainEntityV2OrNull(productJpaEntity)
     }
 
     override fun loadRecentProduct(): List<Product> {
