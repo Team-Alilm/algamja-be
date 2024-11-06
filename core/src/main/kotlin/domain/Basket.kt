@@ -1,7 +1,8 @@
 package org.team_alilm.domain
 
 import org.team_alilm.domain.Member.*
-import org.team_alilm.domain.Product.*
+import org.team_alilm.domain.product.Product.*
+import org.team_alilm.domain.product.ProductId
 
 class Basket(
     val id: BasketId? = null,

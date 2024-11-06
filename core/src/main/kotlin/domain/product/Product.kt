@@ -1,4 +1,4 @@
-package org.team_alilm.domain
+package org.team_alilm.domain.product
 
 class Product (
     val id: ProductId?,
@@ -23,7 +23,7 @@ class Product (
         require(firstOption.isNotBlank()) { "Product option1 must not be blank" }
     }
 
-    data class ProductId(val value: Long)
+
 
     fun getManagedCode() : String {
         return if (this.firstOption.isNotBlank() && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {

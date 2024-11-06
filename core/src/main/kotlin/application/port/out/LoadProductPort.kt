@@ -1,23 +1,34 @@
 package org.team_alilm.application.port.out
 
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Product
+import org.team_alilm.domain.product.ProductId
+import org.team_alilm.domain.product.ProductV2
+import org.team_alilm.domain.product.Store
 
 interface LoadProductPort {
 
     fun loadProduct(
         number:Long,
-        store: Product.Store,
+        store: Store,
         firstOption: String,
         secondOption: String?,
         thirdOption: String?
     ): Product?
 
+    fun loadProductV2(
+        number:Long,
+        store: Store,
+        firstOption: String,
+        secondOption: String?,
+        thirdOption: String?
+    ): ProductV2?
+
     fun loadProduct(
-        productId: Product.ProductId,
+        productId: ProductId,
     ): Product?
 
     fun loadProductDetails(
-        productId: Product.ProductId,
+        productId: ProductId,
     ): LoadProductSlicePort.ProductAndWaitingCount?
 
     fun loadRecentProduct(): List<Product>

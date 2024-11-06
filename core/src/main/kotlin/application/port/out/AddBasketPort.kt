@@ -2,14 +2,16 @@ package org.team_alilm.application.port.out
 
 import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Member
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.Member.*
+import org.team_alilm.domain.product.Product
+import org.team_alilm.domain.product.ProductId
 
 interface AddBasketPort {
 
     fun addBasket(
         basket: Basket,
-        member: Member,
-        product: Product
+        memberId: MemberId,
+        productId: ProductId
     ): Basket
 
 }

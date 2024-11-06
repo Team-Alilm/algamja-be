@@ -2,7 +2,7 @@ package org.team_alilm.application.port.`in`.use_case
 
 import org.team_alilm.domain.Basket
 import org.team_alilm.domain.Member
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Product
 
 interface MyBasketsUseCase {
 

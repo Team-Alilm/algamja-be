@@ -5,8 +5,9 @@ import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase.*
 import org.team_alilm.domain.Basket
-import org.team_alilm.domain.Product
-import org.team_alilm.domain.ProductV2
+import org.team_alilm.domain.product.Product
+import org.team_alilm.domain.product.ProductId
+import org.team_alilm.domain.product.ProductV2
 import org.team_alilm.global.error.BasketAlreadyExistsException
 import org.team_alilm.global.util.StringConstant
 
@@ -30,8 +31,7 @@ class AlilmRegistrationService(
 
     override fun alilmRegistrationV2(command: AlilmRegistrationCommandV2) {
         val product = getProductV2(command)
-
-        saveBasketV2(command, product)
+        saveBasketV2(command, productV2Id = product.id!!)
     }
 
     private fun saveBasket(
@@ -57,8 +57,8 @@ class AlilmRegistrationService(
 
         addBasketPort.addBasket(
             basket = basket,
-            member = command.member,
-            product = product
+            memberId = command.member.id,
+            productId = product.id
         )
 
         slackGateway.sendMessage(
@@ -73,16 +73,16 @@ class AlilmRegistrationService(
 
     private fun saveBasketV2(
         command: AlilmRegistrationCommandV2,
-        product: ProductV2,
+        productV2Id: ProductId,
     ) {
 
         val basket = loadBasketPort.loadBasketIncludeIsDelete(
             memberId = command.member.id!!,
-            productId = product.id!!
+            productId = productV2Id
         ) ?.let {
 
-            if(it.isReRegisterable()) {
-                log.info("장바구니가 이미 존재합니다. memberId: ${command.member.id}, productId: ${product.id}")
+            if(it.isReRegisterable().not()) {
+                log.info("장바구니가 이미 존재합니다. memberId: ${command.member.id}, productId: ${productV2Id.value}")
                 throw BasketAlreadyExistsException()
             }
 
@@ -92,20 +92,20 @@ class AlilmRegistrationService(
             Basket(
                 id = Basket.BasketId(null),
                 memberId = command.member.id,
-                productId = product.id,
+                productId = productV2Id,
                 isHidden = false,
             )
         }
 
         addBasketPort.addBasket(
             basket = basket,
-            member = command.member,
-            product = product
+            memberId = command.member.id,
+            productId = productV2Id
         )
     }
 
-    private fun getProductV2(command: AlilmRegistrationCommandV2) =
-        loadProductPort.loadProduct(
+    private fun getProductV2(command: AlilmRegistrationCommandV2) : ProductV2 =
+        loadProductPort.loadProductV2(
             number = command.number,
             store = command.store,
             firstOption = command.firstOption,

@@ -5,7 +5,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.CopyBasketUseCase
 import org.team_alilm.application.port.out.LoadBasketPort
 import org.team_alilm.domain.Basket
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Product
+import org.team_alilm.domain.product.ProductId
 import org.team_alilm.global.error.DuplicateBasketException
 import org.team_alilm.global.error.NotFoundProductException
 
@@ -19,7 +20,7 @@ class CopyBasketService(
 
     @Transactional
     override fun copyBasket(command: CopyBasketUseCase.CopyBasketCommand) {
-        val productId = Product.ProductId(command.productId)
+        val productId = ProductId(command.productId)
 
         // 장바구니에 이미 상품이 존재하는 경우 예외 발생
         loadBasketPort.loadBasketIncludeIsDelete(
@@ -41,8 +42,8 @@ class CopyBasketService(
         )
         addBasketPort.addBasket(
             basket = basket,
-            product = product,
-            member = command.member
+            productId = product.id!!,
+            memberId = command.member.id
         )
 
     }

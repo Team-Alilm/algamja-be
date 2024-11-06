@@ -1,6 +1,7 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.domain.Product
+import org.team_alilm.domain.product.Product
+import org.team_alilm.domain.product.Store
 
 interface CrawlingUseCase {
 
@@ -17,7 +18,7 @@ interface CrawlingUseCase {
         val imageUrl: String,
         val category: String,
         val price: Int,
-        val store: Product.Store,
+        val store: Store,
         val firstOptions: List<String>,
         val secondOptions: List<String>,
         val thirdOptions: List<String>
