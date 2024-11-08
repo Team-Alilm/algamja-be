@@ -4,18 +4,19 @@ import org.team_alilm.domain.product.Product
 
 interface ProductDetailsUseCase {
 
-    fun productDetails(command: ProductDetailsCommand): ProductDetailsResponse
+    fun productDetails(command: ProductDetailsCommand): ProductDetailsResult
 
     data class ProductDetailsCommand(
         val productId: Long
     )
 
-    data class ProductDetailsResponse(
+    data class ProductDetailsResult(
         val id: Long,
         val number: Long,
         val name: String,
         val brand: String,
-        val imageUrl: String,
+        val thumbnailUrl: String,
+        val imageList: List<String>,
         val store: String,
         val price: Int,
         val category: String,
@@ -26,13 +27,14 @@ interface ProductDetailsUseCase {
     ) {
 
         companion object {
-            fun from (product: Product, waitingCount: Long): ProductDetailsResponse {
-                return ProductDetailsResponse(
+            fun from (product: Product, waitingCount: Long, imageList: List<String>): ProductDetailsResult {
+                return ProductDetailsResult(
                     id = product.id!!.value,
                     number = product.number,
                     name = product.name,
                     brand = product.brand,
-                    imageUrl = product.imageUrl,
+                    thumbnailUrl = product.thumbnailUrl,
+                    imageList = imageList,
                     store = product.store.name,
                     price = product.price,
                     category = product.category,

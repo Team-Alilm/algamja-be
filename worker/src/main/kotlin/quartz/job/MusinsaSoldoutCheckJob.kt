@@ -143,7 +143,7 @@ class MusinsaSoldoutCheckJob(
             member.email,
             member.nickname,
             product.number,
-            product.imageUrl,
+            product.thumbnailUrl,
             product.getEmailOption()
         )
         sendSlackGateway.sendMessage(getSlackMessage(product))

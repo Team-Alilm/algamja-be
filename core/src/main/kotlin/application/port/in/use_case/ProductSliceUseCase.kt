@@ -1,6 +1,6 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.application.port.out.LoadProductSlicePort
+import org.team_alilm.application.port.out.LoadProductSlicePort.ProductAndWaitingCount
 
 interface ProductSliceUseCase {
 
@@ -36,14 +36,14 @@ interface ProductSliceUseCase {
     ) {
 
         companion object {
-            fun from (basketAndCountProjection: LoadProductSlicePort.ProductAndWaitingCount): ProductSliceResult {
+            fun from (basketAndCountProjection: ProductAndWaitingCount): ProductSliceResult {
                 return ProductSliceResult(
                     id = basketAndCountProjection.product.id!!.value,
                     number = basketAndCountProjection.product.number,
                     name = basketAndCountProjection.product.name,
                     brand = basketAndCountProjection.product.brand,
-                    thumbnailUrl = basketAndCountProjection.product.imageUrl,
-                    imageUrl = basketAndCountProjection.product.imageUrl,
+                    thumbnailUrl = basketAndCountProjection.product.thumbnailUrl,
+                    imageUrl = basketAndCountProjection.product.thumbnailUrl,
                     store = basketAndCountProjection.product.store.name,
                     price = basketAndCountProjection.product.price,
                     category = basketAndCountProjection.product.category,

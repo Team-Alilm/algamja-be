@@ -37,7 +37,7 @@ interface MyBasketsUseCase {
                     number = product.number,
                     name = product.name,
                     brand = product.brand,
-                    imageUrl = product.imageUrl,
+                    imageUrl = product.thumbnailUrl,
                     store = product.store.name,
                     price = product.price,
                     isAlilm = basket.isAlilm,

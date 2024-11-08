@@ -11,7 +11,7 @@ import org.team_alilm.application.port.`in`.use_case.AlilmRecentUseCase
 import org.team_alilm.domain.product.Product
 
 @RestController
-@RequestMapping("/api/v1/alilms", "/api/v1/notifications")
+@RequestMapping("/api/v1/alilms")
 @Tag(name = "알림 API", description = """
     알림 API 들을 모아둔 컨트롤러 입니다.
 """)
@@ -49,7 +49,7 @@ class AlilmController(
                 return RecentProduct(
                     id = product.id?.value ?: 0,
                     name = product.name,
-                    imageUrl = product.imageUrl
+                    imageUrl = product.thumbnailUrl
                 )
             }
         }
