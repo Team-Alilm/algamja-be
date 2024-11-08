@@ -24,38 +24,6 @@ class ProductSliceController(
     private val productSliceUseCase: ProductSliceUseCase
 ) {
 
-    @Operation(
-        summary = "사용 금지 예정 !!!!! 상품 조회 API",
-        description = """
-            사용 금지 예정 !!!!! 
-            사용자들이 등록한 상품을 조회할 수 있는 기능을 제공해요.
-            정렬 조건, 페이지, 사이즈를 입력받아요.
-            
-            기본은 기다리는 사람이 많은 순 이에요.
-            
-            기다리는 사람이 0명인 상품도 조회되고 있어요.
-    """
-    )
-    @GetMapping("/v1/products")
-    fun productSlice(
-        @ParameterObject
-        @Valid
-        productListParameter: ProductListParameter,
-
-        bindingResult: BindingResult
-    ): ResponseEntity<ProductSliceUseCase.CustomSlice> {
-        if (bindingResult.hasErrors()) {
-            throw RequestValidateException(bindingResult)
-        }
-
-        val command = ProductSliceUseCase.ProductSliceCommand(
-            size = productListParameter.size,
-            page = productListParameter.page
-        )
-
-        return ResponseEntity.ok(productSliceUseCase.productSlice(command))
-    }
-
     @Schema(description = "상품 조회 파라미터")
     data class ProductListParameter(
         @NotBlank(message = "사이즈는 필수에요.")
