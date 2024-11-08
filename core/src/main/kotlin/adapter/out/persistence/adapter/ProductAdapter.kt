@@ -10,6 +10,7 @@ import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataP
 import org.team_alilm.application.port.out.AddProductPort
 import org.team_alilm.application.port.out.LoadCrawlingProductsPort
 import org.team_alilm.application.port.out.LoadProductPort
+import org.team_alilm.application.port.out.LoadProductPort.*
 import org.team_alilm.application.port.out.LoadProductSlicePort
 import org.team_alilm.domain.product.Product
 import org.team_alilm.domain.product.ProductId
@@ -67,11 +68,13 @@ class ProductAdapter(
         }
     }
 
-    override fun loadProductDetails(productId: ProductId): LoadProductSlicePort.ProductAndWaitingCount? {
-        val productAndWaitingCountProjection = productRepository.findByIdAndIsDeleteFalseAndWaitingCount(productId.value)
-        return LoadProductSlicePort.ProductAndWaitingCount.of(
-            product = productMapper.mapToDomainEntity(productAndWaitingCountProjection?.productJpaEntity ?: throw NotFoundProductException()),
-            waitingCount = productAndWaitingCountProjection.waitingCount
+    override fun loadProductDetails(productId: ProductId): ProductAndWaitingCountAndImageList? {
+        val productAndWaitingCountAndImageListProjection = productRepository.findByDetails(productId.value)
+        log.info("productAndWaitingCountAndImageListProjection: $productAndWaitingCountAndImageListProjection")
+        return ProductAndWaitingCountAndImageList.of(
+            product = productMapper.mapToDomainEntity(productAndWaitingCountAndImageListProjection?.productJpaEntity ?: throw NotFoundProductException()),
+            waitingCount = productAndWaitingCountAndImageListProjection.waitingCount,
+            imageList = productAndWaitingCountAndImageListProjection.imageList.toString().split(",")
         )
     }
 

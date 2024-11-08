@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.ProductDetailsUseCase
+import org.team_alilm.application.port.`in`.use_case.ProductDetailsUseCase.*
 
 @RestController
 @Tag(name = "상품 상세 조회 API", description = "상품 상세 조회 API를 제공합니다.")
@@ -20,7 +21,7 @@ class ProductDetailsController(
         @PathVariable
         productId: Long
     ) : ResponseEntity<ProductDetailsResponse> {
-        val command = ProductDetailsUseCase.ProductDetailsCommand(productId = productId)
+        val command = ProductDetailsCommand(productId = productId)
         val result = productDetailsUseCase.productDetails(command = command)
         val response = ProductDetailsResponse.from(result)
 
@@ -32,7 +33,8 @@ class ProductDetailsController(
         val number: Long,
         val name: String,
         val brand: String,
-        val imageUrl: String,
+        val thumbnailUrl: String,
+        val imageList: List<String>,
         val store: String,
         val price: Int,
         val category: String,
@@ -43,13 +45,14 @@ class ProductDetailsController(
     ) {
 
         companion object {
-            fun from (productDetails: ProductDetailsUseCase.ProductDetailsResponse): ProductDetailsResponse {
+            fun from (productDetails: ProductDetailsResult): ProductDetailsResponse {
                 return ProductDetailsResponse(
                     id = productDetails.id,
                     number = productDetails.number,
                     name = productDetails.name,
                     brand = productDetails.brand,
-                    imageUrl = productDetails.imageUrl,
+                    thumbnailUrl = productDetails.thumbnailUrl,
+                    imageList = productDetails.imageList,
                     store = productDetails.store,
                     price = productDetails.price,
                     category = productDetails.category,

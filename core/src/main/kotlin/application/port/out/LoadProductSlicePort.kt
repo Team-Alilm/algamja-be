@@ -10,14 +10,14 @@ interface LoadProductSlicePort {
 
     data class ProductAndWaitingCount(
         val product: Product,
-        val waitingCount: Long
+        val waitingCount: Long,
     ) {
 
         companion object {
             fun of (product: Product, waitingCount: Long): ProductAndWaitingCount {
                 return ProductAndWaitingCount(
                     product = product,
-                    waitingCount = waitingCount
+                    waitingCount = waitingCount,
                 )
             }
         }

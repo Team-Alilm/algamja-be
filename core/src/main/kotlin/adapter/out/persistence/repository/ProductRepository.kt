@@ -5,8 +5,8 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
-import org.team_alilm.domain.product.Product
 import org.team_alilm.domain.product.Store
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
@@ -58,19 +58,24 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 
     @Query("""
-        SELECT 
-            new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(p, COUNT(b)) 
-        FROM 
-            ProductJpaEntity p 
-        JOIN 
-            BasketJpaEntity b 
-        ON 
-            b.productId = p.id
-        and b.isDelete = false
-        and p.isDelete = false
-        and p.id = :value
-    """)
-    fun findByIdAndIsDeleteFalseAndWaitingCount(value: Long): ProductAndWaitingCountProjection?
+    SELECT 
+        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageListProjection(
+            p, 
+            COUNT(DISTINCT b), 
+            GROUP_CONCAT(pi.imageUrl)
+        )
+    FROM 
+        ProductJpaEntity p
+    LEFT JOIN 
+        BasketJpaEntity b ON b.productId = p.id AND b.isDelete = false
+    LEFT JOIN 
+        ProductImageJpaEntity pi ON pi.productId = p.id
+    WHERE 
+        p.id = :productId AND p.isDelete = false
+    GROUP BY 
+        p.id
+""")
+    fun findByDetails(productId: Long): ProductAndWaitingCountAndImageListProjection?
 
     @Query("""
         SELECT 

@@ -5,7 +5,7 @@ class Product (
     val number: Long,
     val name: String,
     val brand: String,
-    val imageUrl: String,
+    val thumbnailUrl: String,
     val category: String,
     val price: Int,
     val store: Store,
@@ -17,7 +17,7 @@ class Product (
         require(number > 0) { "Product number must be positive" }
         require(name.isNotBlank()) { "Product name must not be blank" }
         require(brand.isNotBlank()) { "Product brand must not be blank" }
-        require(imageUrl.isNotBlank()) { "Product image URL must not be blank" }
+        require(thumbnailUrl.isNotBlank()) { "Product thumbnail URL must not be blank" }
         require(category.isNotBlank()) { "Product category must not be blank" }
         require(price >= 0) { "Product price must be non-negative" }
         require(firstOption.isNotBlank()) { "Product option1 must not be blank" }

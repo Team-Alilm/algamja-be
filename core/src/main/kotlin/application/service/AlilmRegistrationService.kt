@@ -30,15 +30,6 @@ class AlilmRegistrationService(
             memberId = command.member.id!!,
             productId = product.id!!
         )
-    }
-
-    @Transactional
-    override fun alilmRegistrationV2(command: AlilmRegistrationCommandV2) {
-        val product = getProductV2(command)
-        saveBasket(
-            memberId = command.member.id!!,
-            productId = product.id!!
-        )
 
         slackGateway.sendMessage(
             message = """
@@ -78,7 +69,7 @@ class AlilmRegistrationService(
         )
     }
 
-    private fun getProductV2(command: AlilmRegistrationCommandV2) : Product =
+    private fun getProduct(command: AlilmRegistrationCommand) : Product =
         loadProductPort.loadProduct(
             number = command.number,
             store = command.store,
@@ -93,7 +84,7 @@ class AlilmRegistrationService(
                     name = command.name,
                     brand = command.brand,
                     store = command.store,
-                    imageUrl = command.thumbnailUrl,
+                    thumbnailUrl = command.thumbnailUrl,
                     category = command.category,
                     price = command.price,
                     firstOption = command.firstOption,
@@ -113,30 +104,5 @@ class AlilmRegistrationService(
             }
 
             return product
-        }
-
-    private fun getProduct(command: AlilmRegistrationCommand) =
-        loadProductPort.loadProduct(
-            number = command.number,
-            store = command.store,
-            firstOption = command.firstOption,
-            secondOption = command.secondOption,
-            thirdOption = command.thirdOption
-        ) ?: run {
-            addProductPort.addProduct(
-                Product(
-                    id = null,
-                    number = command.number,
-                    name = command.name,
-                    brand = command.brand,
-                    store = command.store,
-                    imageUrl = command.imageUrl,
-                    category = command.category,
-                    price = command.price,
-                    firstOption = command.firstOption,
-                    secondOption = command.secondOption,
-                    thirdOption = command.thirdOption
-                )
-            )
         }
 }

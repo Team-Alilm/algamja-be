@@ -20,7 +20,7 @@ class MyBasketsService (
                 number = it.product.number,
                 name = it.product.name,
                 brand = it.product.brand,
-                imageUrl = it.product.imageUrl,
+                imageUrl = it.product.thumbnailUrl,
                 store = it.product.store.name,
                 price = it.product.price,
                 isAlilm = it.basket.isAlilm,

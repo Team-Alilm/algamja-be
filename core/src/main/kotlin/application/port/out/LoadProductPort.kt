@@ -20,7 +20,23 @@ interface LoadProductPort {
 
     fun loadProductDetails(
         productId: ProductId,
-    ): LoadProductSlicePort.ProductAndWaitingCount?
+    ): ProductAndWaitingCountAndImageList?
 
     fun loadRecentProduct(): List<Product>
+
+    data class ProductAndWaitingCountAndImageList(
+        val product: Product,
+        val waitingCount: Long,
+        val imageList: List<String>
+    ) {
+        companion object {
+            fun of (product: Product, waitingCount: Long, imageList: List<String>): ProductAndWaitingCountAndImageList {
+                return ProductAndWaitingCountAndImageList(
+                    product = product,
+                    waitingCount = waitingCount,
+                    imageList = imageList
+                )
+            }
+        }
+    }
 }
