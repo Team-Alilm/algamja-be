@@ -2,8 +2,9 @@ package org.team_alilm.domain.product
 
 class ProductImage(
     val id: ProductImageId?,
-    val productId: ProductId,
-    val imageUrl: String
+    val imageUrl: String,
+    val productNumber: Long,
+    val productStore: Store
 ) {
 
     data class ProductImageId(val value: Long)

@@ -20,12 +20,13 @@ class AlilmRegistrationService(
     private val loadBasketPort: org.team_alilm.application.port.out.LoadBasketPort,
     private val addBasketPort: org.team_alilm.application.port.out.AddBasketPort,
     private val slackGateway: SlackGateway,
-    private val addProductImagePort: org.team_alilm.application.port.out.AddProductImagePort
+    private val loadProductImagePort: org.team_alilm.application.port.out.LoadProductImagePort,
+    private val addAllProductImagePort: org.team_alilm.application.port.out.AddAllProductImagePort
 ) : org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase {
 
     @Transactional
     override fun alilmRegistration(command: AlilmRegistrationCommand) {
-        val product = getProduct(command)
+        val product = createAndSaveProductWithImages(command)
         saveBasket(
             memberId = command.member.id!!,
             productId = product.id!!
@@ -69,7 +70,7 @@ class AlilmRegistrationService(
         )
     }
 
-    private fun getProduct(command: AlilmRegistrationCommand) : Product =
+    private fun createAndSaveProductWithImages(command: AlilmRegistrationCommand) : Product =
         loadProductPort.loadProduct(
             number = command.number,
             store = command.store,
@@ -93,16 +94,25 @@ class AlilmRegistrationService(
                 )
             )
 
-            command.imageUrlList.forEach {
-                addProductImagePort.addProductImage(
-                    ProductImage(
-                        id = null,
-                        productId = product.id!!,
-                        imageUrl = it
-                    )
-                )
-            }
+            loadProductImagePort.existsByProductImage(product.number, product.store)
+                .takeIf { it.not() } // 이미지가 존재하지 않으면
+                ?.let {
+                    saveProductImageList(product, command.imageUrlList) // 이미지를 저장합니다
+                }
 
             return product
         }
+
+    private fun saveProductImageList(product: Product, imageUrlList: List<String>) {
+        addAllProductImagePort.addAllProductImage(
+            productImageList = imageUrlList.map {
+                ProductImage(
+                    id = null,
+                    imageUrl = it,
+                    productNumber = product.number,
+                    productStore = product.store
+                )
+            }
+        )
+    }
 }
