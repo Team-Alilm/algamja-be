@@ -69,7 +69,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     LEFT JOIN 
         BasketJpaEntity b ON b.productId = p.id AND b.isDelete = false
     LEFT JOIN 
-        ProductImageJpaEntity pi ON pi.productId = p.id
+        ProductImageJpaEntity pi ON pi.productNumber = p.number and pi.productStore = p.store
     WHERE 
         p.id = :productId AND p.isDelete = false
     GROUP BY 

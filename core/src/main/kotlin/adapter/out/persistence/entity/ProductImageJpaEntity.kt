@@ -8,10 +8,6 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
 @Table(name = "product_image",
     indexes = [
         Index(
-            name = "idx_product_id",
-            columnList = "product_id"
-        ),
-        Index(
             name = "idx_product_number_store_image_url",
             columnList = "product_number, product_store, image_url"
         ),
