@@ -24,7 +24,7 @@ class ProductJpaEntity(
     val brand: String,
 
     @Column
-    val imageUrl: String,
+    val thumbnailUrl: String,
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
