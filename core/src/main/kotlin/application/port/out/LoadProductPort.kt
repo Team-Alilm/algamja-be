@@ -27,14 +27,14 @@ interface LoadProductPort {
     data class ProductAndWaitingCountAndImageList(
         val product: Product,
         val waitingCount: Long,
-        val imageList: List<String>
+        val imageUrlList: List<String>
     ) {
         companion object {
-            fun of (product: Product, waitingCount: Long, imageList: List<String>): ProductAndWaitingCountAndImageList {
+            fun of (product: Product, waitingCount: Long, imageUrlList: List<String>): ProductAndWaitingCountAndImageList {
                 return ProductAndWaitingCountAndImageList(
                     product = product,
                     waitingCount = waitingCount,
-                    imageList = imageList
+                    imageUrlList = imageUrlList
                 )
             }
         }

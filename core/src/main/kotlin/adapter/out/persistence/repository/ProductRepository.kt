@@ -5,7 +5,7 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageListProjection
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
 import org.team_alilm.domain.product.Store
 
@@ -58,24 +58,24 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 
     @Query("""
-    SELECT 
-        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageListProjection(
-            p, 
-            COUNT(DISTINCT b), 
-            GROUP_CONCAT(pi.imageUrl)
-        )
-    FROM 
-        ProductJpaEntity p
-    LEFT JOIN 
-        BasketJpaEntity b ON b.productId = p.id AND b.isDelete = false
-    LEFT JOIN 
-        ProductImageJpaEntity pi ON pi.productNumber = p.number and pi.productStore = p.store
-    WHERE 
-        p.id = :productId AND p.isDelete = false
-    GROUP BY 
-        p.id
-""")
-    fun findByDetails(productId: Long): ProductAndWaitingCountAndImageListProjection?
+        SELECT 
+            new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageProjection(
+                p,
+                COUNT(DISTINCT b),
+                pi.imageUrl
+            )
+        FROM 
+            ProductJpaEntity p
+        LEFT JOIN 
+            BasketJpaEntity b ON b.productId = p.id AND b.isDelete = false
+        LEFT JOIN 
+            ProductImageJpaEntity pi ON pi.productNumber = p.number AND pi.productStore = p.store
+        WHERE 
+            p.id = :productId AND p.isDelete = false AND pi.isDelete = false
+        GROUP BY 
+            p.id
+    """)
+    fun findByDetails(productId: Long): List<ProductAndWaitingCountAndImageProjection>
 
     @Query("""
         SELECT 
