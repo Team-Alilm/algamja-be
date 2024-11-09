@@ -16,7 +16,7 @@ interface ProductDetailsUseCase {
         val name: String,
         val brand: String,
         val thumbnailUrl: String,
-        val imageList: List<String>,
+        val imageUrlList: List<String>,
         val store: String,
         val price: Int,
         val category: String,
@@ -27,14 +27,14 @@ interface ProductDetailsUseCase {
     ) {
 
         companion object {
-            fun from (product: Product, waitingCount: Long, imageList: List<String>): ProductDetailsResult {
+            fun from (product: Product, waitingCount: Long, imageUrlList: List<String>): ProductDetailsResult {
                 return ProductDetailsResult(
                     id = product.id!!.value,
                     number = product.number,
                     name = product.name,
                     brand = product.brand,
                     thumbnailUrl = product.thumbnailUrl,
-                    imageList = imageList,
+                    imageUrlList = imageUrlList,
                     store = product.store.name,
                     price = product.price,
                     category = product.category,

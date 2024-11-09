@@ -20,7 +20,7 @@ class ProductDetailsService(
         return ProductDetailsResult.from(
             product = productAndWaitingCount.product,
             waitingCount = productAndWaitingCount.waitingCount,
-            imageList = productAndWaitingCount.imageList
+            imageUrlList = productAndWaitingCount.imageUrlList
         )
     }
 }
