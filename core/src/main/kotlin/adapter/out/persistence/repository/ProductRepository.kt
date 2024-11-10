@@ -58,24 +58,24 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 
     @Query("""
-        SELECT 
-            new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageProjection(
-                p,
-                COUNT(DISTINCT b),
-                pi.imageUrl
-            )
-        FROM 
-            ProductJpaEntity p
-        LEFT JOIN 
-            BasketJpaEntity b ON b.productId = p.id AND b.isDelete = false
-        LEFT JOIN 
-            ProductImageJpaEntity pi ON pi.productNumber = p.number AND pi.productStore = p.store
-        WHERE 
-            p.id = :productId AND p.isDelete = false AND pi.isDelete = false
-        GROUP BY 
-            p.id
-    """)
-    fun findByDetails(productId: Long): List<ProductAndWaitingCountAndImageProjection>
+    SELECT 
+        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageProjection(
+            p,
+            COUNT(b),
+            GROUP_CONCAT(pi.imageUrl)
+        )
+    FROM 
+        ProductJpaEntity p
+    LEFT JOIN 
+        BasketJpaEntity b ON b.productId = p.id AND b.isDelete = false
+    LEFT JOIN 
+        ProductImageJpaEntity pi ON pi.productNumber = p.number AND pi.productStore = p.store
+    WHERE 
+        p.id = :productId AND p.isDelete = false
+    GROUP BY 
+        p.id
+""")
+    fun findByDetails(productId: Long): ProductAndWaitingCountAndImageProjection
 
     @Query("""
         SELECT 
