@@ -5,5 +5,5 @@ import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 data class ProductAndWaitingCountAndImageProjection(
     val productJpaEntity: ProductJpaEntity,
     val waitingCount: Long,
-    val imageUrl: String
+    val imageUrlList: Any?
 )

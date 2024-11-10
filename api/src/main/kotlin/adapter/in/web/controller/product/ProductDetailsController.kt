@@ -20,6 +20,7 @@ class ProductDetailsController(
     fun productDetails(
         @PathVariable
         productId: Long
+
     ) : ResponseEntity<ProductDetailsResponse> {
         val command = ProductDetailsCommand(productId = productId)
         val result = productDetailsUseCase.productDetails(command = command)
