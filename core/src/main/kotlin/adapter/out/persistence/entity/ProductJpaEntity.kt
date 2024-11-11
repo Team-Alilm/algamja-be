@@ -23,7 +23,7 @@ class ProductJpaEntity(
     @Column(nullable = false)
     val brand: String,
 
-    @Column
+    @Column(nullable = false)
     val thumbnailUrl: String,
 
     @Column(nullable = false)
