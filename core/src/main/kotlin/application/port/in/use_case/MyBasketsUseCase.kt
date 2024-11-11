@@ -27,7 +27,8 @@ interface MyBasketsUseCase {
         val secondOption: String?,
         val thirdOption: String?,
         val isHidden: Boolean,
-        val waitingCount: Long
+        val waitingCount: Long,
+        val productId: Long
     ) {
 
         companion object {
@@ -47,7 +48,8 @@ interface MyBasketsUseCase {
                     secondOption = product.secondOption,
                     thirdOption = product.thirdOption,
                     isHidden = basket.isHidden,
-                    waitingCount = waitingCount
+                    waitingCount = waitingCount,
+                    productId = product.id?.value!!
                 )
             }
         }
