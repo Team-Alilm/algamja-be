@@ -14,7 +14,7 @@ import org.team_alilm.domain.product.Product
 @RequestMapping("/api/v1/products")
 @Tag(name = "관련 상품 API", description = """
     관련 상품을 모아둔 컨트롤러 입니다.
-    
+    해당 상품 id 값을 보내주면 알려드릴게요.
     최대 10개를 반환 합니다.
 """)
 class ProductRelatedController(
