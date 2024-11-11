@@ -5,7 +5,7 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageProjection
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
 import org.team_alilm.domain.product.Store
 
@@ -59,7 +59,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
     @Query("""
     SELECT 
-        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageProjection(
+        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection(
             p,
             COUNT(b),
             GROUP_CONCAT(pi.imageUrl)
@@ -76,7 +76,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         p.id
     order by pi.createdDate
 """)
-    fun findByDetails(productId: Long): ProductAndWaitingCountAndImageProjection
+    fun findByDetails(productId: Long): ProductAndWaitingCountAndImageUrlListProjection
 
     @Query("""
         SELECT 
