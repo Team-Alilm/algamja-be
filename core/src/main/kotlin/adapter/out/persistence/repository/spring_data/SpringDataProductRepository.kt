@@ -8,4 +8,6 @@ import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 interface SpringDataProductRepository : JpaRepository<ProductJpaEntity,Long> {
 
     fun findByIdAndIsDeleteFalse(value: Long): ProductJpaEntity?
+
+    fun findTop10ByCategoryAndIsDeleteFalseOrderByCreatedDate(category: String): List<ProductJpaEntity>
 }

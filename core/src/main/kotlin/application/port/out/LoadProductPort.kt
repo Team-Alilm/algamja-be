@@ -24,6 +24,10 @@ interface LoadProductPort {
 
     fun loadRecentProduct(): List<Product>
 
+    fun loadRelatedProduct(category: String): List<Product>
+
+    fun related(category: String) : List<Product>
+
     data class ProductAndWaitingCountAndImageList(
         val product: Product,
         val waitingCount: Long,

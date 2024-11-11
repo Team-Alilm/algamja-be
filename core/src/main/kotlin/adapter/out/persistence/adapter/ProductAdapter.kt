@@ -68,6 +68,12 @@ class ProductAdapter(
         }
     }
 
+    override fun loadRelatedProduct(category: String): List<Product> {
+        return springDataProductRepository.findTop10ByCategoryAndIsDeleteFalseOrderByCreatedDate(category).map {
+            productMapper.mapToDomainEntity(it)
+        }
+    }
+
     override fun loadProductDetails(productId: ProductId): ProductAndWaitingCountAndImageList? {
         val projectionList = productRepository.findByDetails(productId.value)
 
@@ -78,6 +84,10 @@ class ProductAdapter(
             waitingCount = projectionList.waitingCount,
             imageUrlList = projectionList.imageUrlList.toString().split(",") ?: emptyList()
         )
+    }
+
+    override fun related(category: String): List<Product> {
+        TODO("Not yet implemented")
     }
 
     override fun loadCrawlingProducts(): List<Product> {
