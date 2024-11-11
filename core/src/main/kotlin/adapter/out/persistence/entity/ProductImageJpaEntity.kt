@@ -22,6 +22,7 @@ class ProductImageJpaEntity(
     val productNumber: Long,
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     val productStore: Store,
 
     @Id

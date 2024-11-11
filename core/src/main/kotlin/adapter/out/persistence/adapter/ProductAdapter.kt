@@ -80,7 +80,7 @@ class ProductAdapter(
         return ProductAndWaitingCountAndImageList.of(
             product = productMapper.mapToDomainEntityOrNull(projectionList.productJpaEntity) ?: throw NotFoundProductException(),
             waitingCount = projectionList.waitingCount,
-            imageUrlList = projectionList.imageUrlList.toString().split(",") ?: emptyList()
+            imageUrlList = projectionList.imageUrlList?.toString()?.split(",") ?: emptyList()
         )
     }
 
