@@ -74,6 +74,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         p.id = :productId AND p.isDelete = false
     GROUP BY 
         p.id
+    order by pi.createdDate
 """)
     fun findByDetails(productId: Long): ProductAndWaitingCountAndImageProjection
 
