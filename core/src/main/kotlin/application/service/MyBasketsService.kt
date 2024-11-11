@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase
 import org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.*
+import org.team_alilm.global.error.NotFoundProductException
 
 @Service
 @Transactional
@@ -30,7 +31,8 @@ class MyBasketsService (
                 secondOption = it.product.secondOption,
                 thirdOption = it.product.thirdOption,
                 isHidden = it.basket.isHidden,
-                waitingCount = it.waitingCount
+                waitingCount = it.waitingCount,
+                productId = it.product.id?.value ?: throw NotFoundProductException()
             )
         }
     }
