@@ -30,7 +30,7 @@ class FcmSendGateway(
             .putData("title", "[${product.name}] 상품이 재 입고 되었습니다!")
             .putData("body", """
                 ${if (options.isNotBlank()) "option : $options" else ""}
-                지금 바로 확인해보세요. 서버에서 발송하는 FCM입니다.
+                지금 바로 확인해보세요.
             """.trimIndent())
             .putData("image", product.thumbnailUrl) // 이미지 URL 추가
             .putData("click_action", "https://www.musinsa.com/products/${product.number}")
