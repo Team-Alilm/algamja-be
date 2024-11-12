@@ -14,6 +14,7 @@ import org.team_alilm.adapter.out.gateway.FcmSendGateway
 import org.team_alilm.adapter.out.gateway.MailGateway
 import org.team_alilm.application.port.out.*
 import org.team_alilm.application.port.out.gateway.CrawlingGateway
+import org.team_alilm.application.port.out.gateway.SendMailGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
 import org.team_alilm.domain.Alilm
 import org.team_alilm.domain.Member
@@ -33,7 +34,7 @@ class MusinsaSoldoutCheckJob(
     private val loadCrawlingProductsPort: LoadCrawlingProductsPort,
     private val addBasketPort: AddBasketPort,
     private val restClient: RestClient,
-    private val mailGateway: MailGateway,
+    private val sendMailGateway: SendMailGateway,
     private val sendSlackGateway: SendSlackGateway,
     private val crawlingGateway: CrawlingGateway,
     private val fcmSendGateway: FcmSendGateway,
@@ -139,7 +140,7 @@ class MusinsaSoldoutCheckJob(
     }
 
     private fun sendNotifications(product: Product, member: Member) {
-        mailGateway.sendMail(
+        sendMailGateway.sendMail(
             member.email,
             member.nickname,
             product.number,
