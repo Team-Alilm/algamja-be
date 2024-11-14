@@ -62,7 +62,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection(
             p,
             COUNT(b),
-            GROUP_CONCAT(pi.imageUrl)
+            GROUP_CONCAT(DISTINCT (pi.imageUrl))
         )
     FROM 
         ProductJpaEntity p
@@ -72,8 +72,6 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         ProductImageJpaEntity pi ON pi.productNumber = p.number AND pi.productStore = p.store
     WHERE 
         p.id = :productId AND p.isDelete = false
-    GROUP BY 
-        p.id
     order by pi.createdDate
 """)
     fun findByDetails(productId: Long): ProductAndWaitingCountAndImageUrlListProjection
