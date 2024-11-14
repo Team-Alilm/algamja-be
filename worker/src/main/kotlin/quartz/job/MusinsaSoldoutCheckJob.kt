@@ -11,7 +11,6 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
 import org.team_alilm.adapter.out.gateway.FcmSendGateway
-import org.team_alilm.adapter.out.gateway.MailGateway
 import org.team_alilm.application.port.out.*
 import org.team_alilm.application.port.out.gateway.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.SendMailGateway
@@ -119,7 +118,7 @@ class MusinsaSoldoutCheckJob(
             val isGoodsSaleTypeEqualsSALE = jsonObject.get("goodsSaleType").toString() == "\"SALE\""
 
             if (isGoodsSaleTypeEqualsSALE.not()) {
-                true // SALE이 아니면 품절
+                true
             } else {
                 // API 호출로 재확인
                 val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(product.number)
@@ -128,7 +127,7 @@ class MusinsaSoldoutCheckJob(
                 } catch (e: RestClientException) {
                     log.error("Failed to check soldout status of product: ${product.number}", e)
                     sendSlackGateway.sendMessage("Failed to check soldout status of product number: ${product.number}\nError: ${e.message}")
-                    true // 상품이 품절로 간주
+                    true
                 }
             }
         } else {

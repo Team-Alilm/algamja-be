@@ -76,7 +76,7 @@ class ProductAdapter(
 
     override fun loadProductDetails(productId: ProductId): ProductAndWaitingCountAndImageList? {
         val projectionList = productRepository.findByDetails(productId.value)
-
+        log.info("projectionList : $projectionList")
         return ProductAndWaitingCountAndImageList.of(
             product = productMapper.mapToDomainEntityOrNull(projectionList.productJpaEntity) ?: throw NotFoundProductException(),
             waitingCount = projectionList.waitingCount,

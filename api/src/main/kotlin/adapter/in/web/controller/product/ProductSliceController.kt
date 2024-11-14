@@ -16,7 +16,7 @@ import org.team_alilm.application.port.`in`.use_case.ProductSliceUseCase
 import org.team_alilm.global.error.RequestValidateException
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v2/products")
 @Tag(name = "장바구니 메인 조회 API", description = """
     메인 page에서 사용하는 API를 제공합니다.
 """)
@@ -48,7 +48,7 @@ class ProductSliceController(
             기다리는 사람이 0명인 상품도 조회되고 있어요.
     """
     )
-    @GetMapping("/v2/products")
+    @GetMapping
     fun productSliceV2(
         @ParameterObject
         @Valid
