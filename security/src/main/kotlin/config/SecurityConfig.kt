@@ -35,7 +35,7 @@ class SecurityConfig (
             web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 리소스 무시
                 .requestMatchers(HttpMethod.GET, "/api/v1/baskets")
-                .requestMatchers(HttpMethod.GET, "/api/v1/products/**")
+                .requestMatchers(HttpMethod.GET, "/api/**/products/**")
                 .requestMatchers(HttpMethod.GET, "/api/v1/notifications/**")
                 .requestMatchers(HttpMethod.GET, "/api/v1/alilms/**")
                 .requestMatchers("/health-check")
