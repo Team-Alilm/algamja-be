@@ -21,9 +21,6 @@ spring:
     hibernate:
       ddl-auto: update
 
-  mail:
-    subject: 안녕하세요 Team Alilm dev 서버 입니다.
-
   h2:
     console:
       enabled: true

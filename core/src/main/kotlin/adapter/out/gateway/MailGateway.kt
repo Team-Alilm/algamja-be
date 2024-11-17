@@ -14,16 +14,16 @@ import java.time.format.DateTimeFormatter
 
 @Service
 class MailGateway(
-    @Value("\${spring.mail.subject}") private val subject: String,
     @Value("\${spring.mail.from}") private val from: String,
     @Value("\${spring.mail.username}") private val emailId: String,
 
     private val emailSender: JavaMailSender,
 ) : SendMailGateway {
 
-    override fun sendMail(to: String, nickname: String, productNumber: Number, imageUrl: String, options: String) {
+    override fun sendMail(to: String, nickname: String, productName: String, productNumber: Number, imageUrl: String, options: String) {
         val mimeMessage = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
+        val subject = "[Alilm] 등록하신 [${productName}]이 재입고 되었어요!"
 
         helper.setFrom(emailId, from)
         helper.setTo(to)
@@ -126,8 +126,8 @@ class MailGateway(
                 저희 알림 서비스를 이용해주셔서 감사합니다 :)
               </div>
               <div style="width: 100%; height: 28px;"></div>
-              <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 44px; background-color: #1B1A3B; border-radius: 8px;" >
-                <a style="color= #ffffff"  href="https://www.musinsa.com/app/goods/${productNumber}" style="background-color: #1B1A3B">재입고 상품 구매하러 가기 👉</a>
+              <div style="color= #ffffff; display: flex; justify-content: center; align-items: center; width: 100%; height: 44px; background-color: #1B1A3B; border-radius: 8px;" >
+                <a href="https://www.musinsa.com/app/goods/${productNumber}" style="background-color: #1B1A3B">재입고 상품 구매하러 가기 👉</a>
               </div>
             </div>
             </body>

@@ -142,6 +142,7 @@ class MusinsaSoldoutCheckJob(
         sendMailGateway.sendMail(
             member.email,
             member.nickname,
+            product.name,
             product.number,
             product.thumbnailUrl,
             product.getEmailOption()

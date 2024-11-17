@@ -14,7 +14,6 @@ spring:
 
   mail:
     from: Team Alilm
-    subject: 안녕하세요 Team Alilm입니다.
     username: ENC(zZZR0mstC9GJj3o2n9uNo4fSIxBtFkzivLzYAAo5Vb8=)
     password: ENC(8hyiyfxLieKE3paHstTxKOyqKgKSNjVnTPXU4YvLPRs=)
     host: smtp.gmail.com
