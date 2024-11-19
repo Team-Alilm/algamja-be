@@ -33,6 +33,12 @@ class ProductJpaEntity(
     @Column(nullable = false)
     val category: String,
 
+    @Column
+    val firstCategory: String,
+
+    @Column
+    val secondCategory: String,
+
     @Column(nullable = false)
     val price: Int,
 
