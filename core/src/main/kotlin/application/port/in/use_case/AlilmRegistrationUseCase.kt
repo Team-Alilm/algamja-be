@@ -16,6 +16,8 @@ interface AlilmRegistrationUseCase {
         val thumbnailUrl: String,
         val imageUrlList: List<String>,
         val category: String,
+        val firstCategory: String,
+        val secondCategory: String,
         val price: Int,
         val firstOption: String,
         val secondOption: String?,

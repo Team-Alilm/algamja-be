@@ -51,6 +51,8 @@ class BasketsRegisteredController(
             thumbnailUrl = request.thumbnailUrl,
             imageUrlList = request.imageUrlList,
             category = request.category,
+            firstCategory = request.firstCategory,
+            secondCategory = request.secondCategory,
             price = request.price,
             store = request.store,
             firstOption = request.firstOption,
@@ -106,10 +108,24 @@ class BasketsRegisteredController(
         @field:NotBlank(message = "카테고리는 필수입니다.")
         @field:Schema(
             example = "신발",
-            description = "카테고리",
+            description = "카테고리 향후 삭제 예정 입니다.",
             required = true
         )
         val category: String,
+
+        @field:Schema(
+            example = "상의",
+            description = "카테고리 1",
+            required = true
+        )
+        val firstCategory: String,
+
+        @field:Schema(
+            example = "반팔",
+            description = "카테고리 2",
+            required = true
+        )
+        val secondCategory: String,
 
         @field:NotNull(message = "가격은 필수입니다.")
         @field:Schema(

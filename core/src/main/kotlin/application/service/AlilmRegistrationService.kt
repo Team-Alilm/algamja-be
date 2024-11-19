@@ -1,7 +1,5 @@
 package org.team_alilm.application.service
 
-import org.hibernate.query.sqm.tree.SqmNode.log
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.adapter.out.gateway.SlackGateway
@@ -25,8 +23,6 @@ class AlilmRegistrationService(
     private val loadProductImagePort: org.team_alilm.application.port.out.LoadProductImagePort,
     private val addAllProductImagePort: org.team_alilm.application.port.out.AddAllProductImagePort
 ) : org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase {
-
-    private val log = LoggerFactory.getLogger(AlilmRegistrationService::class.java)
 
     @Transactional
     override fun alilmRegistration(command: AlilmRegistrationCommand) {
@@ -91,6 +87,8 @@ class AlilmRegistrationService(
                     store = command.store,
                     thumbnailUrl = command.thumbnailUrl,
                     category = command.category,
+                    firstCategory = command.firstCategory,
+                    secondCategory = command.secondCategory,
                     price = command.price,
                     firstOption = command.firstOption,
                     secondOption = command.secondOption,
@@ -108,10 +106,8 @@ class AlilmRegistrationService(
         }
 
     private fun saveProductImageList(product: Product, imageUrlList: List<String>) {
-        log.info("상품 이미지 저장 시작 product : $product")
         addAllProductImagePort.addAllProductImage(
             productImageList = imageUrlList.map {
-                log.info("상품 이미지 저장 imageUrl : $it")
                 ProductImage(
                     id = null,
                     imageUrl = it,
