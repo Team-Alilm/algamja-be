@@ -34,10 +34,10 @@ class ProductJpaEntity(
     val category: String,
 
     @Column
-    val firstCategory: String,
+    val firstCategory: String?,
 
     @Column
-    val secondCategory: String,
+    val secondCategory: String?,
 
     @Column(nullable = false)
     val price: Int,

@@ -118,14 +118,14 @@ class BasketsRegisteredController(
             description = "카테고리 1",
             required = true
         )
-        val firstCategory: String,
+        val firstCategory: String?,
 
         @field:Schema(
             example = "반팔",
             description = "카테고리 2",
             required = true
         )
-        val secondCategory: String,
+        val secondCategory: String?,
 
         @field:NotNull(message = "가격은 필수입니다.")
         @field:Schema(
