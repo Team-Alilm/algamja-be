@@ -1,5 +1,5 @@
 package org.team_alilm.domain.product
 
 enum class Store {
-    MUSINSA;
+    MUSINSA, A_BLY;
 }
