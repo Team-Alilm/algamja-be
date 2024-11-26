@@ -21,6 +21,7 @@ import org.team_alilm.domain.product.Product
 import org.team_alilm.global.error.NotFoundMemberException
 import org.team_alilm.global.util.StringConstant
 import org.team_alilm.quartz.data.SoldoutCheckResponse
+import org.team_alilm.quartz.job.handler.PlatformHandlerResolver
 
 /**
  *  재고가 없는 상품을 체크하는 Job
@@ -29,7 +30,7 @@ import org.team_alilm.quartz.data.SoldoutCheckResponse
  **/
 @Component
 @Transactional(readOnly = true)
-class MusinsaSoldoutCheckJob(
+class SoldoutCheckJob(
     private val loadCrawlingProductsPort: LoadCrawlingProductsPort,
     private val addBasketPort: AddBasketPort,
     private val restClient: RestClient,
@@ -42,44 +43,24 @@ class MusinsaSoldoutCheckJob(
     private val loadMemberPort: LoadMemberPort,
     private val objectMapper: ObjectMapper,
     private val addAlilmPort: AddAlilmPort,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
+    private val platformHandlerResolver: PlatformHandlerResolver
 ) : Job {
 
-    private val log = LoggerFactory.getLogger(MusinsaSoldoutCheckJob::class.java)
+    private val log = LoggerFactory.getLogger(SoldoutCheckJob::class.java)
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
         val productList = loadCrawlingProductsPort.loadCrawlingProducts()
-        log.info("Checking soldout status for ${productList.size} products.")
 
         // 비동기 작업으로 전환해요.
         coroutineScope.launch {
-            val soldoutCheckResults = productList.map { product ->
-                async(Dispatchers.IO) {
-                    checkIfSoldOutForProduct(product)
-                }
-            }.awaitAll()
-
-            // 품절 상태를 체크한 후 알림 처리
-            val handleJobs = soldoutCheckResults.mapIndexedNotNull { index, isSoldOut ->
-                log.info("""
-                    ${productList[index].number}  
-                    ${productList[index].name}
-                    ${productList[index].firstOption}
-                    soldout status: $isSoldOut
-                """.trimIndent())
-                val product = productList[index]
-                if (!isSoldOut) {
-                    async(Dispatchers.IO) {
-                        handleAvailableProduct(product)
-                    }
-                } else {
-                    log.info("Product ${product.number} is sold out.")
-                    null
+            productList.forEach { product ->
+                launch {
+                    val handler = platformHandlerResolver.resolve(product.store)
+                    handler.process(product)
                 }
             }
-
-            handleJobs.awaitAll() // 여기서 awaitAll() 사용
         }
     }
 

@@ -10,7 +10,7 @@ import org.quartz.JobKey
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.team_alilm.quartz.job.MusinsaSoldoutCheckJob
+import org.team_alilm.quartz.job.SoldoutCheckJob
 import org.team_alilm.quartz.listener.SoldoutQuartzListener
 
 @Component
@@ -30,7 +30,7 @@ class SoldoutScheduler(
                 scheduler.deleteJob(jobKey)
             }
 
-            val jobDetail: JobDetail = JobBuilder.newJob(MusinsaSoldoutCheckJob::class.java)
+            val jobDetail: JobDetail = JobBuilder.newJob(SoldoutCheckJob::class.java)
                 .withIdentity("soldoutCheckJob", "soldoutTracer")
                 .storeDurably()
                 .build()
