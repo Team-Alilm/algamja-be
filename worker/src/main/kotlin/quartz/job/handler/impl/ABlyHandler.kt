@@ -7,7 +7,7 @@ import org.team_alilm.quartz.job.handler.PlatformHandler
 @Component
 class ABlyHandler : PlatformHandler {
 
-    override fun process(product: Product): Boolean {
-        return null === product.price
+    override fun process(product: Product) {
+        product
     }
 }
