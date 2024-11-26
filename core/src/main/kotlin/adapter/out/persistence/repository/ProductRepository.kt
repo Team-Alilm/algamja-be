@@ -21,7 +21,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
     @Query(value = """
         SELECT
-             distinct p
+            distinct p
         FROM
             ProductJpaEntity p
         JOIN
