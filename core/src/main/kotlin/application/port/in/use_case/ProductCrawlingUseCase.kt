@@ -1,9 +1,8 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.domain.product.Product
 import org.team_alilm.domain.product.Store
 
-interface CrawlingUseCase {
+interface ProductCrawlingUseCase {
 
     fun productCrawling(command: ProductCrawlingCommand): CrawlingResult
 

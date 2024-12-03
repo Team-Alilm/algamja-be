@@ -28,138 +28,24 @@ class SoldoutCheckJob(
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
-        val productList = loadCrawlingProductsPort.loadCrawlingProducts()
+        val productAndMembersList = loadCrawlingProductsPort.loadCrawlingProducts()
 
         // 비동기 작업으로 전환해요.
         coroutineScope.launch {
-            productList.chunked(10).forEach { chunk -> // 병렬 처리 수 제한
+            productAndMembersList.chunked(10).forEach { productAndMembers -> // 병렬 처리 수 제한
                 launch {
-                    chunk.forEach { product ->
+                    productAndMembers.forEach {
                         try {
-                            val handler = platformHandlerResolver.resolve(product.store)
-                            handler.process(product)
+                            platformHandlerResolver
+                                .resolve(it.product.store)
+                                .process(it)
                         } catch (e: Exception) {
-                            log.info("Error processing product ${product.id}: ${e.message}")
-                            slackGateway.sendMessage("Error processing productId: ${product.id}: ${e.message}")
+                            log.info("Error processing product ${it.product.id}: ${e.message}")
+                            slackGateway.sendMessage("Error processing productId: ${it.product.id}: ${e.message}")
                         }
                     }
                 }
             }
         }
     }
-
-//    private suspend fun handleAvailableProduct(product: Product) {
-//        val baskets = loadBasketPort.loadBasketIncludeIsDelete(product.id!!)
-//        baskets.forEach { basket ->
-//            val member = loadMemberPort.loadMember(basket.memberId.value) ?: throw NotFoundMemberException()
-//            sendNotifications(product, member)
-//
-//            // 바구니 알림 상태로 변경
-//            basket.sendAlilm()
-//            addBasketPort.addBasket(basket, member.id!!, product.id!!)
-//            addAlilmPort.addAlilm(Alilm.from(basket))
-//
-//            val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(basket.memberId.value)
-//
-//            fcmTokenList.forEach { fcmToken ->
-//                fcmSendGateway.sendFcmMessage(
-//                    member = member,
-//                    product = product,
-//                    fcmToken = fcmToken
-//                )
-//            }
-//        }
-//    }
-//
-//    private suspend fun checkIfSoldOutForProduct(product: Product): Boolean {
-//        val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(product.number)
-//
-//        // HTML 크롤링을 통한 품절 확인
-//        val response = crawlingGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
-//        val jsonData = extractJsonData(response.html)
-//
-//        return if (jsonData != null) {
-//            val jsonObject = objectMapper.readTree(jsonData)
-//            val isGoodsSaleTypeEqualsSALE = jsonObject.get("goodsSaleType").toString() == "\"SALE\""
-//
-//            if (isGoodsSaleTypeEqualsSALE.not()) {
-//                true
-//            } else {
-//                // API 호출로 재확인
-//                val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(product.number)
-//                try {
-//                    checkIfSoldOut(requestUri, product)
-//                } catch (e: RestClientException) {
-//                    log.error("Failed to check soldout status of product: ${product.number}", e)
-//                    sendSlackGateway.sendMessage("Failed to check soldout status of product number: ${product.number}\nError: ${e.message}")
-//                    true
-//                }
-//            }
-//        } else {
-//            // JSON 데이터가 없을 경우 API 호출로 재확인
-//            log.error("No JSON data found for product: ${product.number}")
-//            val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(product.number)
-//            checkIfSoldOut(requestUri, product)
-//        }
-//    }
-//
-//    private fun sendNotifications(product: Product, member: Member) {
-//        sendMailGateway.sendMail(
-//            member.email,
-//            member.nickname,
-//            product.name,
-//            product.number,
-//            product.thumbnailUrl,
-//            product.getEmailOption()
-//        )
-//        sendSlackGateway.sendMessage(getSlackMessage(product))
-//    }
-//
-//    // 무신사 서버를 찔러요. ip 차단 시 서버를 재 시작 해야합니다.
-//    // 향후에는 비동기적으로 변경할 생각이에요.
-//    private fun checkIfSoldOut(requestUri: String, product: Product): Boolean {
-//        val response = restClient.get().uri(requestUri).retrieve().body<SoldoutCheckResponse>()
-//        val optionItem = response?.data?.optionItems?.firstOrNull {
-//            it.managedCode == product.getManagedCode() }
-//
-//        return optionItem?.outOfStock ?: true
-//    }
-//
-//    private fun getSlackMessage(product: Product): String {
-//        return """
-//            ${product.name} 상품이 재 입고 되었습니다.
-//
-//            상품명: ${product.name}
-//            상품번호: ${product.number}
-//            상품 옵션1: ${product.firstOption}
-//            상품 옵션2: ${product.secondOption}
-//            상품 옵션3: ${product.thirdOption}
-//            상품 구매링크 : ${StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(product.number)}
-//            바구니에서 삭제되었습니다.
-//        """.trimIndent()
-//    }
-//
-//    private fun extractJsonData(scriptContent: String): String? {
-//        var jsonString: String? = null
-//
-//        // 자바스크립트 내 변수 선언 패턴
-//        val pattern = "window.__MSS__.product.state = "
-//
-//        // 패턴의 시작 위치 찾기
-//        val startIndex = scriptContent.indexOf(pattern)
-//
-//        if (startIndex != -1) {
-//            // 패턴 이후 부분 추출
-//            val substring = scriptContent.substring(startIndex + pattern.length)
-//
-//            // JSON 데이터의 끝 위치 찾기
-//            val endIndex = substring.indexOf("};") + 1
-//
-//            // JSON 문자열 추출
-//            jsonString = substring.substring(0, endIndex)
-//        }
-//
-//        return jsonString
-//    }
-
 }

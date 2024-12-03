@@ -6,6 +6,8 @@ import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.ProductRepository
+import org.team_alilm.adapter.out.persistence.repository.product.MemberInfo
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersList
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
 import org.team_alilm.application.port.out.AddProductPort
 import org.team_alilm.application.port.out.LoadCrawlingProductsPort
@@ -88,10 +90,16 @@ class ProductAdapter(
         TODO("Not yet implemented")
     }
 
-    override fun loadCrawlingProducts(): List<Product> {
+    override fun loadCrawlingProducts(): List<ProductAndMembersList> {
         return try {
             productRepository.findCrawlingProducts().map {
-                productMapper.mapToDomainEntity(it)
+                ProductAndMembersList(
+                    product = productMapper.mapToDomainEntity(it.productJpaEntity),
+                    memberInfoList = MemberInfo(
+                        emailList = it.emailList,
+                        nicknameList = it.nicknameList
+                    )
+                )
             }
         } catch (e: Exception) {
             log.error("Failed to load products in baskets", e)
