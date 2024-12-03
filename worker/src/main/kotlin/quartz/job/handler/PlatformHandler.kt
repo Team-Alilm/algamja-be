@@ -1,9 +1,8 @@
 package org.team_alilm.quartz.job.handler
 
-import org.team_alilm.domain.product.Product
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersList
 
 interface PlatformHandler {
 
-    // 상품이 품절 여부에 따른 동작
-    fun process(product: Product)
+    fun process(productAndEmailList: ProductAndMembersList)
 }

@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersList
 import org.team_alilm.application.port.out.gateway.CrawlingGateway
+import org.team_alilm.application.port.out.gateway.SendMailGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
 import org.team_alilm.domain.product.Product
 import org.team_alilm.global.util.StringConstant
@@ -20,13 +22,14 @@ class MusinsaHandler(
     private val objectMapper: ObjectMapper,
     private val restClient: RestClient,
     private val sendSlackGateway: SendSlackGateway,
+    private val sendMailGateway: SendMailGateway
 ) : PlatformHandler {
 
     private val log = LoggerFactory.getLogger(SoldoutCheckJob::class.java)
 
-    override fun process(product: Product) {
-        if(checkSoldOut(product).not()) {
-
+    override fun process(productAndMembersList: ProductAndMembersList) {
+        if(checkSoldOut(productAndMembersList.product).not()) {
+            sendNotifications(productAndMembersList)
         }
     }
 
@@ -97,15 +100,13 @@ class MusinsaHandler(
         return optionItem?.outOfStock ?: true
     }
 
-    private fun sendNotifications(product: Product, member: Member) {
-        sendMailGateway.sendMail(
-            member.email,
-            member.nickname,
-            product.name,
-            product.number,
-            product.thumbnailUrl,
-            product.getEmailOption()
-        )
-        sendSlackGateway.sendMessage(getSlackMessage(product))
+    private fun sendNotifications(productAndMembersList: ProductAndMembersList) {
+        val product = productAndMembersList.product
+        val len = productAndMembersList.memberInfoList.emailList.size
+
+        val emailList = productAndMembersList.memberInfoList.emailList
+        val nicknameList = productAndMembersList.memberInfoList.nicknameList
+
+
     }
 }

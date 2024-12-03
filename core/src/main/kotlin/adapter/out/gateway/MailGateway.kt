@@ -20,7 +20,7 @@ class MailGateway(
     private val emailSender: JavaMailSender,
 ) : SendMailGateway {
 
-    override fun sendMail(to: String, nickname: String, productName: String, productNumber: Number, imageUrl: String, options: String) {
+    override fun sendMail(to: String, nickname: String, productName: String, productNumber: Long, imageUrl: String, options: String) {
         val mimeMessage = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
         val subject = "[Alilm] 등록하신 [${productName}]이 재입고 되었어요!"
@@ -37,7 +37,7 @@ class MailGateway(
 
     }
 
-    private fun getMailMessage(nickname: String, productNumber: Number, imageUrl: String, options: String): String {
+    private fun getMailMessage(nickname: String, productNumber: Long, imageUrl: String, options: String): String {
         val currentTimeMillis = currentTimeMillis()
 
         val dateTime: LocalDateTime =

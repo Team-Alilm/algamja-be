@@ -5,6 +5,7 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
 import org.team_alilm.domain.product.Store
@@ -20,19 +21,26 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     ): ProductJpaEntity?
 
     @Query(value = """
-        SELECT
-            distinct p
-        FROM
-            ProductJpaEntity p
-        JOIN
-            BasketJpaEntity b
-        ON 
-            b.productId = p.id
-        and b.isAlilm = false
-        and p.isDelete = false
-        and b.isDelete = false
-    """)
-    fun findCrawlingProducts(): List<ProductJpaEntity>
+    SELECT
+        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersListProjection(
+            p, 
+            LISTAGG(m.email, ', ') WITHIN GROUP (ORDER BY m.email),
+            LISTAGG(m.nickname, ', ') WITHIN GROUP (ORDER BY m.nickname)
+        )
+    FROM
+        ProductJpaEntity p
+    JOIN
+        BasketJpaEntity b ON b.productId = p.id
+    JOIN
+        MemberJpaEntity m ON m.id = b.memberId
+    WHERE
+        b.isAlilm = false
+        AND p.isDelete = false
+        AND b.isDelete = false
+    GROUP BY 
+        p.id
+""")
+    fun findCrawlingProducts(): List<ProductAndMembersListProjection>
 
     @Query("""
     SELECT 
