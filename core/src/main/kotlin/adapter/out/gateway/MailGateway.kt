@@ -5,6 +5,7 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import org.team_alilm.application.port.out.gateway.SendMailGateway
+import org.team_alilm.domain.product.Product
 import java.lang.System.currentTimeMillis
 import java.time.Instant
 import java.time.LocalDateTime
@@ -20,16 +21,16 @@ class MailGateway(
     private val emailSender: JavaMailSender,
 ) : SendMailGateway {
 
-    override fun sendMail(to: String, nickname: String, productName: String, productNumber: Long, imageUrl: String, options: String) {
+    override fun sendMail(to: String, nickname: String, product: Product) {
         val mimeMessage = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
-        val subject = "[Alilm] 등록하신 [${productName}]이 재입고 되었어요!"
+        val subject = "[Alilm] 등록하신 [${product.name}]이 재입고 되었어요!"
 
         helper.setFrom(emailId, from)
         helper.setTo(to)
         helper.setSubject(subject)
         helper.setText(
-            getMailMessage(nickname, productNumber, imageUrl, options),
+            getMailMessage(nickname, product.number, product.thumbnailUrl, product.firstOption),
             true
         )
 

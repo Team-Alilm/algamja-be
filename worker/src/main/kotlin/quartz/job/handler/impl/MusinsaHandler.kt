@@ -107,6 +107,12 @@ class MusinsaHandler(
         val emailList = productAndMembersList.memberInfoList.emailList
         val nicknameList = productAndMembersList.memberInfoList.nicknameList
 
+        for (i in 0 until len) {
+            val email = emailList[i]
+            val nickname = nicknameList[i]
 
+            sendSlackGateway.sendMessage(product)
+            sendMailGateway.sendMail(email, nickname, product)
+        }
     }
 }
