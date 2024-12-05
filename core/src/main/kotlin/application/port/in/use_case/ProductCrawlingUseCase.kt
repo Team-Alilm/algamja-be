@@ -4,23 +4,24 @@ import org.team_alilm.domain.product.Store
 
 interface ProductCrawlingUseCase {
 
-    fun productCrawling(command: ProductCrawlingCommand): CrawlingResult
+    fun crawling(command: ProductCrawlingCommand): CrawlingResult
 
     data class ProductCrawlingCommand(
         val url: String
     )
 
     data class CrawlingResult(
+        val id: Long,
         val number: Long,
         val name: String,
         val brand: String,
-        val imageUrl: String,
+        val thumbnailUrl: String,
         val category: String,
         val price: Int,
         val store: Store,
-        val firstOptions: List<String>,
-        val secondOptions: List<String>,
-        val thirdOptions: List<String>
+        val firstOption: String,
+        val secondOption: String?,
+        val thirdOption: String?
     )
 }
 
