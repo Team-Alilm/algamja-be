@@ -1,9 +1,13 @@
 package org.team_alilm.application.port.out.gateway
 
+import org.team_alilm.domain.product.Product
+
 interface SendMailGateway {
 
     fun sendMail (
-        to: String, nickname: String, productName: String, productNumber: Long, imageUrl: String, options: String
+        to: String,
+        nickname: String,
+        product: Product
     )
 
 }
