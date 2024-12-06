@@ -2,6 +2,9 @@ package org.team_alilm.adapter.`in`.web.controller.product
 
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Pattern
+import org.slf4j.LoggerFactory
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,6 +21,8 @@ class ProductCrawlingController(
     private val productCrawlingUseCase: ProductCrawlingUseCase
 ) {
 
+    private val log = LoggerFactory.getLogger(ProductCrawlingController::class.java)
+
     @GetMapping("/crawling")
     fun crawling(
         @ParameterObject
@@ -28,13 +33,19 @@ class ProductCrawlingController(
             url = productCrawlingParameter.url
         )
 
-        val result = productCrawlingUseCase.crawling(command)
-        val response = ProductCrawlingResponse.from(result)
+        log.info("요청 URL: ${productCrawlingParameter.url}")
+//        val result = productCrawlingUseCase.crawling(command)
+//        val response = ProductCrawlingResponse.from(result)
 
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(null)
     }
 
     data class ProductCrawlingParameter(
+        @field:NotBlank(message = "URL은 비워둘 수 없습니다.")
+        @field:Pattern(
+            regexp = "^(https?://).+",
+            message = "URL은 반드시 http 또는 https로 시작해야 합니다."
+        )
         val url: String
     )
 
