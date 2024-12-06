@@ -7,7 +7,7 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersList
-import org.team_alilm.application.port.out.gateway.CrawlingGateway
+import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.SendMailGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
 import org.team_alilm.domain.product.Product
