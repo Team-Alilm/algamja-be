@@ -11,12 +11,13 @@ interface ProductCrawlingUseCase {
     )
 
     data class CrawlingResult(
+        val id: Long,
         val number: Long,
         val name: String,
         val brand: String,
         val thumbnailUrl: String,
         val firstCategory: String,
-        val secnedCategory: String,
+        val secondCategory: String,
         val price: Int,
         val store: Store,
         val firstOption: String,
