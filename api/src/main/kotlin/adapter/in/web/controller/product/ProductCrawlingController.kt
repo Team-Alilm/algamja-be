@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.adapter.`in`.web.controller.product.ProductSliceController.ProductListParameter
 import org.team_alilm.application.port.`in`.use_case.ProductCrawlingUseCase
 import org.team_alilm.domain.product.Store
 
@@ -33,10 +32,6 @@ class ProductCrawlingController(
             url = productCrawlingParameter.url
         )
 
-        log.info("요청 URL: ${productCrawlingParameter.url}")
-//        val result = productCrawlingUseCase.crawling(command)
-//        val response = ProductCrawlingResponse.from(result)
-
         return ResponseEntity.ok(null)
     }
 
@@ -57,7 +52,8 @@ class ProductCrawlingController(
         val thumbnailUrl: String,
         val store: Store,
         val price: Int,
-        val category: String,
+        val firstCategory: String,
+        val secondCategory: String?,
         val firstOption: String,
         val secondOption: String?,
         val thirdOption: String?,
@@ -73,7 +69,8 @@ class ProductCrawlingController(
                     thumbnailUrl = productCrawlingResult.thumbnailUrl,
                     store = productCrawlingResult.store,
                     price = productCrawlingResult.price,
-                    category = productCrawlingResult.category,
+                    firstCategory = productCrawlingResult.firstCategory,
+                    secondCategory = productCrawlingResult.secondCategory,
                     firstOption = productCrawlingResult.firstOption,
                     secondOption = productCrawlingResult.secondOption,
                     thirdOption = productCrawlingResult.thirdOption,
