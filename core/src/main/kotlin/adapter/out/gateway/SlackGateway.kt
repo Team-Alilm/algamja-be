@@ -27,22 +27,10 @@ class SlackGateway(
             }
         """.trimIndent()
 
-        log.info("SLACK_WEBHOOK_URL : $SLACK_NOTICE_CH_WEBHOOK_URL")
         slackClient.send(SLACK_NOTICE_CH_WEBHOOK_URL, payload)
     }
 
     override fun sendMessage(product: Product) {
-        slackClient.send(SLACK_NOTICE_CH_WEBHOOK_URL,
-            """
-            ${product.name} 상품이 재 입고 되었습니다.
-
-            상품명: ${product.name}
-            상품번호: ${product.number}
-            상품 옵션1: ${product.firstOption}
-            상품 옵션2: ${product.secondOption}
-            상품 옵션3: ${product.thirdOption}
-            상품 구매링크 : ${StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(product.number)}
-            바구니에서 삭제되었습니다.
-        """.trimIndent())
+        slackClient.send(SLACK_NOTICE_CH_WEBHOOK_URL, product.toSlackMessage())
     }
 }

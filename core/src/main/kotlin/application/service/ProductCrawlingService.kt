@@ -3,7 +3,6 @@ package org.team_alilm.application.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.ProductCrawlingUseCase
-import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGatewayResolver
 import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotFoundStoreException
@@ -19,12 +18,13 @@ class ProductCrawlingService(
         val crawlingGateway = crawlingGatewayResolver.resolve(store)
 
         return ProductCrawlingUseCase.CrawlingResult(
+            id = 0,
             number = 0,
             name = "test",
             brand = "test",
             thumbnailUrl = "test",
             firstCategory = "test",
-            secnedCategory = "test",
+            secondCategory = "test",
             price = 0,
             store = Store.A_BLY,
             firstOption = "test",

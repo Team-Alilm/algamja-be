@@ -10,11 +10,6 @@ import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.port.out.*
 import org.team_alilm.quartz.job.handler.PlatformHandlerResolver
 
-/**
- *  재고가 없는 상품을 체크하는 Job
- *  재고가 있다면 사용자에게 메세지를 보내고 해당 바구니를 삭제한다.
- *  한국 기준 시간을 사용하고 있습니다.
- **/
 @Component
 @Transactional(readOnly = true)
 class SoldoutCheckJob(
@@ -28,7 +23,11 @@ class SoldoutCheckJob(
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
+        log.info("SoldoutCheckJob started")
+
         val productAndMembersList = loadCrawlingProductsPort.loadCrawlingProducts()
+
+        log.info("ProductAndMembersList size: ${productAndMembersList.size}")
 
         // 비동기 작업으로 전환해요.
         coroutineScope.launch {

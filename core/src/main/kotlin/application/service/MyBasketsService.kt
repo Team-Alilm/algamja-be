@@ -26,7 +26,6 @@ class MyBasketsService (
                 price = it.product.price,
                 isAlilm = it.basket.isAlilm,
                 alilmDate = it.basket.alilmDate,
-                category = it.product.category,
                 firstOption = it.product.firstOption,
                 secondOption = it.product.secondOption,
                 thirdOption = it.product.thirdOption,

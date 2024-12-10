@@ -71,7 +71,7 @@ class ProductAdapter(
     }
 
     override fun loadRelatedProduct(category: String): List<Product> {
-        return springDataProductRepository.findTop10ByCategoryAndIsDeleteFalseOrderByCreatedDate(category).map {
+        return springDataProductRepository.findTop10ByFirstCategoryAndIsDeleteFalseOrderByCreatedDate(category).map {
             productMapper.mapToDomainEntity(it)
         }
     }

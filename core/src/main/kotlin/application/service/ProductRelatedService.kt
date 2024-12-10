@@ -16,7 +16,7 @@ class ProductRelatedService(
 
     override fun productRelated(command: ProductRelatedCommand): ProductRelatedResult {
         val product = loadProductPort.loadProduct(ProductId(command.productId)) ?: throw NotFoundProductException()
-        val productRelatedList = loadProductPort.loadRelatedProduct(product.category)
+        val productRelatedList = loadProductPort.loadRelatedProduct(product.firstCategory)
 
         return ProductRelatedResult(
             productList = productRelatedList
