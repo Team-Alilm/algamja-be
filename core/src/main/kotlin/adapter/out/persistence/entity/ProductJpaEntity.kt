@@ -30,11 +30,8 @@ class ProductJpaEntity(
     @Enumerated(EnumType.STRING)
     val store: Store,
 
-    @Column(nullable = false)
-    val category: String,
-
     @Column
-    val firstCategory: String?,
+    val firstCategory: String,
 
     @Column
     val secondCategory: String?,

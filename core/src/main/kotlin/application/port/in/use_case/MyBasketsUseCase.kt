@@ -22,7 +22,6 @@ interface MyBasketsUseCase {
         val price: Int,
         val isAlilm: Boolean,
         val alilmDate: Long?,
-        val category: String,
         val firstOption: String,
         val secondOption: String?,
         val thirdOption: String?,
@@ -43,13 +42,12 @@ interface MyBasketsUseCase {
                     price = product.price,
                     isAlilm = basket.isAlilm,
                     alilmDate = basket.alilmDate,
-                    category = product.category,
                     firstOption = product.firstOption,
                     secondOption = product.secondOption,
                     thirdOption = product.thirdOption,
                     isHidden = basket.isHidden,
                     waitingCount = waitingCount,
-                    productId = product.id?.value!!
+                    productId = product.id?.value!!,
                 )
             }
         }

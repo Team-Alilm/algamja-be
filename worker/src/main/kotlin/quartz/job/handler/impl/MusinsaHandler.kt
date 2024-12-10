@@ -10,6 +10,7 @@ import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembe
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.SendMailGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
+import org.team_alilm.application.port.out.gateway.crawling.CrawlingGatewayResolver
 import org.team_alilm.domain.product.Product
 import org.team_alilm.global.util.StringConstant
 import org.team_alilm.quartz.data.SoldoutCheckResponse
@@ -18,11 +19,11 @@ import org.team_alilm.quartz.job.handler.PlatformHandler
 
 @Component
 class MusinsaHandler(
-    private val crawlingGateway: CrawlingGateway,
     private val objectMapper: ObjectMapper,
     private val restClient: RestClient,
     private val sendSlackGateway: SendSlackGateway,
-    private val sendMailGateway: SendMailGateway
+    private val sendMailGateway: SendMailGateway,
+    private val crawlingGatewayResolver: CrawlingGatewayResolver
 ) : PlatformHandler {
 
     private val log = LoggerFactory.getLogger(SoldoutCheckJob::class.java)
@@ -37,6 +38,7 @@ class MusinsaHandler(
         val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(product.number)
 
         // HTML 크롤링을 통한 품절 확인
+        val crawlingGateway = crawlingGatewayResolver.resolve(product.store)
         val response = crawlingGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
         val jsonData = extractJsonData(response.html)
 

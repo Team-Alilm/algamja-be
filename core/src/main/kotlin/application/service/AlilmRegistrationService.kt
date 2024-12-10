@@ -86,7 +86,6 @@ class AlilmRegistrationService(
                     brand = command.brand,
                     store = command.store,
                     thumbnailUrl = command.thumbnailUrl,
-                    category = command.category,
                     firstCategory = command.firstCategory,
                     secondCategory = command.secondCategory,
                     price = command.price,

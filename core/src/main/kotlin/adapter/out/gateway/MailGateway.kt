@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.out.gateway
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -21,6 +22,8 @@ class MailGateway(
     private val emailSender: JavaMailSender,
 ) : SendMailGateway {
 
+    private val log = LoggerFactory.getLogger(MailGateway::class.java)
+
     override fun sendMail(to: String, nickname: String, product: Product) {
         val mimeMessage = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
@@ -35,7 +38,6 @@ class MailGateway(
         )
 
         emailSender.send(mimeMessage)
-
     }
 
     private fun getMailMessage(nickname: String, productNumber: Long, imageUrl: String, options: String): String {
@@ -43,7 +45,6 @@ class MailGateway(
 
         val dateTime: LocalDateTime =
             LocalDateTime.ofInstant(Instant.ofEpochMilli(currentTimeMillis), ZoneId.of("Asia/Seoul"))
-
 
         // 원하는 형식으로 포맷
         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
