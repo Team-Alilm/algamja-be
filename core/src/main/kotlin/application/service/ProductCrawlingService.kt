@@ -3,6 +3,8 @@ package org.team_alilm.application.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.ProductCrawlingUseCase
+import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
+import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway.*
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGatewayResolver
 import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotFoundStoreException
@@ -16,6 +18,12 @@ class ProductCrawlingService(
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val store = getStore(command.url)
         val crawlingGateway = crawlingGatewayResolver.resolve(store)
+
+        crawlingGateway.crawling(
+            CrawlingGatewayRequest(
+                url = command.url
+            )
+        )
 
         return ProductCrawlingUseCase.CrawlingResult(
             id = 0,

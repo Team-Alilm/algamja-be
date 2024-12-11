@@ -46,7 +46,6 @@ class ProductRelatedController(
         val id: Long,
         val name: String,
         val imageUrl: String,
-        val category: String,
         val brand: String,
         val price: Int,
         val firstOption: String,
@@ -59,7 +58,7 @@ class ProductRelatedController(
                     id = product.id?.value ?: 0,
                     name = product.name,
                     imageUrl = product.thumbnailUrl,
-                    category = product.category,
+
                     brand = product.brand,
                     price = product.price,
                     firstOption = product.firstOption,

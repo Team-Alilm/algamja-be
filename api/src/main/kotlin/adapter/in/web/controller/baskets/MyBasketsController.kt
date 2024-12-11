@@ -48,7 +48,6 @@ class MyBasketsController(
         val price: Int,
         val isAlilm: Boolean,
         val alilmDate: Long?,
-        val category: String,
         val firstOption: String,
         val secondOption: String?,
         val thirdOption: String?,
@@ -69,7 +68,6 @@ class MyBasketsController(
                     price = myBasketsResult.price,
                     isAlilm = myBasketsResult.isAlilm,
                     alilmDate = myBasketsResult.alilmDate,
-                    category = myBasketsResult.category,
                     firstOption = myBasketsResult.firstOption,
                     secondOption = myBasketsResult.secondOption,
                     thirdOption = myBasketsResult.thirdOption,
@@ -79,7 +77,5 @@ class MyBasketsController(
                 )
             }
         }
-
     }
-
 }
