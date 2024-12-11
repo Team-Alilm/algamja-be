@@ -15,8 +15,6 @@ import org.team_alilm.global.error.NotFoundRoleException
 class MemberRoleMappingAdapter(
     val springDataMemberRoleMappingRepository: SpringDataMemberRoleMappingRepository,
     val memberRoleMappingMapper: MemberRoleMappingMapper,
-    val memberMapper: MemberMapper,
-    val roleMapper: RoleMapper
 ) : AddMemberRoleMappingPort {
 
     override fun addMemberRoleMapping(member: Member, role: Role) {

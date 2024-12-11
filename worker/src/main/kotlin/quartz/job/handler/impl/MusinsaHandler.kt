@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersList
+import org.team_alilm.application.port.out.AddBasketPort
+import org.team_alilm.application.port.out.LoadBasketAndMemberPort
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.SendMailGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
@@ -23,14 +24,16 @@ class MusinsaHandler(
     private val restClient: RestClient,
     private val sendSlackGateway: SendSlackGateway,
     private val sendMailGateway: SendMailGateway,
-    private val crawlingGatewayResolver: CrawlingGatewayResolver
+    private val crawlingGatewayResolver: CrawlingGatewayResolver,
+    private val loadBasketAndMemberPort: LoadBasketAndMemberPort,
+    private val addBasketPort: AddBasketPort
 ) : PlatformHandler {
 
     private val log = LoggerFactory.getLogger(SoldoutCheckJob::class.java)
 
-    override fun process(productAndMembersList: ProductAndMembersList) {
-        if(checkSoldOut(productAndMembersList.product).not()) {
-            sendNotifications(productAndMembersList)
+    override fun process(product: Product) {
+        if(checkSoldOut(product).not()) {
+            sendNotifications(product)
         }
     }
 
@@ -102,19 +105,15 @@ class MusinsaHandler(
         return optionItem?.outOfStock ?: true
     }
 
-    private fun sendNotifications(productAndMembersList: ProductAndMembersList) {
-        val product = productAndMembersList.product
-        val len = productAndMembersList.memberInfoList.emailList.size
+    private fun sendNotifications(product: Product) {
+        val basketAndMemberList = loadBasketAndMemberPort.loadBasketAndMember(product)
 
-        val emailList = productAndMembersList.memberInfoList.emailList
-        val nicknameList = productAndMembersList.memberInfoList.nicknameList
-
-        for (i in 0 until len) {
-            val email = emailList[i]
-            val nickname = nicknameList[i]
-
+        basketAndMemberList.forEach { (basket, member) ->
             sendSlackGateway.sendMessage(product)
-            sendMailGateway.sendMail(email, nickname, product)
+            sendMailGateway.sendMail(member.email, member.nickname, product)
+
+            basket.sendAlilm()
+            addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
         }
     }
 }
