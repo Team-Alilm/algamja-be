@@ -20,8 +20,6 @@ class ProductCrawlingController(
     private val productCrawlingUseCase: ProductCrawlingUseCase
 ) {
 
-    private val log = LoggerFactory.getLogger(ProductCrawlingController::class.java)
-
     @GetMapping("/crawling")
     fun crawling(
         @ParameterObject
@@ -32,7 +30,11 @@ class ProductCrawlingController(
             url = productCrawlingParameter.url
         )
 
-        return ResponseEntity.ok(null)
+        val result = productCrawlingUseCase.crawling(command)
+
+        val response = ProductCrawlingResponse.from(result)
+
+        return ResponseEntity.ok(response)
     }
 
     data class ProductCrawlingParameter(

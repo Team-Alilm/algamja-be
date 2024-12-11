@@ -118,7 +118,7 @@ class BasketsRegisteredController(
             description = "카테고리 1",
             required = true
         )
-        val firstCategory: String?,
+        val firstCategory: String,
 
         @field:Schema(
             example = "반팔",
