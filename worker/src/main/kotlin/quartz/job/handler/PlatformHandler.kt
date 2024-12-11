@@ -1,8 +1,8 @@
 package org.team_alilm.quartz.job.handler
 
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersList
+import org.team_alilm.domain.product.Product
 
 interface PlatformHandler {
 
-    fun process(productAndEmailList: ProductAndMembersList)
+    fun process(product: Product)
 }

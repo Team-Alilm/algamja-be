@@ -3,7 +3,9 @@ package org.team_alilm.adapter.out.persistence.repository
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
+import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndMemberProjection
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndProductProjection
+import org.team_alilm.domain.product.Product
 
 interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
@@ -40,4 +42,26 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
     """)
     fun findByProductNumber(productNumber: Number): List<BasketJpaEntity>
 
+    @Query(
+        """
+        SELECT 
+            new org.team_alilm.adapter.out.persistence.repository.basket.BasketAndMemberProjection(b, m)
+        FROM
+            BasketJpaEntity b
+        JOIN
+            MemberJpaEntity m
+            ON b.memberId = m.id
+        JOIN
+            ProductJpaEntity p
+            ON b.productId = p.id
+        WHERE
+            b.isDelete = false
+            AND p.isDelete = false
+            AND b.isAlilm = false
+            AND b.productId = :productId
+        """
+    )
+    fun findBasketAndMemberByProductNumberAndMemberId(
+        productId: Long
+    ): List<BasketAndMemberProjection>
 }
