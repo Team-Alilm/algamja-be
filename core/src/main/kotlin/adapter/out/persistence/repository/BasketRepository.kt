@@ -45,7 +45,7 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
     @Query(
         """
         SELECT 
-            new org.team_alilm.adapter.out.persistence.repository.basket.BasketAndMemberProjection(b, m)
+            new org.team_alilm.adapter.out.persistence.repository.basket.BasketAndMemberProjection(b, m, f)
         FROM
             BasketJpaEntity b
         JOIN
@@ -54,6 +54,9 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
         JOIN
             ProductJpaEntity p
             ON b.productId = p.id
+        JOIN 
+            FcmTokenJpaEntity f
+            ON m.id = f.memberId
         WHERE
             b.isDelete = false
             AND p.isDelete = false

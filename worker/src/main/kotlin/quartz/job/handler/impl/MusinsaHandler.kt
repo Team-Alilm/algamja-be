@@ -6,12 +6,14 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.body
+import org.team_alilm.adapter.out.gateway.FcmSendGateway
 import org.team_alilm.application.port.out.AddBasketPort
 import org.team_alilm.application.port.out.LoadBasketAndMemberPort
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.SendMailGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGatewayResolver
+import org.team_alilm.domain.FcmToken
 import org.team_alilm.domain.product.Product
 import org.team_alilm.global.util.StringConstant
 import org.team_alilm.quartz.data.SoldoutCheckResponse
@@ -26,6 +28,7 @@ class MusinsaHandler(
     private val sendMailGateway: SendMailGateway,
     private val crawlingGatewayResolver: CrawlingGatewayResolver,
     private val loadBasketAndMemberPort: LoadBasketAndMemberPort,
+    private val fcmSendGateway: FcmSendGateway,
     private val addBasketPort: AddBasketPort
 ) : PlatformHandler {
 
@@ -108,10 +111,10 @@ class MusinsaHandler(
     private fun sendNotifications(product: Product) {
         val basketAndMemberList = loadBasketAndMemberPort.loadBasketAndMember(product)
 
-        basketAndMemberList.forEach { (basket, member) ->
+        basketAndMemberList.forEach { (basket, member, fcmToken) ->
             sendSlackGateway.sendMessage(product)
             sendMailGateway.sendMail(member.email, member.nickname, product)
-
+            fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
             basket.sendAlilm()
             addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
         }

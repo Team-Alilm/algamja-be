@@ -39,7 +39,6 @@ class SoldoutCheckJob(
                             log.info("Error processing product ${product.id}: ${e.message}")
                             slackGateway.sendMessage("Error processing productId: ${product.id}: ${e.message}")
                         }
-
                     }
                 }
             }
