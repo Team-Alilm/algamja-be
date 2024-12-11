@@ -1,9 +1,9 @@
 package org.team_alilm.application.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.ProductCrawlingUseCase
-import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway.*
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGatewayResolver
 import org.team_alilm.domain.product.Store
@@ -15,15 +15,21 @@ class ProductCrawlingService(
     private val crawlingGatewayResolver: CrawlingGatewayResolver
 ) : ProductCrawlingUseCase {
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val store = getStore(command.url)
         val crawlingGateway = crawlingGatewayResolver.resolve(store)
 
-        crawlingGateway.crawling(
+        val crawlingGatewayResponse = crawlingGateway.crawling(
             CrawlingGatewayRequest(
                 url = command.url
             )
         )
+
+        val jsonData = extractJsonData(scriptContent = crawlingGatewayResponse.html)
+
+
 
         return ProductCrawlingUseCase.CrawlingResult(
             id = 0,
@@ -47,5 +53,25 @@ class ProductCrawlingService(
             url.contains("a-bly") -> Store.A_BLY
             else -> throw NotFoundStoreException()
         }
+    }
+
+    private fun extractJsonData(scriptContent: String): String? {
+        var jsonString: String? = null
+
+        // 자바스크립트 내 변수 선언 패턴
+        val pattern = "window.__MSS__.product.state = "
+        // 패턴의 시작 위치 찾기
+        val startIndex = scriptContent.indexOf(pattern)
+
+        if (startIndex != -1) {
+            // 패턴 이후 부분 추출
+            val substring = scriptContent.substring(startIndex + pattern.length)
+            // JSON 데이터의 끝 위치 찾기
+            val endIndex = substring.indexOf("};") + 1
+            // JSON 문자열 추출
+            jsonString = substring.substring(0, endIndex)
+        }
+
+        return jsonString
     }
 }
