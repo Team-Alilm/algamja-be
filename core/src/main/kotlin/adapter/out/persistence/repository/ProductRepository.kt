@@ -5,7 +5,6 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
 import org.team_alilm.domain.product.Store
@@ -22,17 +21,11 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
     @Query(value = """
     SELECT
-        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersListProjection(
-            p, 
-            LISTAGG(m.email, ', ') WITHIN GROUP (ORDER BY m.email),
-            LISTAGG(m.nickname, ', ') WITHIN GROUP (ORDER BY m.nickname)
-        )
+            p
     FROM
         ProductJpaEntity p
     JOIN
         BasketJpaEntity b ON b.productId = p.id
-    JOIN
-        MemberJpaEntity m ON m.id = b.memberId
     WHERE
         b.isAlilm = false
         AND p.isDelete = false
@@ -40,7 +33,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     GROUP BY 
         p.id
 """)
-    fun findCrawlingProducts(): List<ProductAndMembersListProjection>
+    fun findCrawlingProducts(): List<ProductJpaEntity>
 
     @Query("""
     SELECT 
