@@ -23,26 +23,21 @@ class SoldoutCheckJob(
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
-        log.info("SoldoutCheckJob started")
-
-        val productAndMembersList = loadCrawlingProductsPort.loadCrawlingProducts()
-
-        log.info("ProductAndMembersList size: ${productAndMembersList.size}")
+        val productList = loadCrawlingProductsPort.loadCrawlingProducts()
 
         // 비동기 작업으로 전환해요.
         coroutineScope.launch {
-            productAndMembersList.chunked(10).forEach { productAndMembers -> // 병렬 처리 수 제한
+            productList.chunked(10).forEach {
                 launch {
-                    productAndMembers.forEach {
-                        try {
-                            platformHandlerResolver
-                                .resolve(it.product.store)
-                                .process(it)
-                        } catch (e: Exception) {
-                            log.info("Error processing product ${it.product.id}: ${e.message}")
-                            slackGateway.sendMessage("Error processing productId: ${it.product.id}: ${e.message}")
-                        }
+                    try {
+                        platformHandlerResolver
+                            .resolve()
+                            .process(it)
+                    } catch (e: Exception) {
+                        log.info("Error processing product ${it.product.id}: ${e.message}")
+                        slackGateway.sendMessage("Error processing productId: ${it.product.id}: ${e.message}")
                     }
+
                 }
             }
         }

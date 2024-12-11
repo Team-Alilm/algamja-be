@@ -1,9 +1,9 @@
 package org.team_alilm.application.port.out
 
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndMembersList
+import org.team_alilm.domain.product.Product
 
 interface LoadCrawlingProductsPort {
 
-    fun loadCrawlingProducts(): List<ProductAndMembersList>
+    fun loadCrawlingProducts(): List<Product>
 
 }
