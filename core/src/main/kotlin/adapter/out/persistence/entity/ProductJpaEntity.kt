@@ -1,7 +1,6 @@
 package org.team_alilm.adapter.out.persistence.entity
 
 import jakarta.persistence.*
-import org.team_alilm.domain.product.Product
 import org.team_alilm.domain.product.Store
 import org.team_alilm.global.jpa.base.BaseTimeEntity
 

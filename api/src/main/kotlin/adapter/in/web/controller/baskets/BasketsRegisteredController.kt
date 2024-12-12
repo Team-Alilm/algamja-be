@@ -50,7 +50,6 @@ class BasketsRegisteredController(
             brand = request.brand,
             thumbnailUrl = request.thumbnailUrl,
             imageUrlList = request.imageUrlList,
-            category = request.category,
             firstCategory = request.firstCategory,
             secondCategory = request.secondCategory,
             price = request.price,
@@ -104,14 +103,6 @@ class BasketsRegisteredController(
             description = "추가 이미지 URL",
         )
         val imageUrlList: List<String>,
-
-        @field:NotBlank(message = "카테고리는 필수입니다.")
-        @field:Schema(
-            example = "신발",
-            description = "카테고리 향후 삭제 예정 입니다.",
-            required = true
-        )
-        val category: String,
 
         @field:Schema(
             example = "상의",

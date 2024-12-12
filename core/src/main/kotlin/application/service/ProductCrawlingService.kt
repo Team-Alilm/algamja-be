@@ -33,7 +33,6 @@ class ProductCrawlingService(
         // jsonData를 파싱하고 싶어
         val jsonObject = JsonObject()
         val product = jsonObject.getAsJsonObject("product")
-        
 
         return ProductCrawlingUseCase.CrawlingResult(
             id = 0,

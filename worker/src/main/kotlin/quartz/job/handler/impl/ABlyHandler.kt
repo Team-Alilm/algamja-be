@@ -9,7 +9,6 @@ import org.team_alilm.quartz.job.handler.PlatformHandler
 class ABlyHandler : PlatformHandler {
 
     override fun process(product: Product) {
-        TODO("Not yet implemented")
     }
 
 }
