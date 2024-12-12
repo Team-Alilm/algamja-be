@@ -58,7 +58,6 @@ class ProductRelatedController(
                     id = product.id?.value ?: 0,
                     name = product.name,
                     imageUrl = product.thumbnailUrl,
-
                     brand = product.brand,
                     price = product.price,
                     firstOption = product.firstOption,

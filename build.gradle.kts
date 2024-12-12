@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.idea.proto.com.google.protobuf.GeneratedCodeInfoKt.annotation
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
