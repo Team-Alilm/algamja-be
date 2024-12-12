@@ -1,5 +1,6 @@
 package org.team_alilm.application.service
 
+import com.google.gson.JsonObject
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,7 +30,10 @@ class ProductCrawlingService(
 
         val jsonData = extractJsonData(scriptContent = crawlingGatewayResponse.html)
 
-
+        // jsonData를 파싱하고 싶어
+        val jsonObject = JsonObject()
+        val product = jsonObject.getAsJsonObject("product")
+        
 
         return ProductCrawlingUseCase.CrawlingResult(
             id = 0,
