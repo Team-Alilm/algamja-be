@@ -112,11 +112,13 @@ class MusinsaHandler(
         val basketAndMemberList = loadBasketAndMemberPort.loadBasketAndMember(product)
 
         basketAndMemberList.forEach { (basket, member, fcmToken) ->
+            basket.sendAlilm()
+            addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
+
             sendSlackGateway.sendMessage(product)
             sendMailGateway.sendMail(member.email, member.nickname, product)
             fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
-            basket.sendAlilm()
-            addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
+
         }
     }
 }
