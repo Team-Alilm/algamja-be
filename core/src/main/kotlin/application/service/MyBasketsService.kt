@@ -24,6 +24,7 @@ class MyBasketsService (
                 imageUrl = it.product.thumbnailUrl,
                 store = it.product.store.name,
                 price = it.product.price,
+                firstCategory = it.product.firstCategory,
                 isAlilm = it.basket.isAlilm,
                 alilmDate = it.basket.alilmDate,
                 firstOption = it.product.firstOption,
