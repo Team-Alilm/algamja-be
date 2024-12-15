@@ -2,7 +2,7 @@ package org.team_alilm.application.port.out.gateway.crawling
 
 interface CrawlingGateway {
 
-    fun crawling(request: CrawlingGatewayRequest) : CrawlingGatewayResponse
+    fun htmlCrawling(request: CrawlingGatewayRequest) : CrawlingGatewayResponse
 
     data class CrawlingGatewayRequest(
         val url: String,
@@ -11,6 +11,5 @@ interface CrawlingGateway {
     data class CrawlingGatewayResponse(
         val html: String,
     )
-
 }
 

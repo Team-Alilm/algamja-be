@@ -1,4 +1,4 @@
-package org.team_alilm.application.port.`in`.use_case
+package org.team_alilm.application.port.`in`.use_case.product.crawling
 
 import org.team_alilm.domain.product.Store
 
@@ -11,7 +11,6 @@ interface ProductCrawlingUseCase {
     )
 
     data class CrawlingResult(
-        val id: Long,
         val number: Long,
         val name: String,
         val brand: String,
@@ -20,9 +19,6 @@ interface ProductCrawlingUseCase {
         val secondCategory: String,
         val price: Int,
         val store: Store,
-        val firstOption: String,
-        val secondOption: String?,
-        val thirdOption: String?
     )
 }
 

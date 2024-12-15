@@ -1,13 +1,14 @@
-package org.team_alilm.adapter.out.gateway.crawling
+package org.team_alilm.adapter.out.gateway
 
 import org.jsoup.Jsoup
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.stereotype.Component
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 
 @Component
-class MusinsaCrawlingGateway : CrawlingGateway {
+class CrawlingGateway : CrawlingGateway {
 
-    override fun crawling(request: CrawlingGateway.CrawlingGatewayRequest): CrawlingGateway.CrawlingGatewayResponse {
+    override fun htmlCrawling(request: CrawlingGateway.CrawlingGatewayRequest): CrawlingGateway.CrawlingGatewayResponse {
         val html = Jsoup
             .connect(request.url)
             .get()

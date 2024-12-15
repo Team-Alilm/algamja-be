@@ -12,8 +12,6 @@ import org.team_alilm.application.port.out.LoadBasketAndMemberPort
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.SendMailGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
-import org.team_alilm.application.port.out.gateway.crawling.CrawlingGatewayResolver
-import org.team_alilm.domain.FcmToken
 import org.team_alilm.domain.product.Product
 import org.team_alilm.global.util.StringConstant
 import org.team_alilm.quartz.data.SoldoutCheckResponse
@@ -26,7 +24,7 @@ class MusinsaHandler(
     private val restClient: RestClient,
     private val sendSlackGateway: SendSlackGateway,
     private val sendMailGateway: SendMailGateway,
-    private val crawlingGatewayResolver: CrawlingGatewayResolver,
+    private val crawlingGateway: CrawlingGateway,
     private val loadBasketAndMemberPort: LoadBasketAndMemberPort,
     private val fcmSendGateway: FcmSendGateway,
     private val addBasketPort: AddBasketPort
@@ -42,10 +40,8 @@ class MusinsaHandler(
 
     private fun checkSoldOut(product: Product): Boolean {
         val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(product.number)
-
-        // HTML 크롤링을 통한 품절 확인
-        val crawlingGateway = crawlingGatewayResolver.resolve(product.store)
-        val response = crawlingGateway.crawling(CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl))
+        val crawlingGatewayRequest = CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl)
+        val response = crawlingGateway.htmlCrawling(crawlingGatewayRequest)
         val jsonData = extractJsonData(response.html)
 
         return if (jsonData != null) {
@@ -118,7 +114,6 @@ class MusinsaHandler(
             sendSlackGateway.sendMessage(product)
             sendMailGateway.sendMail(member.email, member.nickname, product)
             fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
-
         }
     }
 }
