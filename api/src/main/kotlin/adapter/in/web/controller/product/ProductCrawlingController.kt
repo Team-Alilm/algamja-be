@@ -15,7 +15,6 @@ import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCra
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCaseResolver
 import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotFoundStoreException
-import javax.xml.crypto.Data
 
 @RestController
 @Tag(name = "상품 크롤링 조회 API", description = "상품 크롤링 조회 API를 제공합니다.")
@@ -24,8 +23,6 @@ class ProductCrawlingController(
     private val productCrawlingUseCaseResolver: ProductCrawlingUseCaseResolver,
     private val restTemplate: RestTemplate
 ) {
-
-    private val log = LoggerFactory.getLogger(javaClass)
 
     @GetMapping("/crawling")
     fun crawling(
@@ -39,8 +36,8 @@ class ProductCrawlingController(
         val productCrawlingUseCase = productCrawlingUseCaseResolver.resolve(store)
         val result = productCrawlingUseCase.crawling(command)
 
-        val optionUrl = getOptionUrl(result.number, store)
-        val optionResponse = restTemplate.getForEntity(optionUrl, OptionResponse::class.java).body
+//        val optionUrl = getOptionUrl(result.number, store)
+//        val optionResponse = restTemplate.getForEntity(optionUrl, OptionResponse::class.java).body
 
 
 
