@@ -38,7 +38,7 @@ spring:
 
   quartz:
     job-store-type: jdbc
-    job-interval-minutes: 5
+    job-interval-minutes: 30
 
 webhook:
   slack:
