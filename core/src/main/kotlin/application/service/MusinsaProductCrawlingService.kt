@@ -35,11 +35,13 @@ class MusinsaProductCrawlingService(
             throw RuntimeException("Invalid JSON data", e)
         }
 
-        val optionUrl = getOptionUrl(crawlingRequest.goodsNo, Store.MUSINSA)
+        val optionUrl = getOptionUrl(crawlingRequest.goodsNo)
         val optionResponse = restTemplate.getForEntity(optionUrl, OptionResponse::class.java).body
 
-        // 기본 옵션들을 파싱하여 firstOptions, secondOptions, thirdOptions로 변환
         val basicOptions = optionResponse?.data?.basic ?: emptyList()
+        val firstOptionName = basicOptions.getOrNull(0)?.name ?: ""
+        val secondOptionName = basicOptions.getOrNull(1)?.name ?: ""
+        val thirdOptionName = basicOptions.getOrNull(2)?.name ?: ""
         val firstOptions = basicOptions.getOrNull(0)?.optionValues?.map { it.name } ?: emptyList()
         val secondOptions = basicOptions.getOrNull(1)?.optionValues?.map { it.name } ?: emptyList()
         val thirdOptions = basicOptions.getOrNull(2)?.optionValues?.map { it.name } ?: emptyList()
@@ -53,6 +55,9 @@ class MusinsaProductCrawlingService(
             secondCategory = crawlingRequest.category.categoryDepth2Name,
             price = crawlingRequest.goodsPrice.normalPrice,
             store = Store.MUSINSA,
+            firstOptionName = firstOptionName,
+            secondOptionName = secondOptionName,
+            thirdOptionName = thirdOptionName,
             firstOptions = firstOptions, // 추가된 부분
             secondOptions = secondOptions, // 추가된 부분
             thirdOptions = thirdOptions // 추가된 부분
@@ -79,11 +84,8 @@ class MusinsaProductCrawlingService(
         return jsonString
     }
 
-    private fun getOptionUrl(goodsNo: Long, store: Store): String {
-        return when (store) {
-            Store.MUSINSA -> "https://goods-detail.musinsa.com/api2/goods/${goodsNo}/options?goodsSaleType=SALE"
-            else -> throw NotFoundStoreException()
-        }
+    private fun getOptionUrl(goodsNo: Long): String {
+        return "https://goods-detail.musinsa.com/api2/goods/${goodsNo}/options?goodsSaleType=SALE"
     }
 
     // null 허용을 고려해 보자!

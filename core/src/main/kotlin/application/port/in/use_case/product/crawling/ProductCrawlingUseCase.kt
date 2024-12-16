@@ -16,9 +16,12 @@ interface ProductCrawlingUseCase {
         val brand: String,
         val thumbnailUrl: String,
         val firstCategory: String,
-        val secondCategory: String,
+        val secondCategory: String?,
         val price: Int,
         val store: Store,
+        val firstOptionName: String,
+        val secondOptionName: String?,
+        val thirdOptionName: String?,
         val firstOptions: List<String>,
         val secondOptions: List<String>,
         val thirdOptions: List<String>
