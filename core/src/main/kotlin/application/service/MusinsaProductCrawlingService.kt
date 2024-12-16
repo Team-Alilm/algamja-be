@@ -5,15 +5,18 @@ import com.google.gson.annotations.SerializedName
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.client.RestTemplate
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway.*
 import org.team_alilm.domain.product.Store
+import org.team_alilm.global.error.NotFoundStoreException
 
 @Service
 @Transactional(readOnly = true)
 class MusinsaProductCrawlingService(
     private val crawlingGateway: CrawlingGateway,
+    private val restTemplate: RestTemplate
 ) : ProductCrawlingUseCase {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -32,19 +35,29 @@ class MusinsaProductCrawlingService(
             throw RuntimeException("Invalid JSON data", e)
         }
 
+        val optionUrl = getOptionUrl(crawlingRequest.goodsNo, Store.MUSINSA)
+        val optionResponse = restTemplate.getForEntity(optionUrl, OptionResponse::class.java).body
+
+        // 기본 옵션들을 파싱하여 firstOptions, secondOptions, thirdOptions로 변환
+        val basicOptions = optionResponse?.data?.basic ?: emptyList()
+        val firstOptions = basicOptions.getOrNull(0)?.optionValues?.map { it.name } ?: emptyList()
+        val secondOptions = basicOptions.getOrNull(1)?.optionValues?.map { it.name } ?: emptyList()
+        val thirdOptions = basicOptions.getOrNull(2)?.optionValues?.map { it.name } ?: emptyList()
+
         return ProductCrawlingUseCase.CrawlingResult(
-            number = crawlingRequest.goodsNo, // 필요하면 CrawlingGatewayRequest에 필드를 추가
-            name = crawlingRequest.goodsNm, // 필요하면 CrawlingGatewayRequest에 필드를 추가
-            brand = crawlingRequest.brandInfo.brandName, // 필요하면 CrawlingGatewayRequest에 필드를 추가
-            thumbnailUrl = crawlingRequest.thumbnailImageUrl, // 필요하면 CrawlingGatewayRequest에 필드를 추가
-            firstCategory = crawlingRequest.category.categoryDepth1Name, // 필요하면 CrawlingGatewayRequest에 필드를 추가
-            secondCategory = crawlingRequest.category.categoryDepth2Name, // 필요하면 CrawlingGatewayRequest에 필드를 추가
-            price = crawlingRequest.goodsPrice.normalPrice, // 필요하면 CrawlingGatewayRequest에 필드를 추가
+            number = crawlingRequest.goodsNo,
+            name = crawlingRequest.goodsNm,
+            brand = crawlingRequest.brandInfo.brandName,
+            thumbnailUrl = crawlingRequest.thumbnailImageUrl,
+            firstCategory = crawlingRequest.category.categoryDepth1Name,
+            secondCategory = crawlingRequest.category.categoryDepth2Name,
+            price = crawlingRequest.goodsPrice.normalPrice,
             store = Store.MUSINSA,
+            firstOptions = firstOptions, // 추가된 부분
+            secondOptions = secondOptions, // 추가된 부분
+            thirdOptions = thirdOptions // 추가된 부분
         )
     }
-
-
 
     private fun extractJsonData(scriptContent: String): String? {
         var jsonString: String? = null
@@ -64,6 +77,13 @@ class MusinsaProductCrawlingService(
         }
 
         return jsonString
+    }
+
+    private fun getOptionUrl(goodsNo: Long, store: Store): String {
+        return when (store) {
+            Store.MUSINSA -> "https://goods-detail.musinsa.com/api2/goods/${goodsNo}/options?goodsSaleType=SALE"
+            else -> throw NotFoundStoreException()
+        }
     }
 
     // null 허용을 고려해 보자!
@@ -87,5 +107,73 @@ class MusinsaProductCrawlingService(
 
     data class GoodsPrice(
         @SerializedName("normalPrice") val normalPrice: Int,
+    )
+
+    data class OptionResponse(
+        val meta: Meta,
+        val data: OptionData,
+        val error: Any? // 에러가 null이므로 Any? 타입으로 설정
+    )
+
+    data class Meta(
+        val result: String,
+        val errorCode: String,
+        val message: String
+    )
+
+    data class OptionData(
+        val basic: List<Basic>,
+        val extra: List<Any>, // extra는 비어있는 리스트이므로 Any로 설정
+        val optionItems: List<OptionItem>
+    )
+
+    data class Basic(
+        val no: Long,
+        val type: String,
+        val displayType: String,
+        val name: String,
+        val standardOptionNo: Long,
+        val sequence: Int,
+        val isDeleted: Boolean,
+        val optionValues: List<OptionValue>
+    )
+
+    data class OptionValue(
+        val no: Long,
+        val optionNo: Long,
+        val name: String,
+        val code: String,
+        val sequence: Int,
+        val standardOptionValueNo: Long,
+        val color: String?,
+        val isDeleted: Boolean
+    )
+
+    data class OptionItem(
+        val no: Long,
+        val goodsNo: Long,
+        val optionValueNos: List<Long>,
+        val managedCode: String,
+        val price: Int,
+        val activated: Boolean,
+        val outOfStock: Boolean,
+        val isDeleted: Boolean,
+        val optionValues: List<OptionValueDetail>,
+        val colors: List<Color>,
+        val remainQuantity: Int
+    )
+
+    data class OptionValueDetail(
+        val no: Long,
+        val name: String,
+        val code: String,
+        val optionNo: Long,
+        val optionName: String
+    )
+
+    data class Color(
+        val optionItemNo: Long,
+        val colorCode: String,
+        val colorType: String
     )
 }

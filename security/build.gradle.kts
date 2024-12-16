@@ -4,9 +4,6 @@ dependencies {
     // jpa
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    // web
-    implementation("org.springframework.boot:spring-boot-starter-web")
-
     // security
     implementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.security:spring-security-test")

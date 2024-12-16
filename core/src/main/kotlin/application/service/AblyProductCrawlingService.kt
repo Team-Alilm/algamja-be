@@ -16,6 +16,9 @@ class AblyProductCrawlingService : ProductCrawlingUseCase {
             secondCategory = "Example Subcategory",
             price = 0,
             store = Store.A_BLY,
+            firstOptions = emptyList(),
+            secondOptions = emptyList(),
+            thirdOptions = emptyList()
         )
     }
 }

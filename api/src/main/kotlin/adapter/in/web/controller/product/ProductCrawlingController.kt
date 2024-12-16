@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
+import org.slf4j.LoggerFactory
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,6 +24,8 @@ class ProductCrawlingController(
     private val restTemplate: RestTemplate
 ) {
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @GetMapping("/crawling")
     fun crawling(
         @ParameterObject
@@ -35,11 +38,6 @@ class ProductCrawlingController(
         val productCrawlingUseCase = productCrawlingUseCaseResolver.resolve(store)
         val result = productCrawlingUseCase.crawling(command)
 
-//        val optionUrl = getOptionUrl(result.number, store)
-//        val optionResponse = restTemplate.getForEntity(optionUrl, OptionResponse::class.java).body
-
-
-
         val response = ProductCrawlingResponse.from(result)
 
         return ResponseEntity.ok(response)
@@ -50,13 +48,6 @@ class ProductCrawlingController(
             url.contains("musinsa") -> Store.MUSINSA
             url.contains("a-bly") -> Store.A_BLY
             else -> throw IllegalArgumentException("지원하지 않는 URL입니다.")
-        }
-    }
-
-    private fun getOptionUrl(goodsNo: Long, store: Store): String {
-        return when (store) {
-            Store.MUSINSA -> "https://goods-detail.musinsa.com/api2/goods/${goodsNo}/options?goodsSaleType=SALE"
-            else -> throw NotFoundStoreException()
         }
     }
 
@@ -94,28 +85,11 @@ class ProductCrawlingController(
                     price = productCrawlingResult.price,
                     firstCategory = productCrawlingResult.firstCategory,
                     secondCategory = productCrawlingResult.secondCategory,
-                    firstOptions = emptyList(),
-                    secondOptions = emptyList(),
-                    thirdOptions = emptyList()
+                    firstOptions = productCrawlingResult.firstOptions,
+                    secondOptions = productCrawlingResult.secondOptions,
+                    thirdOptions = productCrawlingResult.thirdOptions
                 )
             }
         }
     }
-
-    data class OptionResponse(
-        val data: Data
-    )
-
-    data class Data(
-        val basic: List<Basic>
-    )
-
-    data class Basic(
-        val name: String,
-        val optionValues: List<OptionValue>
-    )
-
-    data class OptionValue(
-        val name: String
-    )
 }
