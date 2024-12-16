@@ -14,14 +14,12 @@ import org.springframework.web.client.RestTemplate
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCaseResolver
 import org.team_alilm.domain.product.Store
-import org.team_alilm.global.error.NotFoundStoreException
 
 @RestController
 @Tag(name = "상품 크롤링 조회 API", description = "상품 크롤링 조회 API를 제공합니다.")
 @RequestMapping("/api/v1/products")
 class ProductCrawlingController(
     private val productCrawlingUseCaseResolver: ProductCrawlingUseCaseResolver,
-    private val restTemplate: RestTemplate
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
