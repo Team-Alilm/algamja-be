@@ -23,6 +23,11 @@ dependencies {
     // firebase
     implementation("com.google.firebase:firebase-admin:8.1.0")
 
+    // selenium-java
+    implementation("org.seleniumhq.selenium:selenium-java:4.16.1")
+
+
+
 }
 
 allOpen {
