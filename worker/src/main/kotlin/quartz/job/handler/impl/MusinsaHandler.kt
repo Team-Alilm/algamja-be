@@ -37,7 +37,7 @@ class MusinsaHandler(
     }
 
     private fun checkSoldOut(product: Product): Boolean {
-        val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(product.number)
+        val musinsaProductHtmlRequestUrl = StringConstant.MUSINSA_PRODUCT_HTML_URL.get().format(product.number)
         val crawlingGatewayRequest = CrawlingGateway.CrawlingGatewayRequest(musinsaProductHtmlRequestUrl)
         val response = crawlingGateway.htmlCrawling(crawlingGatewayRequest)
         val jsonData = extractJsonData(response.html)
@@ -51,7 +51,7 @@ class MusinsaHandler(
                 true
             } else {
                 // API 호출로 재확인
-                val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(product.number)
+                val requestUri = StringConstant.MUSINSA_OPTION_API_URL.get().format(product.number)
                 try {
                     checkIfSoldOut(requestUri, product)
                 } catch (e: RestClientException) {
@@ -62,7 +62,7 @@ class MusinsaHandler(
             }
         } else {
             log.error("No JSON data found for product: ${product.number}")
-            val requestUri = StringConstant.MUSINSA_API_URL_TEMPLATE.get().format(product.number)
+            val requestUri = StringConstant.MUSINSA_OPTION_API_URL.get().format(product.number)
 
             try {
                 checkIfSoldOut(requestUri, product)

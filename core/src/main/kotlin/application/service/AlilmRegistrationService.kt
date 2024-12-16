@@ -37,7 +37,7 @@ class AlilmRegistrationService(
                 |알림 등록 완료
                 |회원: ${command.member.nickname}
                 |상품명: ${product.name}
-                |링크: ${StringConstant.MUSINSA_PRODUCT_HTML_REQUEST_URL.get().format(product.number)}
+                |링크: ${StringConstant.MUSINSA_PRODUCT_HTML_URL.get().format(product.number)}
             """.trimIndent()
         )
     }
