@@ -31,11 +31,13 @@ class MyBasketsController(
     fun myBasket(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ) : ResponseEntity<List<MyBasketsResponse>> {
-        return ResponseEntity.ok(
-            myBasketsUseCase.myBasket(
-                MyBasketsUseCase.MyBasketCommand(customMemberDetails.member)
-            ).map { MyBasketsResponse.from(it) }
-        )
+        val command = MyBasketsUseCase.MyBasketCommand(customMemberDetails.member)
+
+        val result = myBasketsUseCase.myBasket(command)
+
+        val response = result.map { MyBasketsResponse.from(it) }
+
+        return ResponseEntity.ok(response)
     }
 
     data class MyBasketsResponse(
