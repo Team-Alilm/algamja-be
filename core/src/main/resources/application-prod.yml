@@ -8,13 +8,7 @@ spring:
     url: ENC(dinLBmExg70ZzKu0//BKkrkqQWepOj9DH3mxeu3p3c+9yD/zCjT6DdXeWDkzNmGVVqtsHPXiALB2aUHPqitIASKbG4NS6m+BZfhgJSR3HRqq3e1KInGLvA==)
     username: ENC(R1FpK3IkTBlUqe6UGu9ASA==)
     password: ENC(Xg2/I1uWGCs6SKi2H21oNAazYU4qObrp)
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
-        highlight_sql: true
-        use_sql_comments: true
+
   security:
     oauth2:
       client:
