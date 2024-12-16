@@ -3,9 +3,7 @@ package org.team_alilm.quartz.job.handler.impl
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestClient
-import org.springframework.web.client.RestClientException
-import org.springframework.web.client.body
+import org.springframework.web.client.*
 import org.team_alilm.adapter.out.gateway.FcmSendGateway
 import org.team_alilm.application.port.out.AddBasketPort
 import org.team_alilm.application.port.out.LoadBasketAndMemberPort
@@ -21,7 +19,7 @@ import org.team_alilm.quartz.job.handler.PlatformHandler
 @Component
 class MusinsaHandler(
     private val objectMapper: ObjectMapper,
-    private val restClient: RestClient,
+    private val restTemplate: RestTemplate,
     private val sendSlackGateway: SendSlackGateway,
     private val sendMailGateway: SendMailGateway,
     private val crawlingGateway: CrawlingGateway,
@@ -97,7 +95,7 @@ class MusinsaHandler(
     }
 
     private fun checkIfSoldOut(requestUri: String, product: Product): Boolean {
-        val response = restClient.get().uri(requestUri).retrieve().body<SoldoutCheckResponse>()
+        val response = restTemplate.getForEntity(requestUri, SoldoutCheckResponse::class.java).body
         val optionItem = response?.data?.optionItems?.firstOrNull {
             it.managedCode == product.getManagedCode() }
 
@@ -106,6 +104,10 @@ class MusinsaHandler(
 
     private fun sendNotifications(product: Product) {
         val basketAndMemberList = loadBasketAndMemberPort.loadBasketAndMember(product)
+
+        basketAndMemberList.forEach() { (member) ->
+            log.info("member : $member")
+        }
 
         basketAndMemberList.forEach { (basket, member, fcmToken) ->
             basket.sendAlilm()

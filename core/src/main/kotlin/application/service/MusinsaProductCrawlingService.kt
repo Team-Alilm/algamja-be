@@ -10,7 +10,6 @@ import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCra
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway.*
 import org.team_alilm.domain.product.Store
-import org.team_alilm.global.error.NotFoundStoreException
 
 @Service
 @Transactional(readOnly = true)
