@@ -20,10 +20,10 @@ class AblyProductCrawlingService(
         val headers = org.springframework.http.HttpHeaders().apply {
             add("X-Anonymous-Token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiIzMTk0MzE3NjYiLCJpYXQiOjE3MzE4ODUwNjl9.iMCkiNw50N05BAatKxnvMYWAg_B7gBUiBL6FZe1Og9Y") // Authorization 헤더
         }
-        val entity = HttpEntity<String>(headers) // HttpEntity에 헤더 추가
+        val entity = HttpEntity<String>(headers)
 
         val response = restTemplate.exchange(
-            "https://api.a-bly.com/api/v2/goods/$productNumber",  // 요청 URL
+            "https://api.a-bly.com/api/v2/goods/$productNumber",
             HttpMethod.GET,     // HTTP 메서드
             entity,             // HttpEntity (헤더 포함)
             JsonNode::class.java  // 응답 타입
