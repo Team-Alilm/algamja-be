@@ -22,7 +22,6 @@ class ABlyHandler(
 
     override fun process(product: Product) {
         if(checkSoldOut(product).not()) {
-            sendNotifications(product)
         }
     }
 
@@ -33,38 +32,7 @@ class ABlyHandler(
             Option::class.java
         )
 
-
-
-        return if (jsonData != null) {
-            // JSON 데이터 파싱
-            val jsonObject = objectMapper.readTree(jsonData)
-            val isGoodsSaleTypeEqualsSALE = jsonObject.get("goodsSaleType").toString() == "\"SALE\""
-
-            if (isGoodsSaleTypeEqualsSALE.not()) {
-                true
-            } else {
-                // API 호출로 재확인
-                val requestUri = StringConstant.MUSINSA_OPTION_API_URL.get().format(product.number)
-                try {
-                    checkIfSoldOut(requestUri, product)
-                } catch (e: RestClientException) {
-                    log.error("Failed to check soldout status of product: ${product.number}", e)
-                    sendSlackGateway.sendMessage("무신사 서버에 요청 시 에러가 발생했어요.: ${product.number}\nError: ${e.message}")
-                    true
-                }
-            }
-        } else {
-            log.error("No JSON data found for product: ${product.number}")
-            val requestUri = StringConstant.MUSINSA_OPTION_API_URL.get().format(product.number)
-
-            try {
-                checkIfSoldOut(requestUri, product)
-            } catch (e: RestClientException) {
-                log.error("Failed to check soldout status of product: ${product.number}", e)
-                sendSlackGateway.sendMessage("무신사 서버에 요청 시 에러가 발생했어요.: ${product.number}\nError: ${e.message}")
-                true
-            }
-        }
+        return false
     }
 
     data class Option(
