@@ -4,8 +4,13 @@ spring:
       local:
         - local
         - core
+        - api-local
+        - worker-local
+        - security-local
       prod:
         - prod
         - core
+        - api-prod
+        - worker-prod
+        - security-prod
     default: local
-
