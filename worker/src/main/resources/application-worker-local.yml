@@ -1,0 +1,4 @@
+spring:
+  quartz:
+    job-store-type: jdbc
+    job-interval-minutes: 1

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.domain.product.Store
+import org.team_alilm.global.util.StringConstant
 
 @Service
 class AblyProductCrawlingService(
@@ -18,7 +19,7 @@ class AblyProductCrawlingService(
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val productNumber = getProductNumber(command.url)
         val headers = org.springframework.http.HttpHeaders().apply {
-            add("X-Anonymous-Token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiIzMTk0MzE3NjYiLCJpYXQiOjE3MzE4ODUwNjl9.iMCkiNw50N05BAatKxnvMYWAg_B7gBUiBL6FZe1Og9Y") // Authorization 헤더
+            add("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get()) // Authorization 헤더
         }
         val entity = HttpEntity<String>(headers)
 
