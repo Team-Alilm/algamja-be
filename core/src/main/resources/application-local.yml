@@ -1,7 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile: local
 
   datasource:
     driver-class-name: org.h2.Driver
@@ -25,34 +22,7 @@ spring:
     console:
       enabled: true
 
-  security:
-    oauth2:
-      client:
-        registration:
-          kakao:
-            client-name: Kakao
-            client-id: ENC(bY4du5OfPJoCLyJvvrX7eADU3O1p/oze8c+pvSD3EZxwVvB/YAY0xvUm+8/TzDKa)
-            client-secret: ENC(nnyQJdgGymYjFygho+1+UWazDq7XADUoc+wuk8gBfB4MRhT7abns0AZZK7aqqaOB)
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-            authorization-grant-type: authorization_code
-            client-authentication-method: client_secret_post
-            scope:
-              - profile_nickname
-              - account_email
-        provider:
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
-
-  quartz:
-    job-store-type: jdbc
-    job-interval-minutes: 1
-
 webhook:
   slack:
     url: ENC(ZaEdZrZmyxJlGPIk0zgsxBR7D2K8h/F5nqyHyEDh2XIsn0mpi4+UE/jL7zvDAyiewcDDIsd1xc+HspuW3FWd84mebkC4k0H0vXciOaARckAz7xgu/c6+1kRy0hDbLLXP)
 
-app:
-  base-url: http://localhost:3000
