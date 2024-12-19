@@ -49,7 +49,7 @@ class MusinsaProductCrawlingService(
             number = crawlingRequest.goodsNo,
             name = crawlingRequest.goodsNm,
             brand = crawlingRequest.brandInfo.brandName,
-            thumbnailUrl = crawlingRequest.thumbnailImageUrl,
+            thumbnailUrl = getThumbnailUrl(crawlingRequest.thumbnailImageUrl),
             firstCategory = crawlingRequest.category.categoryDepth1Name,
             secondCategory = crawlingRequest.category.categoryDepth2Name,
             price = crawlingRequest.goodsPrice.normalPrice,
@@ -85,6 +85,10 @@ class MusinsaProductCrawlingService(
 
     private fun getOptionUrl(goodsNo: Long): String {
         return "https://goods-detail.musinsa.com/api2/goods/${goodsNo}/options?goodsSaleType=SALE"
+    }
+
+    private fun getThumbnailUrl(thumbnailUrl: String): String {
+        return "https://image.msscdn.net/thumbnails${thumbnailUrl}"
     }
 
     // null 허용을 고려해 보자!
