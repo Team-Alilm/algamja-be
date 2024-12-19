@@ -35,4 +35,9 @@ class NotificationService(
             fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
         }
     }
+
+    fun notifySlackError(product: Product, errorMessage: String?) {
+        val message = "서버에 요청 시 에러가 발생했어요.: ${product.number}\nError: $errorMessage"
+        sendSlackGateway.sendMessage(message)
+    }
 }
