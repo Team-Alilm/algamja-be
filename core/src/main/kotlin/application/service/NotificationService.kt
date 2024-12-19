@@ -2,20 +2,25 @@ package org.team_alilm.application.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.out.AddBasketPort
 import org.team_alilm.application.port.out.gateway.SendMailGateway
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
 import org.team_alilm.adapter.out.gateway.FcmSendGateway
+import org.team_alilm.application.port.out.AddAlilmPort
 import org.team_alilm.application.port.out.LoadBasketAndMemberPort
+import org.team_alilm.domain.Alilm
 import org.team_alilm.domain.product.Product
 
 @Service
+@Transactional
 class NotificationService(
     private val sendSlackGateway: SendSlackGateway,
     private val sendMailGateway: SendMailGateway,
     private val fcmSendGateway: FcmSendGateway,
     private val addBasketPort: AddBasketPort,
     private val loadBasketAndMemberPort: LoadBasketAndMemberPort,
+    private val addAlilmPort: AddAlilmPort
 ) {
     private val log = LoggerFactory.getLogger(NotificationService::class.java)
 
@@ -33,6 +38,7 @@ class NotificationService(
             sendSlackGateway.sendMessage(product)
             sendMailGateway.sendMail(member.email, member.nickname, product)
             fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
+            addAlilmPort.addAlilm(Alilm.from(basket = basket) )
         }
     }
 
