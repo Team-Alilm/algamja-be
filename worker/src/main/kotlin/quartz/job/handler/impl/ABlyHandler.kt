@@ -44,7 +44,7 @@ class ABlyHandler(
 
         if (optionComponent?.is_final_depth == false) {
             response = restTemplate.exchange(
-                StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(product.number, 2),
+                StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(product.number, 2) + "&selected_option_sno=${optionComponent.goods_option_sno}",
                 HttpMethod.GET,
                 entity,
                 Option::class.java
@@ -56,7 +56,7 @@ class ABlyHandler(
 
             if (optionComponent2?.is_final_depth == false) {
                 response = restTemplate.exchange(
-                    StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(product.number, 3),
+                    StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(product.number, 3) + "&selected_option_sno=${optionComponent2.goods_option_sno}",
                     HttpMethod.GET,
                     entity,
                     Option::class.java
