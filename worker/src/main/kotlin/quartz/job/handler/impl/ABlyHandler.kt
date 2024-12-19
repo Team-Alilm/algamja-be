@@ -29,10 +29,9 @@ class ABlyHandler(
         }
         val entity = HttpEntity<Any>(headers)
 
-        var depth = 1
         var selectedOptionSno: Long? = null
 
-        while (depth <= 3) {
+        for (depth in 1..3) {
             val url = buildApiUrl(product.number, depth, selectedOptionSno)
             val response = fetchOptionData(url, entity) ?: return true
 
@@ -45,7 +44,6 @@ class ABlyHandler(
             }
 
             selectedOptionSno = matchingOption.goods_option_sno
-            depth++
         }
 
         return false
