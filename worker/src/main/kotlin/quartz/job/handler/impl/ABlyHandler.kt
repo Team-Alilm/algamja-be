@@ -1,5 +1,6 @@
 package org.team_alilm.quartz.job.handler.impl
 
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -16,6 +17,8 @@ class ABlyHandler(
     private val restTemplate: RestTemplate,
     private val notificationService: NotificationService
 ) : PlatformHandler {
+
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun process(product: Product) {
         if (!isSoldOut(product)) {
@@ -72,7 +75,7 @@ class ABlyHandler(
 
     private fun handleApiException(e: Exception, url: String) {
         // 에러 로그 출력 및 알림 서비스 호출
-        println("Error fetching data from URL: $url, Error: ${e.message}")
+        log.error("Error fetching data from URL: $url, Error: ${e.message}")
     }
 
     private fun Product.getOptionNameByDepth(depth: Int): String? {
