@@ -73,7 +73,7 @@ jobs:
       - name: Notify Slack - Started
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text": "배포가 시작되었습니다 :rocket:"}' \
+          --data '{"text": "api server 배포가 시작되었습니다 :rocket:"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Checkout
@@ -134,12 +134,12 @@ jobs:
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text": "배포가 성공적으로 완료되었습니다! :white_check_mark:"}' \
+          --data '{"text": "api server 배포가 성공적으로 완료되었습니다! :white_check_mark:"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack - Failure
         if: failure()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text": "배포에 실패하였습니다 :x:"}' \
+          --data '{"text": "api server 배포에 실패하였습니다 :x:"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}

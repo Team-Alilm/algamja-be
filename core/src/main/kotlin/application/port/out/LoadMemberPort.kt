@@ -7,4 +7,6 @@ interface LoadMemberPort {
     fun loadMember(id: Long): Member?
 
     fun loadMember(provider: Member.Provider, providerId: String): Member?
+
+    fun loadMemberCount(): Long
 }
