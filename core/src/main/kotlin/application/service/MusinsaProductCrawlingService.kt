@@ -50,6 +50,7 @@ class MusinsaProductCrawlingService(
             name = crawlingRequest.goodsNm,
             brand = crawlingRequest.brandInfo.brandName,
             thumbnailUrl = getThumbnailUrl(crawlingRequest.thumbnailImageUrl),
+            imageUrlList = emptyList(),
             firstCategory = crawlingRequest.category.categoryDepth1Name,
             secondCategory = crawlingRequest.category.categoryDepth2Name,
             price = crawlingRequest.goodsPrice.normalPrice,

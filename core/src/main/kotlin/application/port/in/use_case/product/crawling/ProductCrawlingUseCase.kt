@@ -15,6 +15,7 @@ interface ProductCrawlingUseCase {
         val name: String,
         val brand: String,
         val thumbnailUrl: String,
+        val imageUrlList: List<String>,
         val firstCategory: String,
         val secondCategory: String?,
         val price: Int,
