@@ -98,11 +98,10 @@ class BasketsRegisteredController(
         )
         val thumbnailUrl: String,
 
-        @field:NotEmpty(message = "추가 이미지 URL은 최소 1개 이상이어야 합니다.")
         @field:Schema(
             description = "추가 이미지 URL",
         )
-        val imageUrlList: List<String>,
+        val imageUrlList: List<String> = emptyList(),
 
         @field:Schema(
             example = "상의",
