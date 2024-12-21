@@ -35,15 +35,13 @@ class MusinsaProductCrawlingService(
         }
 
         val optionUrl = getOptionUrl(crawlingRequest.goodsNo)
-        val optionResponse = restTemplate.getForEntity(optionUrl, OptionResponse::class.java).body
+        val optionResponse = restTemplate.getForEntity(optionUrl, ApiResponse::class.java).body
+        val filterOption = optionResponse?.data?.filterOption
+            ?: throw RuntimeException("Failed to get option data from $optionUrl")
 
-        val basicOptions = optionResponse?.data?.basic ?: emptyList()
-        val firstOptionName = basicOptions.getOrNull(0)?.name ?: ""
-        val secondOptionName = basicOptions.getOrNull(1)?.name ?: ""
-        val thirdOptionName = basicOptions.getOrNull(2)?.name ?: ""
-        val firstOptions = basicOptions.getOrNull(0)?.optionValues?.map { it.name } ?: emptyList()
-        val secondOptions = basicOptions.getOrNull(1)?.optionValues?.map { it.name } ?: emptyList()
-        val thirdOptions = basicOptions.getOrNull(2)?.optionValues?.map { it.name } ?: emptyList()
+        val firstOptions = filterOption.firstOptions.map { it.value }
+        val secondOptions = filterOption.secondOptions.map { it.value }
+        val thirdOptions = filterOption.thirdOptions.map { it.value }
 
         return ProductCrawlingUseCase.CrawlingResult(
             number = crawlingRequest.goodsNo,
@@ -55,9 +53,6 @@ class MusinsaProductCrawlingService(
             secondCategory = crawlingRequest.category.categoryDepth2Name,
             price = crawlingRequest.goodsPrice.normalPrice,
             store = Store.MUSINSA,
-            firstOptionName = firstOptionName,
-            secondOptionName = secondOptionName,
-            thirdOptionName = thirdOptionName,
             firstOptions = firstOptions, // 추가된 부분
             secondOptions = secondOptions, // 추가된 부분
             thirdOptions = thirdOptions // 추가된 부분
@@ -85,7 +80,7 @@ class MusinsaProductCrawlingService(
     }
 
     private fun getOptionUrl(goodsNo: Long): String {
-        return "https://goods-detail.musinsa.com/api2/goods/${goodsNo}/options?goodsSaleType=SALE"
+        return "https://goods.musinsa.com/api2/review/v1/view/filter?goodsNo=${goodsNo}"
     }
 
     private fun getThumbnailUrl(thumbnailUrl: String): String {
@@ -115,71 +110,53 @@ class MusinsaProductCrawlingService(
         @SerializedName("normalPrice") val normalPrice: Int,
     )
 
-    data class OptionResponse(
-        val meta: Meta,
-        val data: OptionData,
-        val error: Any? // 에러가 null이므로 Any? 타입으로 설정
+    data class FilterOption(
+        val optionCount: Int,
+        val firstOptions: List<Option>,
+        val secondOptions: List<Option>,
+        val thirdOptions: List<Option>,
+        val filterText: String
+    )
+
+    data class Option(
+        @SerializedName("val") val value: String,
+        val txt: String,
+        val qty: Int,
+        val memo: String?,
+        val title: String,
+        val qnaTitle: String?,
+        val restockYn: String?
+    )
+
+
+    data class MyProfileInfo(
+        val hasMySize: Boolean,
+        val myFilterEnum: String,
+        val searchMemberInfo: Any?,
+        val weight: Int,
+        val height: Int,
+        val skinInfoList: Any?,
+        val filterText: String,
+        val heightStart: Int,
+        val heightEnd: Int,
+        val weightStart: Int,
+        val weightEnd: Int
+    )
+
+    data class ResponseData(
+        val filterOption: FilterOption,
+        val myProfileInfo: MyProfileInfo
     )
 
     data class Meta(
         val result: String,
-        val errorCode: String,
-        val message: String
+        val errorCode: String?,
+        val message: String?
     )
 
-    data class OptionData(
-        val basic: List<Basic>,
-        val extra: List<Any>, // extra는 비어있는 리스트이므로 Any로 설정
-        val optionItems: List<OptionItem>
+    data class ApiResponse(
+        val data: ResponseData,
+        val meta: Meta
     )
 
-    data class Basic(
-        val no: Long,
-        val type: String,
-        val displayType: String,
-        val name: String,
-        val standardOptionNo: Long,
-        val sequence: Int,
-        val isDeleted: Boolean,
-        val optionValues: List<OptionValue>
-    )
-
-    data class OptionValue(
-        val no: Long,
-        val optionNo: Long,
-        val name: String,
-        val code: String,
-        val sequence: Int,
-        val standardOptionValueNo: Long,
-        val color: String?,
-        val isDeleted: Boolean
-    )
-
-    data class OptionItem(
-        val no: Long,
-        val goodsNo: Long,
-        val optionValueNos: List<Long>,
-        val managedCode: String,
-        val price: Int,
-        val activated: Boolean,
-        val outOfStock: Boolean,
-        val isDeleted: Boolean,
-        val optionValues: List<OptionValueDetail>,
-        val colors: List<Color>,
-        val remainQuantity: Int
-    )
-
-    data class OptionValueDetail(
-        val no: Long,
-        val name: String,
-        val code: String,
-        val optionNo: Long,
-        val optionName: String
-    )
-
-    data class Color(
-        val optionItemNo: Long,
-        val colorCode: String,
-        val colorType: String
-    )
 }
