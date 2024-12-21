@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.BindingResult
@@ -67,7 +69,6 @@ class BasketsRegisteredController(
 
     @Schema(description = "상품 등록 요청")
     data class AlilmRegistrationRequest(
-        @field:NotNull(message = "URL은 필수입니다.")
         @field:Schema(
             example = "4235404",
             description = "상품 번호",
@@ -77,7 +78,6 @@ class BasketsRegisteredController(
         )
         val number: Long,
 
-        @field:NotBlank(message = "상품 이름은 필수입니다.")
         @field:Schema(
             example = "YEEZY BOOST 380 GZ0454",
             description = "상품 이름",
@@ -85,7 +85,6 @@ class BasketsRegisteredController(
         )
         val name: String,
 
-        @field:NotBlank(message = "브랜드는 필수입니다.")
         @field:Schema(
             example = "adidas",
             description = "브랜드",
@@ -99,6 +98,7 @@ class BasketsRegisteredController(
         )
         val thumbnailUrl: String,
 
+        @field:NotEmpty(message = "추가 이미지 URL은 최소 1개 이상이어야 합니다.")
         @field:Schema(
             description = "추가 이미지 URL",
         )
@@ -114,11 +114,10 @@ class BasketsRegisteredController(
         @field:Schema(
             example = "반팔",
             description = "카테고리 2",
-            required = true
+            required = false
         )
         val secondCategory: String?,
 
-        @field:NotNull(message = "가격은 필수입니다.")
         @field:Schema(
             example = "95700",
             description = "가격",
@@ -128,15 +127,13 @@ class BasketsRegisteredController(
         )
         val price: Int,
 
-        @field:NotNull(message = "스토어는 필수입니다.")
         @field:Schema(
             description = "스토어",
             example = "MUSINSA",
             required = true
         )
-        val store: Store,
+        val store: Store, // 수정
 
-        @field:NotBlank(message = "옵션은 필수입니다.")
         @field:Schema(
             description = "옵션1",
             example = "220",
@@ -144,17 +141,26 @@ class BasketsRegisteredController(
         )
         val firstOption: String,
 
+        @field:Pattern(
+            regexp = "^$|.*",
+            message = "옵션2는 빈 문자열이거나 유효한 값이어야 합니다."
+        )
         @field:Schema(
             description = "옵션2",
             example = ""
         )
         val secondOption: String?,
 
+        @field:Pattern(
+            regexp = "^$|.*",
+            message = "옵션3는 빈 문자열이거나 유효한 값이어야 합니다."
+        )
         @field:Schema(
             description = "옵션3",
             example = ""
         )
         val thirdOption: String?
     )
+
 
 }
