@@ -1,5 +1,6 @@
 package org.team_alilm.quartz.job.handler.impl
 
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -17,6 +18,8 @@ class ABlyHandler(
     private val notificationService: NotificationService
 ) : PlatformHandler {
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     override fun process(product: Product) {
         if (!isSoldOut(product)) {
             notificationService.sendNotifications(product)
@@ -29,10 +32,9 @@ class ABlyHandler(
         }
         val entity = HttpEntity<Any>(headers)
 
-        var depth = 1
         var selectedOptionSno: Long? = null
 
-        while (depth <= 3) {
+        for (depth in 1..3) {
             val url = buildApiUrl(product.number, depth, selectedOptionSno)
             val response = fetchOptionData(url, entity) ?: return true
 
@@ -45,7 +47,6 @@ class ABlyHandler(
             }
 
             selectedOptionSno = matchingOption.goods_option_sno
-            depth++
         }
 
         return false
@@ -74,7 +75,7 @@ class ABlyHandler(
 
     private fun handleApiException(e: Exception, url: String) {
         // 에러 로그 출력 및 알림 서비스 호출
-        println("Error fetching data from URL: $url, Error: ${e.message}")
+        log.error("Error fetching data from URL: $url, Error: ${e.message}")
     }
 
     private fun Product.getOptionNameByDepth(depth: Int): String? {
