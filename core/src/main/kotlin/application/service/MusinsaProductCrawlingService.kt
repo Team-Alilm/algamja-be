@@ -1,5 +1,6 @@
 package org.team_alilm.application.service
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import org.slf4j.LoggerFactory
@@ -35,13 +36,13 @@ class MusinsaProductCrawlingService(
         }
 
         val optionUrl = getOptionUrl(crawlingRequest.goodsNo)
-        val optionResponse = restTemplate.getForEntity(optionUrl, ApiResponse::class.java).body
-        val filterOption = optionResponse?.data?.filterOption
-            ?: throw RuntimeException("Failed to get option data from $optionUrl")
+        log.info("Option URL: $optionUrl")
+        val optionResponse = restTemplate.getForEntity(optionUrl, JsonNode::class.java).body
+        val filterOption = optionResponse?.get("data")?.get("filterOption") ?: throw RuntimeException("Failed to get option data")
 
-        val firstOptions = filterOption.firstOptions.map { it.value }
-        val secondOptions = filterOption.secondOptions.map { it.value }
-        val thirdOptions = filterOption.thirdOptions.map { it.value }
+        val firstOptions = filterOption.get("firstOptions").map { it.get("val").asText() }
+        val secondOptions = filterOption.get("secondOptions")?.map { it.get("val").asText() } ?: emptyList()
+        val thirdOptions = filterOption.get("thirdOptions")?.map { it.get("val").asText() } ?: emptyList()
 
         return ProductCrawlingUseCase.CrawlingResult(
             number = crawlingRequest.goodsNo,
@@ -112,9 +113,9 @@ class MusinsaProductCrawlingService(
 
     data class FilterOption(
         val optionCount: Int,
-        val firstOptions: List<Option>,
-        val secondOptions: List<Option>,
-        val thirdOptions: List<Option>,
+        val firstOptions: List<Option> = emptyList(),
+        val secondOptions: List<Option> = emptyList(),
+        val thirdOptions: List<Option> = emptyList(),
         val filterText: String
     )
 
