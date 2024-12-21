@@ -134,7 +134,7 @@ jobs:
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text": "배포가 성공적으로 완료되었습니다! :white_check_mark:"}' \
+          --data '{"text": "api server 배포가 성공적으로 완료되었습니다! :white_check_mark:"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack - Failure
