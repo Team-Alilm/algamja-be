@@ -84,7 +84,7 @@ class MusinsaProductCrawlingService(
     }
 
     private fun getOptionUrl(goodsNo: Long): String {
-        return "https://goods-detail.musinsa.com/api2/goods/${goodsNo}/options?goodsSaleType=SALE"
+        return "https://goods.musinsa.com/api2/review/v1/view/filter?goodsNo=${goodsNo}"
     }
 
     private fun getThumbnailUrl(thumbnailUrl: String): String {
