@@ -21,8 +21,6 @@ class ProductCrawlingController(
     private val productCrawlingUseCaseResolver: ProductCrawlingUseCaseResolver,
 ) {
 
-    private val log = LoggerFactory.getLogger(javaClass)
-
     @GetMapping("/crawling")
     fun crawling(
         @ParameterObject
@@ -62,6 +60,7 @@ class ProductCrawlingController(
         val name: String,
         val brand: String,
         val thumbnailUrl: String,
+        val imageUrlList: List<String> = emptyList(),
         val store: Store,
         val price: Int,
         val firstCategory: String,
@@ -78,6 +77,7 @@ class ProductCrawlingController(
                     name = productCrawlingResult.name,
                     brand = productCrawlingResult.brand,
                     thumbnailUrl = productCrawlingResult.thumbnailUrl,
+                    imageUrlList = productCrawlingResult.imageUrlList,
                     store = productCrawlingResult.store,
                     price = productCrawlingResult.price,
                     firstCategory = productCrawlingResult.firstCategory,

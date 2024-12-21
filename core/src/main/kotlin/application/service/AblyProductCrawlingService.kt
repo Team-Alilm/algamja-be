@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.domain.product.Store
-import org.team_alilm.global.util.StringConstant
 
 @Service
 class AblyProductCrawlingService(
@@ -19,7 +18,7 @@ class AblyProductCrawlingService(
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val productNumber = getProductNumber(command.url)
         val headers = org.springframework.http.HttpHeaders().apply {
-            add("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get()) // Authorization 헤더
+            add("X-Anonymous-Token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiIzMTk0MzE3NjYiLCJpYXQiOjE3MzE4ODUwNjl9.iMCkiNw50N05BAatKxnvMYWAg_B7gBUiBL6FZe1Og9Y") // Authorization 헤더
         }
         val entity = HttpEntity<String>(headers)
 
@@ -81,14 +80,12 @@ class AblyProductCrawlingService(
             name = response.get("goods")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             brand = response.get("goods")?.get("market")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             thumbnailUrl = response.get("goods")?.get("first_page_rendering")?.get("cover_image")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            imageUrlList = emptyList(),
             firstCategory = response.get("goods")?.get("category")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             secondCategory = null,
             price = response.get("goods")?.get("first_page_rendering")?.get("original_price")?.asInt() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             store = Store.A_BLY,
-            firstOptionName = firstOptions?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
-            secondOptionName = secondOptions?.get("name")?.asText() ?: "",
-            thirdOptionName = thirdOptions?.get("name")?.asText() ?: "",
-            firstOptions = firstOptions.get("option_components")?.map { it.get("name")?.asText() ?: "" } ?: emptyList(),
+            firstOptions = firstOptions?.get("option_components")?.map { it.get("name")?.asText() ?: "" } ?: emptyList(),
             secondOptions = secondOptions?.get("option_components")?.map { it.get("name")?.asText() ?: "" } ?: emptyList(),
             thirdOptions = thirdOptions?.get("option_components")?.map { it.get("name")?.asText() ?: "" } ?: emptyList(),
         )
