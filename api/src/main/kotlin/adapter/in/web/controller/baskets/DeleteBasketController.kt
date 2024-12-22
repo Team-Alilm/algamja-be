@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.`in`.web.controller.baskets
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
@@ -36,7 +37,7 @@ class DeleteBasketController(
 
     data class DeleteBasketRequest(
         @field:NotNull(message = "장바구니 ID는 필수입니다.")
-        val basketId: Long
+        @JsonProperty("basketId") val basketId: Long
     )
 
 }
