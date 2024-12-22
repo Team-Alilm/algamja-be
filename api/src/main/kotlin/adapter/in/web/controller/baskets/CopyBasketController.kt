@@ -1,8 +1,10 @@
 package org.team_alilm.adapter.`in`.web.controller.baskets
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Positive
 import org.springframework.http.ResponseEntity
@@ -33,12 +35,7 @@ class CopyBasketController(
     fun copyBasket(
         @RequestBody request: CopyBasketRequest,
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
-        bindingResult: BindingResult
     ) : ResponseEntity<Unit> {
-        if (bindingResult.hasErrors()) {
-            throw RequestValidateException(bindingResult)
-        }
-
         val command = CopyBasketUseCase.CopyBasketCommand(
             productId = request.productId,
             member = customMemberDetails.member
@@ -51,15 +48,7 @@ class CopyBasketController(
 
     @Schema(description = "장바구니 복사 요청")
     data class CopyBasketRequest(
-        @field:NotNull(message = "상품 ID는 필수입니다.")
-        @field:Positive(message = "상품 ID는 양수여야 합니다.")
-        @field:Schema(
-            example = "1",
-            description = "상품 ID",
-            format = "int64",
-            required = true,
-            type = "integer"
-        )
+        @JsonProperty("productId") // JSON 필드 이름 명시
         val productId: Long
     )
 }
