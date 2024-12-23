@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
 import org.team_alilm.adapter.out.persistence.mapper.FcmTokenMapper
