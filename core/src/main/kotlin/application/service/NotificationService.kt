@@ -22,11 +22,13 @@ class NotificationService(
     private val loadBasketAndMemberPort: LoadBasketAndMemberPort,
     private val addAlilmPort: AddAlilmPort
 ) {
+
     private val log = LoggerFactory.getLogger(NotificationService::class.java)
 
     fun sendNotifications(product: Product) {
         val basketAndMemberList = loadBasketAndMemberPort.loadBasketAndMember(product)
-
+        log.info("product : ${product.id!!.value}")
+        log.info("basketAndMemberList : $basketAndMemberList")
         basketAndMemberList.forEach() { (member) ->
             log.info("member : $member")
         }
