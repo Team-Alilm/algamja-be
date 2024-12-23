@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.`in`.web.controller.product
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,6 +22,12 @@ class ProductRelatedController(
     private val productRelatedUseCase: ProductRelatedUseCase
 ) {
 
+    @Operation(
+        summary = "관련 상품 조회 API",
+        description = """
+            
+    """
+    )
     @GetMapping("/related/{productId}")
     fun productRecent(@PathVariable productId: Long) : ResponseEntity<ProductRelatedResponse> {
         val command = ProductRelatedCommand(productId = productId)
