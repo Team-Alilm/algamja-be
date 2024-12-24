@@ -27,19 +27,21 @@ class NotificationService(
 
     fun sendNotifications(product: Product) {
         val basketAndMemberList = loadBasketAndMemberPort.loadBasketAndMember(product)
-        log.info("product : ${product.id!!.value}")
-        log.info("basketAndMemberList : $basketAndMemberList")
+
         basketAndMemberList.forEach() { (member) ->
             log.info("member : $member")
         }
 
         basketAndMemberList.forEach { (basket, member, fcmToken) ->
-            basket.sendAlilm()
-            addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
-
-            sendSlackGateway.sendMessage(product)
-            sendMailGateway.sendMail(member.email, member.nickname, product)
             fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
+        }
+
+        basketAndMemberList.isNotEmpty().let {
+            val (basket, member) = basketAndMemberList.first()
+            sendSlackGateway.sendMessage(product)
+            addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
+            sendMailGateway.sendMail(member.email, member.nickname, product)
+            basket.sendAlilm()
             addAlilmPort.addAlilm(Alilm.from(basket = basket) )
         }
     }
