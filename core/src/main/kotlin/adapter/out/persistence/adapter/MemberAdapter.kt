@@ -26,6 +26,10 @@ class MemberAdapter (
         )
     }
 
+    override fun loadMemberCount(): Long {
+        return springDataMemberRepository.count()
+    }
+
     override fun addMember(member: Member): Member {
         return memberMapper.mapToDomainEntity(
             springDataMemberRepository.save(

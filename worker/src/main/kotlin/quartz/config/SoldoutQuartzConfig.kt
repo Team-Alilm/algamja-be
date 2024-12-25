@@ -8,9 +8,9 @@ import org.team_alilm.quartz.scheduler.SoldoutScheduler
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration
-class QuartzConfig(
+class SoldoutQuartzConfig(
     val scheduler: Scheduler,
-    @Value("\${spring.quartz.job-interval-minutes}") private val intervalMinutes: Int
+    @Value("\${spring.quartz.soldout-job-interval-minutes}") private val intervalMinutes: Int
 ) {
     @PostConstruct
     private fun jobProgress() {

@@ -20,8 +20,8 @@ class AlilmRegistrationService(
     private val loadBasketPort: org.team_alilm.application.port.out.LoadBasketPort,
     private val addBasketPort: org.team_alilm.application.port.out.AddBasketPort,
     private val slackGateway: SlackGateway,
-    private val loadProductImagePort: org.team_alilm.application.port.out.LoadProductImagePort,
-    private val addAllProductImagePort: org.team_alilm.application.port.out.AddAllProductImagePort
+    private val addAllProductImagePort: org.team_alilm.application.port.out.AddAllProductImagePort,
+    private val addProductImagePort: org.team_alilm.application.port.out.AddProductImagePort
 ) : org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase {
 
     @Transactional
@@ -95,11 +95,14 @@ class AlilmRegistrationService(
                 )
             )
 
-            loadProductImagePort.existsByProductImage(product.number, product.store)
-                .takeIf { it.not() } // 이미지가 존재하지 않으면
-                ?.let {
-                    saveProductImageList(product, command.imageUrlList) // 이미지를 저장합니다
-                }
+            addProductImagePort.add(
+                command.imageUrlList.map { ProductImage(
+                    id = null,
+                    imageUrl = it,
+                    productNumber = product.number,
+                    productStore = product.store
+                ) }
+            )
 
             return product
         }
