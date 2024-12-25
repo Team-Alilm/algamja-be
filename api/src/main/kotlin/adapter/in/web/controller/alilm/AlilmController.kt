@@ -1,4 +1,4 @@
-package org.team_alilm.adapter.`in`.web.controller
+package org.team_alilm.adapter.`in`.web.controller.alilm
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
