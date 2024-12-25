@@ -4,5 +4,5 @@ import org.team_alilm.domain.product.Product
 
 interface LoadAlilmPort {
 
-    fun loadTop7Alilm() : List<Product>
+    fun loadAlilm(count: Int) : List<Product>
 }

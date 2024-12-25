@@ -3,14 +3,15 @@ package org.team_alilm.adapter.`in`.web.controller.alilm
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.application.port.`in`.use_case.AlilmRestockRanking7UseCase
+import org.team_alilm.application.port.`in`.use_case.AlilmRestockRankingUseCase
 
 @RestController
 @RequestMapping("/api/v1/alilms/restock/rangin7")
-class AlilmRestockRanking7Controller(
-    private val alilmRestockRanking7UseCase: AlilmRestockRanking7UseCase
+class AlilmRestockRankingController(
+    private val alilmRestockRankingUseCase: AlilmRestockRankingUseCase
 ) {
 
     @Operation(
@@ -19,8 +20,13 @@ class AlilmRestockRanking7Controller(
             최근 재 입고 상품 목록 7개를 반환합니다.
     """)
     @GetMapping
-    fun alilmRestockRangin7() : ResponseEntity<AlilmRestockRanking7Response> {
-        val result = alilmRestockRanking7UseCase.alilmRestockRangin7()
+    fun alilmRestockRangin(
+        @RequestBody request: AlilmRestockRankingRequest
+    ) : ResponseEntity<AlilmRestockRanking7Response> {
+        val command = AlilmRestockRankingUseCase.AlilmRestockRankingCommand(
+            count = request.count
+        )
+        val result = alilmRestockRankingUseCase.alilmRestockRangin(command)
         val alilmRestockRanking7Products = result.map {
             AlilmRestockRanking7Product.from(
                 productId = it.id!!.value, productThumbnailUrl = it.thumbnailUrl
@@ -29,6 +35,10 @@ class AlilmRestockRanking7Controller(
 
         return ResponseEntity.ok(AlilmRestockRanking7Response(alilmRestockRanking7Products))
     }
+
+    data class AlilmRestockRankingRequest(
+        val count: Int
+    )
 
     data class AlilmRestockRanking7Response(
         val productList: List<AlilmRestockRanking7Product>

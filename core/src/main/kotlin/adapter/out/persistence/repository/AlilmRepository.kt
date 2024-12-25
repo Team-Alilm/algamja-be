@@ -24,9 +24,9 @@ interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
         join AlilmJpaEntity a
         on a.productId = p.id
         order by a.createdDate desc
-        limit 7
+        limit :count
     """)
-    fun findByRestockRanking7(): List<ProductJpaEntity>
+    fun findByRestockRanking(count: Int): List<ProductJpaEntity>
 }
 
 
