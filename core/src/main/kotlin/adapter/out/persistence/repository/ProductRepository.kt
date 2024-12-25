@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
+import org.team_alilm.domain.product.Product
 import org.team_alilm.domain.product.Store
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
@@ -94,5 +95,18 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         LIMIT 10
     """)
     fun findRecentProducts (): List<ProductJpaEntity>
+
+    @Query("""
+        SELECT 
+            p
+        FROM 
+            ProductJpaEntity p 
+        WHERE p.isDelete = false
+        GROUP BY 
+            p.firstCategory
+        ORDER BY 
+            p.firstCategory DESC
+    """)
+    fun findProductCategories(): List<ProductJpaEntity>
 }
 
