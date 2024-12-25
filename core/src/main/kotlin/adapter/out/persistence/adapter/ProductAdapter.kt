@@ -90,6 +90,10 @@ class ProductAdapter(
         TODO("Not yet implemented")
     }
 
+    override fun loadProductCategories(): List<String> {
+        return productRepository.findProductCategories().map { it.firstCategory }
+    }
+
     override fun loadCrawlingProducts(): List<Product> {
         return productRepository.findCrawlingProducts().map {
             productMapper.mapToDomainEntity(it)
