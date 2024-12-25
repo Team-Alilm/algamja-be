@@ -1,7 +1,6 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
 import org.slf4j.LoggerFactory
-import org.springframework.boot.logging.LoggerGroup
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.AlilmMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
@@ -26,8 +25,6 @@ class AlilmAdapter(
     LoadAlilmPort
 {
 
-        val log = LoggerFactory.getLogger(AlilmAdapter::class.java)
-
     override fun addAlilm(alilm: Alilm) {
         springDataAlilmRepository.save(alilmMapper.mapToJpaEntity(alilm))
     }
@@ -42,7 +39,8 @@ class AlilmAdapter(
         )
     }
 
-    override fun loadTop7Alilm(): List<Product> {
-        return alilmRepository.findByRestockRanking7().map { productMapper.mapToDomainEntity(it) }
+    override fun loadAlilm(count: Int): List<Product> {
+        return alilmRepository.findByRestockRanking(count = count).map { productMapper.mapToDomainEntity(it) }
     }
+
 }
