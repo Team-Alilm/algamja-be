@@ -37,7 +37,12 @@ class FcmSendGateway(
             .setToken(fcmToken.token)
             .build()
 
-        firebaseMessaging.send(message)
+        try {
+            firebaseMessaging.send(message)
+        } catch (e: Exception) {
+            log.error("Failed to send message: $message", e)
+            return
+        }
 
         log.info("Successfully sent message: $message")
     }
