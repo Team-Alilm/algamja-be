@@ -39,7 +39,7 @@ class CustomSuccessHandler(
             이메일 : ${member.email}
             """.trimIndent())
 
-        val jwt = jwtUtil.createJwt(member.id!!, 1000L * 60 * 60 * 24 * 30)
+        val jwt = jwtUtil.createJwt(member.id!!, 1000L * 60 * 60 * 24 * 30 * 1000)
         val redirectUri = UriComponentsBuilder.fromHttpUrl(baseUrl)
             .path("/oauth/kakao")
             .queryParam("Authorization", jwt)

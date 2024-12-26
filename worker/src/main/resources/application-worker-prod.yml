@@ -1,4 +1,5 @@
 spring:
   quartz:
     job-store-type: jdbc
-    job-interval-minutes: 30
+    soldout-job-interval-minutes: 30
+    member-count-job-interval-minutes: 1440

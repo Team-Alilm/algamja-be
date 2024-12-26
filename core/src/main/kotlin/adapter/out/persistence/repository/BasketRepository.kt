@@ -62,6 +62,8 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
             AND p.isDelete = false
             AND b.isAlilm = false
             AND b.productId = :productId
+            AND f.isDelete = false
+            AND m.isDelete = false
         """
     )
     fun findBasketAndMemberByProductNumberAndMemberId(

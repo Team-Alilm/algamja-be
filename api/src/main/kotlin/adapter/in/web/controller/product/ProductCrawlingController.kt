@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.`in`.web.controller.product
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
@@ -21,6 +22,12 @@ class ProductCrawlingController(
     private val productCrawlingUseCaseResolver: ProductCrawlingUseCaseResolver,
 ) {
 
+    @Operation(
+        summary = "상품 크롤링 조회 API",
+        description = """
+            상품 크롤링을 통해 상품 정보를 조회할 수 있는 API를 제공합니다.
+    """
+    )
     @GetMapping("/crawling")
     fun crawling(
         @ParameterObject
