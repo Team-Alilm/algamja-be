@@ -40,7 +40,7 @@ jobs:
   deploy-worker:
     runs-on: ubuntu-latest
     needs: detect-worker
-    if: ${{ needs.detect-worker.outputs.worker_changed == 'true' || needs.detect-core.outputs.core_changed == 'true' }}  # outputs 사용
+    if: ${{ needs.detect-worker.outputs.worker_changed == 'true' || needs.detect-worker.outputs.core_changed == 'true' }}  # outputs 사용
 
     name: deploy worker server
     env:
