@@ -28,10 +28,7 @@ jobs:
             echo "No changes in WORKER server."
             echo "worker_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
-
-      - name: Detect changes in core module
-        id: detect-core
-        run: |
+          
           if git diff --name-only HEAD^ HEAD | grep -q 'core/'; then
             echo "Core module has changed."
             echo "core_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
