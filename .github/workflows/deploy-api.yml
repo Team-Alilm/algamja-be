@@ -29,10 +29,7 @@ jobs:
             echo "No changes in API server."
             echo "api_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
-
-      - name: Detect changes in core module
-        id: detect-api
-        run: |
+          
           if git diff --name-only HEAD^ HEAD | grep -q 'core/'; then
             echo "Core module has changed."
             echo "core_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
@@ -41,10 +38,6 @@ jobs:
             echo "core_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
           
-
-      - name: Detect changes in security module
-        id: detect-api
-        run: |
           if git diff --name-only HEAD^ HEAD | grep -q 'security/'; then
             echo "Security module has changed."
             echo "security_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
