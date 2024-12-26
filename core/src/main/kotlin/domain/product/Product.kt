@@ -1,6 +1,6 @@
 package org.team_alilm.domain.product
 
-import org.team_alilm.global.util.StringConstant
+import org.team_alilm.global.util.StringContextHolder
 
 class Product (
     val id: ProductId?,
@@ -57,7 +57,7 @@ class Product (
                 상품 옵션1: ${this.firstOption}
                 상품 옵션2: ${this.secondOption}
                 상품 옵션3: ${this.thirdOption}
-                상품 구매링크 : ${ StringConstant.MUSINSA_PRODUCT_HTML_URL.get().format(this.number)}
+                상품 구매링크 : ${ StringContextHolder.MUSINSA_PRODUCT_HTML_URL.get().format(this.number)}
                 바구니에서 삭제되었습니다.
                 "
         }

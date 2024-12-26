@@ -10,7 +10,7 @@ import org.team_alilm.domain.product.Product
 import org.team_alilm.domain.product.ProductId
 import org.team_alilm.domain.product.ProductImage
 import org.team_alilm.global.error.BasketAlreadyExistsException
-import org.team_alilm.global.util.StringConstant
+import org.team_alilm.global.util.StringContextHolder
 
 @Service
 @Transactional(readOnly = true)
@@ -37,7 +37,7 @@ class AlilmRegistrationService(
                 |알림 등록 완료
                 |회원: ${command.member.nickname}
                 |상품명: ${product.name}
-                |링크: ${StringConstant.MUSINSA_PRODUCT_HTML_URL.get().format(product.number)}
+                |링크: ${StringContextHolder.MUSINSA_PRODUCT_HTML_URL.get().format(product.number)}
             """.trimIndent()
         )
     }
