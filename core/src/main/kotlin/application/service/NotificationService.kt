@@ -22,6 +22,7 @@ class NotificationService(
     private val loadBasketAndMemberPort: LoadBasketAndMemberPort,
     private val addAlilmPort: AddAlilmPort
 ) {
+
     private val log = LoggerFactory.getLogger(NotificationService::class.java)
 
     fun sendNotifications(product: Product) {
@@ -32,12 +33,15 @@ class NotificationService(
         }
 
         basketAndMemberList.forEach { (basket, member, fcmToken) ->
-            basket.sendAlilm()
-            addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
-
-            sendSlackGateway.sendMessage(product)
-            sendMailGateway.sendMail(member.email, member.nickname, product)
             fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
+        }
+
+        basketAndMemberList.isNotEmpty().let {
+            val (basket, member) = basketAndMemberList.first()
+            sendSlackGateway.sendMessage(product)
+            addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
+            sendMailGateway.sendMail(member.email, member.nickname, product)
+            basket.sendAlilm()
             addAlilmPort.addAlilm(Alilm.from(basket = basket) )
         }
     }

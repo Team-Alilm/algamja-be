@@ -10,34 +10,34 @@ import org.quartz.JobKey
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.team_alilm.quartz.job.SoldoutCheckJob
+import org.team_alilm.quartz.job.MemberCountJob
 import org.team_alilm.quartz.listener.SoldoutQuartzListener
 
 @Component
-class SoldoutScheduler(
+class MemberCountScheduler(
     private val scheduler: Scheduler,
-    @Value("\${spring.quartz.soldout-job-interval-minutes}")
+    @Value("\${spring.quartz.member-count-job-interval-minutes}")
     private val intervalMinutes: Int
 ) {
     private val log = LoggerFactory.getLogger(SoldoutScheduler::class.java)
 
     fun startTracing() {
         try {
-            val jobKey = JobKey.jobKey("soldoutCheckJob", "soldoutTracer")
+            val jobKey = JobKey.jobKey("memberCountJob", "memberCountTracer")
             // Check if the job already exists and delete if necessary
             if (scheduler.checkExists(jobKey)) {
                 log.info("Deleting existing job: $jobKey")
                 scheduler.deleteJob(jobKey)
             }
 
-            val jobDetail: JobDetail = JobBuilder.newJob(SoldoutCheckJob::class.java)
-                .withIdentity("soldoutCheckJob", "soldoutTracer")
+            val jobDetail: JobDetail = JobBuilder.newJob(MemberCountJob::class.java)
+                .withIdentity("memberCountJob", "memberCountTracer")
                 .storeDurably()
                 .build()
 
             val trigger: Trigger = TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
-                .withIdentity("soldoutCheckTrigger", "soldoutTracer")
+                .withIdentity("memberCountTracerName", "memberCountTracer")
                 .withSchedule(
                     SimpleScheduleBuilder.simpleSchedule()
                         .withIntervalInMinutes(intervalMinutes)
