@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       worker_changed: ${{ steps.detect-worker.outputs.worker_changed }}  # outputs로 설정
-      core_changed: ${{ steps.detect-core.outputs.core_changed }}  # API 서버와 공유하는 core 모듈 변경 여부
+      core_changed: ${{ steps.detect-worker.outputs.core_changed }}  # API 서버와 공유하는 core 모듈 변경 여부
 
     steps:
       - name: Checkout
