@@ -2,8 +2,10 @@ package org.team_alilm.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.domain.product.Store
@@ -11,22 +13,26 @@ import org.team_alilm.global.util.StringConstant
 
 @Service
 class AblyProductCrawlingService(
-    private val restTemplate: RestTemplate,
+    private val restClient: RestClient,
 ) : ProductCrawlingUseCase {
 
     private val log = org.slf4j.LoggerFactory.getLogger(javaClass)
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val productNumber = getProductNumber(command.url)
-        val headers = org.springframework.http.HttpHeaders().apply {
+        val headers = HttpHeaders().apply {
             add("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get()) // Authorization 헤더
         }
         val entity = HttpEntity<String>(headers)
 
-        val response = restTemplate.exchange(
-            StringConstant.ABLY_PRODUCT_API_URL.get().format(productNumber), // URL
-            HttpMethod.GET,     // HTTP 메서드
-            entity,             // HttpEntity (헤더 포함)
+        val response = restClient.get()
+            .uri(StringConstant.ABLY_PRODUCT_API_URL.get().format(productNumber))
+            .headers(
+                HttpHeaders().apply {
+                    add("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get())
+                }
+            )
+            .retrieve()
             JsonNode::class.java  // 응답 타입
         ).body
 
