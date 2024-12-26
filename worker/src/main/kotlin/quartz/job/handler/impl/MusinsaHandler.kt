@@ -7,7 +7,7 @@ import org.springframework.web.client.*
 import org.team_alilm.application.service.NotificationService
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.domain.product.Product
-import org.team_alilm.global.util.StringConstant
+import org.team_alilm.global.util.StringContextHolder
 import org.team_alilm.quartz.data.SoldoutCheckResponse
 import org.team_alilm.quartz.job.SoldoutCheckJob
 import org.team_alilm.quartz.job.handler.PlatformHandler
@@ -31,7 +31,7 @@ class MusinsaHandler(
     }
 
     private fun isSoldOut(product: Product): Boolean {
-        val productHtmlUrl = StringConstant.MUSINSA_PRODUCT_HTML_URL.get().format(product.number)
+        val productHtmlUrl = StringContextHolder.MUSINSA_PRODUCT_HTML_URL.get().format(product.number)
         val crawlingResponse = crawlProductHtml(productHtmlUrl)
         val jsonData = extractJsonFromHtml(crawlingResponse)
 
@@ -65,7 +65,7 @@ class MusinsaHandler(
     }
 
     private fun checkSoldOutViaApi(product: Product): Boolean {
-        val apiUrl = StringConstant.MUSINSA_OPTION_API_URL.get().format(product.number)
+        val apiUrl = StringContextHolder.MUSINSA_OPTION_API_URL.get().format(product.number)
         return try {
             val response = restTemplate.getForEntity(apiUrl, SoldoutCheckResponse::class.java).body
             val optionItem = response?.data?.optionItems?.firstOrNull {

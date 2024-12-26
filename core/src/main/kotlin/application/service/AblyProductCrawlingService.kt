@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.domain.product.Store
-import org.team_alilm.global.util.StringConstant
+import org.team_alilm.global.util.StringContextHolder
 
 @Service
 class AblyProductCrawlingService(
@@ -19,19 +19,19 @@ class AblyProductCrawlingService(
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val productNumber = getProductNumber(command.url)
         val headers = org.springframework.http.HttpHeaders().apply {
-            add("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get()) // Authorization 헤더
+            add("X-Anonymous-Token", StringContextHolder.ABLY_ANONYMOUS_TOKEN.get()) // Authorization 헤더
         }
         val entity = HttpEntity<String>(headers)
 
         val response = restTemplate.exchange(
-            StringConstant.ABLY_PRODUCT_API_URL.get().format(productNumber), // URL
+            StringContextHolder.ABLY_PRODUCT_API_URL.get().format(productNumber), // URL
             HttpMethod.GET,     // HTTP 메서드
             entity,             // HttpEntity (헤더 포함)
             JsonNode::class.java  // 응답 타입
         ).body
 
         val firstOptions = restTemplate.exchange(
-            StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, 1),
+            StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, 1),
             HttpMethod.GET,
             entity,
             JsonNode::class.java
@@ -40,7 +40,7 @@ class AblyProductCrawlingService(
         val secondOptions = try {
             if (firstOptions?.get("option_components")?.first()?.isEmpty?.not() == true) {
                 restTemplate.exchange(
-                    StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, 2) + "&selected_option_sno=${
+                    StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, 2) + "&selected_option_sno=${
                         firstOptions.get("option_components")
                             ?.first()?.get("goods_option_sno")
                     }",
@@ -59,7 +59,7 @@ class AblyProductCrawlingService(
         val thirdOptions = try {
             if (secondOptions?.get("option_components")?.first()?.isEmpty?.not() == true) {
                 restTemplate.exchange(
-                    StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, 3) + "&selected_option_sno=${
+                    StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, 3) + "&selected_option_sno=${
                         firstOptions?.get("option_components")
                             ?.first()?.get("goods_option_sno")
                     }",
@@ -78,7 +78,7 @@ class AblyProductCrawlingService(
             null
         }
 
-        val relatedGoodsApiRequestUrl = StringConstant.ABLY_PRODUCT_RELATED_GOODS_API_URL.get().format(productNumber)
+        val relatedGoodsApiRequestUrl = StringContextHolder.ABLY_PRODUCT_RELATED_GOODS_API_URL.get().format(productNumber)
         val relatedGoodsResponse = restTemplate.exchange(
             relatedGoodsApiRequestUrl,
             HttpMethod.GET,
