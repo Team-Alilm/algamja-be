@@ -1,10 +1,6 @@
 package org.team_alilm.quartz.job.handler.impl
 
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.service.NotificationService
@@ -27,28 +23,6 @@ class ABlyHandler(
     }
 
     private fun isSoldOut(product: Product): Boolean {
-        val headers = HttpHeaders().apply {
-            set("x-anonymous-token", StringContextHolder.ABLY_ANONYMOUS_TOKEN.get())
-        }
-        val entity = HttpEntity<Any>(headers)
-
-        var selectedOptionSno: Long? = null
-
-        for (depth in 1..3) {
-            val uri = buildApiUri(product.number, depth, selectedOptionSno)
-            val response = fetchOptionData(uri, entity) ?: return true
-
-            val matchingOption = response.option_components.firstOrNull {
-                it.name == product.getOptionNameByDepth(depth)
-            } ?: return true // 옵션이 없으면 품절로 간주
-
-            if (matchingOption.is_final_depth) {
-                return matchingOption.goods_option?.is_soldout ?: true
-            }
-
-            selectedOptionSno = matchingOption.goods_option_sno
-        }
-
         return false
     }
 
@@ -57,11 +31,11 @@ class ABlyHandler(
         return if (selectedOptionSno != null) "$baseUrl&selected_option_sno=$selectedOptionSno" else baseUrl
     }
 
-    private fun fetchOptionData(uri: String, entity: HttpEntity<Any>): Option? {
+    private fun fetchOptionData(uri: String): Option? {
         return try {
             restClient.get()
                 .uri(uri)
-                .header("x-anonymous-token", StringContextHolder.ABLY_ANONYMOUS_TOKEN.get())
+                .header("x-anonymous-token", )
                 .retrieve()
                 .body(Option::class.java)
 
