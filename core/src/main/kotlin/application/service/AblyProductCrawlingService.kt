@@ -27,9 +27,10 @@ class AblyProductCrawlingService(
             ?.get("token")
             ?.asText() ?: throw IllegalArgumentException("익명 토큰을 가져올 수 없습니다.")
 
+        log.info("productNumber: $productNumber, aNonymousToken: $aNonymousToken")
+
         // https://m.a-bly.com/goods/34883322
         val productDetails = getProductDetails(productNumber = productNumber, aNonymousToken = aNonymousToken)
-        log.info("productDetails: $productDetails")
 
         val firstOptions = getProductOptions(
             productNumber = productNumber,
@@ -71,21 +72,12 @@ class AblyProductCrawlingService(
 
     private fun getProductDetails(productNumber: Long, aNonymousToken: String): JsonNode? {
         try {
-            restClient.get()
+            return restClient.get()
                 .uri(StringContextHolder.ABLY_PRODUCT_API_URL.get().format(productNumber))
                 .accept(MediaType.APPLICATION_JSON)
-                .header("X-Anonymous-Token", aNonymousToken)
-                .exchange{
-                    request, response ->
-                    log.info("Request uri: ${request.uri}")
-                    log.info("Request method: ${request.method}")
-                    log.info("Request headers: ${request.headers}")
-                    log.info("Response body: ${response.body}")
-                    log.info("Response headers: ${response.headers}")
-                    log.info("Response status: ${response.statusCode}")
-                }
-
-            return null
+                .header("X-Anonymous-Token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiIzNDM0MTc5MDAiLCJpYXQiOjE3MzUyODYxMTh9.ox6qVAtKpbRuF6Yaqvn_kjDe0RTtV-fo9jJt_pLRFBA")
+                .retrieve()
+                .body(JsonNode::class.java)
         } catch (e: Exception) {
             log.error("Error while fetching product details: ${e.message}")
             return null
@@ -101,7 +93,7 @@ class AblyProductCrawlingService(
                     URI(uri + selectedOptionParam)
                 }
                 .accept(MediaType.APPLICATION_JSON)
-                .header("X-Anonymous-Token", aNonymousToken)
+                .header("X-Anonymous-Token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiIzNDM0MTc5MDAiLCJpYXQiOjE3MzUyODYxMTh9.ox6qVAtKpbRuF6Yaqvn_kjDe0RTtV-fo9jJt_pLRFBA")
                 .retrieve()
                 .body(JsonNode::class.java)
         } catch (e: Exception) {
