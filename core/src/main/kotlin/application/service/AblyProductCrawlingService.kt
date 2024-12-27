@@ -98,6 +98,7 @@ class AblyProductCrawlingService(
                 .header("X-Anonymous-Token", aNonymousToken)
                 .exchange { requset, response ->
                     log.info("request: ${requset.uri}")
+                    log.info("request: ${requset.headers}")
                     log.info("response: ${response.headers}")
                     log.info("response: ${response.statusCode}")
                     log.info("response: ${response.body}")
