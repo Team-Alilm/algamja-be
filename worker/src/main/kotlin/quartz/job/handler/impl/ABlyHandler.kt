@@ -6,7 +6,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestClient
 import org.team_alilm.application.service.NotificationService
 import org.team_alilm.domain.product.Product
 import org.team_alilm.global.util.StringContextHolder
@@ -14,7 +14,7 @@ import org.team_alilm.quartz.job.handler.PlatformHandler
 
 @Component
 class ABlyHandler(
-    private val restTemplate: RestTemplate,
+    private val restClient: RestClient,
     private val notificationService: NotificationService
 ) : PlatformHandler {
 
@@ -35,8 +35,8 @@ class ABlyHandler(
         var selectedOptionSno: Long? = null
 
         for (depth in 1..3) {
-            val url = buildApiUrl(product.number, depth, selectedOptionSno)
-            val response = fetchOptionData(url, entity) ?: return true
+            val uri = buildApiUri(product.number, depth, selectedOptionSno)
+            val response = fetchOptionData(uri, entity) ?: return true
 
             val matchingOption = response.option_components.firstOrNull {
                 it.name == product.getOptionNameByDepth(depth)
@@ -52,23 +52,22 @@ class ABlyHandler(
         return false
     }
 
-    private fun buildApiUrl(productNumber: Long, depth: Int, selectedOptionSno: Long?): String {
+    private fun buildApiUri(productNumber: Long, depth: Int, selectedOptionSno: Long?): String {
         val baseUrl = StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, depth)
         return if (selectedOptionSno != null) "$baseUrl&selected_option_sno=$selectedOptionSno" else baseUrl
     }
 
-    private fun fetchOptionData(url: String, entity: HttpEntity<Any>): Option? {
+    private fun fetchOptionData(uri: String, entity: HttpEntity<Any>): Option? {
         return try {
-            val response: ResponseEntity<Option> = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                Option::class.java
-            )
-            response.body
+            restClient.get()
+                .uri(uri)
+                .header("x-anonymous-token", StringContextHolder.ABLY_ANONYMOUS_TOKEN.get())
+                .retrieve()
+                .body(Option::class.java)
+
         } catch (e: Exception) {
             // 에러 로그 및 슬랙 알림 처리
-            handleApiException(e, url)
+            handleApiException(e, uri)
             null
         }
     }

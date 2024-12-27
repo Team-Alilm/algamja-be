@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway.*
@@ -17,7 +17,7 @@ import org.team_alilm.global.util.StringContextHolder
 @Transactional(readOnly = true)
 class MusinsaProductCrawlingService(
     private val crawlingGateway: CrawlingGateway,
-    private val restTemplate: RestTemplate
+    private val restClient: RestClient
 ) : ProductCrawlingUseCase {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -36,17 +36,23 @@ class MusinsaProductCrawlingService(
             throw RuntimeException("Invalid JSON data", e)
         }
 
-        val optionUrl = getOptionUrl(crawlingRequest.goodsNo)
-        log.info("Option URL: $optionUrl")
-        val optionResponse = restTemplate.getForEntity(optionUrl, JsonNode::class.java).body
+        val optionUri = getOptionUri(crawlingRequest.goodsNo)
+        val optionResponse = restClient.get()
+            .uri(optionUri)
+            .retrieve()
+            .body(JsonNode::class.java)
+
         val filterOption = optionResponse?.get("data")?.get("filterOption") ?: throw RuntimeException("Failed to get option data")
 
         val firstOptions = filterOption.get("firstOptions").map { it.get("val").asText() }
         val secondOptions = filterOption.get("secondOptions")?.map { it.get("val").asText() } ?: emptyList()
         val thirdOptions = filterOption.get("thirdOptions")?.map { it.get("val").asText() } ?: emptyList()
 
-        val imageUrlListRequsetUrl = StringContextHolder.MUSINSA_PRODUCT_IMAGES_URL.get().format(crawlingRequest.goodsNo)
-        val imageUrlListResponse = restTemplate.getForEntity(imageUrlListRequsetUrl, JsonNode::class.java).body
+        val imageUrlListRequsetUri = StringContextHolder.MUSINSA_PRODUCT_IMAGES_URL.get().format(crawlingRequest.goodsNo)
+        val imageUrlListResponse = restClient.get()
+            .uri(imageUrlListRequsetUri)
+            .retrieve()
+            .body(JsonNode::class.java)
 
         return ProductCrawlingUseCase.CrawlingResult(
             number = crawlingRequest.goodsNo,
@@ -84,7 +90,7 @@ class MusinsaProductCrawlingService(
         return jsonString
     }
 
-    private fun getOptionUrl(goodsNo: Long): String {
+    private fun getOptionUri(goodsNo: Long): String {
         return "https://goods.musinsa.com/api2/review/v1/view/filter?goodsNo=${goodsNo}"
     }
 
