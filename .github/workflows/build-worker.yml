@@ -1,4 +1,4 @@
-name: Detect Changes and Deploy WORKER
+name: Detect Changes and Build WORKER
 
 on:
   pull_request:
@@ -37,7 +37,7 @@ jobs:
             echo "core_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
 
-  deploy-worker:
+  build-worker:
     runs-on: ubuntu-latest
     needs: detect-worker
     if: ${{ needs.detect-worker.outputs.worker_changed == 'true' || needs.detect-worker.outputs.core_changed == 'true' }}  # outputs 사용
