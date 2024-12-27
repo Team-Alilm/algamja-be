@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       worker_changed: ${{ steps.detect-worker.outputs.worker_changed }}  # outputs로 설정
-      core_changed: ${{ steps.detect-api.outputs.core_changed }}  # API 서버와 공유하는 core 모듈 변경 여부
+      core_changed: ${{ steps.detect-worker.outputs.core_changed }}  # API 서버와 공유하는 core 모듈 변경 여부
 
     steps:
       - name: Checkout
@@ -28,10 +28,7 @@ jobs:
             echo "No changes in WORKER server."
             echo "worker_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
-
-      - name: Detect changes in core module
-        id: detect-core
-        run: |
+          
           if git diff --name-only HEAD^ HEAD | grep -q 'core/'; then
             echo "Core module has changed."
             echo "core_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
