@@ -27,6 +27,8 @@ class AblyProductCrawlingService(
             ?.get("token")
             ?.asText() ?: throw IllegalArgumentException("익명 토큰을 가져올 수 없습니다.")
 
+        log.info("productNumber: $productNumber, aNonymousToken: $aNonymousToken")
+
         // https://m.a-bly.com/goods/34883322
         val productDetails = getProductDetails(productNumber = productNumber, aNonymousToken = aNonymousToken)
 
