@@ -1,11 +1,6 @@
 package org.team_alilm.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.openqa.selenium.JavascriptExecutor
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.chrome.ChromeDriver
-import org.openqa.selenium.chrome.ChromeOptions
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
@@ -23,6 +18,7 @@ class AblyProductCrawlingService(
     private val log = org.slf4j.LoggerFactory.getLogger(javaClass)
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
+        val productNumber = getProductNumber(command.url)
         val aNonymousToken = restClient.get()
             .uri(StringContextHolder.ABLY_ANONYMOUS_TOKEN_API_URL.get())
             .accept(MediaType.APPLICATION_JSON)
@@ -31,24 +27,24 @@ class AblyProductCrawlingService(
             ?.get("token")
             ?.asText() ?: throw IllegalArgumentException("익명 토큰을 가져올 수 없습니다.")
 
-        // https://m.a-bly.com/goods/34883322
-        val productDetails = getProductDetails(url = command.url, productNumber = command.productNumber, aNonymousToken = aNonymousToken)
+        log.info("productNumber: $productNumber, aNonymousToken: $aNonymousToken")
 
-        log.info("productDetails: $productDetails")
+        // https://m.a-bly.com/goods/34883322
+        val productDetails = getProductDetails(productNumber = productNumber, aNonymousToken = aNonymousToken)
 
         val firstOptions = getProductOptions(
-            productNumber = command.productNumber,
+            productNumber = productNumber,
             optionDepth = 1, selectedOptionSno = null,
             aNonymousToken = aNonymousToken
         ) ?: throw NotFoundProductException()
         val secondOptions = getProductOptions(
-            productNumber = command.productNumber,
+            productNumber = productNumber,
             optionDepth = 2,
             selectedOptionSno = firstOptions.get("option_components")?.first()?.get("goods_option_sno")?.asLong(),
             aNonymousToken = aNonymousToken
         )
         val thirdOptions = getProductOptions(
-            productNumber = command.productNumber,
+            productNumber = productNumber,
             optionDepth = 3,
             selectedOptionSno = secondOptions?.get("option_components")?.first()?.get("goods_option_sno")?.asLong(),
             aNonymousToken = aNonymousToken
@@ -74,39 +70,17 @@ class AblyProductCrawlingService(
         return url.split("/").last().toLong()
     }
 
-    private fun getProductDetails(url: String, productNumber: Long, aNonymousToken: String): JsonNode? {
-        val options = ChromeOptions()
-        options.addArguments("--headless")
-        options.addArguments("--no-sandbox")
-        options.addArguments("--disable-dev-shm-usage")
-        options.addArguments("--disable-gpu")
-
-        // ChromeDriver 초기화
-        val driver = ChromeDriver(options)
-        val objectMapper = ObjectMapper()
-
-        return try {
-            driver.get(url)
-
-            val response = (driver as JavascriptExecutor).executeScript("""
-                return fetch("${StringContextHolder.ABLY_PRODUCT_API_URL.get().format(productNumber)}", {
-                    method: "GET",
-                    headers: {
-                        "X-Anonymous-Token": "$aNonymousToken"
-                    }
-                }).then(response => response.json());
-            """.trimIndent()).toString()
-
-            log.info("response: $response")
-
-            response.let {
-                objectMapper.readTree(it)
-            }
+    private fun getProductDetails(productNumber: Long, aNonymousToken: String): JsonNode? {
+        try {
+            return restClient.get()
+                .uri(StringContextHolder.ABLY_PRODUCT_API_URL.get().format(productNumber))
+                .accept(MediaType.APPLICATION_JSON)
+                .header("X-Anonymous-Token", aNonymousToken)
+                .retrieve()
+                .body(JsonNode::class.java)
         } catch (e: Exception) {
-            log.info("Error while fetching product details: ${e.message}")
-            null
-        } finally {
-            driver.quit()
+            log.error("Error while fetching product details: ${e.message}")
+            return null
         }
     }
 

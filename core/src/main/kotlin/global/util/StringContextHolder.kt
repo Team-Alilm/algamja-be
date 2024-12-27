@@ -8,7 +8,7 @@ enum class StringContextHolder(
     MUSINSA_PRODUCT_HTML_URL("https://store.musinsa.com/app/goods/%s"),
     MUSINSA_PRODUCT_IMAGES_URL("https://goods-detail.musinsa.com/api2/goods/%s/recommends/multi?uuid=detail_goods_attributes_allbrand&limit=3"),
 
-    ABLY_PRODUCT_API_URL("https://api.a-bly.com/api/v2/goods/%s"),
+    ABLY_PRODUCT_API_URL("https://api.a-bly.com/api/v2/goods/%s/?channel=0"),
     ABLY_ANONYMOUS_TOKEN_API_URL("https://api.a-bly.com/api/v2/anonymous/token/"),
     ABLY_PRODUCT_OPTIONS_API_URL("https://api.a-bly.com/api/v2/goods/%s/options/?depth=%s"),
     ABLY_PRODUCT_RELATED_GOODS_API_URL("https://api.a-bly.com/api/v2/goods/%s/related_goods"),
