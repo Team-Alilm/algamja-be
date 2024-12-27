@@ -7,7 +7,7 @@ import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotFoundProductException
-import org.team_alilm.global.util.StringConstant
+import org.team_alilm.global.util.StringContextHolder
 import java.net.URI
 
 @Service
@@ -51,9 +51,9 @@ class AblyProductCrawlingService(
     private fun getProductDetails(productNumber: Long): JsonNode? {
         try {
             return restClient.get()
-                .uri(StringConstant.ABLY_PRODUCT_API_URL.get().format(productNumber))
+                .uri(StringContextHolder.ABLY_PRODUCT_API_URL.get().format(productNumber))
                 .accept(MediaType.APPLICATION_JSON)
-                .header("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get())
+                .header("X-Anonymous-Token", StringContextHolder.ABLY_ANONYMOUS_TOKEN.get())
                 .retrieve()
                 .body(JsonNode::class.java)
         } catch (e: Exception) {
@@ -64,16 +64,16 @@ class AblyProductCrawlingService(
 
     private fun getProductOptions(productNumber: Long, optionDepth: Int, selectedOptionSno: Long?): JsonNode? {
         log.info("productNumber: $productNumber, optionDepth: $optionDepth, selectedOptionSno: $selectedOptionSno")
-        log.info("url: ${StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)}")
+        log.info("url: ${StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)}")
         try {
             return restClient.get()
                 .uri {
-                    val uri = StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)
+                    val uri = StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)
                     val selectedOptionParam = selectedOptionSno?.let { "&selected_option_sno=$it" } ?: ""
                     URI(uri + selectedOptionParam)
                 }
                 .accept(MediaType.APPLICATION_JSON)
-                .header("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get())
+                .header("X-Anonymous-Token", StringContextHolder.ABLY_ANONYMOUS_TOKEN.get())
                 .retrieve()
                 .body(JsonNode::class.java)
         } catch (e: Exception) {
