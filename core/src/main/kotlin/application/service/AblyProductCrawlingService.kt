@@ -88,7 +88,7 @@ class AblyProductCrawlingService(
         log.info("productNumber: $productNumber, optionDepth: $optionDepth, selectedOptionSno: $selectedOptionSno")
         log.info("url: ${StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)}")
         try {
-            return restClient.get()
+            restClient.get()
                 .uri {
                     val uri = StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)
                     val selectedOptionParam = selectedOptionSno?.let { "&selected_option_sno=$it" } ?: ""
@@ -96,8 +96,16 @@ class AblyProductCrawlingService(
                 }
                 .accept(MediaType.APPLICATION_JSON)
                 .header("X-Anonymous-Token", aNonymousToken)
-                .retrieve()
-                .body(JsonNode::class.java)
+                .exchange { requset, response ->
+                    log.info("request: ${requset.uri}")
+                    log.info("response: ${response.headers}")
+                    log.info("response: ${response.statusCode}")
+                    log.info("response: ${response.body}")
+                    return@exchange response.body
+                }
+
+
+            return null
         } catch (e: Exception) {
             log.info("Error while fetching product options: ${e.message}")
             return null
