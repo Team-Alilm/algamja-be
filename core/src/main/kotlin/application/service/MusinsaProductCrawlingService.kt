@@ -11,7 +11,7 @@ import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCra
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway.*
 import org.team_alilm.domain.product.Store
-import org.team_alilm.global.util.StringConstant
+import org.team_alilm.global.util.StringContextHolder
 
 @Service
 @Transactional(readOnly = true)
@@ -45,7 +45,7 @@ class MusinsaProductCrawlingService(
         val secondOptions = filterOption.get("secondOptions")?.map { it.get("val").asText() } ?: emptyList()
         val thirdOptions = filterOption.get("thirdOptions")?.map { it.get("val").asText() } ?: emptyList()
 
-        val imageUrlListRequsetUrl = StringConstant.MUSINSA_PRODUCT_IMAGES_URL.get().format(crawlingRequest.goodsNo)
+        val imageUrlListRequsetUrl = StringContextHolder.MUSINSA_PRODUCT_IMAGES_URL.get().format(crawlingRequest.goodsNo)
         val imageUrlListResponse = restTemplate.getForEntity(imageUrlListRequsetUrl, JsonNode::class.java).body
 
         return ProductCrawlingUseCase.CrawlingResult(

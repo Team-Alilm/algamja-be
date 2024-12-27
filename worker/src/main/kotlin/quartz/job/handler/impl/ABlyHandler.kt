@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import org.team_alilm.application.service.NotificationService
 import org.team_alilm.domain.product.Product
-import org.team_alilm.global.util.StringConstant
+import org.team_alilm.global.util.StringContextHolder
 import org.team_alilm.quartz.job.handler.PlatformHandler
 
 @Component
@@ -28,7 +28,7 @@ class ABlyHandler(
 
     private fun isSoldOut(product: Product): Boolean {
         val headers = HttpHeaders().apply {
-            set("x-anonymous-token", StringConstant.ABLY_ANONYMOUS_TOKEN.get())
+            set("x-anonymous-token", StringContextHolder.ABLY_ANONYMOUS_TOKEN.get())
         }
         val entity = HttpEntity<Any>(headers)
 
@@ -53,7 +53,7 @@ class ABlyHandler(
     }
 
     private fun buildApiUrl(productNumber: Long, depth: Int, selectedOptionSno: Long?): String {
-        val baseUrl = StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, depth)
+        val baseUrl = StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, depth)
         return if (selectedOptionSno != null) "$baseUrl&selected_option_sno=$selectedOptionSno" else baseUrl
     }
 

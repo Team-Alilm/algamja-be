@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
 import org.team_alilm.domain.product.Product
-import org.team_alilm.global.util.StringConstant
 
 @Service
 class SlackGateway(

@@ -7,7 +7,9 @@ interface ProductCrawlingUseCase {
     fun crawling(command: ProductCrawlingCommand): CrawlingResult
 
     data class ProductCrawlingCommand(
-        val url: String
+        val url: String,
+        val store: Store,
+        val productNumber: Long
     )
 
     data class CrawlingResult(
