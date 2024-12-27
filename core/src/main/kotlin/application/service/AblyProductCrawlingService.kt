@@ -31,6 +31,7 @@ class AblyProductCrawlingService(
 
         // https://m.a-bly.com/goods/34883322
         val productDetails = getProductDetails(productNumber = productNumber, aNonymousToken = aNonymousToken)
+        log.info("productDetails: $productDetails")
 
         val firstOptions = getProductOptions(
             productNumber = productNumber,
@@ -85,9 +86,7 @@ class AblyProductCrawlingService(
     }
 
     private fun getProductOptions(productNumber: Long, optionDepth: Int, selectedOptionSno: Long?, aNonymousToken: String): JsonNode? {
-        log.info("productNumber: $productNumber, optionDepth: $optionDepth, selectedOptionSno: $selectedOptionSno")
-        log.info("url: ${StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)}")
-        try {
+        return try {
             restClient.get()
                 .uri {
                     val uri = StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)
@@ -96,17 +95,8 @@ class AblyProductCrawlingService(
                 }
                 .accept(MediaType.APPLICATION_JSON)
                 .header("X-Anonymous-Token", aNonymousToken)
-                .exchange { requset, response ->
-                    log.info("request: ${requset.uri}")
-                    log.info("request: ${requset.headers}")
-                    log.info("response: ${response.headers}")
-                    log.info("response: ${response.statusCode}")
-                    log.info("response: ${response.body}")
-                    return@exchange response.body
-                }
-
-
-            return null
+                .retrieve()
+                .body(JsonNode::class.java)
         } catch (e: Exception) {
             log.info("Error while fetching product options: ${e.message}")
             return null
