@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
-import org.slf4j.LoggerFactory
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCaseResolver
 import org.team_alilm.domain.product.Store
+import org.team_alilm.global.error.NotParserProduct
 
 @RestController
 @Tag(name = "상품 크롤링 조회 API", description = "상품 크롤링 조회 API를 제공합니다.")
@@ -34,8 +34,13 @@ class ProductCrawlingController(
         @Valid
         productCrawlingParameter: ProductCrawlingParameter,
     ) : ResponseEntity<ProductCrawlingResponse> {
-        val command = ProductCrawlingUseCase.ProductCrawlingCommand(url = productCrawlingParameter.url)
-        val store = getStore(productCrawlingParameter.url)
+        val store = productCrawlingParameter.getStore()
+        val productNumber = productCrawlingParameter.getProductNumber() ?: throw NotParserProduct()
+        val command = ProductCrawlingUseCase.ProductCrawlingCommand(
+            url = productCrawlingParameter.url,
+            store = store,
+            productNumber = productNumber
+        )
 
         val productCrawlingUseCase = productCrawlingUseCaseResolver.resolve(store)
         val result = productCrawlingUseCase.crawling(command)
@@ -45,14 +50,6 @@ class ProductCrawlingController(
         return ResponseEntity.ok(response)
     }
 
-    private fun getStore(url: String): Store {
-        return when {
-            url.contains("musinsa") -> Store.MUSINSA
-            url.contains("a-bly") -> Store.A_BLY
-            else -> throw IllegalArgumentException("지원하지 않는 URL입니다.")
-        }
-    }
-
     data class ProductCrawlingParameter(
         @field:NotBlank(message = "URL은 비워둘 수 없습니다.")
         @field:Pattern(
@@ -60,7 +57,24 @@ class ProductCrawlingController(
             message = "URL은 반드시 http 또는 https로 시작해야 합니다."
         )
         val url: String
-    )
+    ) {
+
+        fun getStore(): Store {
+            return when {
+                url.contains("29cm") -> Store.CM29
+                url.contains("musinsa") -> Store.MUSINSA
+                url.contains("a-bly") -> Store.A_BLY
+                else -> throw IllegalArgumentException("지원하지 않는 URL입니다.")
+            }
+        }
+
+        fun getProductNumber(): Long? {
+            // 정규식으로 6자리 이상의 숫자 추출
+            val regex = "\\d{6,}".toRegex()
+            return regex.find(url)?.value?.toLongOrNull()
+        }
+
+    }
 
     data class ProductCrawlingResponse(
         val number: Long,
