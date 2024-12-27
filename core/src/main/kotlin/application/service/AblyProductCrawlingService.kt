@@ -1,108 +1,42 @@
 package org.team_alilm.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.domain.product.Store
-import org.team_alilm.global.util.StringContextHolder
+import org.team_alilm.global.error.NotFoundProductException
+import org.team_alilm.global.util.StringConstant
+import java.net.URI
 
 @Service
 class AblyProductCrawlingService(
-    private val restTemplate: RestTemplate,
+    private val restClient: RestClient,
 ) : ProductCrawlingUseCase {
 
     private val log = org.slf4j.LoggerFactory.getLogger(javaClass)
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val productNumber = getProductNumber(command.url)
-        val headers = org.springframework.http.HttpHeaders().apply {
-            add("X-Anonymous-Token", StringContextHolder.ABLY_ANONYMOUS_TOKEN.get()) // Authorization 헤더
-        }
-        val entity = HttpEntity<String>(headers)
 
-        val response = restTemplate.exchange(
-            StringContextHolder.ABLY_PRODUCT_API_URL.get().format(productNumber), // URL
-            HttpMethod.GET,     // HTTP 메서드
-            entity,             // HttpEntity (헤더 포함)
-            JsonNode::class.java  // 응답 타입
-        ).body
+        // https://m.a-bly.com/goods/34883322
+        val productDetails = getProductDetails(productNumber)
+        log.info("productDetails: $productDetails")
 
-        val firstOptions = restTemplate.exchange(
-            StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, 1),
-            HttpMethod.GET,
-            entity,
-            JsonNode::class.java
-        ).body
-
-        val secondOptions = try {
-            if (firstOptions?.get("option_components")?.first()?.isEmpty?.not() == true) {
-                restTemplate.exchange(
-                    StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, 2) + "&selected_option_sno=${
-                        firstOptions.get("option_components")
-                            ?.first()?.get("goods_option_sno")
-                    }",
-                    HttpMethod.GET,
-                    entity,
-                    JsonNode::class.java
-                ).body
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            log.error("Error while fetching second options: ${e.message}")
-            null
-        }
-
-        val thirdOptions = try {
-            if (secondOptions?.get("option_components")?.first()?.isEmpty?.not() == true) {
-                restTemplate.exchange(
-                    StringContextHolder.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, 3) + "&selected_option_sno=${
-                        firstOptions?.get("option_components")
-                            ?.first()?.get("goods_option_sno")
-                    }",
-                    HttpMethod.GET,
-                    entity,
-                    JsonNode::class.java
-                ).body
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            log.error("""
-                |Error while fetching third options: ${e.message}
-                |https://api.a-bly.com/api/v2/goods/$productNumber/options/?depth=1
-            """.trimMargin())
-            null
-        }
-
-        val relatedGoodsApiRequestUrl = StringContextHolder.ABLY_PRODUCT_RELATED_GOODS_API_URL.get().format(productNumber)
-        val relatedGoodsResponse = restTemplate.exchange(
-            relatedGoodsApiRequestUrl,
-            HttpMethod.GET,
-            entity,
-            JsonNode::class.java
-        ).body
-
-        val imageUrlList = relatedGoodsResponse
-            ?.get("item_list")
-            ?.first { it.get("type")?.asText() == "image_similar_goods" }
-            ?.get("goods")
-            ?.map { it.get("image").asText() }
-            ?.take(3) // 상위 3개만 추출
-            ?: emptyList()
+        val firstOptions = getProductOptions(productNumber, 1, null) ?: throw NotFoundProductException()
+        val secondOptions = getProductOptions(productNumber, 2, firstOptions.get("option_components")?.first()?.get("goods_option_sno")?.asLong())
+        val thirdOptions = getProductOptions(productNumber, 3, secondOptions?.get("option_components")?.first()?.get("goods_option_sno")?.asLong())
 
         return ProductCrawlingUseCase.CrawlingResult(
-            number = response?.get("goods")?.get("sno")?.asLong() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
-            name = response.get("goods")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
-            brand = response.get("goods")?.get("market")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
-            thumbnailUrl = response.get("goods")?.get("first_page_rendering")?.get("cover_image")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
-            imageUrlList = imageUrlList,
-            firstCategory = response.get("goods")?.get("category")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            number = productDetails?.get("goods")?.get("sno")?.asLong() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            name = productDetails.get("goods")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            brand = productDetails.get("goods")?.get("market")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            thumbnailUrl = productDetails.get("goods")?.get("first_page_rendering")?.get("cover_image")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            imageUrlList = productDetails.get("goods")?.get("cover_images")?.map { it.asText() } ?: emptyList(),
+            firstCategory = productDetails.get("goods")?.get("category")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             secondCategory = null,
-            price = response.get("goods")?.get("first_page_rendering")?.get("original_price")?.asInt() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            price = productDetails.get("goods")?.get("first_page_rendering")?.get("original_price")?.asInt() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             store = Store.A_BLY,
             firstOptions = firstOptions?.get("option_components")?.map { it.get("name")?.asText() ?: "" } ?: emptyList(),
             secondOptions = secondOptions?.get("option_components")?.map { it.get("name")?.asText() ?: "" } ?: emptyList(),
@@ -112,5 +46,39 @@ class AblyProductCrawlingService(
 
     private fun getProductNumber(url: String): Long {
         return url.split("/").last().toLong()
+    }
+
+    private fun getProductDetails(productNumber: Long): JsonNode? {
+        try {
+            return restClient.get()
+                .uri(StringConstant.ABLY_PRODUCT_API_URL.get().format(productNumber))
+                .accept(MediaType.APPLICATION_JSON)
+                .header("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get())
+                .retrieve()
+                .body(JsonNode::class.java)
+        } catch (e: Exception) {
+            log.error("Error while fetching product details: ${e.message}")
+            return null
+        }
+    }
+
+    private fun getProductOptions(productNumber: Long, optionDepth: Int, selectedOptionSno: Long?): JsonNode? {
+        log.info("productNumber: $productNumber, optionDepth: $optionDepth, selectedOptionSno: $selectedOptionSno")
+        log.info("url: ${StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)}")
+        try {
+            return restClient.get()
+                .uri {
+                    val uri = StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)
+                    val selectedOptionParam = selectedOptionSno?.let { "&selected_option_sno=$it" } ?: ""
+                    URI(uri + selectedOptionParam)
+                }
+                .accept(MediaType.APPLICATION_JSON)
+                .header("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get())
+                .retrieve()
+                .body(JsonNode::class.java)
+        } catch (e: Exception) {
+            log.error("Error while fetching product options: ${e.message}")
+            return null
+        }
     }
 }

@@ -24,8 +24,6 @@ class ProductRelatedController(
 
     @Operation(
         summary = "관련 상품 조회 API",
-        description = """
-    """
     )
     @GetMapping("/related/{productId}")
     fun productRecent(@PathVariable productId: Long) : ResponseEntity<ProductRelatedResponse> {
