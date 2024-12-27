@@ -2,12 +2,14 @@ package org.team_alilm.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotFoundProductException
 import org.team_alilm.global.util.StringConstant
+import java.net.URI
 
 @Service
 class AblyProductCrawlingService(
@@ -20,14 +22,15 @@ class AblyProductCrawlingService(
         val productNumber = getProductNumber(command.url)
 
         // https://m.a-bly.com/goods/34883322
-        val productDetails = getProductDetails(productNumber) ?: throw NotFoundProductException()
+        val productDetails = getProductDetails(productNumber)
+        log.info("productDetails: $productDetails")
 
         val firstOptions = getProductOptions(productNumber, 1, null) ?: throw NotFoundProductException()
         val secondOptions = getProductOptions(productNumber, 2, firstOptions.get("option_components")?.first()?.get("goods_option_sno")?.asLong())
         val thirdOptions = getProductOptions(productNumber, 3, secondOptions?.get("option_components")?.first()?.get("goods_option_sno")?.asLong())
 
         return ProductCrawlingUseCase.CrawlingResult(
-            number = productDetails.get("goods")?.get("sno")?.asLong() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            number = productDetails?.get("goods")?.get("sno")?.asLong() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             name = productDetails.get("goods")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             brand = productDetails.get("goods")?.get("market")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             thumbnailUrl = productDetails.get("goods")?.get("first_page_rendering")?.get("cover_image")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
@@ -47,10 +50,11 @@ class AblyProductCrawlingService(
     }
 
     private fun getProductDetails(productNumber: Long): JsonNode? {
-        try{
+        try {
             return restClient.get()
                 .uri(StringConstant.ABLY_PRODUCT_API_URL.get().format(productNumber))
-                .headers { it.set("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get()) }
+                .accept(MediaType.APPLICATION_JSON)
+                .header("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get())
                 .retrieve()
                 .body(JsonNode::class.java)
         } catch (e: Exception) {
@@ -60,10 +64,17 @@ class AblyProductCrawlingService(
     }
 
     private fun getProductOptions(productNumber: Long, optionDepth: Int, selectedOptionSno: Long?): JsonNode? {
+        log.info("productNumber: $productNumber, optionDepth: $optionDepth, selectedOptionSno: $selectedOptionSno")
+        log.info("url: ${StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)}")
         try {
             return restClient.get()
-                .uri(StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth) + selectedOptionSno?.let { "&selected_option_sno=$it" })
-                .headers { it.set("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get()) }
+                .uri {
+                    val uri = StringConstant.ABLY_PRODUCT_OPTIONS_API_URL.get().format(productNumber, optionDepth)
+                    val selectedOptionParam = selectedOptionSno?.let { "&selected_option_sno=$it" } ?: ""
+                    URI(uri + selectedOptionParam)
+                }
+                .accept(MediaType.APPLICATION_JSON)
+                .header("X-Anonymous-Token", StringConstant.ABLY_ANONYMOUS_TOKEN.get())
                 .retrieve()
                 .body(JsonNode::class.java)
         } catch (e: Exception) {
