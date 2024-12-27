@@ -27,8 +27,6 @@ class AblyProductCrawlingService(
             ?.get("token")
             ?.asText() ?: throw IllegalArgumentException("익명 토큰을 가져올 수 없습니다.")
 
-        log.info("productNumber: $productNumber, aNonymousToken: $aNonymousToken")
-
         // https://m.a-bly.com/goods/34883322
         val productDetails = getProductDetails(productNumber = productNumber, aNonymousToken = aNonymousToken)
         log.info("productDetails: $productDetails")
@@ -73,12 +71,21 @@ class AblyProductCrawlingService(
 
     private fun getProductDetails(productNumber: Long, aNonymousToken: String): JsonNode? {
         try {
-            return restClient.get()
+            restClient.get()
                 .uri(StringContextHolder.ABLY_PRODUCT_API_URL.get().format(productNumber))
                 .accept(MediaType.APPLICATION_JSON)
                 .header("X-Anonymous-Token", aNonymousToken)
-                .retrieve()
-                .body(JsonNode::class.java)
+                .exchange{
+                    request, response ->
+                    log.info("Request uri: ${request.uri}")
+                    log.info("Request method: ${request.method}")
+                    log.info("Request headers: ${request.headers}")
+                    log.info("Response body: ${response.body}")
+                    log.info("Response headers: ${response.headers}")
+                    log.info("Response status: ${response.statusCode}")
+                }
+
+            return null
         } catch (e: Exception) {
             log.error("Error while fetching product details: ${e.message}")
             return null
