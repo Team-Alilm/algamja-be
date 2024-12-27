@@ -77,7 +77,7 @@ class AblyProductCrawlingService(
                 .retrieve()
                 .body(JsonNode::class.java)
         } catch (e: Exception) {
-            log.error("Error while fetching product options: ${e.message}")
+            log.info("Error while fetching product options: ${e.message}")
             return null
         }
     }
