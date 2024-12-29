@@ -24,6 +24,8 @@ class AlilmRegistrationService(
     private val addProductImagePort: org.team_alilm.application.port.out.AddProductImagePort
 ) : org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase {
 
+    private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
+
     @Transactional
     override fun alilmRegistration(command: AlilmRegistrationCommand) {
         val product = createAndSaveProductWithImages(command)
@@ -95,28 +97,19 @@ class AlilmRegistrationService(
                 )
             )
 
-            addProductImagePort.add(
-                command.imageUrlList.map { ProductImage(
-                    id = null,
-                    imageUrl = it,
-                    productNumber = product.number,
-                    productStore = product.store
-                ) }
-            )
+            try{
+                addProductImagePort.add(
+                    command.imageUrlList.map { ProductImage(
+                        id = null,
+                        imageUrl = it,
+                        productNumber = product.number,
+                        productStore = product.store
+                    ) }
+                )
+            } catch (e: Exception) {
+                log.info("상품 이미지 등록 중 오류 발생", e)
+            }
 
             return product
         }
-
-    private fun saveProductImageList(product: Product, imageUrlList: List<String>) {
-        addAllProductImagePort.addAllProductImage(
-            productImageList = imageUrlList.map {
-                ProductImage(
-                    id = null,
-                    imageUrl = it,
-                    productNumber = product.number,
-                    productStore = product.store
-                )
-            }
-        )
-    }
 }
