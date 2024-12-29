@@ -25,8 +25,6 @@ class Product (
         require(firstOption.isNotBlank()) { "Product option1 must not be blank" }
     }
 
-
-
     fun getManagedCode() : String {
         return if (this.firstOption.isNotBlank() && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {
             "${firstOption}^${secondOption}^${thirdOption}"
@@ -36,17 +34,6 @@ class Product (
             firstOption
         }
     }
-
-    fun getEmailOption() : String {
-        return if (this.firstOption.isNotBlank() && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {
-            "${this.firstOption} / ${this.secondOption} / ${this.thirdOption}"
-        } else if (this.firstOption.isNotBlank() && this.secondOption?.isNotBlank() == true) {
-            "${this.firstOption} / ${this.secondOption}"
-        } else {
-            this.firstOption
-        }
-    }
-
 
     fun toSlackMessage(): String = """
         {

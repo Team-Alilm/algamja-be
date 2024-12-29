@@ -23,7 +23,6 @@ class ProductAdapter(
     private val springDataProductRepository: SpringDataProductRepository,
     private val productRepository: ProductRepository,
     private val productMapper: ProductMapper,
-    private val basketMapper: BasketMapper
 ) : AddProductPort,
     LoadProductPort,
     LoadCrawlingProductsPort,
