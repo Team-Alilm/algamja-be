@@ -12,7 +12,7 @@ class Product (
     val secondCategory: String?,
     val price: Int,
     val store: Store,
-    val firstOption: String,
+    val firstOption: String?,
     val secondOption: String?,
     val thirdOption: String?
 ) {
@@ -22,13 +22,12 @@ class Product (
         require(brand.isNotBlank()) { "Product brand must not be blank" }
         require(thumbnailUrl.isNotBlank()) { "Product thumbnail URL must not be blank" }
         require(price >= 0) { "Product price must be non-negative" }
-        require(firstOption.isNotBlank()) { "Product option1 must not be blank" }
     }
 
-    fun getManagedCode() : String {
-        return if (this.firstOption.isNotBlank() && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {
+    fun getManagedCode() : String? {
+        return if (this.firstOption?.isNotBlank() == true && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {
             "${firstOption}^${secondOption}^${thirdOption}"
-        } else if (firstOption.isNotBlank() && secondOption?.isNotBlank() == true) {
+        } else if (firstOption?.isNotBlank() == true && secondOption?.isNotBlank() == true) {
             "${firstOption}^${secondOption}"
         } else {
             firstOption
