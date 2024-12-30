@@ -53,7 +53,7 @@ class ProductRelatedController(
         val brand: String,
         val price: Int,
         val firstCategory: String,
-        val firstOption: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?
     ) {
