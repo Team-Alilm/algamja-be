@@ -136,7 +136,7 @@ class BasketsRegisteredController(
             example = "220",
             required = true
         )
-        val firstOption: String,
+        val firstOption: String?,
 
         @field:Pattern(
             regexp = "^$|.*",
