@@ -39,7 +39,7 @@ class ProductJpaEntity(
     val price: Int,
 
     @Column(nullable = false)
-    val firstOption: String,
+    val firstOption: String?,
 
     @Column
     val secondOption: String?,

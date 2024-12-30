@@ -15,7 +15,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     fun findByNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
         number: Long,
         store: Store,
-        firstOption: String,
+        firstOption: String?,
         secondOption: String?,
         thirdOption: String?,
     ): ProductJpaEntity?
