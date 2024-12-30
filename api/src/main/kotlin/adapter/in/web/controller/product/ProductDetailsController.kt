@@ -45,7 +45,7 @@ class ProductDetailsController(
         val imageUrlList: List<String>,
         val store: String,
         val price: Int,
-        val firstOption: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?,
         val waitingCount: Long
