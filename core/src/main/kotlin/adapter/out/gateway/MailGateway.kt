@@ -22,8 +22,6 @@ class MailGateway(
     private val emailSender: JavaMailSender,
 ) : SendMailGateway {
 
-    private val log = LoggerFactory.getLogger(MailGateway::class.java)
-
     override fun sendMail(to: String, nickname: String, product: Product) {
         val mimeMessage = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
@@ -40,7 +38,7 @@ class MailGateway(
         emailSender.send(mimeMessage)
     }
 
-    private fun getMailMessage(nickname: String, productNumber: Long, imageUrl: String, options: String): String {
+    private fun getMailMessage(nickname: String, productNumber: Long, imageUrl: String, options: String?): String {
         val currentTimeMillis = currentTimeMillis()
 
         val dateTime: LocalDateTime =

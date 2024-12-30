@@ -42,7 +42,7 @@ class ProductAdapter(
     override fun loadProduct(
         number: Long,
         store: Store,
-        firstOption: String,
+        firstOption: String?,
         secondOption: String?,
         thirdOption: String?,
     ): Product? {

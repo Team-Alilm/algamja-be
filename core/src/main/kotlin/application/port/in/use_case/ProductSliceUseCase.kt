@@ -30,7 +30,7 @@ interface ProductSliceUseCase {
         val price: Int,
         val firstCategory: String,
         val secondCategory: String?,
-        val firstOption: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?,
         val waitingCount: Long

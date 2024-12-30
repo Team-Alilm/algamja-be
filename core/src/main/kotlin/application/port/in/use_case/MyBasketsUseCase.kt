@@ -23,7 +23,7 @@ interface MyBasketsUseCase {
         val isAlilm: Boolean,
         val firstCategory: String,
         val alilmDate: Long?,
-        val firstOption: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?,
         val isHidden: Boolean,
