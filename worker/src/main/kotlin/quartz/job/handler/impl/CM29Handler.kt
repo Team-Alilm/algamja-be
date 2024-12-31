@@ -31,10 +31,10 @@ class CM29Handler(
             return productDetailJsonNode.get("itemStockStatus").asText() == "5"
         }
 
-        val firstOption = optionItems.get("list")?.first() {
+        val firstOption = optionItems.get("list")?.filter() {
             val title = it.get("title").asText()
             title == product.firstOption
-        }
+        }?.first()
 
         if (firstOption?.get("optionStockStatus")?.asText() == "5" && firstOption.get("list")?.isEmpty == true) {
             return true
@@ -56,6 +56,7 @@ class CM29Handler(
                 .uri(StringContextHolder.CM29_PRODUCT_DETAIL_API_URL.get().format(productNumber))
                 .retrieve()
                 .body(JsonNode::class.java)
+                ?.get("data")
         } catch (e : Exception) {
             log.error("Failed to fetch product detail from 29cm", e)
             return null

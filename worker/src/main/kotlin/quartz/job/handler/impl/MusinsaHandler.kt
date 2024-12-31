@@ -15,7 +15,7 @@ import org.team_alilm.quartz.job.handler.PlatformHandler
 @Component
 class MusinsaHandler(
     private val objectMapper: ObjectMapper,
-    private val restTemplate: RestTemplate,
+    private val restClient: RestClient,
     private val crawlingGateway: CrawlingGateway,
     private val notificationService: NotificationService
 ) : PlatformHandler {
@@ -36,7 +36,7 @@ class MusinsaHandler(
         val jsonData = extractJsonFromHtml(crawlingResponse)
 
         return if (jsonData != null) {
-            isProductAvailable(jsonData) && !checkSoldOutViaApi(product)
+            isProductAvailable(jsonData) && checkSoldOutViaApi(product)
         } else {
             log.warn("No JSON data found for product: ${product.number}")
             checkSoldOutViaApi(product)
@@ -67,14 +67,18 @@ class MusinsaHandler(
     private fun checkSoldOutViaApi(product: Product): Boolean {
         val apiUrl = StringContextHolder.MUSINSA_OPTION_API_URL.get().format(product.number)
         return try {
-            val response = restTemplate.getForEntity(apiUrl, SoldoutCheckResponse::class.java).body
-            val optionItem = response?.data?.optionItems?.firstOrNull {
+            val response = restClient.get()
+                .uri(apiUrl)
+                .retrieve()
+                .body(SoldoutCheckResponse::class.java)
+            val optionItem = response?.data?.optionItems?.filter {
                 it.managedCode == product.getManagedCode()
-            }
-            optionItem?.outOfStock ?: true
+            }?.first()
+
+            return optionItem?.outOfStock ?: true
         } catch (e: RestClientException) {
             handleApiException(e, product)
-            true
+            return true
         }
     }
 
