@@ -20,7 +20,6 @@ class AlilmRegistrationService(
     private val loadBasketPort: org.team_alilm.application.port.out.LoadBasketPort,
     private val addBasketPort: org.team_alilm.application.port.out.AddBasketPort,
     private val slackGateway: SlackGateway,
-    private val addAllProductImagePort: org.team_alilm.application.port.out.AddAllProductImagePort,
     private val addProductImagePort: org.team_alilm.application.port.out.AddProductImagePort
 ) : org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase {
 
