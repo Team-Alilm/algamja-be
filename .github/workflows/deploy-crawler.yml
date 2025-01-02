@@ -43,7 +43,7 @@ jobs:
       - name: Notify Slack - Deployment Started
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text": "🚀 WORKER server 배포가 시작되었습니다."}' $SLACK_WEBHOOK
+          --data '{"text": "🚀 crawler server 배포가 시작되었습니다."}' $SLACK_WEBHOOK
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,13 +54,8 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setup Firebase service key
-        run: |
-          mkdir -p core/src/main/resources/firebase
-          echo ${{ secrets.FIREBASE_SECRET_KEY }} | base64 -d > core/src/main/resources/firebase/FirebaseSecretKey.json
-
       - name: Build with Gradle Wrapper
-        run: ./gradlew :worker:build
+        run: ./gradlew :crawler:build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -101,10 +96,10 @@ jobs:
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text": "✅ WORKER server 배포가 성공적으로 완료되었습니다!"}' $SLACK_WEBHOOK
+          --data '{"text": "✅ crawler server 배포가 성공적으로 완료되었습니다!"}' $SLACK_WEBHOOK
 
       - name: Notify Slack - Deployment Failure
         if: failure()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text": "❌ WORKER server 배포에 실패했습니다." }' $SLACK_WEBHOOK
+          --data '{"text": "❌ crawler server 배포에 실패했습니다." }' $SLACK_WEBHOOK
