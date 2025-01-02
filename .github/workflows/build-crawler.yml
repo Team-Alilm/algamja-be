@@ -41,10 +41,5 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setup Firebase service key
-        run: |
-          mkdir -p core/src/main/resources/firebase
-          echo ${{ secrets.FIREBASE_SECRET_KEY }} | base64 -d > core/src/main/resources/firebase/FirebaseSecretKey.json
-
       - name: Build with Gradle Wrapper
-        run: ./gradlew :worker:build
+        run: ./gradlew :crawler:build
