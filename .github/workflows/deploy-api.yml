@@ -55,7 +55,7 @@ jobs:
       AWS_REGION: ap-northeast-2                   # AWS 리전 설정
       ECR_REPOSITORY: alilm-api/prod-repository
       ECS_SERVICE: alilm-api-prod-ecs-service      # Amazon ECS 서비스 이름
-      ECS_CLUSTER: alilm-prod-cluster-ec2          # Amazon ECS 클러스터 이름
+      ECS_CLUSTER: alilm-prod-cluster              # Amazon ECS 클러스터 이름
       ECS_TASK_DEFINITION: alilm-api-task-prod-family-ec2  # AWS에서 관리하는 Task Definition 이름
       CONTAINER_NAME: alilm-api-prod-container
 
