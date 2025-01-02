@@ -1,11 +1,10 @@
 package org.team_alilm.adapter.out.persistence.mapper
 
+import domain.Basket
+import domain.Member
+import domain.product.ProductId
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
-import org.team_alilm.domain.Basket
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.ProductId
 
 @Component
 class BasketMapper {

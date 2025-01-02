@@ -1,12 +1,12 @@
 package org.team_alilm.adapter.out.gateway
 
 import com.slack.api.Slack
+import domain.product.Product
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
-import org.team_alilm.domain.product.Product
 
 @Service
 class SlackGateway(

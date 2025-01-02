@@ -1,7 +1,7 @@
 package org.team_alilm.adapter.out.persistence.entity
 
+import domain.Member
 import jakarta.persistence.*
-import org.team_alilm.domain.Member
 import org.team_alilm.global.jpa.base.BaseTimeEntity
 
 @Entity

@@ -1,10 +1,12 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import domain.product.Product
+import domain.product.ProductId
+import domain.product.Store
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
-import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.ProductRepository
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
@@ -13,9 +15,6 @@ import org.team_alilm.application.port.out.LoadCrawlingProductsPort
 import org.team_alilm.application.port.out.LoadProductPort
 import org.team_alilm.application.port.out.LoadProductPort.*
 import org.team_alilm.application.port.out.LoadProductSlicePort
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.ProductId
-import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotFoundProductException
 
 @Component

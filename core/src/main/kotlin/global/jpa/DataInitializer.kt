@@ -5,7 +5,7 @@ import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.RoleJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataRoleRepository
-import org.team_alilm.domain.Role
+import domain.Role
 
 @Component
 class DataInitializer(

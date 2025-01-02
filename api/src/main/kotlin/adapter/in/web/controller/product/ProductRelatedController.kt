@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.`in`.web.controller.product
 
+import domain.product.Product
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.ProductRelatedUseCase
 import org.team_alilm.application.port.`in`.use_case.ProductRelatedUseCase.*
-import org.team_alilm.domain.product.Product
 
 @RestController
 @RequestMapping("/api/v1/products")

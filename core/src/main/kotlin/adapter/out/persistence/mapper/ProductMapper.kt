@@ -1,9 +1,9 @@
 package org.team_alilm.adapter.out.persistence.mapper
 
+import domain.product.Product
+import domain.product.ProductId
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.ProductId
 
 @Component
 class ProductMapper {

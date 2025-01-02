@@ -1,6 +1,6 @@
 package org.team_alilm.application.port.`in`.use_case.product.crawling
 
-import org.team_alilm.domain.product.Store
+import domain.product.Store
 
 interface ProductCrawlingUseCase {
 

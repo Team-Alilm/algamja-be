@@ -3,6 +3,7 @@ package org.team_alilm.application.service
 import com.fasterxml.jackson.databind.JsonNode
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import domain.product.Store
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -10,8 +11,7 @@ import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
 import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway.*
-import org.team_alilm.domain.product.Store
-import org.team_alilm.global.util.StringContextHolder
+import util.StringContextHolder
 
 @Service
 @Transactional(readOnly = true)

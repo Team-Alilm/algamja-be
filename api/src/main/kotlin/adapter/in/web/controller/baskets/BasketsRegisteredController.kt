@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.`in`.web.controller.baskets
 
+import domain.product.Store
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase
 import org.team_alilm.data.CustomMemberDetails
-import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.RequestValidateException
 
 @RestController

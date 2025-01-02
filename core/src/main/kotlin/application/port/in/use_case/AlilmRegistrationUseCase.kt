@@ -1,7 +1,7 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.product.Store
+import domain.Member
+import domain.product.Store
 
 interface AlilmRegistrationUseCase {
 

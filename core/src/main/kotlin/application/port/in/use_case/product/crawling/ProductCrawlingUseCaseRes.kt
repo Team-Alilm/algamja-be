@@ -1,10 +1,10 @@
 package org.team_alilm.application.port.`in`.use_case.product.crawling
 
+import domain.product.Store
 import org.springframework.stereotype.Component
 import org.team_alilm.application.service.AblyProductCrawlingService
 import org.team_alilm.application.service.CM29ProductCrawlingService
 import org.team_alilm.application.service.MusinsaProductCrawlingService
-import org.team_alilm.domain.product.Store
 
 @Component
 class ProductCrawlingUseCaseResolver(
@@ -18,6 +18,7 @@ class ProductCrawlingUseCaseResolver(
             Store.CM29 -> cm29ProductCrawlingUseCase
             Store.MUSINSA -> muSinSaProductCrawlingUseCase
             Store.A_BLY -> aBlyProductCrawlingUseCase
+            Store.NONE -> throw IllegalArgumentException("Unknown store")
         }
     }
 }

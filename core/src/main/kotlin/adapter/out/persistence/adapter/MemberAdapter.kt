@@ -1,12 +1,12 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import domain.Member
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.MemberMapper
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataMemberRepository
 import org.team_alilm.application.port.out.AddMemberPort
 import org.team_alilm.application.port.out.LoadMemberPort
-import org.team_alilm.domain.Member
 
 @Component
 class MemberAdapter (

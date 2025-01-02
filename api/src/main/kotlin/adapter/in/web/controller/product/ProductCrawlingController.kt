@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.`in`.web.controller.product
 
+import domain.product.Store
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCaseResolver
-import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotParserProduct
 
 @RestController

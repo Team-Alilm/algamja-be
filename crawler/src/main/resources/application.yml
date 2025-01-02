@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    aws:
+      credentials:
+        access-key: ENC(KE/Ro8r1NbGMPsOESPM5KeY7Jkk5f8cXGBZnHjIw6aI=)
+        secret-key: ENC(XVIV5AuAv7dBtD/076Vgl+LjKjOqTnWPftROOtnBT/lWUCuzbqll0v118UJbqZLN1di9zhffyCM=)
+        region:
+          static: ap-northeast-2
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_PASSWORD}
+    algorithm: ${JASYPT_ALGORITHM}
+
+server:
+  port: 8082

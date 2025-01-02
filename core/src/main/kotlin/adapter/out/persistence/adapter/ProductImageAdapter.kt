@@ -1,10 +1,10 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import domain.product.ProductImage
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.ProductImageMapper
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductImageRepository
 import org.team_alilm.application.port.out.AddProductImagePort
-import org.team_alilm.domain.product.ProductImage
 
 @Component
 class ProductImageAdapter(

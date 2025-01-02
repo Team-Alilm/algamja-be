@@ -1,10 +1,10 @@
 package org.team_alilm.application.service
 
+import domain.product.Product
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.AlilmRestockRankingUseCase
 import org.team_alilm.application.port.out.LoadAlilmPort
-import org.team_alilm.domain.product.Product
 
 @Service
 @Transactional(readOnly = true)

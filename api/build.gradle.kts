@@ -4,6 +4,7 @@ tasks.getByName("bootJar") {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":domain"))
     implementation(project(":security"))
 
     // swagger
