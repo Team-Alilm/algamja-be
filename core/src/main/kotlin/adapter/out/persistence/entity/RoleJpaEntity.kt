@@ -1,7 +1,7 @@
 package org.team_alilm.adapter.out.persistence.entity
 
+import domain.Role
 import jakarta.persistence.*
-import org.team_alilm.domain.Role
 
 @Entity
 @Table(name = "role")

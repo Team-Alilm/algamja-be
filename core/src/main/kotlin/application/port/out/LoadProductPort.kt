@@ -1,8 +1,8 @@
 package org.team_alilm.application.port.out
 
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.ProductId
-import org.team_alilm.domain.product.Store
+import domain.product.Product
+import domain.product.ProductId
+import domain.product.Store
 
 interface LoadProductPort {
 

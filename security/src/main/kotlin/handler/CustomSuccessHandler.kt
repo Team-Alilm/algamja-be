@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
 import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.service.OauthLoginMemberService
-import org.team_alilm.domain.Member
+import domain.Member
 import org.team_alilm.jwt.JwtUtil
 
 @Component

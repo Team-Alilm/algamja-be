@@ -1,6 +1,6 @@
 package org.team_alilm.data
 
-import org.team_alilm.domain.Member
+import domain.Member
 
 class OAuth2Attribute(
     private val attributes: Map<String, Any>,

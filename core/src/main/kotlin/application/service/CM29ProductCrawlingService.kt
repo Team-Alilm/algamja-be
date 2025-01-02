@@ -1,13 +1,13 @@
 package org.team_alilm.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
+import domain.product.Store
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
-import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotParserProduct
-import org.team_alilm.global.util.StringContextHolder
+import util.StringContextHolder
 
 @Service
 @Transactional

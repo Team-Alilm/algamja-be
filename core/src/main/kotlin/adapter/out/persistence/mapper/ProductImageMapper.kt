@@ -1,8 +1,8 @@
 package org.team_alilm.adapter.out.persistence.mapper
 
+import domain.product.ProductImage
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.ProductImageJpaEntity
-import org.team_alilm.domain.product.ProductImage
 
 @Component
 class ProductImageMapper {

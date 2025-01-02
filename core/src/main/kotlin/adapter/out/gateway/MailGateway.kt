@@ -1,12 +1,11 @@
 package org.team_alilm.adapter.out.gateway
 
-import org.slf4j.LoggerFactory
+import domain.product.Product
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import org.team_alilm.application.port.out.gateway.SendMailGateway
-import org.team_alilm.domain.product.Product
 import java.lang.System.currentTimeMillis
 import java.time.Instant
 import java.time.LocalDateTime

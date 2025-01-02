@@ -1,13 +1,13 @@
 package org.team_alilm.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
+import domain.product.Store
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
-import org.team_alilm.domain.product.Store
 import org.team_alilm.global.error.NotFoundProductException
-import org.team_alilm.global.util.StringContextHolder
+import util.StringContextHolder
 import java.net.URI
 
 @Service
@@ -30,24 +30,27 @@ class AblyProductCrawlingService(
         log.info("productNumber: $productNumber, aNonymousToken: $aNonymousToken")
 
         // https://m.a-bly.com/goods/34883322
-        val productDetails = getProductDetails(productNumber = productNumber, aNonymousToken = aNonymousToken)
+        val productDetails = getProductDetails(
+            productNumber = productNumber,
+//            aNonymousToken = aNonymousToken
+        )
 
         val firstOptions = getProductOptions(
             productNumber = productNumber,
             optionDepth = 1, selectedOptionSno = null,
-            aNonymousToken = aNonymousToken
+//            aNonymousToken = aNonymousToken
         ) ?: throw NotFoundProductException()
         val secondOptions = getProductOptions(
             productNumber = productNumber,
             optionDepth = 2,
             selectedOptionSno = firstOptions.get("option_components")?.first()?.get("goods_option_sno")?.asLong(),
-            aNonymousToken = aNonymousToken
+//            aNonymousToken = aNonymousToken
         )
         val thirdOptions = getProductOptions(
             productNumber = productNumber,
             optionDepth = 3,
             selectedOptionSno = secondOptions?.get("option_components")?.first()?.get("goods_option_sno")?.asLong(),
-            aNonymousToken = aNonymousToken
+//            aNonymousToken = aNonymousToken
         )
 
         return ProductCrawlingUseCase.CrawlingResult(
@@ -70,7 +73,10 @@ class AblyProductCrawlingService(
         return url.split("/").last().toLong()
     }
 
-    private fun getProductDetails(productNumber: Long, aNonymousToken: String): JsonNode? {
+    private fun getProductDetails(
+        productNumber: Long,
+//        aNonymousToken: String
+    ): JsonNode? {
         try {
             return restClient.get()
                 .uri(StringContextHolder.ABLY_PRODUCT_API_URL.get().format(productNumber))
@@ -84,7 +90,12 @@ class AblyProductCrawlingService(
         }
     }
 
-    private fun getProductOptions(productNumber: Long, optionDepth: Int, selectedOptionSno: Long?, aNonymousToken: String): JsonNode? {
+    private fun getProductOptions(
+        productNumber: Long,
+        optionDepth: Int,
+        selectedOptionSno: Long?,
+//        aNonymousToken: String
+    ): JsonNode? {
         return try {
             restClient.get()
                 .uri {

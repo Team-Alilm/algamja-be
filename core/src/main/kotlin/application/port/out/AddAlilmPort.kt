@@ -1,6 +1,6 @@
 package org.team_alilm.application.port.out
 
-import org.team_alilm.domain.Alilm
+import domain.Alilm
 
 interface AddAlilmPort {
 

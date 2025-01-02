@@ -1,9 +1,9 @@
 package org.team_alilm.application.port.out
 
-import org.team_alilm.domain.Basket
-import org.team_alilm.domain.FcmToken
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.product.Product
+import domain.Basket
+import domain.FcmToken
+import domain.Member
+import domain.product.Product
 
 interface LoadBasketAndMemberPort {
 

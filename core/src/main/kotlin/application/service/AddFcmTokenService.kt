@@ -1,10 +1,10 @@
 package org.team_alilm.application.service
 
+import domain.FcmToken
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.AddFcmTokenUseCase
 import org.team_alilm.application.port.out.LoadFcmTokenPort
-import org.team_alilm.domain.FcmToken
 import org.team_alilm.global.error.DeprecatedFcmtokenException
 
 @Service

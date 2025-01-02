@@ -1,16 +1,16 @@
 package org.team_alilm.application.service
 
+import domain.Basket
+import domain.Member
+import domain.product.Product
+import domain.product.ProductId
+import domain.product.ProductImage
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase.*
-import org.team_alilm.domain.Basket
-import org.team_alilm.domain.Member.*
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.ProductId
-import org.team_alilm.domain.product.ProductImage
 import org.team_alilm.global.error.BasketAlreadyExistsException
-import org.team_alilm.global.util.StringContextHolder
+import util.StringContextHolder
 
 @Service
 @Transactional(readOnly = true)
@@ -44,7 +44,7 @@ class AlilmRegistrationService(
     }
 
     private fun saveBasket(
-        memberId: MemberId,
+        memberId: Member.MemberId,
         productId: ProductId,
     ) {
 
