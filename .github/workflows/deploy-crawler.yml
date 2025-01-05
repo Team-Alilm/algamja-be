@@ -34,7 +34,7 @@ jobs:
 
   deploy-worker:
     runs-on: ubuntu-latest
-    needs: detect-worker
+    needs: detect-crawler
     if: ${{ needs.detect-crawler.outputs.crawler_changed == 'true'}}
     env:
       AWS_REGION: ap-northeast-2
