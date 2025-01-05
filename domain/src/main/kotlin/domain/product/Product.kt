@@ -1,5 +1,7 @@
 package domain.product
 
+import util.StringContextHolder
+
 class Product (
     val id: ProductId? = null,
     val number: Long = 0,
