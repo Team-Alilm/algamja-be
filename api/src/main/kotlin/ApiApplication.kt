@@ -9,3 +9,4 @@ class ApiApplication
 fun main(args: Array<String>) {
     runApplication<ApiApplication>(*args)
 }
+
