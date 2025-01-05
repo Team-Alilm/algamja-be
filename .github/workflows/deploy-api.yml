@@ -25,33 +25,24 @@ jobs:
           if git diff --name-only HEAD^ HEAD | grep -q 'api/'; then
             echo "API server has changed."
             echo "api_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
-          else
-            echo "No changes in API server."
-            echo "api_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
           fi
           
           if git diff --name-only HEAD^ HEAD | grep -q 'core/'; then
             echo "Core module has changed."
             echo "api_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
-          else
-            echo "No changes in core module."
-            echo "api_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
+          
           fi
           
           if git diff --name-only HEAD^ HEAD | grep -q 'security/'; then
             echo "Security module has changed."
             echo "api_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
-          else
-            echo "No changes in security module."
-            echo "api_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
+          
           fi
           
           if git diff --name-only HEAD^ HEAD | grep -q 'domain/'; then
             echo "Security module has changed."
             echo "api_changed=true" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
-          else
-            echo "No changes in security module."
-            echo "api_changed=false" >> $GITHUB_OUTPUT  # 아웃풋으로 설정
+          
           fi
 
   deploy-api:
