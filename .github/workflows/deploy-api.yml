@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0  # 전체 커밋 이력 가져오기
 
-      - name: Detect changes in API server
+      - name: Detect changes in Api server and Core and Security and Domain
         id: detect-api
         run: |
           if git diff --name-only HEAD^ HEAD | grep -q 'api/'; then
