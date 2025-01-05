@@ -17,7 +17,7 @@ class AlilmRestockRankingController(
     @Operation(
         summary = "최근 알림 조회 API",
         description = """
-            최근 재 입고 상품 목록 7개를 반환합니다.
+            최근 재 입고 상품 목록 수를 반환합니다.
     """)
     @GetMapping
     fun alilmRestockRangin(

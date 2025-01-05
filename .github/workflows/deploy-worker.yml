@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Detect changes in WORKER and Core
+      - name: Detect changes in WORKER and Core and Domain
         id: detect-worker
         run: |
           if git diff --name-only HEAD^ HEAD | grep -q 'worker/'; then
@@ -28,9 +28,15 @@ jobs:
           fi
 
           if git diff --name-only HEAD^ HEAD | grep -q 'core/'; then
-            echo "core_changed=true" >> $GITHUB_OUTPUT
+            echo "worker_changed=true" >> $GITHUB_OUTPUT
           else
-            echo "core_changed=false" >> $GITHUB_OUTPUT
+            echo "worker_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+          if git diff --name-only HEAD^ HEAD | grep -q 'domain/'; then
+            echo "worker_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "worker_changed=false" >> $GITHUB_OUTPUT
           fi
 
   deploy-worker:
