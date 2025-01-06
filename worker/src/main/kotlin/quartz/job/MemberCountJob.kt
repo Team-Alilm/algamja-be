@@ -15,6 +15,6 @@ class MemberCountJob(
 ) : Job {
 
     override fun execute(context: JobExecutionContext) {
-        slackGateway.sendMessage("목표를 향한 현재까지 회원 수 : ${loadMemberPort.loadMemberCount()}")
+        slackGateway.sendMessage("현재 회원 수 : ${loadMemberPort.loadMemberCount()}")
     }
 }

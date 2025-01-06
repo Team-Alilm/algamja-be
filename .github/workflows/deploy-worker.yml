@@ -40,8 +40,8 @@ jobs:
     env:
       AWS_REGION: ap-northeast-2
       ECR_REPOSITORY: alilm-worker/prod-repository
-      ECS_SERVICE: alilm-worker-prod-ecs-service
-      ECS_CLUSTER: alilm-prod-cluster
+      ECS_SERVICE: alilm-prod-worker-service
+      ECS_CLUSTER: alilm-prod-worker-cluster
       ECS_TASK_DEFINITION: alilm-worker-task-prod-family-ec2
       CONTAINER_NAME: alilm-worker-prod-container
       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
