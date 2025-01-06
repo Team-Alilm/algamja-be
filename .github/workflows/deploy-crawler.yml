@@ -22,14 +22,10 @@ jobs:
         run: |
           if git diff --name-only HEAD^ HEAD | grep -q 'crawler/'; then
             echo "crawler_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "crawler_changed=false" >> $GITHUB_OUTPUT
           fi
           
           if git diff --name-only HEAD^ HEAD | grep -q 'domain/'; then
             echo "crawler_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "crawler_changed=false" >> $GITHUB_OUTPUT
           fi
 
   deploy-crawler:
@@ -39,8 +35,8 @@ jobs:
     env:
       AWS_REGION: ap-northeast-2
       ECR_REPOSITORY: alilm-crawler/prod-repository
-      ECS_SERVICE: alilm-crawler-prod-ecs-service
-      ECS_CLUSTER: alilm-prod-cluster-crawler
+      ECS_SERVICE: alilm-prod-crawler-service
+      ECS_CLUSTER: alilm-prod-crawler-cluster
       ECS_TASK_DEFINITION: alilm-crawler-task-prod-family-ec2
       CONTAINER_NAME: alilm-crawler-prod-container
       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -68,34 +64,36 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: $AWS_REGION
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and Push Docker Image
+      - name: Build, tag, and push image to Amazon ECR
         id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          IMAGE_TAG=${{ github.sha }}
-          ECR_URI=$(aws ecr describe-repositories --repository-names $ECR_REPOSITORY --region $AWS_REGION --query "repositories[0].repositoryUri" --output text)
-          docker build -t $ECR_URI:$IMAGE_TAG ./crawler
-          docker push $ECR_URI:$IMAGE_TAG
-          echo "image=$ECR_URI:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG ./crawler
+          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Update ECS Task Definition
+      - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition-family: $ECS_TASK_DEFINITION
-          container-name: $CONTAINER_NAME
+          task-definition-family: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
 
-      - name: Deploy to Amazon ECS
+      - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: $ECS_SERVICE
-          cluster: $ECS_CLUSTER
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
       - name: Notify Slack - Deployment Success
