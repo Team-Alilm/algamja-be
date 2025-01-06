@@ -9,3 +9,4 @@ class WorkerApplication
 fun main(args: Array<String>) {
     runApplication<WorkerApplication>(*args)
 }
+
