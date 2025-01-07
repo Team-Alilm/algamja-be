@@ -1,11 +1,11 @@
-package org.team_alilm.handler.impl
+package org.team_alilm.application.handler.impl
 
 import com.fasterxml.jackson.databind.JsonNode
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import domain.product.Product
-import org.team_alilm.handler.PlatformHandler
+import org.team_alilm.application.handler.PlatformHandler
 import software.amazon.awssdk.services.sqs.endpoints.internal.Value.Bool
 import util.StringContextHolder
 

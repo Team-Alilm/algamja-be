@@ -1,10 +1,10 @@
-package org.team_alilm.handler.impl
+package org.team_alilm.application.handler.impl
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import domain.product.Product
-import org.team_alilm.handler.PlatformHandler
+import org.team_alilm.application.handler.PlatformHandler
 import util.StringContextHolder
 
 @Component

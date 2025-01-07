@@ -30,6 +30,6 @@ class BasketAlilmController(
     }
 
     data class BasketAlilmRequest(
-        val productId: ProductId,
+        val productId: Long,
     )
 }
