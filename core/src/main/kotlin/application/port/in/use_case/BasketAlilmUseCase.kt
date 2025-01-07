@@ -7,6 +7,6 @@ interface BasketAlilmUseCase {
     fun basketAlilm(command: BasketAlilmCommand)
 
     data class BasketAlilmCommand(
-        val productId: ProductId,
+        val productId: Long,
     )
 }

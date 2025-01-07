@@ -1,4 +1,4 @@
-package org.team_alilm.handler.impl.data
+package org.team_alilm.application.handler.impl.data
 
 data class SoldoutCheckResponse(
     val meta: Meta,

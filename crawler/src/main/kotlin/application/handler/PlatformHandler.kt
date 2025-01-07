@@ -1,4 +1,4 @@
-package org.team_alilm.handler
+package org.team_alilm.application.handler
 
 import domain.product.Product
 

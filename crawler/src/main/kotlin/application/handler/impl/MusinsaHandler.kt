@@ -1,4 +1,4 @@
-package org.team_alilm.handler.impl
+package org.team_alilm.application.handler.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.*
 import domain.product.Product
 import org.team_alilm.gateway.CrawlingGateway
-import org.team_alilm.handler.PlatformHandler
-import org.team_alilm.handler.impl.data.SoldoutCheckResponse
+import org.team_alilm.application.handler.PlatformHandler
+import org.team_alilm.application.handler.impl.data.SoldoutCheckResponse
 import util.StringContextHolder
 
 @Component

@@ -18,6 +18,11 @@ interface LoadProductPort {
         productId: ProductId,
     ): Product?
 
+    fun loadProduct(
+        productId: Long,
+    ): Product?
+
+
     fun loadProductDetails(
         productId: ProductId,
     ): ProductAndWaitingCountAndImageList?

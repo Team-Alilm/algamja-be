@@ -62,6 +62,12 @@ class ProductAdapter(
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
     }
 
+    override fun loadProduct(productId: Long): Product? {
+        val productJpaEntity = springDataProductRepository.findByIdAndIsDeleteFalse(productId)
+
+        return productMapper.mapToDomainEntityOrNull(productJpaEntity)
+    }
+
     override fun loadRecentProduct(): List<Product> {
         return productRepository.findRecentProducts().map {
             productMapper.mapToDomainEntity(it)
