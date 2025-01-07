@@ -1,20 +1,17 @@
 package org.team_alilm.application.service
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.JsonNode
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import domain.product.Store
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
-import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
-import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway
-import org.team_alilm.application.port.out.gateway.crawling.CrawlingGateway.*
+import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
+import org.team_alilm.gateway.CrawlingGateway
+import org.team_alilm.gateway.CrawlingGateway.CrawlingGatewayRequest
 import util.StringContextHolder
 
 @Service
-@Transactional(readOnly = true)
 class MusinsaProductCrawlingService(
     private val crawlingGateway: CrawlingGateway,
     private val restClient: RestClient
@@ -23,20 +20,13 @@ class MusinsaProductCrawlingService(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
-        val crawlingGatewayRequest = CrawlingGatewayRequest(command.url)
-        val crawlingGatewayResponse = crawlingGateway.htmlCrawling(crawlingGatewayRequest)
-
-        val jsonData = extractJsonData(crawlingGatewayResponse.html)
+        val crawlingGatewayResponse = crawlingGateway.htmlCrawling(request = CrawlingGatewayRequest(url = command.url))
+        val productHtmlResponse = extractJsonData(crawlingGatewayResponse.html)
             ?: throw RuntimeException("Failed to extract JSON data from script content")
 
-        val crawlingRequest = try {
-            Gson().fromJson(jsonData, CrawlingGatewayRequest::class.java)
-        } catch (e: Exception) {
-            log.error("Invalid JSON data: $jsonData", e)
-            throw RuntimeException("Invalid JSON data", e)
-        }
+        log.info("jsonData: $productHtmlResponse")
 
-        val optionUri = getOptionUri(crawlingRequest.goodsNo)
+        val optionUri = getOptionUri(productHtmlResponse.get("goodsNo").asLong())
         val optionResponse = restClient.get()
             .uri(optionUri)
             .retrieve()
@@ -48,21 +38,21 @@ class MusinsaProductCrawlingService(
         val secondOptions = filterOption.get("secondOptions")?.map { it.get("val").asText() } ?: emptyList()
         val thirdOptions = filterOption.get("thirdOptions")?.map { it.get("val").asText() } ?: emptyList()
 
-        val imageUrlListRequsetUri = StringContextHolder.MUSINSA_PRODUCT_IMAGES_URL.get().format(crawlingRequest.goodsNo)
+        val imageUrlListRequsetUri = StringContextHolder.MUSINSA_PRODUCT_IMAGES_URL.get().format(productHtmlResponse.get("goodsNo").asLong())
         val imageUrlListResponse = restClient.get()
             .uri(imageUrlListRequsetUri)
             .retrieve()
             .body(JsonNode::class.java)
 
         return ProductCrawlingUseCase.CrawlingResult(
-            number = crawlingRequest.goodsNo,
-            name = crawlingRequest.goodsNm,
-            brand = crawlingRequest.brandInfo.brandName,
-            thumbnailUrl = getThumbnailUrl(crawlingRequest.thumbnailImageUrl),
+            number = productHtmlResponse.get("goodsNo").asLong(),
+            name = productHtmlResponse.get("goodsNm").asText(),
+            brand = productHtmlResponse.get("brandInfo").get("brandName").asText(),
+            thumbnailUrl = getThumbnailUrl(productHtmlResponse.get("thumbnailImageUrl").asText()),
             imageUrlList = imageUrlListResponse?.get("data")?.get("similar")?.get(0)?.get("recommendedGoodsList")?.map { it.get("imageUrl").asText() } ?: emptyList(),
-            firstCategory = crawlingRequest.category.categoryDepth1Name,
-            secondCategory = crawlingRequest.category.categoryDepth2Name,
-            price = crawlingRequest.goodsPrice.normalPrice,
+            firstCategory = productHtmlResponse.get("category").get("categoryDepth1Name").asText(),
+            secondCategory = productHtmlResponse.get("category").get("categoryDepth2Name").asText(),
+            price = productHtmlResponse.get("goodsPrice").get("normalPrice").asInt(),
             store = Store.MUSINSA,
             firstOptions = firstOptions, // 추가된 부분
             secondOptions = secondOptions, // 추가된 부분
@@ -70,7 +60,7 @@ class MusinsaProductCrawlingService(
         )
     }
 
-    private fun extractJsonData(scriptContent: String): String? {
+    private fun extractJsonData(scriptContent: String): JsonNode? {
         var jsonString: String? = null
 
         // 자바스크립트 내 변수 선언 패턴
@@ -87,7 +77,10 @@ class MusinsaProductCrawlingService(
             jsonString = substring.substring(0, endIndex)
         }
 
-        return jsonString
+        return jsonString?.let {
+            val mapper = com.fasterxml.jackson.databind.ObjectMapper()
+            mapper.readTree(it)
+        }
     }
 
     private fun getOptionUri(goodsNo: Long): String {
@@ -100,29 +93,29 @@ class MusinsaProductCrawlingService(
 
     // null 허용을 고려해 보자!
     data class CrawlingGatewayRequest(
-        @SerializedName("goodsNo") val goodsNo: Long,
-        @SerializedName("goodsNm") val goodsNm: String,
-        @SerializedName("thumbnailImageUrl") val thumbnailImageUrl: String,
-        @SerializedName("brandInfo") val brandInfo: BrandInfo,
-        @SerializedName("category") val category: Category,
-        @SerializedName("goodsPrice") val goodsPrice: GoodsPrice
+        val goodsNo: Long,
+        val goodsNm: String,
+        val thumbnailImageUrl: String,
+        val brandInfo: BrandInfo,
+        val category: Category,
+        val goodsPrice: GoodsPrice
     )
 
     data class BrandInfo(
-        @SerializedName("brandName") val brandName: String,
+        val brandName: String,
     )
 
     data class Category(
-        @SerializedName("categoryDepth1Name") val categoryDepth1Name: String,
-        @SerializedName("categoryDepth2Name") val categoryDepth2Name: String,
+        val categoryDepth1Name: String,
+        val categoryDepth2Name: String,
     )
 
     data class GoodsPrice(
-        @SerializedName("normalPrice") val normalPrice: Int,
+        val normalPrice: Int,
     )
 
     data class FilterOption(
-        val optionCount: Int,
+        @JsonProperty("val") val optionCount: Int,
         val firstOptions: List<Option> = emptyList(),
         val secondOptions: List<Option> = emptyList(),
         val thirdOptions: List<Option> = emptyList(),
@@ -130,7 +123,7 @@ class MusinsaProductCrawlingService(
     )
 
     data class Option(
-        @SerializedName("val") val value: String,
+        @JsonProperty("val") val value: String,
         val txt: String,
         val qty: Int,
         val memo: String?,
