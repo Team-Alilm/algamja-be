@@ -5,8 +5,7 @@ import domain.product.Store
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
-import org.team_alilm.application.port.`in`.use_case.product.crawling.ProductCrawlingUseCase
-import org.team_alilm.global.error.NotFoundProductException
+import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
 import util.StringContextHolder
 import java.net.URI
 
@@ -39,7 +38,7 @@ class AblyProductCrawlingService(
             productNumber = productNumber,
             optionDepth = 1, selectedOptionSno = null,
 //            aNonymousToken = aNonymousToken
-        ) ?: throw NotFoundProductException()
+        ) ?: throw IllegalArgumentException()
         val secondOptions = getProductOptions(
             productNumber = productNumber,
             optionDepth = 2,

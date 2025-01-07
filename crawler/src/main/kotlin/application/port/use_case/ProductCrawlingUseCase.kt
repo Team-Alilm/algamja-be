@@ -1,4 +1,4 @@
-package org.team_alilm.application.port.`in`.use_case.product.crawling
+package org.team_alilm.application.port.use_case
 
 import domain.product.Store
 
