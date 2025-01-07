@@ -1,0 +1,10 @@
+jwt-token: ENC(2x/+HdaoNc5KXMR3C6ETGt0hyjp9kCKBK8fKTJiiTpz7e5lPvQ58dPjZSXNFWO1dP9CFKfjxfyqw6xBZ6JG5cTcXOxOgxUIt6dOoUYJNJ4Xo9D3TqnX9XleL6JV9wrLnt4+g2zOjZfRhzGaT+Rko7h6i48/2LHTEhhV5qW0bU0DXVp006sURnMmwcFd6wH+Tu+01CyqbtB5UttryQ0U7X/LPRelqXZsazHnLqwN/qMJUuJPbZ/agY0eZXwhWt68P)
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_PASSWORD}
+    algorithm: ${JASYPT_ALGORITHM}
+
+server:
+  port: 8082
