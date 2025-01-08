@@ -6,6 +6,7 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
+import org.team_alilm.error.AnonymousTokenException
 import util.StringContextHolder
 import java.net.URI
 
@@ -24,32 +25,32 @@ class AblyProductCrawlingService(
             .retrieve()
             .body(JsonNode::class.java)
             ?.get("token")
-            ?.asText() ?: throw IllegalArgumentException("익명 토큰을 가져올 수 없습니다.")
+            ?.asText() ?: throw AnonymousTokenException()
 
         log.info("productNumber: $productNumber, aNonymousToken: $aNonymousToken")
 
         // https://m.a-bly.com/goods/34883322
         val productDetails = getProductDetails(
             productNumber = productNumber,
-//            aNonymousToken = aNonymousToken
+            aNonymousToken = aNonymousToken
         )
 
         val firstOptions = getProductOptions(
             productNumber = productNumber,
             optionDepth = 1, selectedOptionSno = null,
-//            aNonymousToken = aNonymousToken
+            aNonymousToken = aNonymousToken
         ) ?: throw IllegalArgumentException()
         val secondOptions = getProductOptions(
             productNumber = productNumber,
             optionDepth = 2,
             selectedOptionSno = firstOptions.get("option_components")?.first()?.get("goods_option_sno")?.asLong(),
-//            aNonymousToken = aNonymousToken
+            aNonymousToken = aNonymousToken
         )
         val thirdOptions = getProductOptions(
             productNumber = productNumber,
             optionDepth = 3,
             selectedOptionSno = secondOptions?.get("option_components")?.first()?.get("goods_option_sno")?.asLong(),
-//            aNonymousToken = aNonymousToken
+            aNonymousToken = aNonymousToken
         )
 
         return ProductCrawlingUseCase.CrawlingResult(
@@ -74,13 +75,13 @@ class AblyProductCrawlingService(
 
     private fun getProductDetails(
         productNumber: Long,
-//        aNonymousToken: String
+        aNonymousToken: String
     ): JsonNode? {
         try {
             return restClient.get()
                 .uri(StringContextHolder.ABLY_PRODUCT_API_URL.get().format(productNumber))
                 .accept(MediaType.APPLICATION_JSON)
-                .header("X-Anonymous-Token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiIzNDM0MTc5MDAiLCJpYXQiOjE3MzUyODYxMTh9.ox6qVAtKpbRuF6Yaqvn_kjDe0RTtV-fo9jJt_pLRFBA")
+                .header("X-Anonymous-Token", aNonymousToken)
                 .retrieve()
                 .body(JsonNode::class.java)
         } catch (e: Exception) {
@@ -93,7 +94,7 @@ class AblyProductCrawlingService(
         productNumber: Long,
         optionDepth: Int,
         selectedOptionSno: Long?,
-//        aNonymousToken: String
+        aNonymousToken: String
     ): JsonNode? {
         return try {
             restClient.get()
@@ -103,7 +104,7 @@ class AblyProductCrawlingService(
                     URI(uri + selectedOptionParam)
                 }
                 .accept(MediaType.APPLICATION_JSON)
-                .header("X-Anonymous-Token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiIzNDM0MTc5MDAiLCJpYXQiOjE3MzUyODYxMTh9.ox6qVAtKpbRuF6Yaqvn_kjDe0RTtV-fo9jJt_pLRFBA")
+                .header("X-Anonymous-Token", aNonymousToken)
                 .retrieve()
                 .body(JsonNode::class.java)
         } catch (e: Exception) {
