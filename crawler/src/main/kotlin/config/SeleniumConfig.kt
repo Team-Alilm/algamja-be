@@ -13,6 +13,8 @@ class SeleniumConfig {
 
     @Bean
     fun webDriver(): WebDriver {
+        WebDriverManager.chromedriver().setup()  // WebDriverManager로 ChromeDriver 설정
+
         val options = ChromeOptions()
 
         // 크롬 설치 경로를 명시적으로 설정
@@ -29,3 +31,4 @@ class SeleniumConfig {
         return driver
     }
 }
+
