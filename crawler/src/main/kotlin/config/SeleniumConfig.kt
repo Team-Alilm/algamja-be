@@ -13,8 +13,10 @@ class SeleniumConfig {
 
     @Bean
     fun webDriver(): WebDriver {
+        WebDriverManager.chromedriver().setup()  // 먼저 WebDriver 설정
+
         val options = ChromeOptions()
-        options.addArguments("--headless")  // 헤드리스 모드 활성화
+        options.addArguments("--headless")
         options.addArguments("--no-sandbox")
         options.addArguments("--disable-dev-shm-usage")
         options.addArguments("--disable-gpu")
@@ -27,11 +29,10 @@ class SeleniumConfig {
 
         val driver = ChromeDriver(options)
 
-        WebDriverManager.chromedriver().setup()  // WebDriverManager로 ChromeDriver 설정
-
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1))
 
         return driver
     }
 }
+
 
