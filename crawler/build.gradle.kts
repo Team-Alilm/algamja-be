@@ -14,4 +14,7 @@ dependencies {
 
     // jsoup
     implementation("org.jsoup:jsoup:1.15.3")
+
+    // selenium
+    implementation("org.seleniumhq.selenium:selenium-java:4.27.0")
 }
