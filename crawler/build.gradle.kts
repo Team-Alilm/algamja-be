@@ -18,6 +18,4 @@ dependencies {
     // selenium
     implementation("org.seleniumhq.selenium:selenium-java:4.27.0")
     implementation("io.github.bonigarcia:webdrivermanager:5.9.2")
-
-
 }
