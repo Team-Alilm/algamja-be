@@ -12,6 +12,9 @@ class SeleniumConfig {
 
     @Bean
     fun webDriver(): WebDriver {
+        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver")
+
+
         val options = ChromeOptions()
         options.addArguments("--no-sandbox")
         options.addArguments("--disable-dev-shm-usage")
