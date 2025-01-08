@@ -15,5 +15,3 @@ jasypt:
     password: ${JASYPT_PASSWORD}
     algorithm: ${JASYPT_ALGORITHM}
 
-server:
-  port: 8082
