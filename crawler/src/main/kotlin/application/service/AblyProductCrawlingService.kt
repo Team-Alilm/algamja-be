@@ -13,23 +13,30 @@ import java.net.URI
 @Service
 class AblyProductCrawlingService(
     private val restClient: RestClient,
+    private val webDriver: org.openqa.selenium.WebDriver
 ) : ProductCrawlingUseCase {
 
     private val log = org.slf4j.LoggerFactory.getLogger(javaClass)
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val productNumber = getProductNumber(command.url)
-//        val aNonymousToken = restClient.get()
-//            .uri(StringContextHolder.ABLY_ANONYMOUS_TOKEN_API_URL.get())
-//            .accept(MediaType.APPLICATION_JSON)
-//            .retrieve()
-//            .body(JsonNode::class.java)
-//            ?.get("token")
-//            ?.asText() ?: throw AnonymousTokenException()
 
-        val aNonymousToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiIzMTk0MzE3NjYiLCJpYXQiOjE3MzE4ODUwNjl9.iMCkiNw50N05BAatKxnvMYWAg_B7gBUiBL6FZe1Og9Y"
+        webDriver.get(command.url)
 
-        log.info("productNumber: $productNumber, aNonymousToken: $aNonymousToken")
+        log.info(
+            """
+                webDriver.pageSource:
+                ${webDriver.pageSource}
+            """.trimIndent()
+        )
+
+        val aNonymousToken = restClient.get()
+            .uri(StringContextHolder.ABLY_ANONYMOUS_TOKEN_API_URL.get())
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .body(JsonNode::class.java)
+            ?.get("token")
+            ?.asText() ?: throw AnonymousTokenException()
 
         // https://m.a-bly.com/goods/34883322
         val productDetails = getProductDetails(
@@ -86,6 +93,8 @@ class AblyProductCrawlingService(
                 .header("X-Anonymous-Token", aNonymousToken)
                 .retrieve()
                 .body(JsonNode::class.java)
+
+
         } catch (e: Exception) {
             log.error("Error while fetching product details: ${e.message}")
             return null
