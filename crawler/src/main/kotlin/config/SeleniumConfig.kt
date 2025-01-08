@@ -1,5 +1,6 @@
 package org.team_alilm.config
 
+import io.github.bonigarcia.wdm.WebDriverManager
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
@@ -12,6 +13,8 @@ class SeleniumConfig {
 
     @Bean
     fun webDriver(): WebDriver {
+        WebDriverManager.chromedriver().setup()
+
         val options = ChromeOptions()
         options.addArguments("--no-sandbox")
         options.addArguments("--disable-dev-shm-usage")
