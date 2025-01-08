@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.team_alilm.adapter.out.persistence.entity.AlilmJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.alilm.AlilmAllCountAndDailyCount
+import org.team_alilm.adapter.out.persistence.repository.alilm.AlilmAndProductProjection
 
 interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
 
@@ -16,6 +17,26 @@ interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
     FROM AlilmJpaEntity a
     """)
     fun allCountAndDailyCount(@Param("startOfToday") startOfToday: Long): AlilmAllCountAndDailyCount
+
+    @Query("""
+    select new org.team_alilm.adapter.out.persistence.repository.alilm.AlilmAndProductProjection(
+        a,
+        p
+    )
+    from AlilmJpaEntity a
+    join 
+        ProductJpaEntity p 
+        on a.productId = p.productId
+    where 
+        a.memberId         = :memberId
+        AND a.createdDate >= :dayLimit
+    order by
+        a.createdDate desc
+    """)
+    fun findAlilmAndProductByMemberId(
+        memberId: Long,
+        dayLimit: Long
+    ) : List<AlilmAndProductProjection>
 }
 
 
