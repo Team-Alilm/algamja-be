@@ -24,7 +24,6 @@ class ProductSoldoutCheckService(
     @SqsListener("product-soldout-check-queue")
     fun checkSoldout(payload: Product, @Headers headers: MessageHeaders, acknowledgement: Acknowledgement) {
         try {
-        log.info("Received message: ${payload.name}")
         val handle = platformHandlerResolver.resolve(payload.store)
         val soldoutProduct = handle.process(payload)
 
