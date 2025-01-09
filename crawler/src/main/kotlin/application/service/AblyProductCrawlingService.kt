@@ -30,7 +30,7 @@ class AblyProductCrawlingService(
         log.info("Page source: $pageSource")
 
 // "ably-anonymous-token: " 문자열 이후부터 시작하여, 해당 토큰 값을 추출
-        val tokenStartIndex = pageSource.indexOf("{\"ably-anonymous-token\":\"") + "{\"ably-anonymous-token\":\"".length
+        val tokenStartIndex = pageSource.indexOf("\"ably-anonymous-token\":\"") + "\"ably-anonymous-token\":\"".length
 
         log.info("Ably anonymous token start index: $tokenStartIndex")
 // 토큰의 끝 부분을 찾기 위한 인덱스 (공백, 괄호, 따옴표 등으로 끝날 수 있음)
