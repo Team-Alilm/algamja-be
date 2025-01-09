@@ -12,6 +12,7 @@ class SeleniumConfig {
 
     @Bean
     fun webDriver(): WebDriver {
+        System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");
         //ec2에서도 돌아가야함
         val options = ChromeOptions()
         options.addArguments("--headless")
