@@ -27,27 +27,10 @@ class AblyProductCrawlingService(
 
         // JSON 파싱하여 `ably-anonymous-token: ${token}` 추출
         val pageSource = webDriver.pageSource
-        log.info("Page source: $pageSource")
-
-// "ably-anonymous-token: " 문자열 이후부터 시작하여, 해당 토큰 값을 추출
         val tokenStartIndex = pageSource.indexOf("\"ably-anonymous-token\":\"") + "\"ably-anonymous-token\":\"".length
-
-        log.info("Ably anonymous token start index: $tokenStartIndex")
-// 토큰의 끝 부분을 찾기 위한 인덱스 (공백, 괄호, 따옴표 등으로 끝날 수 있음)
         val tokenEndIndex = pageSource.indexOf("\"}", tokenStartIndex)
-        log.info("Ably anonymous token end index: $tokenEndIndex")
         val aNonymousToken = pageSource.substring(tokenStartIndex, tokenEndIndex)
 
-        log.info("Ably anonymous token: $aNonymousToken")
-//        val aNonymousToken = restClient.get()
-//            .uri(StringContextHolder.ABLY_ANONYMOUS_TOKEN_API_URL.get())
-//            .accept(MediaType.APPLICATION_JSON)
-//            .retrieve()
-//            .body(JsonNode::class.java)
-//            ?.get("token")
-//            ?.asText() ?: throw AnonymousTokenException()
-
-        // https://m.a-bly.com/goods/34883322
         val productDetails = getProductDetails(
             productNumber = productNumber,
             aNonymousToken = aNonymousToken
