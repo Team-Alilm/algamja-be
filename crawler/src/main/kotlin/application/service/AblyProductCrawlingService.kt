@@ -1,15 +1,11 @@
 package org.team_alilm.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.google.gson.JsonObject
 import domain.product.Store
-import org.openqa.selenium.By
-import org.openqa.selenium.JavascriptExecutor
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
-import org.team_alilm.error.AnonymousTokenException
 import util.StringContextHolder
 import java.net.URI
 
@@ -23,6 +19,9 @@ class AblyProductCrawlingService(
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         webDriver.get(command.url)
+        // webDriver.pageSource를 통해 페이지 소스를 가져올 수 있음
+        log.info("Page source: ${webDriver.pageSource}")
+
         val productNumber = getProductNumber(command.url)
 
         // JSON 파싱하여 `ably-anonymous-token: ${token}` 추출
@@ -55,18 +54,27 @@ class AblyProductCrawlingService(
         )
 
         return ProductCrawlingUseCase.CrawlingResult(
-            number = productDetails?.get("goods")?.get("sno")?.asLong() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
-            name = productDetails.get("goods")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
-            brand = productDetails.get("goods")?.get("market")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
-            thumbnailUrl = productDetails.get("goods")?.get("first_page_rendering")?.get("cover_image")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            number = productDetails?.get("goods")?.get("sno")?.asLong()
+                ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            name = productDetails.get("goods")?.get("name")?.asText()
+                ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            brand = productDetails.get("goods")?.get("market")?.get("name")?.asText() ?: throw IllegalArgumentException(
+                "상품 정보를 가져올 수 없습니다."
+            ),
+            thumbnailUrl = productDetails.get("goods")?.get("first_page_rendering")?.get("cover_image")?.asText()
+                ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             imageUrlList = productDetails.get("goods")?.get("cover_images")?.map { it.asText() } ?: emptyList(),
-            firstCategory = productDetails.get("goods")?.get("category")?.get("name")?.asText() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            firstCategory = productDetails.get("goods")?.get("category")?.get("name")?.asText()
+                ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             secondCategory = null,
-            price = productDetails.get("goods")?.get("first_page_rendering")?.get("original_price")?.asInt() ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
+            price = productDetails.get("goods")?.get("first_page_rendering")?.get("original_price")?.asInt()
+                ?: throw IllegalArgumentException("상품 정보를 가져올 수 없습니다."),
             store = Store.A_BLY,
             firstOptions = firstOptions.get("option_components")?.map { it.get("name")?.asText() ?: "" } ?: emptyList(),
-            secondOptions = secondOptions?.get("option_components")?.map { it.get("name")?.asText() ?: "" } ?: emptyList(),
-            thirdOptions = thirdOptions?.get("option_components")?.map { it.get("name")?.asText() ?: "" } ?: emptyList(),
+            secondOptions = secondOptions?.get("option_components")?.map { it.get("name")?.asText() ?: "" }
+                ?: emptyList(),
+            thirdOptions = thirdOptions?.get("option_components")?.map { it.get("name")?.asText() ?: "" }
+                ?: emptyList(),
         )
     }
 
