@@ -16,7 +16,6 @@ class SeleniumConfig {
         WebDriverManager.chromedriver().setup()  // 먼저 WebDriver 설정
 
         val options = ChromeOptions()
-        options.addArguments("--headless")
         options.addArguments("--no-sandbox")
         options.addArguments("--disable-dev-shm-usage")
         options.addArguments("--disable-gpu")
