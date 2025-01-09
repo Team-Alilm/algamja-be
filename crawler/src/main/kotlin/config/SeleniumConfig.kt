@@ -1,6 +1,5 @@
 package org.team_alilm.config
 
-import io.github.bonigarcia.wdm.WebDriverManager
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
@@ -13,8 +12,6 @@ class SeleniumConfig {
 
     @Bean
     fun webDriver(): WebDriver {
-        WebDriverManager.chromedriver().setup()  // WebDriverManager로 ChromeDriver 설정
-
         //ec2에서도 돌아가야함
         val options = ChromeOptions()
         options.addArguments("--headless")
