@@ -12,6 +12,5 @@ spring:
         region:
           static: ap-northeast-2
 
-
 server:
   port: 8081
