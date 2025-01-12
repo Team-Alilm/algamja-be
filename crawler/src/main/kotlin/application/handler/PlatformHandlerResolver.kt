@@ -8,7 +8,7 @@ import org.team_alilm.application.handler.impl.MusinsaHandler
 
 @Component
 class PlatformHandlerResolver(
-    private val aBlyHandler: ABlyHandler,
+//    private val aBlyHandler: ABlyHandler,
     private val musinsaHandler: MusinsaHandler,
     private val cm29Handler: CM29Handler,
 ) {
@@ -16,7 +16,7 @@ class PlatformHandlerResolver(
     fun resolve(store: Store): PlatformHandler {
         return when (store) {
             Store.CM29 -> cm29Handler
-            Store.A_BLY -> aBlyHandler
+//            Store.A_BLY -> aBlyHandler
             Store.MUSINSA -> musinsaHandler
             else -> throw IllegalArgumentException()
         }
