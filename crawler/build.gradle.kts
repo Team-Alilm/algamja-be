@@ -16,6 +16,6 @@ dependencies {
     implementation("org.jsoup:jsoup:1.15.3")
 
     // selenium
-    implementation("org.seleniumhq.selenium:selenium-java:4.23.0")
-    implementation("io.github.bonigarcia:webdrivermanager:5.9.2")
+    implementation("org.seleniumhq.selenium:selenium-java:4.27.0")
+    implementation("org.seleniumhq.selenium:selenium-chrome-driver:4.14.0")
 }
