@@ -42,7 +42,7 @@ class ProductCrawlingController(
             return when {
                 url.contains("29cm") -> Store.CM29
                 url.contains("musinsa") -> Store.MUSINSA
-                url.contains("a-bly") -> Store.A_BLY
+//                url.contains("a-bly") -> Store.A_BLY
                 else -> throw IllegalArgumentException("지원하지 않는 URL입니다.")
             }
         }
