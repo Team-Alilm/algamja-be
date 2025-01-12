@@ -2,7 +2,7 @@ package domain.product
 
 enum class Store {
     MUSINSA,
-    A_BLY,
+//    A_BLY,
     CM29,
     NONE;
 }
