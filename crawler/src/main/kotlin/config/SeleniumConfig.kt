@@ -1,6 +1,5 @@
 package org.team_alilm.config
 
-import io.github.bonigarcia.wdm.WebDriverManager
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
@@ -12,10 +11,6 @@ class SeleniumConfig {
 
     @Bean
     fun webDriver(): WebDriver {
-// WebDriverManager를 사용하여 ChromeDriver 관리
-        WebDriverManager.chromedriver().setup();
-
-        //ec2에서도 돌아가야함
         val options = ChromeOptions()
         options.addArguments("--headless")
         options.addArguments("--disable-gpu")
