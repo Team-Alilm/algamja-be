@@ -1,6 +1,6 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.domain.product.Product
+import domain.product.Product
 
 interface ProductDetailsUseCase {
 
@@ -21,7 +21,7 @@ interface ProductDetailsUseCase {
         val price: Int,
         val firstCategory: String,
         val secondCategory: String?,
-        val firstOption: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?,
         val waitingCount: Long

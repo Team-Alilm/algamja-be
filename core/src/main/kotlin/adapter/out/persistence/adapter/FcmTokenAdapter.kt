@@ -1,11 +1,11 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import domain.FcmToken
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.FcmTokenMapper
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataFcmTokenRepository
 import org.team_alilm.application.port.out.AddFcmTokenPort
 import org.team_alilm.application.port.out.LoadFcmTokenPort
-import org.team_alilm.domain.FcmToken
 
 @Component
 class FcmTokenAdapter(

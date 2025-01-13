@@ -1,16 +1,16 @@
 package org.team_alilm.application.service
 
+import domain.Basket
+import domain.Member
+import domain.product.Product
+import domain.product.ProductId
+import domain.product.ProductImage
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase.*
-import org.team_alilm.domain.Basket
-import org.team_alilm.domain.Member.*
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.ProductId
-import org.team_alilm.domain.product.ProductImage
 import org.team_alilm.global.error.BasketAlreadyExistsException
-import org.team_alilm.global.util.StringConstant
+import util.StringContextHolder
 
 @Service
 @Transactional(readOnly = true)
@@ -20,9 +20,10 @@ class AlilmRegistrationService(
     private val loadBasketPort: org.team_alilm.application.port.out.LoadBasketPort,
     private val addBasketPort: org.team_alilm.application.port.out.AddBasketPort,
     private val slackGateway: SlackGateway,
-    private val loadProductImagePort: org.team_alilm.application.port.out.LoadProductImagePort,
-    private val addAllProductImagePort: org.team_alilm.application.port.out.AddAllProductImagePort
+    private val addProductImagePort: org.team_alilm.application.port.out.AddProductImagePort
 ) : org.team_alilm.application.port.`in`.use_case.AlilmRegistrationUseCase {
+
+    private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
     @Transactional
     override fun alilmRegistration(command: AlilmRegistrationCommand) {
@@ -37,13 +38,13 @@ class AlilmRegistrationService(
                 |알림 등록 완료
                 |회원: ${command.member.nickname}
                 |상품명: ${product.name}
-                |링크: ${StringConstant.MUSINSA_PRODUCT_HTML_URL.get().format(product.number)}
+                |링크: ${StringContextHolder.MUSINSA_PRODUCT_HTML_URL.get().format(product.number)}
             """.trimIndent()
         )
     }
 
     private fun saveBasket(
-        memberId: MemberId,
+        memberId: Member.MemberId,
         productId: ProductId,
     ) {
 
@@ -95,25 +96,19 @@ class AlilmRegistrationService(
                 )
             )
 
-            loadProductImagePort.existsByProductImage(product.number, product.store)
-                .takeIf { it.not() } // 이미지가 존재하지 않으면
-                ?.let {
-                    saveProductImageList(product, command.imageUrlList) // 이미지를 저장합니다
-                }
+            try{
+                addProductImagePort.add(
+                    command.imageUrlList.map { ProductImage(
+                        id = null,
+                        imageUrl = it,
+                        productNumber = product.number,
+                        productStore = product.store
+                    ) }
+                )
+            } catch (e: Exception) {
+                log.info("상품 이미지 등록 중 오류 발생", e)
+            }
 
             return product
         }
-
-    private fun saveProductImageList(product: Product, imageUrlList: List<String>) {
-        addAllProductImagePort.addAllProductImage(
-            productImageList = imageUrlList.map {
-                ProductImage(
-                    id = null,
-                    imageUrl = it,
-                    productNumber = product.number,
-                    productStore = product.store
-                )
-            }
-        )
-    }
 }

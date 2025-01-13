@@ -1,12 +1,11 @@
 package org.team_alilm.application.service
 
+import domain.Basket
+import domain.product.ProductId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.CopyBasketUseCase
 import org.team_alilm.application.port.out.LoadBasketPort
-import org.team_alilm.domain.Basket
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.ProductId
 import org.team_alilm.global.error.DuplicateBasketException
 import org.team_alilm.global.error.NotFoundProductException
 
@@ -37,13 +36,13 @@ class CopyBasketService(
             ?: throw NotFoundProductException()
 
         val basket = Basket.create(
-            memberId = command.member.id,
+            memberId = command.member.id!!,
             productId = productId
         )
         addBasketPort.addBasket(
             basket = basket,
             productId = product.id!!,
-            memberId = command.member.id
+            memberId = command.member.id!!
         )
 
     }

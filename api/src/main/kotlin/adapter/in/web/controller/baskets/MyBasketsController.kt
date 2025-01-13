@@ -1,6 +1,5 @@
 package org.team_alilm.adapter.`in`.web.controller.baskets
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
@@ -49,13 +48,13 @@ class MyBasketsController(
         val imageUrl: String,
         val store: String,
         val price: Int,
-        @JsonProperty("isAlilm") val isAlilm: Boolean,
+        val isAlilm: Boolean,
         val alilmDate: Long?,
         val firstCategory: String,
-        val firstOption: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?,
-        @JsonProperty("isHidden") val isHidden: Boolean,
+        val isHidden: Boolean,
         val waitingCount: Long,
         val productId: Long
     ) {

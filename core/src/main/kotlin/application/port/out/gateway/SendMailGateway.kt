@@ -1,6 +1,6 @@
 package org.team_alilm.application.port.out.gateway
 
-import org.team_alilm.domain.product.Product
+import domain.product.Product
 
 interface SendMailGateway {
 

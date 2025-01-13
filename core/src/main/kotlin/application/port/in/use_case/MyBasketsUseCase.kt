@@ -1,8 +1,8 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.domain.Basket
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.product.Product
+import domain.Basket
+import domain.Member
+import domain.product.Product
 
 interface MyBasketsUseCase {
 
@@ -23,7 +23,7 @@ interface MyBasketsUseCase {
         val isAlilm: Boolean,
         val firstCategory: String,
         val alilmDate: Long?,
-        val firstOption: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?,
         val isHidden: Boolean,

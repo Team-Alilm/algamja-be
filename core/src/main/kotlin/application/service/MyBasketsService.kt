@@ -4,18 +4,22 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase
 import org.team_alilm.application.port.`in`.use_case.MyBasketsUseCase.*
+import org.team_alilm.application.port.out.LoadBasketPort
 import org.team_alilm.global.error.NotFoundProductException
 
 @Service
 @Transactional
 class MyBasketsService (
-    val loadMyBasketsPort: org.team_alilm.application.port.out.LoadMyBasketsPort
+    val loadMyBasketsPort: org.team_alilm.application.port.out.LoadMyBasketsPort,
+    val loadBasketPort: LoadBasketPort
 ) : MyBasketsUseCase {
 
     override fun myBasket(command: MyBasketCommand): List<MyBasketsResult> {
         val myBasketAndProductList = loadMyBasketsPort.loadMyBaskets(command.member)
 
         return myBasketAndProductList.map {
+            val waitingCount = loadBasketPort.loadBasketCount(it.product.id!!)
+
             MyBasketsResult(
                 id = it.basket.id!!.value!!,
                 number = it.product.number,
@@ -31,7 +35,7 @@ class MyBasketsService (
                 secondOption = it.product.secondOption,
                 thirdOption = it.product.thirdOption,
                 isHidden = it.basket.isHidden,
-                waitingCount = it.waitingCount,
+                waitingCount = waitingCount,
                 productId = it.product.id?.value ?: throw NotFoundProductException()
             )
         }

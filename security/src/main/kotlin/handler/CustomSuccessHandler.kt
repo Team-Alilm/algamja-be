@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
 import org.team_alilm.adapter.out.gateway.SlackGateway
 import org.team_alilm.application.service.OauthLoginMemberService
-import org.team_alilm.domain.Member
+import domain.Member
 import org.team_alilm.jwt.JwtUtil
 
 @Component
@@ -39,7 +39,7 @@ class CustomSuccessHandler(
             이메일 : ${member.email}
             """.trimIndent())
 
-        val jwt = jwtUtil.createJwt(member.id!!, 1000L * 60 * 60 * 24 * 30)
+        val jwt = jwtUtil.createJwt(member.id!!, 1000L * 60 * 60 * 24 * 30 * 1000)
         val redirectUri = UriComponentsBuilder.fromHttpUrl(baseUrl)
             .path("/oauth/kakao")
             .queryParam("Authorization", jwt)

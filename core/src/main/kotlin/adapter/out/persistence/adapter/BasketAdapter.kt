@@ -1,5 +1,8 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import domain.Basket
+import domain.Member
+import domain.product.ProductId
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
@@ -7,10 +10,6 @@ import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.BasketRepository
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataBasketRepository
 import org.team_alilm.application.port.out.*
-import org.team_alilm.domain.Basket
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.Member.*
-import org.team_alilm.domain.product.ProductId
 import org.team_alilm.global.error.NotFoundBasketException
 import org.team_alilm.global.error.NotFoundMemberException
 
@@ -28,7 +27,7 @@ class BasketAdapter(
 
     override fun addBasket(
         basket: Basket,
-        memberId: MemberId,
+        memberId: Member.MemberId,
         productId: ProductId
     ): Basket {
         val basketJpaEntity = basketJpaEntity(basket, memberId, productId)
@@ -38,7 +37,7 @@ class BasketAdapter(
     }
 
     override fun loadBasketIncludeIsDelete(
-        memberId: MemberId,
+        memberId: Member.MemberId,
         productId: ProductId
     ): Basket? {
         val basketJpaEntity = springDataBasketRepository.findByMemberIdAndProductId(
@@ -49,7 +48,7 @@ class BasketAdapter(
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
-    override fun loadMyBasket(memberId: MemberId): List<Basket> {
+    override fun loadMyBasket(memberId: Member.MemberId): List<Basket> {
         val basketJpaEntityList = springDataBasketRepository.findByMemberIdAndIsDeleteFalse(memberId.value)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
@@ -67,7 +66,7 @@ class BasketAdapter(
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
-    override fun loadBasketIncludeIsDelete(memberId: MemberId, productId: ProductId, isDeleted: Boolean): Basket? {
+    override fun loadBasketIncludeIsDelete(memberId: Member.MemberId, productId: ProductId, isDeleted: Boolean): Basket? {
         val basketJpaEntity = springDataBasketRepository.findByMemberIdAndProductIdAndIsDelete(
             memberId = memberId.value,
             productId = productId.value,
@@ -77,6 +76,10 @@ class BasketAdapter(
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
+    override fun loadBasketCount(productId: ProductId): Long {
+        return springDataBasketRepository.countByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
+    }
+
     override fun loadMyBaskets(member: Member) : List<LoadMyBasketsPort.BasketAndProduct> {
         return basketRepository
             .myBasketList(member.id?.value ?: throw NotFoundMemberException())
@@ -84,14 +87,13 @@ class BasketAdapter(
                 LoadMyBasketsPort.BasketAndProduct(
                     basket = basketMapper.mapToDomainEntity(it.basketJpaEntity),
                     product = productMapper.mapToDomainEntity(it.productJpaEntity),
-                    waitingCount = it.waitingCount
                 )
             }
     }
 
     private fun basketJpaEntity(
         basket: Basket,
-        memberId: MemberId,
+        memberId: Member.MemberId,
         productId: ProductId
     ): BasketJpaEntity {
         val basketJpaEntity = basketMapper

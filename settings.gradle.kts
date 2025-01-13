@@ -26,5 +26,6 @@ plugins {
 include("worker")
 include("api")
 include("core")
-include("proxy")
+include("crawler")
 include("security")
+include("domain")

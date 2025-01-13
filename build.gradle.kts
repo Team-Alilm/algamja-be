@@ -28,7 +28,7 @@ subprojects {
     apply(plugin = "kotlin-kapt")
     apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-    apply(plugin = "org.jetbrains.kotlin.plugin.allopen") // 추가
+    apply(plugin = "org.jetbrains.kotlin.plugin.allopen")
 
     dependencies {
         implementation("org.springframework.boot:spring-boot-starter")

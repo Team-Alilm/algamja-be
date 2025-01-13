@@ -1,11 +1,11 @@
 package org.team_alilm.application.service
 
+import domain.product.ProductId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.ProductRelatedUseCase
 import org.team_alilm.application.port.`in`.use_case.ProductRelatedUseCase.*
 import org.team_alilm.application.port.out.LoadProductPort
-import org.team_alilm.domain.product.ProductId
 import org.team_alilm.global.error.NotFoundProductException
 
 @Service

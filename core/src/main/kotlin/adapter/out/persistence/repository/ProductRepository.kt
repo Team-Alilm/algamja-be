@@ -7,14 +7,15 @@ import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
-import org.team_alilm.domain.product.Store
+import domain.product.Product
+import domain.product.Store
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
     fun findByNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
         number: Long,
         store: Store,
-        firstOption: String,
+        firstOption: String?,
         secondOption: String?,
         thirdOption: String?,
     ): ProductJpaEntity?
@@ -34,29 +35,6 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         p.id
 """)
     fun findCrawlingProducts(): List<ProductJpaEntity>
-
-    @Query("""
-    SELECT 
-        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(
-            p, 
-            COUNT(CASE WHEN b.isAlilm = false THEN 1 END)
-        )
-    FROM 
-        ProductJpaEntity p
-    LEFT JOIN 
-        BasketJpaEntity b 
-    ON 
-        b.productId = p.id
-    AND 
-        b.isDelete = false
-    WHERE 
-        p.isDelete = false
-    GROUP BY 
-        p.id
-    ORDER BY 
-        COUNT(CASE WHEN b.isAlilm = false THEN 1 END) DESC, p.id DESC
-""")
-    fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 
     @Query("""
     SELECT 
@@ -94,5 +72,18 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         LIMIT 10
     """)
     fun findRecentProducts (): List<ProductJpaEntity>
+
+    @Query("""
+        SELECT 
+            p
+        FROM 
+            ProductJpaEntity p 
+        WHERE p.isDelete = false
+        GROUP BY 
+            p.firstCategory
+        ORDER BY 
+            p.firstCategory DESC
+    """)
+    fun findProductCategories(): List<ProductJpaEntity>
 }
 

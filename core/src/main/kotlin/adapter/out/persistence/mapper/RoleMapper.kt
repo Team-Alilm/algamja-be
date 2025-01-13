@@ -1,8 +1,9 @@
 package org.team_alilm.adapter.out.persistence.mapper
 
+import domain.Role
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.RoleJpaEntity
-import org.team_alilm.domain.Role
+
 
 @Component
 class RoleMapper {

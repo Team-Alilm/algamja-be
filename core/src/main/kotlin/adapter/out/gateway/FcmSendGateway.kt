@@ -2,11 +2,11 @@ package org.team_alilm.adapter.out.gateway
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
+import domain.FcmToken
+import domain.Member
+import domain.product.Product
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.team_alilm.domain.FcmToken
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.product.Product
 
 @Service
 class FcmSendGateway(
@@ -37,7 +37,12 @@ class FcmSendGateway(
             .setToken(fcmToken.token)
             .build()
 
-        firebaseMessaging.send(message)
+        try {
+            firebaseMessaging.send(message)
+        } catch (e: Exception) {
+            log.error("Failed to send message: $message", e)
+            return
+        }
 
         log.info("Successfully sent message: $message")
     }

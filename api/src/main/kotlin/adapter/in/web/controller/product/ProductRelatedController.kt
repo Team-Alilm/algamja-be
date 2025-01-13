@@ -1,5 +1,7 @@
 package org.team_alilm.adapter.`in`.web.controller.product
 
+import domain.product.Product
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.ProductRelatedUseCase
 import org.team_alilm.application.port.`in`.use_case.ProductRelatedUseCase.*
-import org.team_alilm.domain.product.Product
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -21,6 +22,9 @@ class ProductRelatedController(
     private val productRelatedUseCase: ProductRelatedUseCase
 ) {
 
+    @Operation(
+        summary = "관련 상품 조회 API",
+    )
     @GetMapping("/related/{productId}")
     fun productRecent(@PathVariable productId: Long) : ResponseEntity<ProductRelatedResponse> {
         val command = ProductRelatedCommand(productId = productId)
@@ -48,7 +52,8 @@ class ProductRelatedController(
         val imageUrl: String,
         val brand: String,
         val price: Int,
-        val firstOption: String,
+        val firstCategory: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?
     ) {
@@ -60,6 +65,7 @@ class ProductRelatedController(
                     imageUrl = product.thumbnailUrl,
                     brand = product.brand,
                     price = product.price,
+                    firstCategory = product.firstCategory,
                     firstOption = product.firstOption,
                     secondOption = product.secondOption,
                     thirdOption = product.thirdOption
