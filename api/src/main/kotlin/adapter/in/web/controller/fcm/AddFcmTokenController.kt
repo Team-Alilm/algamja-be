@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.`in`.web.controller.fcm
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
@@ -36,6 +37,7 @@ class AddFcmTokenController(
     @Schema(description = "FCM 토큰 등록 요청")
     data class FcmTokenRequest(
         @field:NotBlank(message = "FCM 토큰은 필수입니다.")
+        @JsonProperty("fcmToken")
         val fcmToken: String
     )
 }

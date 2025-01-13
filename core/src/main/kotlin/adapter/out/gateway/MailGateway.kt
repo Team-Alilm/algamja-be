@@ -1,12 +1,11 @@
 package org.team_alilm.adapter.out.gateway
 
-import org.slf4j.LoggerFactory
+import domain.product.Product
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import org.team_alilm.application.port.out.gateway.SendMailGateway
-import org.team_alilm.domain.product.Product
 import java.lang.System.currentTimeMillis
 import java.time.Instant
 import java.time.LocalDateTime
@@ -21,8 +20,6 @@ class MailGateway(
 
     private val emailSender: JavaMailSender,
 ) : SendMailGateway {
-
-    private val log = LoggerFactory.getLogger(MailGateway::class.java)
 
     override fun sendMail(to: String, nickname: String, product: Product) {
         val mimeMessage = emailSender.createMimeMessage()
@@ -40,7 +37,7 @@ class MailGateway(
         emailSender.send(mimeMessage)
     }
 
-    private fun getMailMessage(nickname: String, productNumber: Long, imageUrl: String, options: String): String {
+    private fun getMailMessage(nickname: String, productNumber: Long, imageUrl: String, options: String?): String {
         val currentTimeMillis = currentTimeMillis()
 
         val dateTime: LocalDateTime =

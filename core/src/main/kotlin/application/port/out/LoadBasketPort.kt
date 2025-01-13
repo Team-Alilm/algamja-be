@@ -1,9 +1,9 @@
 package org.team_alilm.application.port.out
 
-import org.team_alilm.domain.Basket
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.ProductId
+import domain.Basket
+import domain.Member
+import domain.product.ProductId
+
 
 interface LoadBasketPort {
 
@@ -12,6 +12,9 @@ interface LoadBasketPort {
         productId: ProductId
     ): Basket?
 
+    fun loadBasketCount(
+        productId: ProductId
+    ): Long
 
     fun loadMyBasket(
         memberId: Member.MemberId

@@ -2,7 +2,7 @@ package org.team_alilm.data
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.team_alilm.domain.Member
+import domain.Member
 
 /**
  * Custom implementation of UserDetails to integrate with Spring Security.

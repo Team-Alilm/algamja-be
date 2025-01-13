@@ -6,5 +6,4 @@ import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 data class BasketAndProductProjection(
     val basketJpaEntity: BasketJpaEntity,
     val productJpaEntity: ProductJpaEntity,
-    val waitingCount: Long
 )

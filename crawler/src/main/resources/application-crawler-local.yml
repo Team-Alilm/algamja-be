@@ -1,0 +1,7 @@
+jwt-token: ENC(rXuDwvLwBpLMyzIe9KWLOHH1OKn/nyCUHmah2IyHMd0uXfNwAdIWPwO65s+NPLJg58Nv7ekYK1NqJoIryTVzqQP3M97G/7GxlSGDlntAJGkbDGAR9jEDwOeaVoEOpmFivbVnrvB5QnSMSoXsUlEk4zVH1KCjwaCzKEZsP/SrwNYm61TPZswTFuwYwqcuvnycI7QJfb/udxufCwfJixTy8AOj+/VsSH2AugQKxupR2JrDV3/6qxDYfw==)
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_PASSWORD}
+    algorithm: ${JASYPT_ALGORITHM}

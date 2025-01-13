@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    aws:
+      credentials:
+        access-key: ENC(KE/Ro8r1NbGMPsOESPM5KeY7Jkk5f8cXGBZnHjIw6aI=)
+        secret-key: ENC(XVIV5AuAv7dBtD/076Vgl+LjKjOqTnWPftROOtnBT/lWUCuzbqll0v118UJbqZLN1di9zhffyCM=)
+        region:
+          static: ap-northeast-2
+
+jwt-token: ENC(rXuDwvLwBpLMyzIe9KWLOHH1OKn/nyCUHmah2IyHMd0uXfNwAdIWPwO65s+NPLJg58Nv7ekYK1NqJoIryTVzqQP3M97G/7GxlSGDlntAJGkbDGAR9jEDwOeaVoEOpmFivbVnrvB5QnSMSoXsUlEk4zVH1KCjwaCzKEZsP/SrwNYm61TPZswTFuwYwqcuvnycI7QJfb/udxufCwfJixTy8AOj+/VsSH2AugQKxupR2JrDV3/6qxDYfw==)
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_PASSWORD}
+    algorithm: ${JASYPT_ALGORITHM}
+

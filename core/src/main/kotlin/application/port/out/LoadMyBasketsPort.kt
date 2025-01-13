@@ -1,8 +1,8 @@
 package org.team_alilm.application.port.out
 
-import org.team_alilm.domain.Basket
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.product.Product
+import domain.Basket
+import domain.Member
+import domain.product.Product
 
 interface LoadMyBasketsPort {
 
@@ -11,7 +11,6 @@ interface LoadMyBasketsPort {
     data class BasketAndProduct(
         val basket: Basket,
         val product: Product,
-        val waitingCount: Long
     )
 
 }

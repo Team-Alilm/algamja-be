@@ -1,14 +1,16 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import domain.Alilm
+import domain.product.Product
 import org.slf4j.LoggerFactory
-import org.springframework.boot.logging.LoggerGroup
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.AlilmMapper
+import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.AlilmRepository
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataAlilmRepository
 import org.team_alilm.application.port.out.AddAlilmPort
+import org.team_alilm.application.port.out.LoadAlilmPort
 import org.team_alilm.application.port.out.LoadAllAndDailyCountPort
-import org.team_alilm.domain.Alilm
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -16,11 +18,12 @@ import java.time.ZoneOffset
 class AlilmAdapter(
     private val springDataAlilmRepository: SpringDataAlilmRepository,
     private val alilmRepository: AlilmRepository,
-    private val alilmMapper: AlilmMapper
+    private val alilmMapper: AlilmMapper,
+    private val productMapper: ProductMapper
 ) : AddAlilmPort,
-    LoadAllAndDailyCountPort {
-
-        val log = LoggerFactory.getLogger(AlilmAdapter::class.java)
+    LoadAllAndDailyCountPort,
+    LoadAlilmPort
+{
 
     override fun addAlilm(alilm: Alilm) {
         springDataAlilmRepository.save(alilmMapper.mapToJpaEntity(alilm))
@@ -35,4 +38,9 @@ class AlilmAdapter(
             dailyCount = allCount.dailyCount
         )
     }
+
+    override fun loadAlilm(count: Int): List<Product> {
+        return alilmRepository.findByRestockRanking(count = count).map { productMapper.mapToDomainEntity(it) }
+    }
+
 }

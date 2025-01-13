@@ -1,5 +1,7 @@
 package org.team_alilm.application.service
 
+import domain.Member
+import domain.Role
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.LoginMemberUseCase
@@ -7,8 +9,6 @@ import org.team_alilm.application.port.out.AddMemberPort
 import org.team_alilm.application.port.out.AddMemberRoleMappingPort
 import org.team_alilm.application.port.out.LoadMemberPort
 import org.team_alilm.application.port.out.LoadRolePort
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.Role
 import org.team_alilm.global.error.NotFoundRoleException
 
 @Service

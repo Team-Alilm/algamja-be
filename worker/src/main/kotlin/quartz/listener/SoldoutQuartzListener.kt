@@ -24,7 +24,7 @@ class SoldoutQuartzListener(
      * Job 실행 이전 수행
      */
     override fun jobToBeExecuted(context: JobExecutionContext?) {
-        log.info("Job is going to be executed")
+        log.info("${context?.jobDetail?.key} Job is going to be executed")
     }
 
     /**
@@ -38,7 +38,7 @@ class SoldoutQuartzListener(
      * Job 실행 완료 시점 수행
      */
     override fun jobWasExecuted(context: JobExecutionContext?, exception: JobExecutionException?) {
-        log.info("Job was executed")
+        log.info("${context?.jobDetail?.key} Job was executed")
         if (exception != null) {
             log.error("Job execution failed", exception)
         }

@@ -5,24 +5,24 @@ import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndMemberProjection
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndProductProjection
-import org.team_alilm.domain.product.Product
 
 interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
     @Query("""
     select new org.team_alilm.adapter.out.persistence.repository.basket.BasketAndProductProjection(
         b, 
-        p, 
-        count(b2)
+        p
     )
-    from BasketJpaEntity b
-    join ProductJpaEntity p on b.productId = p.id
-    left join BasketJpaEntity b2 on b2.productId = p.id and b2.isDelete = false
-    where b.memberId = :memberId
-    and b.isDelete = false
-    and p.isDelete = false
-    group by b.id, p.id
-    order by b.lastModifiedDate desc, b.id desc
+    from 
+        BasketJpaEntity b
+    join
+        ProductJpaEntity p
+        on b.productId = p.id
+    where
+        b.memberId = :memberId
+        and b.isDelete = false
+        and p.isDelete = false
+    order by b.createdDate desc
 """)
     fun myBasketList(memberId: Long): List<BasketAndProductProjection>
 
@@ -62,6 +62,8 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
             AND p.isDelete = false
             AND b.isAlilm = false
             AND b.productId = :productId
+            AND f.isDelete = false
+            AND m.isDelete = false
         """
     )
     fun findBasketAndMemberByProductNumberAndMemberId(

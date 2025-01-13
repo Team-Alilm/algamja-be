@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Component
 import org.team_alilm.data.OAuth2Attribute
-import org.team_alilm.domain.Role
+import domain.Role
 
 @Component
 class CustomOAuth2UserService : DefaultOAuth2UserService() {

@@ -1,15 +1,15 @@
 package org.team_alilm.application.port.out
 
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.ProductId
-import org.team_alilm.domain.product.Store
+import domain.product.Product
+import domain.product.ProductId
+import domain.product.Store
 
 interface LoadProductPort {
 
     fun loadProduct(
         number:Long,
         store: Store,
-        firstOption: String,
+        firstOption: String?,
         secondOption: String?,
         thirdOption: String?
     ): Product?
@@ -17,6 +17,11 @@ interface LoadProductPort {
     fun loadProduct(
         productId: ProductId,
     ): Product?
+
+    fun loadProduct(
+        productId: Long,
+    ): Product?
+
 
     fun loadProductDetails(
         productId: ProductId,
@@ -27,6 +32,8 @@ interface LoadProductPort {
     fun loadRelatedProduct(category: String): List<Product>
 
     fun related(category: String) : List<Product>
+
+    fun loadProductCategories(): List<String>
 
     data class ProductAndWaitingCountAndImageList(
         val product: Product,
