@@ -104,11 +104,8 @@ class ProductAdapter(
         }
     }
 
-    override fun loadProductSlice(pageRequest: PageRequest): Slice<LoadProductSlicePort.ProductAndWaitingCount> {
-        return productRepository.findAllProductSlice(pageRequest).map { LoadProductSlicePort.ProductAndWaitingCount.of(
-            product = productMapper.mapToDomainEntity(it.productJpaEntity),
-            waitingCount = it.waitingCount
-        ) }
+    override fun loadProductSlice(pageRequest: PageRequest): Slice<Product> {
+        return springDataProductRepository.findAllByIsDeleteFalse(pageRequest).map { productMapper.mapToDomainEntity(it) }
     }
 
 }

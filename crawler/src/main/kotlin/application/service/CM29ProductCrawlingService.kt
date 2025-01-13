@@ -2,6 +2,7 @@ package org.team_alilm.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
 import domain.product.Store
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
@@ -11,6 +12,8 @@ import util.StringContextHolder
 class CM29ProductCrawlingService(
     private val restClient: RestClient
 ) : ProductCrawlingUseCase {
+
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val productNumber = command.productNumber
@@ -22,10 +25,9 @@ class CM29ProductCrawlingService(
             .body(JsonNode::class.java)
 
         val productDetailResponseData = productDetailResponse?.get("data") ?: throw IllegalArgumentException()
-        val productCategorys = productDetailResponseData.get("frontCategoryInfo").firstOrNull {
-            it.get("category2Name")?.asText()?.matches(Regex("^[가-힣]+$")) ?: false
-                    && it.get("category3Name")?.asText()?.matches(Regex("^[가-힣]+$")) ?: false
-        } ?: throw IllegalArgumentException()
+        log.info("productDetailResponseData: $productDetailResponseData")
+
+        val productCategory = productDetailResponseData.get("frontCategoryInfo")[0]
 
         return ProductCrawlingUseCase.CrawlingResult(
             number = productNumber,
@@ -35,8 +37,8 @@ class CM29ProductCrawlingService(
             imageUrlList = productDetailResponseData.get("itemImages")?.drop(1)?.map {
                 "https://img.29cm.co.kr" + it.get("imageUrl")?.asText()
             } ?: emptyList(),
-            firstCategory = productCategorys.get("category2Name")?.asText() ?: throw IllegalArgumentException(),
-            secondCategory = productCategorys.get("category3Name")?.asText() ?: throw IllegalArgumentException(),
+            firstCategory = productCategory.get("category1Name")?.asText() ?: throw IllegalArgumentException(),
+            secondCategory = productCategory.get("category2Name")?.asText() ?: throw IllegalArgumentException(),
             price = productDetailResponseData.get("consumerPrice")?.asInt() ?: throw IllegalArgumentException(),
             store = Store.CM29,
             firstOptions = productDetailResponseData.get("optionItems")?.get("list")?.map {

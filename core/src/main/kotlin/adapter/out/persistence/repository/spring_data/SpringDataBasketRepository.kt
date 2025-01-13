@@ -10,10 +10,6 @@ interface SpringDataBasketRepository : JpaRepository<BasketJpaEntity, Long> {
         productId: Long
     ): BasketJpaEntity?
 
-    fun findByIsAlilmTrueAndIsDeleteFalse() : List<BasketJpaEntity>
-
-    fun findByIsAlilmTrueAndAlilmDateGreaterThanEqualAndIsDeleteFalse(midnightMillis: Long): List<BasketJpaEntity>
-
     fun findByIdAndMemberId(basketId: Long, memberId: Long): BasketJpaEntity?
 
     fun findByMemberIdAndIsDeleteFalse(memberId: Long): List<BasketJpaEntity>
@@ -21,4 +17,6 @@ interface SpringDataBasketRepository : JpaRepository<BasketJpaEntity, Long> {
     fun findByProductIdAndIsDeleteFalseAndIsAlilmFalse(productId: Long): List<BasketJpaEntity>
 
     fun findByMemberIdAndProductIdAndIsDelete(memberId: Long, productId: Long, isDelete: Boolean): BasketJpaEntity?
+
+    fun countByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId: Long): Long
 }
