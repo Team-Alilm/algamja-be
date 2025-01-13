@@ -10,6 +10,7 @@ import org.springframework.messaging.MessageHeaders
 import org.springframework.messaging.handler.annotation.Headers
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
+import org.springframework.web.client.toEntity
 import org.team_alilm.application.handler.PlatformHandlerResolver
 
 @Service
@@ -25,20 +26,19 @@ class ProductSoldoutCheckService(
     fun checkSoldout(payload: Product, @Headers headers: MessageHeaders, acknowledgement: Acknowledgement) {
         try {
         val handle = platformHandlerResolver.resolve(payload.store)
-        val soldoutProduct = handle.process(payload)
+        val restock = handle.process(payload)
 
-        if (soldoutProduct) {
-            log.info("Product is sold out: $payload")
+        if (restock) {
+            log.info("Product is restock: $payload")
 
             val requestBody = RequestBody(productId = payload.id!!.value)
-            val response = restClient.put()
+            val status = restClient.put()
                 .uri("https://alilm.store/api/v1/baskets/alilm")
                 .header("authorization", jwtToken)
                 .body(requestBody)
-                .retrieve()
-                .body(String::class.java)
+                .retrieve().toEntity<Unit>().statusCode
 
-            log.info("Response from alilm.store: $response")
+            log.info("Response from alilm.store ${payload.id!!.value}: $status")
         }
 
         acknowledgement.acknowledge()

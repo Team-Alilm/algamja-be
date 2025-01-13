@@ -2,7 +2,6 @@ package org.team_alilm.application.handler
 
 import org.springframework.stereotype.Component
 import domain.product.Store
-import org.team_alilm.application.handler.impl.ABlyHandler
 import org.team_alilm.application.handler.impl.CM29Handler
 import org.team_alilm.application.handler.impl.MusinsaHandler
 
