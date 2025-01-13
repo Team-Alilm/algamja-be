@@ -76,6 +76,10 @@ class BasketAdapter(
         return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
+    override fun loadBasketCount(productId: ProductId): Long {
+        return springDataBasketRepository.countByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
+    }
+
     override fun loadMyBaskets(member: Member) : List<LoadMyBasketsPort.BasketAndProduct> {
         return basketRepository
             .myBasketList(member.id?.value ?: throw NotFoundMemberException())
@@ -83,7 +87,6 @@ class BasketAdapter(
                 LoadMyBasketsPort.BasketAndProduct(
                     basket = basketMapper.mapToDomainEntity(it.basketJpaEntity),
                     product = productMapper.mapToDomainEntity(it.productJpaEntity),
-                    waitingCount = it.waitingCount
                 )
             }
     }

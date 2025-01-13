@@ -1,6 +1,6 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.application.port.out.LoadProductSlicePort.ProductAndWaitingCount
+import domain.product.Product
 
 interface ProductSliceUseCase {
 
@@ -37,22 +37,22 @@ interface ProductSliceUseCase {
     ) {
 
         companion object {
-            fun from (basketAndCountProjection: ProductAndWaitingCount): ProductSliceResult {
+            fun from (product: Product, waitingCount: Long): ProductSliceResult {
                 return ProductSliceResult(
-                    id = basketAndCountProjection.product.id!!.value,
-                    number = basketAndCountProjection.product.number,
-                    name = basketAndCountProjection.product.name,
-                    brand = basketAndCountProjection.product.brand,
-                    thumbnailUrl = basketAndCountProjection.product.thumbnailUrl,
-                    imageUrl = basketAndCountProjection.product.thumbnailUrl,
-                    store = basketAndCountProjection.product.store.name,
-                    price = basketAndCountProjection.product.price,
-                    firstCategory = basketAndCountProjection.product.firstCategory,
-                    secondCategory = basketAndCountProjection.product.secondCategory,
-                    firstOption = basketAndCountProjection.product.firstOption,
-                    secondOption = basketAndCountProjection.product.secondOption,
-                    thirdOption = basketAndCountProjection.product.thirdOption,
-                    waitingCount = basketAndCountProjection.waitingCount
+                    id = product.id!!.value,
+                    number = product.number,
+                    name = product.name,
+                    brand = product.brand,
+                    thumbnailUrl = product.thumbnailUrl,
+                    imageUrl = product.thumbnailUrl,
+                    store = product.store.name,
+                    price = product.price,
+                    firstCategory = product.firstCategory,
+                    secondCategory = product.secondCategory,
+                    firstOption = product.firstOption,
+                    secondOption = product.secondOption,
+                    thirdOption = product.thirdOption,
+                    waitingCount = waitingCount
                 )
             }
         }

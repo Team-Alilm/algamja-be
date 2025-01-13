@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCaseResolver
+import org.team_alilm.error.NotFoundProductNumber
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -20,6 +21,7 @@ class ProductCrawlingController(
     ) : ResponseEntity<ProductCrawlingResponse> {
         val store = productCrawlingParameter.getStore()
         val productNumber = productCrawlingParameter.getProductNumber()
+
         val command = ProductCrawlingUseCase.ProductCrawlingCommand(
             url = productCrawlingParameter.url,
             store = store,
@@ -50,7 +52,7 @@ class ProductCrawlingController(
         fun getProductNumber(): Long {
             // 정규식으로 6자리 이상의 숫자 추출
             val regex = "\\d{6,}".toRegex()
-            return regex.find(url)?.value?.toLong() ?: throw IllegalArgumentException("지원하지 않는 URL입니다.")
+            return regex.find(url)?.value?.toLong() ?: throw NotFoundProductNumber()
         }
     }
 
@@ -76,7 +78,11 @@ class ProductCrawlingController(
                     name = productCrawlingResult.name,
                     brand = productCrawlingResult.brand,
                     thumbnailUrl = productCrawlingResult.thumbnailUrl,
-                    imageUrlList = productCrawlingResult.imageUrlList,
+                    imageUrlList = if (productCrawlingResult.imageUrlList.size > 3) {
+                        productCrawlingResult.imageUrlList.shuffled().take(3)
+                    } else {
+                        productCrawlingResult.imageUrlList
+                    },
                     store = productCrawlingResult.store,
                     price = productCrawlingResult.price,
                     firstCategory = productCrawlingResult.firstCategory,

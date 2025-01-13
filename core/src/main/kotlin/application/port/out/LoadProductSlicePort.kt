@@ -6,20 +6,5 @@ import org.springframework.data.domain.Slice
 
 interface LoadProductSlicePort {
 
-    fun loadProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCount>
-
-    data class ProductAndWaitingCount(
-        val product: Product,
-        val waitingCount: Long,
-    ) {
-
-        companion object {
-            fun of (product: Product, waitingCount: Long): ProductAndWaitingCount {
-                return ProductAndWaitingCount(
-                    product = product,
-                    waitingCount = waitingCount,
-                )
-            }
-        }
-    }
+    fun loadProductSlice(pageRequest: PageRequest): Slice<Product>
 }

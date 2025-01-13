@@ -12,6 +12,9 @@ interface LoadBasketPort {
         productId: ProductId
     ): Basket?
 
+    fun loadBasketCount(
+        productId: ProductId
+    ): Long
 
     fun loadMyBasket(
         memberId: Member.MemberId

@@ -38,29 +38,6 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
     @Query("""
     SELECT 
-        new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(
-            p, 
-            COUNT(CASE WHEN b.isAlilm = false THEN 1 END)
-        )
-    FROM 
-        ProductJpaEntity p
-    LEFT JOIN 
-        BasketJpaEntity b 
-    ON 
-        b.productId = p.id
-    AND 
-        b.isDelete = false
-    WHERE 
-        p.isDelete = false
-    GROUP BY 
-        p.id
-    ORDER BY 
-        COUNT(CASE WHEN b.isAlilm = false THEN 1 END) DESC, p.id DESC
-""")
-    fun findAllProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
-
-    @Query("""
-    SELECT 
         new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection(
             p,
             COUNT(b),
