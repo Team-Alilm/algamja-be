@@ -16,9 +16,12 @@ class SoldoutCheckJob(
     private val sqsTemplate: SqsTemplate
 ) : Job {
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @Transactional
     override fun execute(context: JobExecutionContext) {
         val productList: List<Product> = loadCrawlingProductsPort.loadCrawlingProducts()
+        log.info("productList: $productList")
 
         productList.forEach {
             sqsTemplate.send("product-soldout-check-queue", it)
