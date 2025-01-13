@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.`in`.web.controller.baskets
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import domain.product.ProductId
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
@@ -30,6 +31,6 @@ class BasketAlilmController(
     }
 
     data class BasketAlilmRequest(
-        val productId: Long,
+        @JsonProperty("productId") val productId: Long,
     )
 }
