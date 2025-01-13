@@ -28,7 +28,7 @@ class ProductSliceService (
         val contents = productSlice.content.map {
             val waitingCount = loadBasketPort.loadBasketCount(it.id!!)
             ProductSliceUseCase.ProductSliceResult.from(it, waitingCount)
-        }
+        }.filter { it.waitingCount > 0 }
 
         return ProductSliceUseCase.CustomSlice(
             contents = contents,
