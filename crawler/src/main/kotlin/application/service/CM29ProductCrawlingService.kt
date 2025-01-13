@@ -6,19 +6,21 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
+import org.team_alilm.gateway.CrawlingGateway
 import util.StringContextHolder
 
 @Service
 class CM29ProductCrawlingService(
-    private val restClient: RestClient
+    private val restClient: RestClient,
+    private val crawlingGateway: CrawlingGateway
 ) : ProductCrawlingUseCase {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
-        val productNumber = command.productNumber
-        val productDetailApiUrl = StringContextHolder.CM29_PRODUCT_DETAIL_API_URL.get().format(productNumber)
+        val productNumber = getProductNumber(command.url)
 
+        val productDetailApiUrl = StringContextHolder.CM29_PRODUCT_DETAIL_API_URL.get().format(productNumber)
         val productDetailResponse = restClient.get()
             .uri(productDetailApiUrl)
             .retrieve()
@@ -54,5 +56,20 @@ class CM29ProductCrawlingService(
                         it.get("title")?.asText() ?: throw IllegalArgumentException()
                     } ?: emptyList(),
         )
+    }
+
+    private fun getProductNumber (url: String): Long {
+        val html = crawlingGateway.htmlCrawling(
+            request = CrawlingGateway.CrawlingGatewayRequest(
+                url = url,
+            )
+        ).html
+
+        val regexMeta = """<meta property="al:web:url" content="(https://product\.29cm\.co\.kr/catalog/\d+)">""".toRegex()
+        val matchResult = regexMeta.find(html)
+        val url = matchResult?.groups?.get(1)?.value
+
+        val regexNumber = """(\d+)$""".toRegex()
+        return (regexNumber.find(url!!)?.value?.toLong() ?: throw IllegalArgumentException())
     }
 }
