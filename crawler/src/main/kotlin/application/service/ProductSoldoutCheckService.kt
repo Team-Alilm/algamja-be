@@ -1,7 +1,6 @@
 package org.team_alilm.application.service
 
 import domain.product.Product
-import domain.product.ProductId
 import io.awspring.cloud.sqs.annotation.SqsListener
 import io.awspring.cloud.sqs.listener.acknowledgement.Acknowledgement
 import org.slf4j.LoggerFactory
