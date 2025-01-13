@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndMemberProjection
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndProductProjection
-import domain.product.Product
 
 interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
