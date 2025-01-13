@@ -23,6 +23,7 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
         b.memberId = :memberId
         and b.isDelete = false
         and p.isDelete = false
+    order by b.createdDate desc
 """)
     fun myBasketList(memberId: Long): List<BasketAndProductProjection>
 
