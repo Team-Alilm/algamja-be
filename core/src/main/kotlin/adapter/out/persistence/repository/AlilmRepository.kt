@@ -26,7 +26,7 @@ interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
     from AlilmJpaEntity a
     join 
         ProductJpaEntity p 
-        on a.productId = p.productId
+        on a.productId = p.id
     where 
         a.memberId         = :memberId
         AND a.createdDate >= :dayLimit
