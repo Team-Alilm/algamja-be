@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.AlilmRestockRankingUseCase
 
 @RestController
-@RequestMapping("/api/v1/alilms/restock/rangin7")
+@RequestMapping("/api/v1/alilms/restock/rangin")
 class AlilmRestockRankingController(
     private val alilmRestockRankingUseCase: AlilmRestockRankingUseCase
 ) {
@@ -22,36 +22,36 @@ class AlilmRestockRankingController(
     @GetMapping
     fun alilmRestockRangin(
         @RequestBody request: AlilmRestockRankingRequest
-    ) : ResponseEntity<AlilmRestockRanking7Response> {
+    ) : ResponseEntity<AlilmRestockRankingResponse> {
         val command = AlilmRestockRankingUseCase.AlilmRestockRankingCommand(
             count = request.count
         )
         val result = alilmRestockRankingUseCase.alilmRestockRangin(command)
-        val alilmRestockRanking7Products = result.map {
-            AlilmRestockRanking7Product.from(
+        val alilmRestockRankingProducts = result.map {
+            AlilmRestockRankingProduct.from(
                 productId = it.id!!.value, productThumbnailUrl = it.thumbnailUrl
             )
         }
 
-        return ResponseEntity.ok(AlilmRestockRanking7Response(alilmRestockRanking7Products))
+        return ResponseEntity.ok(AlilmRestockRankingResponse(alilmRestockRankingProducts))
     }
 
     data class AlilmRestockRankingRequest(
         val count: Int
     )
 
-    data class AlilmRestockRanking7Response(
-        val productList: List<AlilmRestockRanking7Product>
+    data class AlilmRestockRankingResponse(
+        val productList: List<AlilmRestockRankingProduct>
     )
 
-    data class AlilmRestockRanking7Product(
+    data class AlilmRestockRankingProduct(
         val productId: Long,
         val productThumbnailUrl: String,
     ) {
 
         companion object {
-            fun from(productId: Long, productThumbnailUrl: String): AlilmRestockRanking7Product {
-                return AlilmRestockRanking7Product(
+            fun from(productId: Long, productThumbnailUrl: String): AlilmRestockRankingProduct {
+                return AlilmRestockRankingProduct(
                     productId = productId,
                     productThumbnailUrl = productThumbnailUrl
                 )
