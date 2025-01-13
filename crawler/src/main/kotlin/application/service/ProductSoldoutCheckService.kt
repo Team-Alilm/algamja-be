@@ -28,7 +28,9 @@ class ProductSoldoutCheckService(
         val soldoutProduct = handle.process(payload)
 
         if (soldoutProduct) {
-            val requestBody = RequestBody(productId = payload.id!!)
+            log.info("Product is sold out: $payload")
+
+            val requestBody = RequestBody(productId = payload.id!!.value)
             val response = restClient.put()
                 .uri("https://alilm.store/api/v1/baskets/alilm")
                 .header("authorization", jwtToken)
@@ -36,7 +38,7 @@ class ProductSoldoutCheckService(
                 .retrieve()
                 .body(String::class.java)
 
-            log.info("Response: $response")
+            log.info("Response from alilm.store: $response")
         }
 
         acknowledgement.acknowledge()
@@ -46,6 +48,6 @@ class ProductSoldoutCheckService(
     }
 
     data class RequestBody(
-        val productId: ProductId
+        val productId: Long
     )
 }

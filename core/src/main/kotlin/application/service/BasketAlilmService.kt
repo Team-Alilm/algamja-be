@@ -21,11 +21,11 @@ class BasketAlilmService(
     private val fcmSendGateway: FcmSendGateway,
     private val addBasketPort: AddBasketPort,
     private val loadProductPort: LoadProductPort,
-    private val notificationService: NotificationService,
     private val loadBasketAndMemberPort: LoadBasketAndMemberPort,
     private val addAlilmPort: AddAlilmPort,
 ): BasketAlilmUseCase {
 
+    @Transactional
     override fun basketAlilm(command: BasketAlilmUseCase.BasketAlilmCommand) {
         val product = loadProductPort.loadProduct(command.productId) ?: throw NotFoundProductException()
         val basketAndMemberList = loadBasketAndMemberPort.loadBasketAndMember(product)
@@ -38,7 +38,5 @@ class BasketAlilmService(
              basket.sendAlilm()
              addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
         }
-
-        notificationService.sendNotifications(product)
     }
 }
