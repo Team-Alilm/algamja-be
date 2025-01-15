@@ -23,13 +23,10 @@ class ZigzagProductCrawlingService(
         val scriptTag = document.select("script#__NEXT_DATA__").firstOrNull()?.data() ?: ""
         val scriptJsonNode = objectMapper.readTree(scriptTag)
 
-        log.info("scriptJsonNode: $scriptJsonNode")
-
         val (brand, name) = getProductBrandAndName(document.title())
         val (thumbnailUrl, imageList) = getThumbnailUrlAndImageList(document)
         val price = getPrice(document)
-        val firstCategory = "1"
-        val secondCategory = "1"
+        val (firstCategory, secondCategory) = getCategorys(scriptJsonNode)
         val (firstOptions, secondOptions, thirdOptions) = getOptions(scriptJsonNode)
 
         return ProductCrawlingUseCase.CrawlingResult(
@@ -38,8 +35,8 @@ class ZigzagProductCrawlingService(
             brand = brand,
             thumbnailUrl = thumbnailUrl,
             imageUrlList = imageList,
-            firstCategory = "",
-            secondCategory = "",
+            firstCategory = firstCategory,
+            secondCategory = secondCategory,
             price = price,
             store = Store.ZIGZAG,
             firstOptions = firstOptions,
@@ -83,6 +80,25 @@ class ZigzagProductCrawlingService(
             priceText.replace(",", "").toInt()
         } catch (e: NumberFormatException) {
             0
+        }
+    }
+
+    private fun getCategorys(jsonNode: JsonNode): Pair<String, String> {
+        jsonNode.let {
+            try {
+                val props = it.get("props")
+                val pageProps = props.get("pageProps")
+                val product = pageProps.get("product")
+                val managedCategoryList = product.get("managed_category_list")
+
+                return Pair(
+                    managedCategoryList[1]?.get("value")?.asText() ?: "",
+                    managedCategoryList[2]?.get("value")?.asText() ?: ""
+                )
+            } catch (e: Exception) {
+                // 예외 발생시 빈 문자열 반환
+                return Pair("", "")
+            }
         }
     }
 
