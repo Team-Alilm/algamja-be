@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import domain.product.Product
 import org.team_alilm.application.handler.PlatformHandler
-import software.amazon.awssdk.services.sqs.endpoints.internal.Value.Bool
 import util.StringContextHolder
 
 @Component
@@ -24,24 +23,42 @@ class CM29Handler(
         val productDetailJsonNode = getProductDetailJsonNode(product.number) ?: return true
         val optionItems = productDetailJsonNode.get("optionItems")
 
+        log.info("Option items: $optionItems")
+
         if (optionItems == null || optionItems.size() == 0) {
+            log.info("Option items are null or empty")
             return productDetailJsonNode.get("itemStockStatus").asText() == "5"
         }
 
-        val firstOption = optionItems.get("list")?.filter() {
+        val firstOption = optionItems.get("list")?.firstOrNull {
             val title = it.get("title").asText()
-            title == product.firstOption
-        }?.first()
+            title == (product.firstOption ?: "")
+        }
 
-        if (firstOption?.get("optionStockStatus")?.asText() == "5" && firstOption.get("list")?.isEmpty == true) {
+        log.info("First option: $firstOption")
+
+        if (firstOption == null) {
+            log.warn("No matching first option found for product: ${product.number}")
             return true
-        } else if (firstOption?.get("list")?.isEmpty == false) {
-            val secondOption = firstOption.get("list").first() {
+        }
+
+        if (firstOption.get("optionStockStatus")?.asText() == "5" && firstOption.get("list")?.isEmpty == true) {
+            log.info("First option is sold out")
+            return true
+        } else if (firstOption.get("list")?.isEmpty == false) {
+            log.info("First option is not sold out")
+            val secondOption = firstOption.get("list")?.firstOrNull {
                 val title = it.get("title").asText()
-                title == product.secondOption
+                log.info("Second option title: $title")
+                title == (product.secondOption ?: "")
             }
 
-            return secondOption.get("optionStockStatus").asText() == "5"
+            if (secondOption == null) {
+                log.warn("No matching second option found for product: ${product.number}")
+                return true
+            }
+
+            return secondOption.get("optionStockStatus")?.asText() == "5"
         }
 
         return false
@@ -49,14 +66,17 @@ class CM29Handler(
 
     private fun getProductDetailJsonNode(productNumber: Long): JsonNode? {
         try {
-            return restClient.get()
+            log.info("Fetching product detail for productNumber: $productNumber")
+            val response = restClient.get()
                 .uri(StringContextHolder.CM29_PRODUCT_DETAIL_API_URL.get().format(productNumber))
                 .retrieve()
                 .body(JsonNode::class.java)
-                ?.get("data")
-        } catch (e : Exception) {
-            log.error("Failed to fetch product detail from 29cm", e)
+            log.info("Response received: $response")
+            return response?.get("data")
+        } catch (e: Exception) {
+            log.error("Failed to fetch product detail for productNumber: $productNumber", e)
             return null
         }
     }
+
 }
