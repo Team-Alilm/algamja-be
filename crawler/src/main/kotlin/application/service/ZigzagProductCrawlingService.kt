@@ -23,6 +23,7 @@ class ZigzagProductCrawlingService(
         val scriptTag = document.select("script#__NEXT_DATA__").firstOrNull()?.data() ?: ""
         val scriptJsonNode = objectMapper.readTree(scriptTag)
 
+        val number = getNumber(scriptJsonNode)
         val (brand, name) = getProductBrandAndName(document.title())
         val (thumbnailUrl, imageList) = getThumbnailUrlAndImageList(document)
         val price = getPrice(document)
@@ -43,6 +44,20 @@ class ZigzagProductCrawlingService(
             secondOptions = secondOptions,
             thirdOptions = thirdOptions
         )
+    }
+
+    private fun getNumber(jsonNode: JsonNode): Int {
+        jsonNode.let {
+            try {
+                val props = it.get("props")
+                val pageProps = props.get("pageProps")
+                val product = pageProps.get("product")
+
+                return product.get("id").asInt()
+            } catch (e: Exception) {
+                return 0
+            }
+        }
     }
 
     private fun getProductBrandAndName(titleTag: String): Pair<String, String> {
