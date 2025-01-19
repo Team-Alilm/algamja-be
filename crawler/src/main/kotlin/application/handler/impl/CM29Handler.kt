@@ -23,10 +23,7 @@ class CM29Handler(
         val productDetailJsonNode = getProductDetailJsonNode(product.number) ?: return true
         val optionItems = productDetailJsonNode.get("optionItems")
 
-        log.info("Option items: $optionItems")
-
         if (optionItems == null || optionItems.size() == 0) {
-            log.info("Option items are null or empty")
             return productDetailJsonNode.get("itemStockStatus").asText() == "5"
         }
 
@@ -35,18 +32,13 @@ class CM29Handler(
             title == (product.firstOption ?: "")
         }
 
-        log.info("First option: $firstOption")
-
         if (firstOption == null) {
-            log.warn("No matching first option found for product: ${product.number}")
             return true
         }
 
         if (firstOption.get("optionStockStatus")?.asText() == "5" && firstOption.get("list")?.isEmpty == true) {
-            log.info("First option is sold out")
             return true
         } else if (firstOption.get("list")?.isEmpty == false) {
-            log.info("First option is not sold out")
             val secondOption = firstOption.get("list")?.firstOrNull {
                 val title = it.get("title").asText()
                 log.info("Second option title: $title")
@@ -54,7 +46,6 @@ class CM29Handler(
             }
 
             if (secondOption == null) {
-                log.warn("No matching second option found for product: ${product.number}")
                 return true
             }
 

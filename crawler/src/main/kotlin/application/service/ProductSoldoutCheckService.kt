@@ -28,8 +28,6 @@ class ProductSoldoutCheckService(
         val restock = handle.process(payload)
 
         if (restock) {
-            log.info("Product is restock: $payload")
-
             val requestBody = RequestBody(productId = payload.id!!.value)
             val status = restClient.put()
                 .uri("https://alilm.store/api/v1/baskets/alilm")
@@ -37,7 +35,6 @@ class ProductSoldoutCheckService(
                 .body(requestBody)
                 .retrieve().toEntity<Unit>().statusCode
 
-            log.info("Response from alilm.store ${payload.id!!.value}: $status")
         }
         } catch (e: Exception) {
             log.error("Error occurred while processing message: $payload", e)
