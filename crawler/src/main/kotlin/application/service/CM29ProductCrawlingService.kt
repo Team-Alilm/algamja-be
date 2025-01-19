@@ -27,8 +27,6 @@ class CM29ProductCrawlingService(
             .body(JsonNode::class.java)
 
         val productDetailResponseData = productDetailResponse?.get("data") ?: throw IllegalArgumentException()
-        log.info("productDetailResponseData: $productDetailResponseData")
-
         val productCategory = productDetailResponseData.get("frontCategoryInfo")[0]
 
         return ProductCrawlingUseCase.CrawlingResult(
