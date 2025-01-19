@@ -21,6 +21,7 @@ class ProductCrawlingController(
     fun crawling(
         @RequestParam url: String,
     ) : ResponseEntity<ProductCrawlingResponse> {
+        log.info("crawling url: $url")
         val productCrawlingParameter = ProductCrawlingParameter(url)
         val store = productCrawlingParameter.getStore()
 
