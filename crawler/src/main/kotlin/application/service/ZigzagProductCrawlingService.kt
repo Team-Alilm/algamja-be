@@ -59,11 +59,12 @@ class ZigzagProductCrawlingService(
 
         // 첫 번째 이미지의 src
         val firstImageUrl = imageElements.firstOrNull()?.attr("src") ?: ""
+        firstImageUrl.replace("webp", "jpeg")
 
         // 두 번째 이후의 이미지의 src를 List<String>으로 변환
         val otherImageUrls = imageElements
             .drop(1) // 첫 번째 이미지를 제외하고 나머지를 반환
-            .map { it.attr("src") }
+            .map { it.attr("src").replace("webp", "jpeg") }
             .filter { it.isNotBlank() } // 빈 값 제거
 
         // 첫 번째 이미지와 나머지 이미지를 Pair로 반환
