@@ -39,10 +39,10 @@ class ProductSoldoutCheckService(
 
             log.info("Response from alilm.store ${payload.id!!.value}: $status")
         }
-
-        acknowledgement.acknowledge()
         } catch (e: Exception) {
             log.error("Error occurred while processing message: $payload", e)
+        } finally {
+            acknowledgement.acknowledge()
         }
     }
 
