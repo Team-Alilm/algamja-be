@@ -19,10 +19,9 @@ class ProductCrawlingController(
 
     @GetMapping("/crawling")
     fun crawling(
-        productCrawlingParameter: ProductCrawlingParameter,
+        @RequestParam url: String,
     ) : ResponseEntity<ProductCrawlingResponse> {
-        log.info("ProductCrawlingParameter: $productCrawlingParameter")
-
+        val productCrawlingParameter = ProductCrawlingParameter(url)
         val store = productCrawlingParameter.getStore()
 
         val command = ProductCrawlingUseCase.ProductCrawlingCommand(
@@ -38,7 +37,6 @@ class ProductCrawlingController(
     }
 
     data class ProductCrawlingParameter(
-        @RequestParam
         val url: String
     ) {
 
