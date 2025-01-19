@@ -1,6 +1,7 @@
 package org.team_alilm.controller
 
 import domain.product.Store
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
@@ -13,11 +14,15 @@ class ProductCrawlingController(
     private val productCrawlingUseCaseResolver: ProductCrawlingUseCaseResolver,
 ) {
 
+
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @GetMapping("/crawling")
     fun crawling(
-        @ModelAttribute
         productCrawlingParameter: ProductCrawlingParameter,
     ) : ResponseEntity<ProductCrawlingResponse> {
+        log.info("ProductCrawlingParameter: $productCrawlingParameter")
+
         val store = productCrawlingParameter.getStore()
 
         val command = ProductCrawlingUseCase.ProductCrawlingCommand(
@@ -33,6 +38,7 @@ class ProductCrawlingController(
     }
 
     data class ProductCrawlingParameter(
+        @RequestParam
         val url: String
     ) {
 
