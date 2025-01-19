@@ -1,7 +1,6 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.product.Product
+import domain.Member
 
 interface MyAlilmHistoryUseCase {
 
@@ -18,7 +17,7 @@ interface MyAlilmHistoryUseCase {
         val imageUrl: String,
         val brand: String,
         val price: Int,
-        val firstOption: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?
     )

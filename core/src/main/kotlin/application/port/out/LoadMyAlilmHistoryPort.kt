@@ -1,8 +1,8 @@
 package org.team_alilm.application.port.out
 
-import org.team_alilm.domain.Alilm
-import org.team_alilm.domain.Member
-import org.team_alilm.domain.product.Product
+import domain.Alilm
+import domain.Member
+import domain.product.Product
 
 interface LoadMyAlilmHistoryPort {
 
