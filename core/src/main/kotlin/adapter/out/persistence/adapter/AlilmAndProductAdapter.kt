@@ -1,11 +1,11 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
+import domain.Member
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.AlilmMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.AlilmRepository
 import org.team_alilm.application.port.out.LoadMyAlilmHistoryPort
-import org.team_alilm.domain.Member
 import org.team_alilm.global.error.NotFoundMemberException
 
 @Component

@@ -1,22 +1,15 @@
 package org.team_alilm.adapter.`in`.web.controller.member
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Pattern
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.adapter.`in`.web.controller.product.ProductDetailsController.ProductDetailsResponse
 import org.team_alilm.application.port.`in`.use_case.MyAlilmHistoryUseCase
 import org.team_alilm.application.port.`in`.use_case.MyAlilmHistoryUseCase.MyAlilmHistoryResult
-import org.team_alilm.application.port.`in`.use_case.ProductDetailsUseCase.ProductDetailsResult
 import org.team_alilm.data.CustomMemberDetails
-import org.team_alilm.domain.product.Product
-import org.team_alilm.domain.product.Store
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -62,7 +55,7 @@ class MyAlilmHistoryContoller(
         val imageUrl: String,
         val brand: String,
         val price: Int,
-        val firstOption: String,
+        val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?
     ) {
