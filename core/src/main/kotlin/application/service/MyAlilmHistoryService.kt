@@ -27,7 +27,8 @@ class MyAlilmHistoryService(
                 price = it.product.price,
                 firstOption = it.product.firstOption,
                 secondOption = it.product.secondOption,
-                thirdOption = it.product.thirdOption
+                thirdOption = it.product.thirdOption,
+                readYn = it.alilm.readYn
             )
         }
     }
