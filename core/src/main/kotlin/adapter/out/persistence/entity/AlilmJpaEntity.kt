@@ -29,6 +29,9 @@ class AlilmJpaEntity(
     @Column(nullable = false)
     val memberId: Long,
 
+    @Column(nullable = false)
+    val readYn: Boolean,
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

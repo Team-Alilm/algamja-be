@@ -12,4 +12,5 @@ enum class ErrorMessage(
     DUPLICATE_BASKET("ALILM-008", "장바구니에 이미 담긴 상품입니다."),
     DUPLICATE_FCM_TOKEN("ALILM-009", "이미 등록된 FCM 토큰입니다."),
     NOT_FOUND_STORE("ALILM-010", "지원하지 않는 스토어입니다."),
+    NOT_FOUND_ALILM("ALILM-0011", "알림을 찾지 못했습니다."),
 }
