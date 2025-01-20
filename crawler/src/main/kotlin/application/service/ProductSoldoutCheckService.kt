@@ -24,18 +24,18 @@ class ProductSoldoutCheckService(
     @SqsListener("product-soldout-check-queue")
     fun checkSoldout(payload: Product, @Headers headers: MessageHeaders, acknowledgement: Acknowledgement) {
         try {
-        val handle = platformHandlerResolver.resolve(payload.store)
-        val restock = handle.process(payload)
+            val handle = platformHandlerResolver.resolve(payload.store)
+            val restock = handle.process(payload)
 
-        if (restock) {
-            val requestBody = RequestBody(productId = payload.id!!.value)
-            val status = restClient.put()
-                .uri("https://alilm.store/api/v1/baskets/alilm")
-                .header("authorization", jwtToken)
-                .body(requestBody)
-                .retrieve().toEntity<Unit>().statusCode
+            if (restock) {
+                val requestBody = RequestBody(productId = payload.id!!.value)
+                val status = restClient.put()
+                    .uri("https://alilm.store/api/v1/baskets/alilm")
+                    .header("authorization", jwtToken)
+                    .body(requestBody)
+                    .retrieve().toEntity<Unit>().statusCode
 
-        }
+            }
         } catch (e: Exception) {
             log.error("Error occurred while processing message: $payload", e)
         } finally {
