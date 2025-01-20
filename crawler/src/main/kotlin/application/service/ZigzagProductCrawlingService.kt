@@ -58,8 +58,7 @@ class ZigzagProductCrawlingService(
         val imageElements = document.select("img[alt='상품 이미지']")
 
         // 첫 번째 이미지의 src
-        val firstImageUrl = imageElements.firstOrNull()?.attr("src") ?: ""
-        firstImageUrl.replace("webp", "jpeg")
+        val firstImageUrl = imageElements.firstOrNull()?.attr("src")?.replace("webp", "jpeg") ?: ""
 
         // 두 번째 이후의 이미지의 src를 List<String>으로 변환
         val otherImageUrls = imageElements
