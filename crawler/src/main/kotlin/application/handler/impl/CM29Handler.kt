@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import domain.product.Product
 import org.team_alilm.application.handler.PlatformHandler
-import software.amazon.awssdk.services.sqs.endpoints.internal.Value.Bool
 import util.StringContextHolder
 
 @Component
@@ -28,20 +27,29 @@ class CM29Handler(
             return productDetailJsonNode.get("itemStockStatus").asText() == "5"
         }
 
-        val firstOption = optionItems.get("list")?.filter() {
+        val firstOption = optionItems.get("list")?.firstOrNull {
             val title = it.get("title").asText()
-            title == product.firstOption
-        }?.first()
+            title == (product.firstOption ?: "")
+        }
 
-        if (firstOption?.get("optionStockStatus")?.asText() == "5" && firstOption.get("list")?.isEmpty == true) {
+        if (firstOption == null) {
             return true
-        } else if (firstOption?.get("list")?.isEmpty == false) {
-            val secondOption = firstOption.get("list").first() {
+        }
+
+        if (firstOption.get("optionStockStatus")?.asText() == "5" && firstOption.get("list")?.isEmpty == true) {
+            return true
+        } else if (firstOption.get("list")?.isEmpty == false) {
+            val secondOption = firstOption.get("list")?.firstOrNull {
                 val title = it.get("title").asText()
-                title == product.secondOption
+                log.info("Second option title: $title")
+                title == (product.secondOption ?: "")
             }
 
-            return secondOption.get("optionStockStatus").asText() == "5"
+            if (secondOption == null) {
+                return true
+            }
+
+            return secondOption.get("optionStockStatus")?.asText() == "5"
         }
 
         return false
@@ -49,14 +57,17 @@ class CM29Handler(
 
     private fun getProductDetailJsonNode(productNumber: Long): JsonNode? {
         try {
-            return restClient.get()
+            log.info("Fetching product detail for productNumber: $productNumber")
+            val response = restClient.get()
                 .uri(StringContextHolder.CM29_PRODUCT_DETAIL_API_URL.get().format(productNumber))
                 .retrieve()
                 .body(JsonNode::class.java)
-                ?.get("data")
-        } catch (e : Exception) {
-            log.error("Failed to fetch product detail from 29cm", e)
+            log.info("Response received: $response")
+            return response?.get("data")
+        } catch (e: Exception) {
+            log.error("Failed to fetch product detail for productNumber: $productNumber", e)
             return null
         }
     }
+
 }

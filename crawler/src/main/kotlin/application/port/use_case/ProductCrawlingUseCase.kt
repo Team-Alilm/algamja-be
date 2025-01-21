@@ -9,7 +9,6 @@ interface ProductCrawlingUseCase {
     data class ProductCrawlingCommand(
         val url: String,
         val store: Store,
-        val productNumber: Long
     )
 
     data class CrawlingResult(
