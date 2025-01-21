@@ -22,6 +22,7 @@ class MusinsaProductCrawlingService(
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val crawlingGatewayResponse = crawlingGateway.htmlCrawling(request = CrawlingGatewayRequest(url = command.url))
+
         val productHtmlResponse = extractJsonData(crawlingGatewayResponse.document.html())
             ?: throw NotParsingHtml()
 
@@ -48,7 +49,8 @@ class MusinsaProductCrawlingService(
             name = productHtmlResponse.get("goodsNm").asText(),
             brand = productHtmlResponse.get("brandInfo").get("brandName").asText(),
             thumbnailUrl = getThumbnailUrl(productHtmlResponse.get("thumbnailImageUrl").asText()),
-            imageUrlList = imageUrlListResponse?.get("data")?.get("similar")?.get(0)?.get("recommendedGoodsList")?.map { it.get("imageUrl").asText() } ?: emptyList(),
+            imageUrlList = imageUrlListResponse?.get("data")?.get("similar")?.get(0)?.get("recommendedGoodsList")?.map { it.get("imageUrl").asText() }
+                ?: emptyList(),
             firstCategory = productHtmlResponse.get("category").get("categoryDepth1Name").asText(),
             secondCategory = productHtmlResponse.get("category").get("categoryDepth2Name").asText(),
             price = productHtmlResponse.get("goodsPrice").get("normalPrice").asInt(),
@@ -62,7 +64,6 @@ class MusinsaProductCrawlingService(
     private fun extractJsonData(scriptContent: String): JsonNode? {
         var jsonString: String? = null
 
-        // 자바스크립트 내 변수 선언 패턴
         val pattern = "window.__MSS__.product.state = "
         // 패턴의 시작 위치 찾기
         val startIndex = scriptContent.indexOf(pattern)

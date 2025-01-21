@@ -10,5 +10,4 @@ class HealthController {
     fun health(): String {
         return "Hello Alilm"
     }
-
 }
