@@ -66,9 +66,9 @@ class MusinsaHandler(
                 .uri(apiUrl)
                 .retrieve()
                 .body(SoldoutCheckResponse::class.java)
-            val optionItem = response?.data?.optionItems?.filter {
+            val optionItem = response?.data?.optionItems?.first {
                 it.managedCode == product.getManagedCode()
-            }?.first()
+            }
 
             return optionItem?.outOfStock ?: true
         } catch (e: Exception) {
