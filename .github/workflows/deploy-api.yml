@@ -65,7 +65,7 @@ jobs:
       - name: Notify Slack - Started
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text": "🚀 api server 배포가 시작되었습니다 :rocket:"}' \
+          --data '{"text": "🚀 api server 배포가 시작되었습니다."}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Checkout
