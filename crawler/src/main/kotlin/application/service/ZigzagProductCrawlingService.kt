@@ -31,7 +31,7 @@ class ZigzagProductCrawlingService(
         val (firstOptions, secondOptions, thirdOptions) = getOptions(scriptJsonNode)
 
         return ProductCrawlingUseCase.CrawlingResult(
-            number = 0,
+            number = number,
             name = name,
             brand = brand,
             thumbnailUrl = thumbnailUrl,
@@ -46,14 +46,14 @@ class ZigzagProductCrawlingService(
         )
     }
 
-    private fun getNumber(jsonNode: JsonNode): Int {
+    private fun getNumber(jsonNode: JsonNode): Long {
         jsonNode.let {
             try {
                 val props = it.get("props")
                 val pageProps = props.get("pageProps")
                 val product = pageProps.get("product")
 
-                return product.get("id").asInt()
+                return product.get("id").asLong()
             } catch (e: Exception) {
                 return 0
             }
