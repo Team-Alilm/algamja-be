@@ -5,6 +5,13 @@ spring:
     url: ENC(FFhQuos3vg7hqH0nRunAu+soeQFzV8ld6eW73y4oHYqFdOD90rV0BLe9DnUiXiXGpQFLIiTbeXzuq4VFiS/2EbG6nA9e293rE28JcxRboae7Z92TuRAMjH3L0BtKCjtu)
     username: ENC(R1FpK3IkTBlUqe6UGu9ASA==)
     password: ENC(Xg2/I1uWGCs6SKi2H21oNAazYU4qObrp)
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        highlight_sql: true
+        use_sql_comments: true
 
 webhook:
   slack:
