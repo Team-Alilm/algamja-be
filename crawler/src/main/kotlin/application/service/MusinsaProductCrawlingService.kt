@@ -32,11 +32,13 @@ class MusinsaProductCrawlingService(
             .retrieve()
             .body(JsonNode::class.java)
 
-        val filterOption = optionResponse?.get("data")?.get("filterOption") ?: throw RuntimeException("Failed to get option data")
+        log.info("optionResponse: $optionResponse")
 
-        val firstOptions = filterOption.get("firstOptions").map { it.get("val").asText() }
-        val secondOptions = filterOption.get("secondOptions")?.map { it.get("val").asText() } ?: emptyList()
-        val thirdOptions = filterOption.get("thirdOptions")?.map { it.get("val").asText() } ?: emptyList()
+        val filterOption = optionResponse?.get("data")?.get("basic") ?: throw RuntimeException("Failed to get option data")
+
+        val firstOptions = filterOption[0]?.get("optionValues")?.map { it.get("name").asText() } ?: emptyList()
+        val secondOptions = filterOption[1]?.get("optionValues")?.map { it.get("name").asText() } ?: emptyList()
+        val thirdOptions = filterOption[2]?.get("optionValues")?.map { it.get("name").asText() } ?: emptyList()
 
         val imageUrlListRequsetUri = StringContextHolder.MUSINSA_PRODUCT_IMAGES_URL.get().format(productHtmlResponse.get("goodsNo").asLong())
         val imageUrlListResponse = restClient.get()
@@ -84,7 +86,7 @@ class MusinsaProductCrawlingService(
     }
 
     private fun getOptionUri(goodsNo: Long): String {
-        return "https://goods.musinsa.com/api2/review/v1/view/filter?goodsNo=${goodsNo}"
+        return "https://goods-detail.musinsa.com/api2/goods/$goodsNo/v2/options?goodsSaleType=SALE"
     }
 
     private fun getThumbnailUrl(thumbnailUrl: String): String {
