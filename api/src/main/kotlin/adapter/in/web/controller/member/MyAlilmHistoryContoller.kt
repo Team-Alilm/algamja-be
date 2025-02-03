@@ -57,7 +57,8 @@ class MyAlilmHistoryContoller(
         val price: Int,
         val firstOption: String?,
         val secondOption: String?,
-        val thirdOption: String?
+        val thirdOption: String?,
+        val readYn: Boolean
     ) {
         companion object {
             fun from(myAlilmHistoryResult: MyAlilmHistoryResult): AlilmHistory {
@@ -70,7 +71,8 @@ class MyAlilmHistoryContoller(
                     price = myAlilmHistoryResult.price,
                     firstOption = myAlilmHistoryResult.firstOption,
                     secondOption = myAlilmHistoryResult.secondOption,
-                    thirdOption = myAlilmHistoryResult.thirdOption
+                    thirdOption = myAlilmHistoryResult.thirdOption,
+                    readYn = myAlilmHistoryResult.readYn
                 )
             }
         }

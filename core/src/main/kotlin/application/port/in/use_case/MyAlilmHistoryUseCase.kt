@@ -19,6 +19,7 @@ interface MyAlilmHistoryUseCase {
         val price: Int,
         val firstOption: String?,
         val secondOption: String?,
-        val thirdOption: String?
+        val thirdOption: String?,
+        val readYn: Boolean
     )
 }
