@@ -92,5 +92,4 @@ class ZigzagHandler(
         return true
     }
 
-
 }
