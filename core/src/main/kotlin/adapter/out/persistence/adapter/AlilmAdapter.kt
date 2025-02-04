@@ -2,7 +2,6 @@ package org.team_alilm.adapter.out.persistence.adapter
 
 import domain.Alilm
 import domain.product.Product
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.AlilmMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
@@ -11,6 +10,7 @@ import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataA
 import org.team_alilm.application.port.out.AddAlilmPort
 import org.team_alilm.application.port.out.LoadAlilmPort
 import org.team_alilm.application.port.out.LoadAllAndDailyCountPort
+import org.team_alilm.global.error.NotFoundAlilmException
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -43,4 +43,9 @@ class AlilmAdapter(
         return alilmRepository.findByRestockRanking(count = count).map { productMapper.mapToDomainEntity(it) }
     }
 
+    override fun loadAlilmById(alilmId: Long): Alilm {
+        return alilmMapper.mapToDomainEntity(
+            springDataAlilmRepository.findById(alilmId)
+                .orElseThrow{ throw NotFoundAlilmException() })
+    }
 }
