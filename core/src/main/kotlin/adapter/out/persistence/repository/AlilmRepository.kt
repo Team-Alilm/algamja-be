@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.out.persistence.repository
 
+import domain.Alilm
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
