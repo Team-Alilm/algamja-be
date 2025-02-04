@@ -33,7 +33,7 @@ class FcmSendGateway(
                 지금 바로 확인해보세요.
             """.trimIndent())
             .putData("image", product.thumbnailUrl) // 이미지 URL 추가
-            .putData("click_action", "https://www.musinsa.com/products/${product.number}")
+            .putData("click_action", product.getStoreUrl()) // 클릭 시 이동할 URL 추가
             .setToken(fcmToken.token)
             .build()
 
