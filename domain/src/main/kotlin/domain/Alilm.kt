@@ -4,7 +4,12 @@ class Alilm(
     val id: AlilmId,
     val memberId: Long,
     val productId: Long,
+    var readYn: Boolean
 ) {
+
+    fun readAlilm() {
+        readYn = true
+    }
 
     companion object {
         fun from(basket: Basket): Alilm {
@@ -12,6 +17,7 @@ class Alilm(
                 id = AlilmId(null),
                 memberId = basket.memberId.value,
                 productId = basket.productId.value,
+                readYn = false
             )
         }
     }

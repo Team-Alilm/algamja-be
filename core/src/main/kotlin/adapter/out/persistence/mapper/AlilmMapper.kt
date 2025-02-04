@@ -12,6 +12,7 @@ class AlilmMapper {
             id = alilm.id.value,
             memberId = alilm.memberId,
             productId = alilm.productId,
+            readYn = alilm.readYn
         )
     }
 
@@ -19,7 +20,8 @@ class AlilmMapper {
         return Alilm(
             id = Alilm.AlilmId(alilmJpaEntity.id),
             memberId = alilmJpaEntity.memberId,
-            productId = alilmJpaEntity.productId
+            productId = alilmJpaEntity.productId,
+            readYn = alilmJpaEntity.readYn
         )
     }
 }
