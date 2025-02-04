@@ -36,17 +36,18 @@ class Product (
                 상품 옵션1: ${this.firstOption}
                 상품 옵션2: ${this.secondOption}
                 상품 옵션3: ${this.thirdOption}
-                상품 구매링크 : ${
-                    when {
-                        this.store == Store.NONE -> "구매링크 없음"
-                        this.store == Store.MUSINSA -> StringContextHolder.MUSINSA_PRODUCT_URL.get().format(this.number)
-                        this.store == Store.CM29 -> StringContextHolder.CM29_PRODUCT_URL.get().format(this.number)
-                        this.store == Store.ZIGZAG -> StringContextHolder.ZIGZAG_PRODUCT_URL.get().format(this.number)
-                        else -> "구매링크 없음"
-                    }
-                }
+                상품 구매링크 : ${getStoreUrl()}
                 바구니에서 삭제되었습니다.
                 "
         }
     """.trimIndent()
+
+    fun getStoreUrl(): String {
+        return when (store) {
+            Store.MUSINSA -> StringContextHolder.MUSINSA_PRODUCT_URL.get().format(number)
+            Store.CM29 -> StringContextHolder.CM29_PRODUCT_URL.get().format(number)
+            Store.ZIGZAG -> StringContextHolder.ZIGZAG_PRODUCT_URL.get().format(number)
+            else -> ""
+        }
+    }
 }
