@@ -20,6 +20,8 @@ enum class StringContextHolder(
     ZIGZAG_PRODUCT_URL("https://zigzag.kr/catalog/products/%s"),;
 
 
+
+
     fun get(): String {
         return value
     }
