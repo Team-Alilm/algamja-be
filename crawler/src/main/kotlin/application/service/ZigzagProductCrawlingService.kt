@@ -23,6 +23,7 @@ class ZigzagProductCrawlingService(
         val scriptTag = document.select("script#__NEXT_DATA__").firstOrNull()?.data() ?: ""
         val scriptJsonNode = objectMapper.readTree(scriptTag)
 
+        val number = getNumber(scriptJsonNode)
         val (brand, name) = getProductBrandAndName(document.title())
         val (thumbnailUrl, imageList) = getThumbnailUrlAndImageList(document)
         val price = getPrice(document)
@@ -30,7 +31,7 @@ class ZigzagProductCrawlingService(
         val (firstOptions, secondOptions, thirdOptions) = getOptions(scriptJsonNode)
 
         return ProductCrawlingUseCase.CrawlingResult(
-            number = 0,
+            number = number,
             name = name,
             brand = brand,
             thumbnailUrl = thumbnailUrl,
@@ -43,6 +44,20 @@ class ZigzagProductCrawlingService(
             secondOptions = secondOptions,
             thirdOptions = thirdOptions
         )
+    }
+
+    private fun getNumber(jsonNode: JsonNode): Long {
+        jsonNode.let {
+            try {
+                val props = it.get("props")
+                val pageProps = props.get("pageProps")
+                val product = pageProps.get("product")
+
+                return product.get("id").asLong()
+            } catch (e: Exception) {
+                return 0
+            }
+        }
     }
 
     private fun getProductBrandAndName(titleTag: String): Pair<String, String> {
@@ -58,12 +73,12 @@ class ZigzagProductCrawlingService(
         val imageElements = document.select("img[alt='상품 이미지']")
 
         // 첫 번째 이미지의 src
-        val firstImageUrl = imageElements.firstOrNull()?.attr("src") ?: ""
+        val firstImageUrl = imageElements.firstOrNull()?.attr("src")?.replace("webp", "jpeg") ?: ""
 
         // 두 번째 이후의 이미지의 src를 List<String>으로 변환
         val otherImageUrls = imageElements
             .drop(1) // 첫 번째 이미지를 제외하고 나머지를 반환
-            .map { it.attr("src") }
+            .map { it.attr("src").replace("webp", "jpeg") }
             .filter { it.isNotBlank() } // 빈 값 제거
 
         // 첫 번째 이미지와 나머지 이미지를 Pair로 반환

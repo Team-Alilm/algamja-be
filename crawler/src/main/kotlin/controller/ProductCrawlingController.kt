@@ -1,10 +1,9 @@
 package org.team_alilm.controller
 
 import domain.product.Store
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCaseResolver
 import org.team_alilm.error.NotFoundProductNumber
@@ -15,17 +14,18 @@ class ProductCrawlingController(
     private val productCrawlingUseCaseResolver: ProductCrawlingUseCaseResolver,
 ) {
 
+
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @GetMapping("/crawling")
     fun crawling(
-        productCrawlingParameter: ProductCrawlingParameter,
+        productCrawlingParameter: ProductCrawlingParameter
     ) : ResponseEntity<ProductCrawlingResponse> {
         val store = productCrawlingParameter.getStore()
-        val productNumber = productCrawlingParameter.getProductNumber()
 
         val command = ProductCrawlingUseCase.ProductCrawlingCommand(
             url = productCrawlingParameter.url,
             store = store,
-            productNumber = productNumber
         )
 
         val productCrawlingUseCase = productCrawlingUseCaseResolver.resolve(store)

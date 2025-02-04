@@ -22,6 +22,7 @@ class MusinsaProductCrawlingService(
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val crawlingGatewayResponse = crawlingGateway.htmlCrawling(request = CrawlingGatewayRequest(url = command.url))
+
         val productHtmlResponse = extractJsonData(crawlingGatewayResponse.document.html())
             ?: throw NotParsingHtml()
 
@@ -31,11 +32,13 @@ class MusinsaProductCrawlingService(
             .retrieve()
             .body(JsonNode::class.java)
 
-        val filterOption = optionResponse?.get("data")?.get("filterOption") ?: throw RuntimeException("Failed to get option data")
+        log.info("optionResponse: $optionResponse")
 
-        val firstOptions = filterOption.get("firstOptions").map { it.get("val").asText() }
-        val secondOptions = filterOption.get("secondOptions")?.map { it.get("val").asText() } ?: emptyList()
-        val thirdOptions = filterOption.get("thirdOptions")?.map { it.get("val").asText() } ?: emptyList()
+        val filterOption = optionResponse?.get("data")?.get("basic") ?: throw RuntimeException("Failed to get option data")
+
+        val firstOptions = filterOption[0]?.get("optionValues")?.map { it.get("name").asText() } ?: emptyList()
+        val secondOptions = filterOption[1]?.get("optionValues")?.map { it.get("name").asText() } ?: emptyList()
+        val thirdOptions = filterOption[2]?.get("optionValues")?.map { it.get("name").asText() } ?: emptyList()
 
         val imageUrlListRequsetUri = StringContextHolder.MUSINSA_PRODUCT_IMAGES_URL.get().format(productHtmlResponse.get("goodsNo").asLong())
         val imageUrlListResponse = restClient.get()
@@ -48,7 +51,8 @@ class MusinsaProductCrawlingService(
             name = productHtmlResponse.get("goodsNm").asText(),
             brand = productHtmlResponse.get("brandInfo").get("brandName").asText(),
             thumbnailUrl = getThumbnailUrl(productHtmlResponse.get("thumbnailImageUrl").asText()),
-            imageUrlList = imageUrlListResponse?.get("data")?.get("similar")?.get(0)?.get("recommendedGoodsList")?.map { it.get("imageUrl").asText() } ?: emptyList(),
+            imageUrlList = imageUrlListResponse?.get("data")?.get("similar")?.get(0)?.get("recommendedGoodsList")?.map { it.get("imageUrl").asText() }
+                ?: emptyList(),
             firstCategory = productHtmlResponse.get("category").get("categoryDepth1Name").asText(),
             secondCategory = productHtmlResponse.get("category").get("categoryDepth2Name").asText(),
             price = productHtmlResponse.get("goodsPrice").get("normalPrice").asInt(),
@@ -62,7 +66,6 @@ class MusinsaProductCrawlingService(
     private fun extractJsonData(scriptContent: String): JsonNode? {
         var jsonString: String? = null
 
-        // 자바스크립트 내 변수 선언 패턴
         val pattern = "window.__MSS__.product.state = "
         // 패턴의 시작 위치 찾기
         val startIndex = scriptContent.indexOf(pattern)
@@ -83,7 +86,7 @@ class MusinsaProductCrawlingService(
     }
 
     private fun getOptionUri(goodsNo: Long): String {
-        return "https://goods.musinsa.com/api2/review/v1/view/filter?goodsNo=${goodsNo}"
+        return "https://goods-detail.musinsa.com/api2/goods/$goodsNo/v2/options?goodsSaleType=SALE"
     }
 
     private fun getThumbnailUrl(thumbnailUrl: String): String {
