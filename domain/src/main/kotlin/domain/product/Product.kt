@@ -50,4 +50,14 @@ class Product (
             else -> ""
         }
     }
+
+    fun getZigzagOptionName () : String {
+        return if (this.firstOption?.isNotBlank() == true && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {
+            "${firstOption}/${secondOption}/${thirdOption}"
+        } else if (firstOption?.isNotBlank() == true && secondOption?.isNotBlank() == true) {
+            "${firstOption}/${secondOption}"
+        } else {
+            firstOption ?: ""
+        }
+    }
 }
