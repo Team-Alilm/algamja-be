@@ -1,0 +1,200 @@
+query GetCatalogProductDetailPageOption($catalog_product_id: ID!) {
+    pdp_option_info(catalog_product_id: $catalog_product_id) {
+        catalog_product {
+            id
+            fulfillment_type
+            shop_main_domain
+            external_code
+            minimum_order_quantity
+            maximum_order_quantity
+            coupon_available_status
+            promotion_info {
+                bogo_required_quantity
+                promotion_id
+                promotion_type
+                bogo_info {
+                    required_quantity
+                    discount_type
+                    discount_amount
+                    discount_rate_bp
+                }
+            }
+            product_image_list {
+                url
+                origin_url
+                pdp_thumbnail_url
+                pdp_static_image_url
+                image_type
+            }
+            product_option_list {
+                id
+                order
+                name
+                code
+                required
+                option_type
+                value_list {
+                    id
+                    code
+                    value
+                    static_url
+                    jpeg_url
+                }
+            }
+            matching_catalog_product_info {
+                id
+                name
+                is_link_visible
+                is_able_to_buy
+                pdp_url
+                browsing_type
+                external_code
+                product_price {
+                    max_price_info {
+                        price
+                        color { normal }
+                        badge { text color { normal } }
+                    }
+                    coupon_discount_info { discount_amount }
+                    final_discount_info { discount_price }
+                }
+                discount_info {
+                    color
+                    title
+                    image_url
+                    order
+                }
+                shipping_fee {
+                    fee_type
+                    base_fee
+                    minimum_free_shipping_fee
+                }
+                option_list {
+                    id
+                    order
+                    name
+                    code
+                    required
+                    option_type
+                    value_list {
+                        id
+                        code
+                        value
+                        static_url
+                        jpeg_url
+                    }
+                }
+                item_list {
+                    id
+                    name
+                    price
+                    price_delta
+                    final_price
+                    item_code
+                    sales_status
+                    display_status
+                    remain_stock
+                    is_zigzin
+                    delivery_type
+                    expected_delivery_date
+                    expected_delivery_time
+                    discount_info {
+                        image_url
+                        title
+                        color
+                        order
+                    }
+                    item_attribute_list {
+                        id
+                        name
+                        value
+                        value_id
+                    }
+                    wms_notification_info {
+                        active
+                    }
+                }
+            }
+            product_additional_option_list {
+                id
+                order
+                name
+                code
+                required
+                option_type
+                value_list {
+                    id
+                    code
+                    value
+                    static_url
+                    jpeg_url
+                }
+            }
+            item_list {
+                id
+                name
+                price
+                price_delta
+                final_price
+                item_code
+                sales_status
+                display_status
+                remain_stock
+                is_zigzin
+                delivery_type
+                expected_delivery_date
+                expected_delivery_time
+                discount_info {
+                    image_url
+                    title
+                    color
+                    order
+                }
+                item_attribute_list {
+                    id
+                    name
+                    value
+                    value_id
+                }
+                wms_notification_info {
+                    active
+                }
+            }
+            additional_item_list {
+                id
+                name
+                price
+                price_delta
+                item_code
+                sales_status
+                display_status
+                option_type
+                is_zigzin
+                delivery_type
+                expected_delivery_date
+                item_attribute_list {
+                    id
+                    name
+                    value
+                    value_id
+                }
+                wms_notification_info {
+                    active
+                }
+            }
+            custom_input_option_list {
+                name
+                is_required: required
+                max_length
+            }
+            color_image_list {
+                is_main
+                image_url
+                image_width
+                image_height
+                webp_image_url
+                color_list
+            }
+        }
+    }
+}

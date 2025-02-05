@@ -10,13 +10,11 @@ import org.team_alilm.application.port.out.AddBasketPort
 import org.team_alilm.application.port.out.LoadBasketAndMemberPort
 import org.team_alilm.application.port.out.LoadProductPort
 import org.team_alilm.application.port.out.gateway.SendMailGateway
-import org.team_alilm.application.port.out.gateway.SendSlackGateway
 import org.team_alilm.global.error.NotFoundProductException
 
 @Service
 @Transactional
 class BasketAlilmService(
-    private val sendSlackGateway: SendSlackGateway,
     private val sendMailGateway: SendMailGateway,
     private val fcmSendGateway: FcmSendGateway,
     private val addBasketPort: AddBasketPort,
@@ -32,7 +30,6 @@ class BasketAlilmService(
 
         basketAndMemberList.forEach { (basket, member, fcmToken) ->
              fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
-             sendSlackGateway.sendMessage(product)
              sendMailGateway.sendMail(member.email, member.nickname, product)
              addAlilmPort.addAlilm(Alilm.from(basket = basket))
              basket.sendAlilm()
