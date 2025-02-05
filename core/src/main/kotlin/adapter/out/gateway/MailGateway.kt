@@ -30,14 +30,14 @@ class MailGateway(
         helper.setTo(to)
         helper.setSubject(subject)
         helper.setText(
-            getMailMessage(nickname, product.number, product.thumbnailUrl, product.firstOption),
+            getMailMessage(nickname, product.number, product.thumbnailUrl, product.firstOption, product.getStoreUrl()),
             true
         )
 
         emailSender.send(mimeMessage)
     }
 
-    private fun getMailMessage(nickname: String, productNumber: Long, imageUrl: String, options: String?): String {
+    private fun getMailMessage(nickname: String, productNumber: Long, imageUrl: String, options: String?, storeLink: String): String {
         val currentTimeMillis = currentTimeMillis()
 
         val dateTime: LocalDateTime =
