@@ -7,10 +7,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.handler.PlatformHandler
 import util.StringContextHolder
-import java.nio.file.FileSystems
-import java.nio.file.Files
-import java.nio.file.Files.readString
-import java.nio.file.Paths
 
 @Component
 class ZigzagHandler(
