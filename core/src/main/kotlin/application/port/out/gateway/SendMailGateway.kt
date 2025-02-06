@@ -7,8 +7,7 @@ interface SendMailGateway {
     fun sendMail (
         to: String,
         nickname: String,
-        product: Product,
-        storeLink: String
+        product: Product
     )
 
 }
