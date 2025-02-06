@@ -1,4 +1,4 @@
-package org.team_alilm.error
+package org.team_alilm.error.exception
 
 class NotParsingHtml : RuntimeException() {
     override val message: String
