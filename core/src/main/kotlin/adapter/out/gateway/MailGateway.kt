@@ -126,7 +126,7 @@ class MailGateway(
               </div>
               <div style="width: 100%; height: 28px;"></div>
               <div style="color= #ffffff; display: flex; justify-content: center; align-items: center; width: 100%; height: 44px; background-color: #1B1A3B; border-radius: 8px;" >
-                <a href="https://www.musinsa.com/app/goods/${productNumber}" 
+                <a href=${storeLink}" 
                    style="background-color: #1B1A3B; color: #ffffff; text-decoration: none;">
                    재입고 상품 구매하러 가기 👉
                 </a>

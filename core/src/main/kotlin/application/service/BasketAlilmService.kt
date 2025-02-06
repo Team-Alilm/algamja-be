@@ -30,7 +30,7 @@ class BasketAlilmService(
 
         basketAndMemberList.forEach { (basket, member, fcmToken) ->
              fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
-             sendMailGateway.sendMail(member.email, member.nickname, product)
+             sendMailGateway.sendMail(member.email, member.nickname, product, product.getStoreUrl())
              addAlilmPort.addAlilm(Alilm.from(basket = basket))
              basket.sendAlilm()
              addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
