@@ -1,7 +1,6 @@
 package org.team_alilm.controller
 
 import domain.product.Store
-import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
