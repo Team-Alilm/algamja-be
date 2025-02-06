@@ -37,7 +37,7 @@ class ProductSoldoutCheckService(
 
             }
         } catch (e: Exception) {
-            log.error("Error occurred while processing message: $payload", e)
+            log.error("Error occurred while processing message: productId = ${payload.id}", e)
         } finally {
             acknowledgement.acknowledge()
         }
