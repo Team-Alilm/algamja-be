@@ -13,9 +13,6 @@ class ProductCrawlingController(
     private val productCrawlingUseCaseResolver: ProductCrawlingUseCaseResolver,
 ) {
 
-
-    private val log = LoggerFactory.getLogger(javaClass)
-
     @GetMapping("/crawling")
     fun crawling(
         productCrawlingParameter: ProductCrawlingParameter
@@ -46,12 +43,6 @@ class ProductCrawlingController(
 //                url.contains("a-bly") -> Store.A_BLY
                 else -> throw IllegalArgumentException("지원하지 않는 URL입니다.")
             }
-        }
-
-        fun getProductNumber(): Long {
-            // 정규식으로 6자리 이상의 숫자 추출
-            val regex = "\\d{6,}".toRegex()
-            return regex.find(url)?.value?.toLong() ?: throw NotFoundProductNumber()
         }
     }
 
