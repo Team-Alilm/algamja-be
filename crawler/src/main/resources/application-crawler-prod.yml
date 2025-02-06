@@ -15,3 +15,6 @@ jasypt:
     password: ${JASYPT_PASSWORD}
     algorithm: ${JASYPT_ALGORITHM}
 
+webhook:
+  slack:
+    url: ENC(66oIt8AFhAxu4Kt9kV5SIvPbb+QALCAbBJOQAOoftXdYaWp+yAa5H20WZTlGoyeo26OB8UAq8GxkiSlkyWZwUsR+eLr/ZLhPk0lde5A9MLFSZi6/DT5cIiAtOd+el6CP)
