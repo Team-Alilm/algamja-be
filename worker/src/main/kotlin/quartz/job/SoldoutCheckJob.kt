@@ -22,7 +22,7 @@ class SoldoutCheckJob(
         val productList: List<Product> = loadCrawlingProductsPort.loadCrawlingProducts()
 
         productList.forEach {
-            sendSlackGateway.sendMessage(it)
+            sendSlackGateway.sendMessage("상품 판매 여부 체크 시작")
             sqsTemplate.send("product-soldout-check-queue", it)
         }
     }
