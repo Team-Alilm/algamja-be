@@ -37,7 +37,7 @@ class ZigzagHandler(
         itemList.filter {
             it.get("name")?.asText() == product.getZigzagOptionName()
         }.forEach {
-            if (it.get("status")?.asText() != "SOLD_OUT") {
+            if (it.get("sales_status")?.asText() != "SOLD_OUT") {
                 return false
             }
         }
