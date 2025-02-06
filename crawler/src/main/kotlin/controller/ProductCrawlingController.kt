@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCaseResolver
-import org.team_alilm.error.exception.NotFoundProductNumber
 
 @RestController
 @RequestMapping("/api/v1/products")

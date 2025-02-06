@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
-import org.team_alilm.error.code.MusinsaErrorCode
-import org.team_alilm.error.exception.MusinsaCrawlingException
+import org.team_alilm.error.ErrorCode
+import org.team_alilm.error.CustomException
 import org.team_alilm.gateway.CrawlingGateway
 import org.team_alilm.gateway.CrawlingGateway.CrawlingGatewayRequest
 import util.StringContextHolder
@@ -30,14 +30,14 @@ class MusinsaProductCrawlingService(
             .uri(optionUri)
             .retrieve()
             .body(JsonNode::class.java)
-            ?: throw MusinsaCrawlingException(MusinsaErrorCode.EMPTY_RESPONSE)
+            ?: throw CustomException(ErrorCode.MUSINSA_INVALID_RESPONSE)
 
         log.info("optionResponse: $optionResponse")
 
         val filterOption = optionResponse.get("data")?.get("basic")
-            ?: throw MusinsaCrawlingException(MusinsaErrorCode.EMPTY_RESPONSE)
+            ?: throw CustomException(ErrorCode.MUSINSA_PRODUCT_NOT_FOUND)
 
-        val firstOptions = filterOption[0]?.get("optionValues")?.map { it.get("name").asText() } ?: emptyList()
+        val firstOptions = filterOption[0]?.get("optionValues")?.map { it.get("name").asText() } ?: throw CustomException(ErrorCode.MUSINSA_PRODUCT_NOT_FOUND)
         val secondOptions = filterOption[1]?.get("optionValues")?.map { it.get("name").asText() } ?: emptyList()
         val thirdOptions = filterOption[2]?.get("optionValues")?.map { it.get("name").asText() } ?: emptyList()
 
@@ -46,7 +46,7 @@ class MusinsaProductCrawlingService(
             .uri(imageUrlListRequestUri)
             .retrieve()
             .body(JsonNode::class.java)
-            ?: throw MusinsaCrawlingException(MusinsaErrorCode.EMPTY_RESPONSE)
+            ?: throw CustomException(ErrorCode.MUSINSA_API_ERROR)
 
         return ProductCrawlingUseCase.CrawlingResult(
             number = productHtmlResponse.get("goodsNo").asLong(),
@@ -81,7 +81,7 @@ class MusinsaProductCrawlingService(
         return jsonString?.let {
             val mapper = com.fasterxml.jackson.databind.ObjectMapper()
             mapper.readTree(it)
-        } ?: throw MusinsaCrawlingException(MusinsaErrorCode.HTML_PARSING_ERROR)
+        } ?: throw CustomException(ErrorCode.MUSINSA_URL_PARSING_ERROR)
     }
 
     private fun getOptionUri(goodsNo: Long): String {
