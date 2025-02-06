@@ -33,7 +33,7 @@ class CM29ProductCrawlingService(
             number = productNumber,
             name = productDetailData["itemName"]?.asText() ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND),
             brand = productDetailData["frontBrand"]?.get("brandNameKor")?.asText() ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND),
-            thumbnailUrl = buildImageUrl(productDetailData, 0),
+            thumbnailUrl = buildImageUrl(productDetailData),
             imageUrlList = extractImageUrls(productDetailData),
             firstCategory = productCategory["category1Name"]?.asText() ?: "Unknown",
             secondCategory = productCategory["category2Name"]?.asText() ?: "Unknown",
@@ -63,8 +63,8 @@ class CM29ProductCrawlingService(
         return productUrl.substringAfterLast("/").toLong()
     }
 
-    private fun buildImageUrl(data: JsonNode, index: Int): String {
-        return "https://img.29cm.co.kr" + (data["itemImages"]?.get(index)?.get("imageUrl")?.asText() ?: "")
+    private fun buildImageUrl(data: JsonNode): String {
+        return "https://img.29cm.co.kr" + (data["itemImages"]?.get(0)?.get("imageUrl")?.asText() ?: "")
     }
 
     private fun extractImageUrls(data: JsonNode): List<String> {
