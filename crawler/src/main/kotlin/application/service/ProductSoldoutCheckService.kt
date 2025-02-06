@@ -31,6 +31,7 @@ class ProductSoldoutCheckService(
 
             if (restock) {
                 slackGateway.sendMessage("${payload.id} 재입고를 추가해주세요.")
+
                 val requestBody = RequestBody(productId = payload.id!!.value)
                 val status = restClient.put()
                     .uri("https://alilm.store/api/v1/baskets/alilm")
