@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
-import org.team_alilm.error.exception.CM29CrawlingException
+import org.team_alilm.error.ErrorCode
+import org.team_alilm.error.CustomException
 import org.team_alilm.gateway.CrawlingGateway
 import org.team_alilm.gateway.SendSlackGateway
 import util.StringContextHolder
@@ -30,8 +31,8 @@ class CM29ProductCrawlingService(
 
         return ProductCrawlingUseCase.CrawlingResult(
             number = productNumber,
-            name = productDetailData["itemName"]?.asText() ?: throw CM29CrawlingException(),
-            brand = productDetailData["frontBrand"]?.get("brandNameKor")?.asText() ?: throw CM29CrawlingException(),
+            name = productDetailData["itemName"]?.asText() ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND),
+            brand = productDetailData["frontBrand"]?.get("brandNameKor")?.asText() ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND),
             thumbnailUrl = buildImageUrl(productDetailData, 0),
             imageUrlList = extractImageUrls(productDetailData),
             firstCategory = productCategory["category1Name"]?.asText() ?: "Unknown",
@@ -51,14 +52,14 @@ class CM29ProductCrawlingService(
         } catch (e: Exception) {
             log.error("❌ 상품 크롤링 실패: API 요청 오류 (URL: $apiUrl, Error: ${e.message})")
             slackGateway.sendMessage("❌ 상품 크롤링 실패: API 요청 오류 (Product: $productNumber, Error: ${e.message})")
-            throw CM29CrawlingException()
+            throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND)
         }
     }
 
     private fun getProductNumber(url: String): Long {
         val html = crawlingGateway.htmlCrawling(CrawlingGateway.CrawlingGatewayRequest(url)).document.html()
         val productUrl = """<meta property="al:web:url" content="(https://product\.29cm\.co\.kr/catalog/\d+)">""".toRegex().find(html)?.groups?.get(1)?.value
-            ?: throw CM29CrawlingException()
+            ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND)
         return productUrl.substringAfterLast("/").toLong()
     }
 
