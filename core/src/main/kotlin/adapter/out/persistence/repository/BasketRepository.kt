@@ -1,10 +1,13 @@
 package org.team_alilm.adapter.out.persistence.repository
 
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndMemberProjection
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndProductProjection
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
 
 interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
@@ -69,4 +72,20 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
     fun findBasketAndMemberByProductNumberAndMemberId(
         productId: Long
     ): List<BasketAndMemberProjection>
+
+    @Query("""
+    SELECT new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount(
+        p, COUNT(b.id)
+    )
+    FROM BasketJpaEntity b
+    JOIN ProductJpaEntity p ON b.productId = p.id
+    WHERE b.isDelete = false
+      AND p.isDelete = false
+      AND b.isAlilm = false
+    GROUP BY b.productId
+    ORDER BY COUNT(b.id) DESC
+""")
+    fun findAllByWaitingCount(pageRequest: PageRequest): Slice<ProductAndWaitingCount>
+
+
 }
