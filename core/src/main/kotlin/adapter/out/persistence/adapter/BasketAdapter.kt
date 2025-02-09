@@ -2,8 +2,12 @@ package org.team_alilm.adapter.out.persistence.adapter
 
 import domain.Basket
 import domain.Member
+import domain.product.Product
 import domain.product.ProductId
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
+import org.team_alilm.adapter.out.persistence.adapter.data.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
@@ -78,6 +82,19 @@ class BasketAdapter(
 
     override fun loadBasketCount(productId: ProductId): Long {
         return springDataBasketRepository.countByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
+    }
+
+    // 바구니에서 groupby product_id, count() as waitingCount
+    // 그중 isAlilm이 false인 것만 가져와야함
+    // order by waitingCount desc
+    // pagenation
+    override fun loadBasketPage(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
+        return basketRepository.findAllByWaitingCount(pageRequest).map {
+            ProductAndWaitingCount(
+                product = productMapper.mapToDomainEntity(it.productJpaEntity),
+                waitingCount = it.waitingCount
+            )
+        }
     }
 
     override fun loadMyBaskets(member: Member) : List<LoadMyBasketsPort.BasketAndProduct> {
