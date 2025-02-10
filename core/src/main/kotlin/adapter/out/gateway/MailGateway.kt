@@ -1,5 +1,6 @@
 package org.team_alilm.adapter.out.gateway
 
+import domain.Member
 import domain.product.Product
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
@@ -21,23 +22,28 @@ class MailGateway(
     private val emailSender: JavaMailSender,
 ) : SendMailGateway {
 
-    override fun sendMail(to: String, nickname: String, product: Product) {
+    override fun sendMail(member: Member, product: Product) {
         val mimeMessage = emailSender.createMimeMessage()
         val helper = MimeMessageHelper(mimeMessage, true, "UTF-8")
         val subject = "[Alilm] 등록하신 [${product.name}]이 재입고 되었어요!"
 
         helper.setFrom(emailId, from)
-        helper.setTo(to)
+        helper.setTo(member.email)
         helper.setSubject(subject)
         helper.setText(
-            getMailMessage(nickname, product.number, product.thumbnailUrl, product.firstOption, product.getStoreUrl()),
+            getMailMessage(
+                member = member,
+                imageUrl = product.thumbnailUrl,
+                options = product.getZigzagOptionName(),
+                storeLink = product.getStoreUrl()
+            ),
             true
         )
 
         emailSender.send(mimeMessage)
     }
 
-    private fun getMailMessage(nickname: String, productNumber: Long, imageUrl: String, options: String?, storeLink: String): String {
+    private fun getMailMessage(member: Member, imageUrl: String, options: String?, storeLink: String): String {
         val currentTimeMillis = currentTimeMillis()
 
         val dateTime: LocalDateTime =
@@ -101,7 +107,7 @@ class MailGateway(
                 "
               >
                 <div style="height: 68px; font-weight: 900; font-size: 24px; line-height: 34px; letter-spacing: -0.03em">
-                  ${nickname}님이 등록하신 제품이
+                  ${member.nickname}님 등록하신 제품이
                   <br/>
                   재입고 되었습니다!
                 </div>
@@ -118,7 +124,7 @@ class MailGateway(
               </div>
               <div style="width: 100%; height: 28px;"></div>
               <div style="font-weight: normal; font-size: 14px; line-height: 24px; letter-spacing: -0.03em">
-                ${nickname}님이 등록하신 상품의 재입고 소식을 알려드리러 왔어요.
+                ${member.nickname}님 등록하신 상품의 재입고 소식을 알려드리러 왔어요.
                 <br/>
                 상품은 재입고 시각으로부터 다시 품절이 될 수 있음을 유의해주세요!
                 <br/>
