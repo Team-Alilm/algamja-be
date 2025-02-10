@@ -1,7 +1,5 @@
 package org.team_alilm.application.port.`in`.use_case
 
-import domain.product.ProductId
-
 interface BasketAlilmUseCase {
 
     fun basketAlilm(command: BasketAlilmCommand)
