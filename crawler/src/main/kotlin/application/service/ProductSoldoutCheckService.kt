@@ -33,11 +33,11 @@ class ProductSoldoutCheckService(
                 slackGateway.sendMessage("${payload.id} 재입고를 추가해주세요.")
 
                 val requestBody = RequestBody(productId = payload.id!!.value)
-                val status = restClient.put()
+                restClient.put()
                     .uri("https://alilm.store/api/v1/baskets/alilm")
                     .header("authorization", jwtToken)
                     .body(requestBody)
-                    .retrieve().toEntity<Unit>().statusCode
+                    .retrieve()
             } else {
                 slackGateway.sendMessage("${payload.id} 품절 입니다.")
             }
