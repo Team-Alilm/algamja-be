@@ -15,7 +15,6 @@ class FcmSendGateway(
     private val log = LoggerFactory.getLogger(FcmSendGateway::class.java)
 
     fun sendFcmMessage(
-        member: Member,
         product: Product,
         fcmToken: FcmToken
     ) {
