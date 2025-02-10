@@ -9,7 +9,6 @@ import org.springframework.messaging.MessageHeaders
 import org.springframework.messaging.handler.annotation.Headers
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
-import org.springframework.web.client.toEntity
 import org.team_alilm.application.handler.PlatformHandlerResolver
 import org.team_alilm.gateway.SendSlackGateway
 
