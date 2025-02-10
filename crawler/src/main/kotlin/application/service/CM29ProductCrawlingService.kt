@@ -6,68 +6,73 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
+import org.team_alilm.error.ErrorCode
+import org.team_alilm.error.CustomException
 import org.team_alilm.gateway.CrawlingGateway
+import org.team_alilm.gateway.SendSlackGateway
 import util.StringContextHolder
 
 @Service
 class CM29ProductCrawlingService(
     private val restClient: RestClient,
-    private val crawlingGateway: CrawlingGateway
+    private val crawlingGateway: CrawlingGateway,
+    private val slackGateway: SendSlackGateway
 ) : ProductCrawlingUseCase {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val productNumber = getProductNumber(command.url)
-
         val productDetailApiUrl = StringContextHolder.CM29_PRODUCT_DETAIL_API_URL.get().format(productNumber)
-        val productDetailResponse = restClient.get()
-            .uri(productDetailApiUrl)
-            .retrieve()
-            .body(JsonNode::class.java)
 
-        val productDetailResponseData = productDetailResponse?.get("data") ?: throw IllegalArgumentException()
-        val productCategory = productDetailResponseData.get("frontCategoryInfo")[0]
+        val productDetailResponse = fetchProductDetails(productDetailApiUrl, productNumber)
+        val productDetailData = productDetailResponse["data"] ?: throw IllegalArgumentException("Invalid response data")
+        val productCategory = productDetailData["frontCategoryInfo"]?.get(0) ?: throw IllegalArgumentException("Category not found")
 
         return ProductCrawlingUseCase.CrawlingResult(
             number = productNumber,
-            name = productDetailResponseData.get("itemName")?.asText() ?: throw IllegalArgumentException(),
-            brand = productDetailResponseData.get("frontBrand")?.get("brandNameKor")?.asText() ?: throw IllegalArgumentException(),
-            thumbnailUrl = "https://img.29cm.co.kr" + productDetailResponseData.get("itemImages")[0]?.get("imageUrl")?.asText(),
-            imageUrlList = productDetailResponseData.get("itemImages")?.drop(1)?.map {
-                "https://img.29cm.co.kr" + it.get("imageUrl")?.asText()
-            } ?: emptyList(),
-            firstCategory = productCategory.get("category1Name")?.asText() ?: throw IllegalArgumentException(),
-            secondCategory = productCategory.get("category2Name")?.asText() ?: throw IllegalArgumentException(),
-            price = productDetailResponseData.get("consumerPrice")?.asInt() ?: throw IllegalArgumentException(),
+            name = productDetailData["itemName"]?.asText() ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND),
+            brand = productDetailData["frontBrand"]?.get("brandNameKor")?.asText() ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND),
+            thumbnailUrl = buildImageUrl(productDetailData),
+            imageUrlList = extractImageUrls(productDetailData),
+            firstCategory = productCategory["category1Name"]?.asText() ?: "Unknown",
+            secondCategory = productCategory["category2Name"]?.asText() ?: "Unknown",
+            price = productDetailData["consumerPrice"]?.asInt() ?: 0,
             store = Store.CM29,
-            firstOptions = productDetailResponseData.get("optionItems")?.get("list")?.map {
-                it.get("title")?.asText() ?: throw IllegalArgumentException()
-            } ?: emptyList(),
-            secondOptions = productDetailResponseData.get("optionItems")?.get("list")?.toList()?.getOrNull(0)
-            ?.get("list")?.map {
-                it.get("title")?.asText() ?: throw IllegalArgumentException()
-            } ?: emptyList(),
-            thirdOptions = productDetailResponseData.get("optionItems")?.get("list")?.toList()?.getOrNull(0)
-                ?.get("list")?.toList()?.getOrNull(0)
-                    ?.get("list")?.map {
-                        it.get("title")?.asText() ?: throw IllegalArgumentException()
-                    } ?: emptyList(),
+            firstOptions = extractOptions(productDetailData),
+            secondOptions = extractOptions(productDetailData, 1),
+            thirdOptions = extractOptions(productDetailData, 2)
         )
     }
 
-    private fun getProductNumber (url: String): Long {
-        val html = crawlingGateway.htmlCrawling(
-            request = CrawlingGateway.CrawlingGatewayRequest(
-                url = url,
-            )
-        ).document.html()
+    private fun fetchProductDetails(apiUrl: String, productNumber: Long): JsonNode {
+        return try {
+            restClient.get().uri(apiUrl).retrieve().body(JsonNode::class.java)
+                ?: throw IllegalArgumentException("Null response from API")
+        } catch (e: Exception) {
+            log.error("❌ 상품 크롤링 실패: API 요청 오류 (URL: $apiUrl, Error: ${e.message})")
+            slackGateway.sendMessage("❌ 상품 크롤링 실패: API 요청 오류 (Product: $productNumber, Error: ${e.message})")
+            throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND)
+        }
+    }
 
-        val regexMeta = """<meta property="al:web:url" content="(https://product\.29cm\.co\.kr/catalog/\d+)">""".toRegex()
-        val matchResult = regexMeta.find(html)
-        val url = matchResult?.groups?.get(1)?.value
+    private fun getProductNumber(url: String): Long {
+        val html = crawlingGateway.htmlCrawling(CrawlingGateway.CrawlingGatewayRequest(url)).document.html()
+        val productUrl = """<meta property="al:web:url" content="(https://product\.29cm\.co\.kr/catalog/\d+)">""".toRegex().find(html)?.groups?.get(1)?.value
+            ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND)
+        return productUrl.substringAfterLast("/").toLong()
+    }
 
-        val regexNumber = """(\d+)$""".toRegex()
-        return (regexNumber.find(url!!)?.value?.toLong() ?: throw IllegalArgumentException())
+    private fun buildImageUrl(data: JsonNode): String {
+        return "https://img.29cm.co.kr" + (data["itemImages"]?.get(0)?.get("imageUrl")?.asText() ?: "")
+    }
+
+    private fun extractImageUrls(data: JsonNode): List<String> {
+        return data["itemImages"]?.drop(1)?.mapNotNull { it["imageUrl"]?.asText()?.let { url -> "https://img.29cm.co.kr$url" } } ?: emptyList()
+    }
+
+    private fun extractOptions(data: JsonNode, depth: Int = 0): List<String> {
+        return generateSequence(data["optionItems"]?.get("list")) { it.get(0)?.get("list") }
+            .elementAtOrNull(depth)?.mapNotNull { it["title"]?.asText() } ?: emptyList()
     }
 }
