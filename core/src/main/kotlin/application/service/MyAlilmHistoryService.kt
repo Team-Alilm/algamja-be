@@ -2,6 +2,7 @@ package org.team_alilm.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.team_alilm.application.port.`in`.use_case.MyAlilmHistoryCountUseCase
 import org.team_alilm.application.port.`in`.use_case.MyAlilmHistoryUseCase
 import org.team_alilm.application.port.out.LoadMyAlilmHistoryPort
 import java.time.LocalDate
@@ -10,8 +11,9 @@ import java.time.ZoneOffset
 @Service
 @Transactional
 class MyAlilmHistoryService(
-    val loadMyAlilmHistoryPort: LoadMyAlilmHistoryPort
-) : MyAlilmHistoryUseCase {
+    val loadMyAlilmHistoryPort: LoadMyAlilmHistoryPort,
+    val loadMyAlilmHistoryCountPort: LoadMyAlilmHistoryPort
+) : MyAlilmHistoryUseCase, MyAlilmHistoryCountUseCase {
 
     override fun myAlilmHistory(command: MyAlilmHistoryUseCase.MyAlilmHistoryCommand): List<MyAlilmHistoryUseCase.MyAlilmHistoryResult> {
         val dayLimit: Long = LocalDate.now().plusDays(-31).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
@@ -31,6 +33,15 @@ class MyAlilmHistoryService(
                 readYn = it.alilm.readYn
             )
         }
+    }
+
+    override fun myAlilmHistoryCount(command: MyAlilmHistoryCountUseCase.MyAlilmHistoryCountCommand): MyAlilmHistoryCountUseCase.MyAlilmHistoryCountResult {
+        val dayLimit: Long = LocalDate.now().plusDays(-31).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val myAlilmHistoryCount = loadMyAlilmHistoryCountPort.loadMyAlilmHistoryCount(command.member, dayLimit)
+
+        return MyAlilmHistoryCountUseCase.MyAlilmHistoryCountResult(
+            readYCount = myAlilmHistoryCount.readNCount
+        )
     }
 
 }
