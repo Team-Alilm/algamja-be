@@ -9,13 +9,14 @@ import org.springframework.messaging.MessageHeaders
 import org.springframework.messaging.handler.annotation.Headers
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
-import org.springframework.web.client.toEntity
 import org.team_alilm.application.handler.PlatformHandlerResolver
+import org.team_alilm.gateway.SendSlackGateway
 
 @Service
 class ProductSoldoutCheckService(
     private val restClient: RestClient,
     private val platformHandlerResolver: PlatformHandlerResolver,
+    private val slackGateway: SendSlackGateway,
     @Value("\${jwt-token}") private val jwtToken: String
 ) {
 
@@ -28,16 +29,20 @@ class ProductSoldoutCheckService(
             val restock = handle.process(payload)
 
             if (restock) {
+                slackGateway.sendMessage("${payload.id} 재입고를 추가해주세요.")
+
                 val requestBody = RequestBody(productId = payload.id!!.value)
-                val status = restClient.put()
+                restClient.put()
                     .uri("https://alilm.store/api/v1/baskets/alilm")
                     .header("authorization", jwtToken)
                     .body(requestBody)
-                    .retrieve().toEntity<Unit>().statusCode
-
+                    .retrieve()
+            } else {
+                slackGateway.sendMessage("${payload.id} 품절 입니다.")
             }
         } catch (e: Exception) {
-            log.error("Error occurred while processing message: $payload", e)
+            log.error("Error occurred while processing message: productId = ${payload.id}", e)
+            slackGateway.sendMessage("Error occurred while processing message: productId = ${payload.id}")
         } finally {
             acknowledgement.acknowledge()
         }

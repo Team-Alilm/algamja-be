@@ -25,4 +25,10 @@ class AlilmAndProductAdapter(
                    )
                }
     }
+
+    override fun loadMyAlilmHistoryCount(member: Member, dayLimit: Long): LoadMyAlilmHistoryPort.MyAlilmHistoryCount {
+        return LoadMyAlilmHistoryPort.MyAlilmHistoryCount(
+            readNCount = alilmRepository.findMyAlilmHistoryCount(member.id?.value?: throw NotFoundMemberException(), dayLimit).readNCount
+        )
+    }
 }

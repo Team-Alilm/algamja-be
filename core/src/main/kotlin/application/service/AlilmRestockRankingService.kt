@@ -12,7 +12,7 @@ class AlilmRestockRankingService(
     private val loadAlilmPort: LoadAlilmPort
 ): AlilmRestockRankingUseCase {
 
-    override fun alilmRestockRangin(
+    override fun alilmRestockRanking(
         command: AlilmRestockRankingUseCase.AlilmRestockRankingCommand
     ) : List<Product> {
         return loadAlilmPort.loadAlilm(command.count)

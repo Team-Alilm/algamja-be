@@ -1,21 +1,16 @@
 package org.team_alilm.controller
 
 import domain.product.Store
-import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCaseResolver
-import org.team_alilm.error.NotFoundProductNumber
 
 @RestController
 @RequestMapping("/api/v1/products")
 class ProductCrawlingController(
     private val productCrawlingUseCaseResolver: ProductCrawlingUseCaseResolver,
 ) {
-
-
-    private val log = LoggerFactory.getLogger(javaClass)
 
     @GetMapping("/crawling")
     fun crawling(
@@ -47,12 +42,6 @@ class ProductCrawlingController(
 //                url.contains("a-bly") -> Store.A_BLY
                 else -> throw IllegalArgumentException("지원하지 않는 URL입니다.")
             }
-        }
-
-        fun getProductNumber(): Long {
-            // 정규식으로 6자리 이상의 숫자 추출
-            val regex = "\\d{6,}".toRegex()
-            return regex.find(url)?.value?.toLong() ?: throw NotFoundProductNumber()
         }
     }
 
