@@ -14,13 +14,11 @@ import org.team_alilm.application.port.out.gateway.SendSlackGateway
 class SoldoutCheckJob(
     private val loadCrawlingProductsPort: LoadCrawlingProductsPort,
     private val sqsTemplate: SqsTemplate,
-    private val sendSlackGateway: SendSlackGateway
 ) : Job {
 
     @Transactional
     override fun execute(context: JobExecutionContext) {
         val productList: List<Product> = loadCrawlingProductsPort.loadCrawlingProducts()
-        sendSlackGateway.sendMessage("상품 판매 여부 체크 시작")
 
         productList.forEach {
             sqsTemplate.send("product-soldout-check-queue", it)
