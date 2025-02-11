@@ -27,9 +27,6 @@ class FcmSendGateway(
     """.trimIndent()
 
         val messageBuilder = Message.builder()
-            .putData("title", title)
-            .putData("body", body)
-            .putData("click_action", product.localServiceUrl()) // 클릭 시 이동할 URL
             .setToken(fcmToken.token)
 
         when (platform) {
