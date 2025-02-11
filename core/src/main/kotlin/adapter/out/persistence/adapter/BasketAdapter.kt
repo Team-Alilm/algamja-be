@@ -84,10 +84,6 @@ class BasketAdapter(
         return springDataBasketRepository.countByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
     }
 
-    // 바구니에서 groupby product_id, count() as waitingCount
-    // 그중 isAlilm이 false인 것만 가져와야함
-    // order by waitingCount desc
-    // pagenation
     override fun loadBasketPage(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
         return basketRepository.findAllByWaitingCount(pageRequest).map {
             ProductAndWaitingCount(
