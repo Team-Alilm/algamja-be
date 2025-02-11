@@ -17,7 +17,6 @@ class BasketAlilmService(
     private val fcmSendGateway: FcmSendGateway,
     private val addBasketPort: AddBasketPort,
     private val loadProductPort: LoadProductPort,
-    private val loadBasketAndMemberPort: LoadBasketAndMemberPort,
     private val loadBasket: LoadBasketPort,
     private val addAlilmPort: AddAlilmPort,
     private val loadFcmTokenPort: LoadFcmTokenPort
@@ -29,14 +28,14 @@ class BasketAlilmService(
         val basketList = loadBasket.loadBasketList(product.id!!)
 
         basketList.forEach {
+            // 회원 중복 없음
             val member = loadMemberPort.loadMember(it.memberId.value) ?: throw NotFoundProductException()
+
             sendMailGateway.sendMail(member, product)
             addAlilmPort.addAlilm(Alilm.from(basket = it))
 
             val fcmToken = loadFcmTokenPort.loadFcmTokenAllByMember(member.id!!.value)
-            fcmToken.forEach {
-                fcmSendGateway.sendFcmMessage(product= product, fcmToken = it)
-            }
+            fcmToken.forEach { token -> fcmSendGateway.sendFcmMessage(product= product, fcmToken = token,"web") }
 
             it.sendAlilm()
             addBasketPort.addBasket(it, memberId = it.memberId, productId = product.id!!)
