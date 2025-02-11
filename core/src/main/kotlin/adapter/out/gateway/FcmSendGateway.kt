@@ -28,16 +28,6 @@ class FcmSendGateway(
 
         // FCM 메시지 구성 (Data 메시지로만)
         val message = Message.builder()
-            .setNotification(
-                Notification.builder()
-                    .setTitle("[${product.name}] 상품이 재 입고 되었습니다!")
-                    .setBody("""
-                        ${if (options.isNotBlank()) "option : $options" else ""}
-                        지금 바로 확인해보세요.
-                    """.trimIndent())
-                    .setImage(product.thumbnailUrl)
-                    .build()
-            )
             .setAndroidConfig(
                 AndroidConfig.builder()
                     .setNotification(
@@ -66,6 +56,9 @@ class FcmSendGateway(
                     )
                     .build()
             )
+            .putData("icon", product.thumbnailUrl)
+            .putData("title", title)
+            .putData("body", body)
             .putData("click_action", product.getStoreUrl()) // 클릭 시 이동할 URL 추가
             .setToken(fcmToken.token)
             .build()

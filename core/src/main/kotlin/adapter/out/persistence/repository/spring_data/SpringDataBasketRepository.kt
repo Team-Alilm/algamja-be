@@ -23,6 +23,4 @@ interface SpringDataBasketRepository : JpaRepository<BasketJpaEntity, Long> {
     fun countByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId: Long): Long
 
     fun findAllByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId: Long): List<BasketJpaEntity>
-
-    fun findAllByIsDeleteFalseAndIsAlilmFalseOrderByCountDesc(pageRequest: PageRequest): Slice<BasketJpaEntity>
 }
