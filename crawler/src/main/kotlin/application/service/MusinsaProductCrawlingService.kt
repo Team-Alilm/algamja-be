@@ -32,8 +32,6 @@ class MusinsaProductCrawlingService(
             .body(JsonNode::class.java)
             ?: throw CustomException(ErrorCode.MUSINSA_INVALID_RESPONSE)
 
-        log.info("optionResponse: $optionResponse")
-
         val filterOption = optionResponse.get("data")?.get("basic")
             ?: throw CustomException(ErrorCode.MUSINSA_PRODUCT_NOT_FOUND)
 
