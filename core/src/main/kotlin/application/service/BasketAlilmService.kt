@@ -1,6 +1,7 @@
 package org.team_alilm.application.service
 
 import domain.Alilm
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.adapter.out.gateway.FcmSendGateway
@@ -22,10 +23,15 @@ class BasketAlilmService(
     private val loadFcmTokenPort: LoadFcmTokenPort
 ): BasketAlilmUseCase {
 
+    private val log = LoggerFactory.getLogger(BasketAlilmService::class.java)
+
     @Transactional
     override fun basketAlilm(command: BasketAlilmUseCase.BasketAlilmCommand) {
         val product = loadProductPort.loadProduct(command.productId) ?: throw NotFoundProductException()
         val basketList = loadBasket.loadBasketList(product.id!!)
+
+        log.info("basketList: $basketList")
+        log.info("basketList size: ${basketList.size}")
 
         basketList.forEach {
             // 회원 중복 없음
