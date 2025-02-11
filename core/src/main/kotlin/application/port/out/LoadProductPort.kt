@@ -3,8 +3,14 @@ package org.team_alilm.application.port.out
 import domain.product.Product
 import domain.product.ProductId
 import domain.product.Store
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Slice
 
 interface LoadProductPort {
+
+    fun loadProductSlice(
+        pageRequest: PageRequest
+    ): Slice<Product>
 
     fun loadProduct(
         number:Long,
@@ -21,7 +27,6 @@ interface LoadProductPort {
     fun loadProduct(
         productId: Long,
     ): Product?
-
 
     fun loadProductDetails(
         productId: ProductId,
