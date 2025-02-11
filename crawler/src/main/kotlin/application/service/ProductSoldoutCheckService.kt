@@ -29,7 +29,7 @@ class ProductSoldoutCheckService(
             val restock = handle.process(payload)
 
             if (restock) {
-                slackGateway.sendMessage("${payload.id} 재입고를 추가해주세요.")
+                slackGateway.sendMessage("${payload.id} ${payload.getStoreUrl()} 재입고 되었습니다.")
 
                 val requestBody = RequestBody(productId = payload.id!!.value)
                 restClient.put()
@@ -37,8 +37,6 @@ class ProductSoldoutCheckService(
                     .header("authorization", jwtToken)
                     .body(requestBody)
                     .retrieve()
-            } else {
-                slackGateway.sendMessage("${payload.id} 품절 입니다.")
             }
         } catch (e: Exception) {
             log.error("Error occurred while processing message: productId = ${payload.id}", e)
