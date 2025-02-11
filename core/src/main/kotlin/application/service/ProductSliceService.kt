@@ -21,7 +21,6 @@ class ProductSliceService (
             PageRequest.of(
                 command.page,
                 command.size,
-                by("createdDate").descending()
             )
         )
 
@@ -29,6 +28,7 @@ class ProductSliceService (
             val waitingCount = loadBasketPort.loadBasketCount(it.id!!)
             ProductSliceUseCase.ProductSliceResult.from(it, waitingCount)
         }.filter { it.waitingCount > 0 }
+            .sortedBy { it.waitingCount.dec() }
 
         return ProductSliceUseCase.CustomSlice(
             contents = contents,
