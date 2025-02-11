@@ -51,6 +51,15 @@ class Product (
         }
     }
 
+    fun localServiceUrl() : String {
+        return when (store) {
+            Store.MUSINSA -> StringContextHolder.LOCAL_HOST.get().format(number)
+            Store.CM29 -> StringContextHolder.LOCAL_HOST.get().format(number)
+            Store.ZIGZAG -> StringContextHolder.LOCAL_HOST.get().format(number)
+            else -> ""
+        }
+    }
+
     fun getZigzagOptionName () : String {
         return if (this.firstOption?.isNotBlank() == true && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {
             "${firstOption}/${secondOption}/${thirdOption}"
