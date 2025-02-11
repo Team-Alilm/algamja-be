@@ -31,6 +31,7 @@ class BasketAlilmService(
         // 중복 제거
         val fcmList = basketAndMemberList.map { it.fcmToken }.distinct()
         val memberList = basketAndMemberList.map { it.member }.distinct()
+        val basketList = basketAndMemberList.map { it.basket }.distinct()
 
         fcmList.forEach {
             fcmSendGateway.sendFcmMessage(fcmToken = it, product = product)
@@ -40,12 +41,10 @@ class BasketAlilmService(
             sendMailGateway.sendMail(it,  product)
         }
 
-//        basketAndMemberList.forEach { (basket, member, fcmToken) ->
-//             fcmSendGateway.sendFcmMessage(member = member, fcmToken = fcmToken, product = product)
-//             sendMailGateway.sendMail(member.email, member.nickname, product)
-//             addAlilmPort.addAlilm(Alilm.from(basket = basket))
-//             basket.sendAlilm()
-//             addBasketPort.addBasket(basket, memberId = member.id!!, productId = product.id!!)
-//        }
+        basketList.forEach {
+            addAlilmPort.addAlilm(Alilm.from(basket = it))
+            it.sendAlilm()
+            addBasketPort.addBasket(it, memberId = it.memberId, productId = product.id!!)
+        }
     }
 }
