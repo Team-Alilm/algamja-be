@@ -2,7 +2,6 @@ package org.team_alilm.adapter.out.persistence.adapter
 
 import domain.Basket
 import domain.Member
-import domain.product.Product
 import domain.product.ProductId
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
@@ -82,6 +81,12 @@ class BasketAdapter(
 
     override fun loadBasketCount(productId: ProductId): Long {
         return springDataBasketRepository.countByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
+    }
+
+    override fun loadBasketList(productId: ProductId): List<Basket> {
+        val basketJpaEntityList = springDataBasketRepository.findAllByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
+
+        return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
     override fun loadBasketPage(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {

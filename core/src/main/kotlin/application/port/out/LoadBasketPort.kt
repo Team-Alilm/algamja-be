@@ -4,8 +4,6 @@ import domain.Basket
 import domain.Member
 import domain.product.ProductId
 import org.springframework.data.domain.Slice
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
-
 
 interface LoadBasketPort {
 
@@ -17,6 +15,10 @@ interface LoadBasketPort {
     fun loadBasketCount(
         productId: ProductId
     ): Long
+
+    fun loadBasketList(
+        productId: ProductId
+    ): List<Basket>
 
     fun loadBasketPage(
         pageRequest: org.springframework.data.domain.PageRequest
