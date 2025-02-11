@@ -2,7 +2,6 @@ package org.team_alilm.adapter.out.gateway
 
 import com.google.firebase.messaging.*
 import domain.FcmToken
-import domain.Member
 import domain.product.Product
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service

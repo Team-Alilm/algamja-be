@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.out.*
 import domain.product.Product
+import org.slf4j.LoggerFactory
 import org.team_alilm.application.port.out.gateway.SendSlackGateway
 
 @Component
@@ -16,9 +17,12 @@ class SoldoutCheckJob(
     private val sqsTemplate: SqsTemplate,
 ) : Job {
 
+    private val log = LoggerFactory.getLogger(SoldoutCheckJob::class.java)
+
     @Transactional
     override fun execute(context: JobExecutionContext) {
         val productList: List<Product> = loadCrawlingProductsPort.loadCrawlingProducts()
+        log.info("productList: $productList")
 
         productList.forEach {
             sqsTemplate.send("product-soldout-check-queue", it)
