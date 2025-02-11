@@ -28,38 +28,10 @@ class FcmSendGateway(
 
         // FCM 메시지 구성 (Data 메시지로만)
         val message = Message.builder()
-            .setAndroidConfig(
-                AndroidConfig.builder()
-                    .setNotification(
-                        AndroidNotification.builder()
-                            .setTitle(title)
-                            .setBody(body)
-                            .setImage(product.thumbnailUrl)
-                            .setClickAction("push_click")
-                            .build()
-                    )
-                    .build()
-            )
-            .setApnsConfig(
-                ApnsConfig.builder()
-                    .setAps(
-                        Aps.builder()
-                            .setCategory("push_click")
-                            .setAlert(
-                                ApsAlert.builder()
-                                    .setLaunchImage(product.thumbnailUrl)
-                                    .setTitle(title)
-                                    .setBody(body)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .build()
-            )
-            .putData("icon", product.thumbnailUrl)
+            .putData("icon_url", product.thumbnailUrl)
             .putData("title", title)
             .putData("body", body)
-            .putData("click_action", product.getStoreUrl()) // 클릭 시 이동할 URL 추가
+            .putData("click_action", product.localServiceUrl()) // 클릭 시 이동할 URL 추가
             .setToken(fcmToken.token)
             .build()
 
