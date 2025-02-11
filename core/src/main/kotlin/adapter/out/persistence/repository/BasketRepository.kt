@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndMemberProjection
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndProductProjection
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
 
 interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
@@ -74,8 +74,9 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
     ): List<BasketAndMemberProjection>
 
     @Query("""
-    SELECT new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount(
-        p, COUNT(b.id)
+    SELECT new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(
+        p,
+        COUNT(b.id)
     )
     FROM BasketJpaEntity b
     JOIN ProductJpaEntity p ON b.productId = p.id
@@ -85,7 +86,7 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
     GROUP BY b.productId
     ORDER BY COUNT(b.id) DESC
 """)
-    fun findAllByWaitingCount(pageRequest: PageRequest): Slice<ProductAndWaitingCount>
+    fun findAllByWaitingCount(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 
 
 }

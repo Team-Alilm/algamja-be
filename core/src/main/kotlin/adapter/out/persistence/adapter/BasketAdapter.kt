@@ -6,11 +6,11 @@ import domain.product.ProductId
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
-import org.team_alilm.adapter.out.persistence.adapter.data.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.BasketRepository
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataBasketRepository
 import org.team_alilm.application.port.out.*
 import org.team_alilm.global.error.NotFoundBasketException
@@ -89,7 +89,7 @@ class BasketAdapter(
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
-    override fun loadBasketPage(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
+    override fun loadBasketSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
         return basketRepository.findAllByWaitingCount(pageRequest).map {
             ProductAndWaitingCount(
                 product = productMapper.mapToDomainEntity(it.productJpaEntity),
