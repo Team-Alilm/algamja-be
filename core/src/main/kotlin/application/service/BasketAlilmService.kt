@@ -43,9 +43,7 @@ class BasketAlilmService(
             val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(member.id!!.value)
             log.info("fcmToken: $fcmTokenList")
             log.info("fcmToken size: ${fcmTokenList.size}")
-            fcmTokenList.forEach { token -> fcmSendGateway.sendFcmMessage(product= product, fcmToken = token,"ios") }
             fcmTokenList.forEach { token -> fcmSendGateway.sendFcmMessage(product= product, fcmToken = token,"web") }
-            fcmTokenList.forEach { token -> fcmSendGateway.sendFcmMessage(product= product, fcmToken = token,"android") }
             it.sendAlilm()
             addBasketPort.addBasket(it, memberId = it.memberId, productId = product.id!!)
         }
