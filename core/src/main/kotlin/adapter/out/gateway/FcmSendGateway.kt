@@ -28,6 +28,10 @@ class FcmSendGateway(
 
         val messageBuilder = Message.builder()
             .setToken(fcmToken.token)
+            .putData("title", title)
+            .putData("body", body)
+            .putData("icon", product.thumbnailUrl)
+            .putData("click_action", product.localServiceUrl()) // 클릭 시 이동할 URL
 
         when (platform) {
             "ios" -> {
