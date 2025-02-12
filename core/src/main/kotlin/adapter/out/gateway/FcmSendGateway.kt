@@ -28,38 +28,8 @@ class FcmSendGateway(
 
         val messageBuilder = Message.builder()
             .setToken(fcmToken.token)
-            .putData("title", title)
-            .putData("body", body)
-            .putData("icon", product.thumbnailUrl)
-            .putData("click_action", product.localServiceUrl()) // 클릭 시 이동할 URL
 
         when (platform) {
-            "ios" -> {
-                messageBuilder.setApnsConfig(
-                    ApnsConfig.builder()
-                        .setAps(
-                            Aps.builder()
-                                .setCategory("product")
-                                .setAlert(
-                                    ApsAlert.builder()
-                                        .setLaunchImage(product.thumbnailUrl)
-                                        .setTitle(title)
-                                        .setBody(body)
-                                        .build()
-                                )
-                                .build()
-                        )
-                        .build()
-                )
-            }
-            "android" -> {
-                messageBuilder.setAndroidConfig(
-                    AndroidConfig.builder()
-                        .setPriority(AndroidConfig.Priority.HIGH)
-                        // Foreground에서는 `setNotification()` 없이 putData만 사용
-                        .build()
-                )
-            }
             "web" -> {
                 messageBuilder.setWebpushConfig(
                     WebpushConfig.builder()
@@ -67,7 +37,7 @@ class FcmSendGateway(
                             WebpushNotification.builder()
                                 .setTitle(title)
                                 .setBody(body)
-                                .setIcon(product.thumbnailUrl)
+                                .setImage(product.thumbnailUrl)
                                 .build()
                         )
                         .build()
