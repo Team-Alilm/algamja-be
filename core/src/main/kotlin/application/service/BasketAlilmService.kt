@@ -40,8 +40,10 @@ class BasketAlilmService(
             sendMailGateway.sendMail(member, product)
             addAlilmPort.addAlilm(Alilm.from(basket = it))
 
-            val fcmToken = loadFcmTokenPort.loadFcmTokenAllByMember(member.id!!.value)
-            fcmToken.forEach { token -> fcmSendGateway.sendFcmMessage(product= product, fcmToken = token,"web") }
+            val fcmTokenList = loadFcmTokenPort.loadFcmTokenAllByMember(member.id!!.value)
+            log.info("fcmToken: $fcmTokenList")
+            log.info("fcmToken size: ${fcmTokenList.size}")
+            fcmTokenList.forEach { token -> fcmSendGateway.sendFcmMessage(product= product, fcmToken = token,"web") }
 
             it.sendAlilm()
             addBasketPort.addBasket(it, memberId = it.memberId, productId = product.id!!)
