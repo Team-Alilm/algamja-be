@@ -3,8 +3,6 @@ package org.team_alilm.adapter.`in`.web.controller.member
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.validation.Valid
-import jakarta.validation.constraints.NotNull
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -26,7 +24,7 @@ class MyAlilmReadController(
     @PatchMapping("/my-alilm-read")
     fun myAlilmRead(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
-        @Valid @RequestBody request: UpdateMyAlilmRead
+        @RequestBody request: UpdateMyAlilmRead
     ) : ResponseEntity<Unit> {
         val command = MyAlilmReadUseCase.MyAlilmReadCommand(
             member = customMemberDetails.member,
@@ -40,13 +38,12 @@ class MyAlilmReadController(
 
     @Schema(description = "나의 알림 읽음처리 요청")
     data class UpdateMyAlilmRead(
-        @field:NotNull(message = "알림ID는 필수입니다.")
         @field:Schema(
             example = "[1, 2, 3]",
             description = "알림ID리스트",
             required = true,
         )
-        val alilmIdList: List<Long> = emptyList()
+        val alilmIdList: List<Long>
     )
 
 }

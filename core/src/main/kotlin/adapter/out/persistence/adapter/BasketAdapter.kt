@@ -2,16 +2,15 @@ package org.team_alilm.adapter.out.persistence.adapter
 
 import domain.Basket
 import domain.Member
-import domain.product.Product
 import domain.product.ProductId
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
-import org.team_alilm.adapter.out.persistence.adapter.data.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.BasketRepository
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataBasketRepository
 import org.team_alilm.application.port.out.*
 import org.team_alilm.global.error.NotFoundBasketException
@@ -84,11 +83,13 @@ class BasketAdapter(
         return springDataBasketRepository.countByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
     }
 
-    // 바구니에서 groupby product_id, count() as waitingCount
-    // 그중 isAlilm이 false인 것만 가져와야함
-    // order by waitingCount desc
-    // pagenation
-    override fun loadBasketPage(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
+    override fun loadBasketList(productId: ProductId): List<Basket> {
+        val basketJpaEntityList = springDataBasketRepository.findAllByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
+
+        return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
+    }
+
+    override fun loadBasketSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
         return basketRepository.findAllByWaitingCount(pageRequest).map {
             ProductAndWaitingCount(
                 product = productMapper.mapToDomainEntity(it.productJpaEntity),

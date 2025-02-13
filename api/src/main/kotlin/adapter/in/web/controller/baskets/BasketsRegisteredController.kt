@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -90,7 +89,6 @@ class BasketsRegisteredController(
         )
         val brand: String,
 
-        @field:NotBlank(message = "썸네일 이미지 URL은 필수입니다.")
         @field:Schema(
             description = "썸네일 이미지 URL",
         )
