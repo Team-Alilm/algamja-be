@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import jakarta.validation.constraints.Min
-import jakarta.validation.constraints.NotBlank
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -65,14 +63,9 @@ class ProductSliceController(
 
     @Schema(description = "상품 조회 파라미터")
     data class ProductListParameter(
-        @NotBlank(message = "사이즈는 필수에요.")
-        @Min(value = 1, message = "사이즈는 1 이상이어야 합니다.")
         @Schema(description = "페이지 사이즈", defaultValue = "10")
         val size: Int,
-
-        @NotBlank(message = "페이지 번호는 필수에요.")
         @Schema(description = "페이지 번호", defaultValue = "0")
-        @Min(value = 0, message = "페이지 번호는 1 이상이어야 합니다.")
         val page: Int
     )
 }

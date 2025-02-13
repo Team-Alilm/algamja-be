@@ -3,10 +3,6 @@ package org.team_alilm.adapter.`in`.web.controller.member
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.validation.Valid
-import jakarta.validation.constraints.Email
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Pattern
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
@@ -55,9 +51,7 @@ class MyInfoController(
     fun updateMyInfo(
         @AuthenticationPrincipal
         customMemberDetails: CustomMemberDetails,
-
-        @Valid @RequestBody
-        request: UpdateMyInfoRequest
+        @RequestBody request: UpdateMyInfoRequest
     ) : ResponseEntity<Unit> {
         val command = MyInfoUseCase.UpdateMyInfoCommand(
             member = customMemberDetails.member,
@@ -71,21 +65,12 @@ class MyInfoController(
     }
 
     data class UpdateMyInfoRequest(
-        @Email
-        @field:NotNull(message = "email은 필수입니다.")
         @field:Schema(
             example = "team.alilms@gmail.com",
             description = "이메일",
             required = true,
         )
         val email: String,
-
-        @field:NotNull(message = "nickName은 필수입니다.")
-        @field:Pattern(
-            // 한국어, 영어, 숫자 만 가능하고 1~12자로 제한
-            regexp = "^[a-zA-Z0-9가-힣]{1,12}\$",
-            message = "닉네임은 1~12자의 영문 대소문자, 숫자로 이루어져야 합니다."
-        )
         val nickname: String,
     )
 

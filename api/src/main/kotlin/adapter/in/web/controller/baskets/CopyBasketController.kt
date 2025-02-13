@@ -1,6 +1,5 @@
 package org.team_alilm.adapter.`in`.web.controller.baskets
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -43,7 +42,6 @@ class CopyBasketController(
 
     @Schema(description = "장바구니 복사 요청")
     data class CopyBasketRequest(
-        @JsonProperty("productId") // JSON 필드 이름 명시
         val productId: Long
     )
 }
