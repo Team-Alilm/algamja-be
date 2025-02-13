@@ -2,7 +2,6 @@ package org.team_alilm.adapter.out.gateway
 
 import com.google.firebase.messaging.*
 import domain.FcmToken
-import domain.Member
 import domain.product.Product
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -16,59 +15,38 @@ class FcmSendGateway(
 
     fun sendFcmMessage(
         product: Product,
-        fcmToken: FcmToken
+        fcmToken: FcmToken,
+        platform: String // "ios", "android", "web"
     ) {
-        val title = "[${product.name}] 상품이 재 입고 되었습니다!"
+        val title = "[${product.name}] 상품이 재입고 되었습니다!"
         val options = listOfNotNull(product.firstOption, product.secondOption, product.thirdOption)
             .joinToString(" / ")
         val body = """
-            ${if (options.isNotBlank()) "option : $options" else ""}
-            지금 바로 확인해보세요.
-        """.trimIndent()
+        ${if (options.isNotBlank()) "option : $options" else ""}
+        지금 바로 확인해보세요.
+    """.trimIndent()
 
-        // FCM 메시지 구성 (Data 메시지로만)
-        val message = Message.builder()
-            .setNotification(
-                Notification.builder()
-                    .setTitle("[${product.name}] 상품이 재 입고 되었습니다!")
-                    .setBody("""
-                        ${if (options.isNotBlank()) "option : $options" else ""}
-                        지금 바로 확인해보세요.
-                    """.trimIndent())
-                    .setImage(product.thumbnailUrl)
-                    .build()
-            )
-            .setAndroidConfig(
-                AndroidConfig.builder()
-                    .setNotification(
-                        AndroidNotification.builder()
-                            .setTitle(title)
-                            .setBody(body)
-                            .setImage(product.thumbnailUrl)
-                            .setClickAction("push_click")
-                            .build()
-                    )
-                    .build()
-            )
-            .setApnsConfig(
-                ApnsConfig.builder()
-                    .setAps(
-                        Aps.builder()
-                            .setCategory("push_click")
-                            .setAlert(
-                                ApsAlert.builder()
-                                    .setLaunchImage(product.thumbnailUrl)
-                                    .setTitle(title)
-                                    .setBody(body)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .build()
-            )
-            .putData("click_action", product.getStoreUrl()) // 클릭 시 이동할 URL 추가
+        val messageBuilder = Message.builder()
             .setToken(fcmToken.token)
-            .build()
+
+        when (platform) {
+            "web" -> {
+                messageBuilder.setWebpushConfig(
+                    WebpushConfig.builder()
+                        .setNotification(
+                            WebpushNotification.builder()
+                                .setTitle(title)
+                                .setBody(body)
+                                .setImage(product.thumbnailUrl)
+                                .build()
+                        )
+                        .build()
+                )
+                    .putData("click_action", product.localServiceUrl())
+            }
+        }
+
+        val message = messageBuilder.build()
 
         try {
             firebaseMessaging.send(message)
@@ -80,4 +58,5 @@ class FcmSendGateway(
 
         log.info("Successfully sent message: $message")
     }
+
 }

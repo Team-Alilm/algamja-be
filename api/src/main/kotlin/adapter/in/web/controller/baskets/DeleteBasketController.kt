@@ -1,9 +1,6 @@
 package org.team_alilm.adapter.`in`.web.controller.baskets
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.validation.Valid
-import jakarta.validation.constraints.NotNull
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -22,8 +19,8 @@ class DeleteBasketController(
 
     @DeleteMapping
     fun deleteBasket(
-        @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
-        @RequestBody @Valid request: DeleteBasketRequest
+        @RequestBody request: DeleteBasketRequest,
+        @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ) : ResponseEntity<Unit> {
         val command = DeleteBasketUseCase.DeleteBasketCommand(
             memberId = customMemberDetails.member.id!!.value,
@@ -36,8 +33,7 @@ class DeleteBasketController(
     }
 
     data class DeleteBasketRequest(
-        @field:NotNull(message = "장바구니 ID는 필수입니다.")
-        @JsonProperty("basketId") val basketId: Long
+        val basketId: Long
     )
 
 }

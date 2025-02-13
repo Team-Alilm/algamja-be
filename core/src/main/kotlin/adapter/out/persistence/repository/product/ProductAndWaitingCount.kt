@@ -1,8 +1,8 @@
 package org.team_alilm.adapter.out.persistence.repository.product
 
-import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
+import domain.product.Product
 
 data class ProductAndWaitingCount(
-    val productJpaEntity: ProductJpaEntity,
+    val product: Product,
     val waitingCount: Long
 )
