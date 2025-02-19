@@ -33,6 +33,7 @@ class AddFcmTokenController(
 
     @Schema(description = "FCM 토큰 등록 요청")
     data class FcmTokenRequest(
-        val fcmToken: String
+        val fcmToken: String,
+        val os: String? = null
     )
 }
