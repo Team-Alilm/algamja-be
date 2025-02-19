@@ -28,6 +28,7 @@ class FcmSendGateway(
 
         val messageBuilder = Message.builder()
             .setToken(fcmToken.token)
+            .putData("click_action", product.localServiceUrl())
 
         when (platform) {
             "web" -> {
@@ -42,7 +43,37 @@ class FcmSendGateway(
                         )
                         .build()
                 )
-                    .putData("click_action", product.localServiceUrl())
+            }
+            "android" -> {
+                messageBuilder.setAndroidConfig(
+                    AndroidConfig.builder()
+                        .setNotification(
+                            AndroidNotification.builder()
+                                .setTitle(title)
+                                .setBody(body)
+                                .setImage(product.thumbnailUrl)
+                                .build()
+                        )
+                        .build()
+                )
+            }
+            "ios" -> {
+                messageBuilder.setApnsConfig(
+                    ApnsConfig.builder()
+                        .setAps(
+                            Aps.builder()
+                                .setAlert(
+                                    ApsAlert.builder()
+                                        .setTitle(title)
+                                        .setBody(body)
+                                        .build()
+                                )
+                                .setBadge(1)
+                                .setSound("default")
+                                .build()
+                        )
+                        .build()
+                )
             }
         }
 
