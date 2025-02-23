@@ -48,13 +48,13 @@ class MyBasketsController(
         val imageUrl: String,
         val store: String,
         val price: Int,
-        val isAlilm: Boolean,
+        val alilm: Boolean,
         val alilmDate: Long?,
         val firstCategory: String,
         val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?,
-        val isHidden: Boolean,
+        val hidden: Boolean,
         val waitingCount: Long,
         val productId: Long
     ) {
@@ -69,13 +69,13 @@ class MyBasketsController(
                     imageUrl = myBasketsResult.imageUrl,
                     store = myBasketsResult.store,
                     price = myBasketsResult.price,
-                    isAlilm = myBasketsResult.isAlilm,
+                    alilm = myBasketsResult.isAlilm,
                     firstCategory = myBasketsResult.firstCategory,
                     alilmDate = myBasketsResult.alilmDate,
                     firstOption = myBasketsResult.firstOption,
                     secondOption = myBasketsResult.secondOption,
                     thirdOption = myBasketsResult.thirdOption,
-                    isHidden = myBasketsResult.isHidden,
+                    hidden = myBasketsResult.isHidden,
                     waitingCount = myBasketsResult.waitingCount,
                     productId = myBasketsResult.productId
                 )

@@ -21,4 +21,9 @@ interface LoadMyAlilmHistoryPort {
             }
         }
     }
+
+    fun loadMyAlilmHistoryCount(member: Member, dayLimit: Long): MyAlilmHistoryCount
+    data class MyAlilmHistoryCount(
+        val readNCount: Long
+    )
 }
