@@ -8,6 +8,8 @@ import org.team_alilm.adapter.out.persistence.entity.AlilmJpaEntity
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.alilm.AlilmAllCountAndDailyCount
 import org.team_alilm.adapter.out.persistence.repository.alilm.AlilmAndProductProjection
+import org.team_alilm.adapter.out.persistence.repository.alilm.AlilmHistoryCountProjection
+import org.team_alilm.application.port.out.LoadMyAlilmHistoryPort
 
 interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
 
@@ -49,6 +51,19 @@ interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
         limit :count
     """)
     fun findByRestockRanking(count: Int): List<ProductJpaEntity>
+
+    @Query("""
+        SELECT 
+               new org.team_alilm.adapter.out.persistence.repository.alilm.AlilmHistoryCountProjection(
+                    count(a.id)
+               )
+        FROM   AlilmJpaEntity a
+        WHERE  1 = 1
+        AND    a.readYn      = false
+        AND    a.memberId    = :memberId
+        AND    a.createdDate >= :dayLimit
+    """)
+    fun findMyAlilmHistoryCount(memberId: Long, dayLimit: Long) : AlilmHistoryCountProjection
 }
 
 
