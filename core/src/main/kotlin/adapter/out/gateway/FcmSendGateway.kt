@@ -28,7 +28,6 @@ class FcmSendGateway(
 
         val messageBuilder = Message.builder()
             .setToken(fcmToken.token)
-            .putData("click_action", product.localServiceUrl())
 
         when (platform) {
             "web" -> {
@@ -41,6 +40,7 @@ class FcmSendGateway(
                                 .setImage(product.thumbnailUrl)
                                 .build()
                         )
+                        .putData("click_action", product.localServiceUrl())
                         .build()
                 )
             }
