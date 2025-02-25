@@ -45,6 +45,29 @@ class FcmSendGateway(
                         .build()
                 )
             }
+            "ios" -> {
+                messageBuilder.setApnsConfig(
+                    ApnsConfig.builder()
+                        .setAps(
+                            Aps.builder()
+                                .setAlert(
+                                    ApsAlert.builder()
+                                        .setTitle(title)
+                                        .setBody(body)
+                                        .build()
+                                )
+                                .setBadge(1)
+                                .setSound("default")
+                                .build()
+                        )
+                        .setFcmOptions(
+                            ApnsFcmOptions.builder()
+                                .setImage(product.thumbnailUrl)
+                                .build()
+                        )
+                        .build()
+                )
+            }
         }
 
         val message = messageBuilder.build()
