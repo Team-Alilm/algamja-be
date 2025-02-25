@@ -38,40 +38,10 @@ class FcmSendGateway(
                                 .setTitle(title)
                                 .setBody(body)
                                 .setImage(product.thumbnailUrl)
+                                .setIcon(product.thumbnailUrl)
                                 .build()
                         )
                         .putData("click_action", product.localServiceUrl())
-                        .build()
-                )
-            }
-            "android" -> {
-                messageBuilder.setAndroidConfig(
-                    AndroidConfig.builder()
-                        .setNotification(
-                            AndroidNotification.builder()
-                                .setTitle(title)
-                                .setBody(body)
-                                .setImage(product.thumbnailUrl)
-                                .build()
-                        )
-                        .build()
-                )
-            }
-            "ios" -> {
-                messageBuilder.setApnsConfig(
-                    ApnsConfig.builder()
-                        .setAps(
-                            Aps.builder()
-                                .setAlert(
-                                    ApsAlert.builder()
-                                        .setTitle(title)
-                                        .setBody(body)
-                                        .build()
-                                )
-                                .setBadge(1)
-                                .setSound("default")
-                                .build()
-                        )
                         .build()
                 )
             }
