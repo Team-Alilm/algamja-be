@@ -18,7 +18,7 @@ class FcmSendGateway(
         fcmToken: FcmToken,
         platform: String // "ios", "android", "web"
     ) {
-        val title = "[${product.name}] 상품이 재입고 되었습니다!"
+        val title = "\uD83D\uDD14 [${product.name}] 상품이 재입고 되었습니다!"
         val options = listOfNotNull(product.firstOption, product.secondOption, product.thirdOption)
             .joinToString(" / ")
         val body = """
