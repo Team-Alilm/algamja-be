@@ -47,6 +47,7 @@ interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
         FROM ProductJpaEntity p
         join AlilmJpaEntity a
         on a.productId = p.id
+        group by p.id
         order by a.createdDate desc
         limit :count
     """)
