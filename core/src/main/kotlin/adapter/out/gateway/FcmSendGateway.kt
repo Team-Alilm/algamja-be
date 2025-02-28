@@ -34,6 +34,7 @@ class FcmSendGateway(
                     .setImage(product.thumbnailUrl)
                     .build()
             )
+            .putData("click_action", product.localServiceUrl())
 
         val message = messageBuilder.build()
 
