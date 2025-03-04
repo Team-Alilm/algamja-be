@@ -21,4 +21,4 @@ spring:
             user-name-attribute: id
 
 app:
-  base-url: https://alilm.co.kr
+  base-url: https://algamja.com
