@@ -51,6 +51,7 @@ class MyAlilmHistoryContoller(
     data class AlilmHistory(
         val alilmId: Long,
         val productid: Long,
+        val productId: Long,
         val name: String,
         val imageUrl: String,
         val brand: String,
@@ -65,6 +66,7 @@ class MyAlilmHistoryContoller(
                 return AlilmHistory(
                     alilmId = myAlilmHistoryResult.alilmId,
                     productid = myAlilmHistoryResult.productid,
+                    productId = myAlilmHistoryResult.productId,
                     name = myAlilmHistoryResult.name,
                     imageUrl = myAlilmHistoryResult.imageUrl,
                     brand = myAlilmHistoryResult.brand,

@@ -23,6 +23,7 @@ class MyAlilmHistoryService(
             MyAlilmHistoryUseCase.MyAlilmHistoryResult(
                 alilmId = it.alilm.id.value!!,
                 productid = it.product.id!!.value,
+                productId = it.product.id!!.value,
                 name = it.product.name,
                 imageUrl = it.product.thumbnailUrl,
                 brand = it.product.brand,
