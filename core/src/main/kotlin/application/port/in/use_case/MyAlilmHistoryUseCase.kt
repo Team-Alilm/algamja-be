@@ -13,6 +13,7 @@ interface MyAlilmHistoryUseCase {
     data class MyAlilmHistoryResult(
         val alilmId: Long,
         val productid: Long,
+        val productId: Long,
         val name: String,
         val imageUrl: String,
         val brand: String,
