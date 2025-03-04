@@ -31,7 +31,8 @@ class MyAlilmHistoryService(
                 firstOption = it.product.firstOption,
                 secondOption = it.product.secondOption,
                 thirdOption = it.product.thirdOption,
-                readYn = it.alilm.readYn
+                readYn = it.alilm.readYn,
+                createdDate = it.alilm.createdDate,
             )
         }
     }
