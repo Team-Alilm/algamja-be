@@ -21,6 +21,7 @@ interface MyAlilmHistoryUseCase {
         val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?,
-        val readYn: Boolean
+        val readYn: Boolean,
+        val createdDate: Long
     )
 }
