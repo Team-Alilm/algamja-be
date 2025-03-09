@@ -21,7 +21,8 @@ class AlilmMapper {
             id = Alilm.AlilmId(alilmJpaEntity.id),
             memberId = alilmJpaEntity.memberId,
             productId = alilmJpaEntity.productId,
-            readYn = alilmJpaEntity.readYn
+            readYn = alilmJpaEntity.readYn,
+            createdDate = alilmJpaEntity.createdDate
         )
     }
 }
