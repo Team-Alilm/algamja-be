@@ -19,7 +19,7 @@ enum class StringContextHolder(
     ZIGZAG_PRODUCT_SOLD_API_URL("https://api.zigzag.kr/api/2/graphql/GetCatalogProductDetailPageOption"),
     ZIGZAG_PRODUCT_URL("https://zigzag.kr/catalog/products/%s"),
 
-    LOCAL_HOST("https://alilm.co.kr/product/%s");
+    LOCAL_HOST("https://algamja.com//product/%s");
 
     fun get(): String {
         return value
