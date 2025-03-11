@@ -39,7 +39,7 @@ class SwaggerConfig {
         return OpenAPI()
             .servers(
                 listOf(
-                    Server().url("https://alilm.store").description("prod Server"),
+                    Server().url("https://api.algamja.com").description("prod Server"),
                     Server().url("http://localhost:8080").description("dev Server")
                 )
             )
