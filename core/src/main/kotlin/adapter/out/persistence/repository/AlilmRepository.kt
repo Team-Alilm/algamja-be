@@ -2,6 +2,7 @@ package org.team_alilm.adapter.out.persistence.repository
 
 import domain.Alilm
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.team_alilm.adapter.out.persistence.entity.AlilmJpaEntity
@@ -47,6 +48,7 @@ interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
         FROM ProductJpaEntity p
         join AlilmJpaEntity a
         on a.productId = p.id
+        group by p.id
         order by a.createdDate desc
         limit :count
     """)
@@ -64,6 +66,15 @@ interface AlilmRepository : JpaRepository<AlilmJpaEntity, Long> {
         AND    a.createdDate >= :dayLimit
     """)
     fun findMyAlilmHistoryCount(memberId: Long, dayLimit: Long) : AlilmHistoryCountProjection
+
+    @Modifying
+    @Query("""
+        UPDATE  AlilmJpaEntity a
+        SET     a.readYn   = true
+        WHERE   1 = 1
+        AND     a.memberId = :memberId
+    """)
+    fun readProcMyAlilm(memberId: Long)
 }
 
 

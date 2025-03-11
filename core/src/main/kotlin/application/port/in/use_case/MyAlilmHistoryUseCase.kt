@@ -13,6 +13,7 @@ interface MyAlilmHistoryUseCase {
     data class MyAlilmHistoryResult(
         val alilmId: Long,
         val productid: Long,
+        val productId: Long,
         val name: String,
         val imageUrl: String,
         val brand: String,
@@ -20,6 +21,7 @@ interface MyAlilmHistoryUseCase {
         val firstOption: String?,
         val secondOption: String?,
         val thirdOption: String?,
-        val readYn: Boolean
+        val readYn: Boolean,
+        val createdDate: Long
     )
 }

@@ -15,10 +15,9 @@ class FcmSendGateway(
 
     fun sendFcmMessage(
         product: Product,
-        fcmToken: FcmToken,
-        platform: String // "ios", "android", "web"
+        fcmToken: FcmToken
     ) {
-        val title = "[${product.name}] 상품이 재입고 되었습니다!"
+        val title = "\uD83D\uDD14 [${product.name}] 상품이 재입고 되었습니다!"
         val options = listOfNotNull(product.firstOption, product.secondOption, product.thirdOption)
             .joinToString(" / ")
         val body = """
@@ -28,23 +27,14 @@ class FcmSendGateway(
 
         val messageBuilder = Message.builder()
             .setToken(fcmToken.token)
-
-        when (platform) {
-            "web" -> {
-                messageBuilder.setWebpushConfig(
-                    WebpushConfig.builder()
-                        .setNotification(
-                            WebpushNotification.builder()
-                                .setTitle(title)
-                                .setBody(body)
-                                .setImage(product.thumbnailUrl)
-                                .build()
-                        )
-                        .build()
-                )
-                    .putData("click_action", product.localServiceUrl())
-            }
-        }
+            .setNotification(
+                Notification.builder()
+                    .setTitle(title)
+                    .setBody(body)
+                    .setImage(product.thumbnailUrl)
+                    .build()
+            )
+            .putData("click_action", product.localServiceUrl())
 
         val message = messageBuilder.build()
 

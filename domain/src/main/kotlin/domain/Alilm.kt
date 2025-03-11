@@ -4,7 +4,8 @@ class Alilm(
     val id: AlilmId,
     val memberId: Long,
     val productId: Long,
-    var readYn: Boolean
+    var readYn: Boolean,
+    var createdDate: Long
 ) {
 
     fun readAlilm() {
@@ -17,7 +18,8 @@ class Alilm(
                 id = AlilmId(null),
                 memberId = basket.memberId.value,
                 productId = basket.productId.value,
-                readYn = false
+                readYn = false,
+                createdDate = System.currentTimeMillis()
             )
         }
     }
