@@ -33,7 +33,7 @@ class ProductSoldoutCheckService(
 
                 val requestBody = RequestBody(productId = payload.id!!.value)
                 restClient.put()
-                    .uri("https://alilm.store/api/v1/baskets/alilm")
+                    .uri("https://api.algamja.com/api/v1/baskets/alilm")
                     .header("authorization", jwtToken)
                     .body(requestBody)
                     .retrieve()
