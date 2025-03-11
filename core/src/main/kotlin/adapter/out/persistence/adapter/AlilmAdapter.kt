@@ -1,6 +1,7 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
 import domain.Alilm
+import domain.Member
 import domain.product.Product
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.AlilmMapper
@@ -10,6 +11,7 @@ import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataA
 import org.team_alilm.application.port.out.AddAlilmPort
 import org.team_alilm.application.port.out.LoadAlilmPort
 import org.team_alilm.application.port.out.LoadAllAndDailyCountPort
+import org.team_alilm.application.port.out.ReadProcAlilmPort
 import org.team_alilm.global.error.NotFoundAlilmException
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -22,7 +24,8 @@ class AlilmAdapter(
     private val productMapper: ProductMapper
 ) : AddAlilmPort,
     LoadAllAndDailyCountPort,
-    LoadAlilmPort
+    LoadAlilmPort,
+    ReadProcAlilmPort
 {
 
     override fun addAlilm(alilm: Alilm) {
@@ -48,4 +51,9 @@ class AlilmAdapter(
             springDataAlilmRepository.findById(alilmId)
                 .orElseThrow{ throw NotFoundAlilmException() })
     }
+
+    override fun readProcAlilm(member: Member) {
+        alilmRepository.readProcMyAlilm(member.id!!.value)
+    }
+
 }

@@ -23,6 +23,7 @@ class MyAlilmHistoryService(
             MyAlilmHistoryUseCase.MyAlilmHistoryResult(
                 alilmId = it.alilm.id.value!!,
                 productid = it.product.id!!.value,
+                productId = it.product.id!!.value,
                 name = it.product.name,
                 imageUrl = it.product.thumbnailUrl,
                 brand = it.product.brand,
@@ -30,7 +31,8 @@ class MyAlilmHistoryService(
                 firstOption = it.product.firstOption,
                 secondOption = it.product.secondOption,
                 thirdOption = it.product.thirdOption,
-                readYn = it.alilm.readYn
+                readYn = it.alilm.readYn,
+                createdDate = it.alilm.createdDate,
             )
         }
     }
