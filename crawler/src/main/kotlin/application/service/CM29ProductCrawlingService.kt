@@ -26,8 +26,9 @@ class CM29ProductCrawlingService(
         val productDetailApiUrl = StringContextHolder.CM29_PRODUCT_DETAIL_API_URL.get().format(productNumber)
 
         val productDetailResponse = fetchProductDetails(productDetailApiUrl, productNumber)
-        val productDetailData = productDetailResponse["data"] ?: throw IllegalArgumentException("Invalid response data")
-        val productCategory = productDetailData["frontCategoryInfo"]?.get(0) ?: throw IllegalArgumentException("Category not found")
+        val productDetailData = productDetailResponse["data"]
+        val productCategory = productDetailData["frontCategoryInfo"]?.get(1) 
+            ?: productDetailData["frontCategoryInfo"].get(0)
 
         return ProductCrawlingUseCase.CrawlingResult(
             number = productNumber,
@@ -35,8 +36,8 @@ class CM29ProductCrawlingService(
             brand = productDetailData["frontBrand"]?.get("brandNameKor")?.asText() ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND),
             thumbnailUrl = buildImageUrl(productDetailData),
             imageUrlList = extractImageUrls(productDetailData),
-            firstCategory = productCategory["category1Name"]?.asText() ?: "Unknown",
-            secondCategory = productCategory["category2Name"]?.asText() ?: "Unknown",
+            firstCategory = productCategory["category2Name"]?.asText() ?: "기타",
+            secondCategory = productCategory["category3Name"]?.asText() ?: "기타",
             price = productDetailData["consumerPrice"]?.asInt() ?: 0,
             store = Store.CM29,
             firstOptions = extractOptions(productDetailData),
