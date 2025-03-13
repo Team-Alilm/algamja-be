@@ -9,12 +9,12 @@ import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.ProductRepository
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
 import org.team_alilm.application.port.out.AddProductPort
 import org.team_alilm.application.port.out.LoadCrawlingProductsPort
 import org.team_alilm.application.port.out.LoadProductPort
 import org.team_alilm.application.port.out.LoadProductPort.*
-import org.team_alilm.application.port.out.LoadProductSlicePort
 import org.team_alilm.global.error.NotFoundProductException
 
 @Component
@@ -24,8 +24,7 @@ class ProductAdapter(
     private val productMapper: ProductMapper,
 ) : AddProductPort,
     LoadProductPort,
-    LoadCrawlingProductsPort,
-    LoadProductSlicePort {
+    LoadCrawlingProductsPort {
 
     private val log = LoggerFactory.getLogger(ProductAdapter::class.java)
 
@@ -104,8 +103,13 @@ class ProductAdapter(
         }
     }
 
-    override fun loadProductSlice(pageRequest: PageRequest): Slice<Product> {
-        return springDataProductRepository.findAllByIsDeleteFalse(pageRequest).map { productMapper.mapToDomainEntity(it) }
+    override fun loadProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
+        return productRepository.findAllByWaitingCount(pageRequest).map {
+            ProductAndWaitingCount(
+                product = productMapper.mapToDomainEntity(it.productJpaEntity),
+                waitingCount = it.waitingCount
+            )
+        }
     }
 
 }

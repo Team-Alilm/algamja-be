@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
-import domain.product.Product
 import domain.product.Store
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
@@ -85,5 +84,20 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
             p.firstCategory DESC
     """)
     fun findProductCategories(): List<ProductJpaEntity>
+
+    @Query("""
+        SELECT new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(
+        p,
+        COUNT(b.id)
+    )
+    FROM ProductJpaEntity p
+    JOIN BasketJpaEntity b ON b.productId = p.id
+    WHERE b.isDelete = false
+      AND p.isDelete = false
+      AND b.isAlilm = false
+    GROUP BY b.productId
+    ORDER BY COUNT(b.id) DESC
+    """)
+    fun findAllByWaitingCount(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 }
 

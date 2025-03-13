@@ -5,12 +5,13 @@ import domain.product.ProductId
 import domain.product.Store
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
 
 interface LoadProductPort {
 
     fun loadProductSlice(
         pageRequest: PageRequest
-    ): Slice<Product>
+    ): Slice<ProductAndWaitingCount>
 
     fun loadProduct(
         number:Long,
