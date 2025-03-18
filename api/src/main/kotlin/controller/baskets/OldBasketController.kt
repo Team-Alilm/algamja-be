@@ -51,11 +51,14 @@ class OldBasketController(
     )
 
     data class OldProduct(
+        @Schema(description = "상품 썸네일 URL", defaultValue = "https://image.msscdn.net/thumbnails/images/goods_img/20241029/4568222/4568222_17307957146053_500.jpg")
         val thumbnailUrl: String,
+        @Schema(description = "장바구니에 담긴 날짜 - 유닉스 타임 밀리초 까지 표현", defaultValue = "1736728891362")
         val createdDate: Long
     )
 
     data class RelateProduct(
+        @Schema(description = "상품 썸네일 URL", defaultValue = "https://image.msscdn.net/thumbnails/images/goods_img/20241029/4568222/4568222_17307957146053_500.jpg")
         val thumbnailUrl: String,
     )
 
