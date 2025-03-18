@@ -115,7 +115,9 @@ class ProductAdapter(
     }
 
     override fun loadRelateProduct(firstCategory: String, secondCategory: String?): List<Product> {
-        TODO("Not yet implemented")
+        return productRepository.findByfurstCategoryAndSecondCategory(firstCategory, secondCategory).map {
+            productMapper.mapToDomainEntity(it)
+        }
     }
 
 }

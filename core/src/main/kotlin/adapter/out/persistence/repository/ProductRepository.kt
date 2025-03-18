@@ -99,5 +99,13 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     ORDER BY COUNT(b.id) DESC
     """)
     fun findAllByWaitingCount(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
+
+    @Query("""
+        SELECT p
+        FROM ProductJpaEntity p
+        WHERE p.firstCategory = :firstCategory
+        OR (p.secondCategory = :secondCategory OR :secondCategory IS NULL)
+    """)
+    fun findByfurstCategoryAndSecondCategory(firstCategory: String, secondCategory: String?): List<ProductJpaEntity>
 }
 
