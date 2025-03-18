@@ -6,6 +6,7 @@ import domain.product.ProductId
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
+import org.team_alilm.adapter.out.persistence.adapter.data.ProductAndBasket
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
@@ -57,6 +58,15 @@ class BasketAdapter(
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
+    override fun loadOldBasket(memberId: Member.MemberId): ProductAndBasket {
+        val productAndBasket = basketRepository.findByMemberId(memberId.value)
+
+        return ProductAndBasket(
+            product = productMapper.mapToDomainEntity(productAndBasket.productJpaEntity),
+            basket = basketMapper.mapToDomainEntity(productAndBasket.basketJpaEntity)
+        )
+    }
+
     override fun loadBasketIncludeIsDelete(productId: ProductId): List<Basket> {
         val basketJpaEntityList = springDataBasketRepository.findByProductIdAndIsDeleteFalseAndIsAlilmFalse(productId.value)
 
@@ -67,16 +77,6 @@ class BasketAdapter(
         val basketJpaEntityList = basketRepository.findByProductNumber(productNumber)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
-    }
-
-    override fun loadBasketIncludeIsDelete(memberId: Member.MemberId, productId: ProductId, isDeleted: Boolean): Basket? {
-        val basketJpaEntity = springDataBasketRepository.findByMemberIdAndProductIdAndIsDelete(
-            memberId = memberId.value,
-            productId = productId.value,
-            isDelete = isDeleted
-        )
-
-        return basketMapper.mapToDomainEntityOrNull(basketJpaEntity)
     }
 
     override fun loadBasketCount(productId: ProductId): Long {

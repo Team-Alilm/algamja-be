@@ -10,7 +10,8 @@ class Basket(
     var isAlilm: Boolean = false,
     var alilmDate: Long? = null,
     var isHidden: Boolean = false,
-    var isDelete: Boolean = false
+    var isDelete: Boolean = false,
+    val createdDate: Long = System.currentTimeMillis()
 ) {
 
     fun sendAlilm() {

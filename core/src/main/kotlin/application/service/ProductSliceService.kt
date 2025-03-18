@@ -32,5 +32,4 @@ class ProductSliceService (
             size = productSlice.size
         )
     }
-
 }

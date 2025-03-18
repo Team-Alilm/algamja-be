@@ -8,6 +8,7 @@ import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndMemberProjection
 import org.team_alilm.adapter.out.persistence.repository.basket.BasketAndProductProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
+import org.team_alilm.adapter.out.persistence.repository.spring_data.projection.ProductAndBasketProjection
 
 interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
 
@@ -87,6 +88,18 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
     ORDER BY COUNT(b.id) DESC
 """)
     fun findAllByWaitingCount(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
+
+    @Query("""
+        SELECT 
+            new org.team_alilm.adapter.out.persistence.repository.spring_data.projection.ProductAndBasketProjection(p, b)
+        FROM BasketJpaEntity b
+        JOIN ProductJpaEntity p ON b.productId = p.id
+        WHERE b.isDelete = false
+          AND p.isDelete = false
+          AND b.isAlilm = false
+          AND b.memberId = :memberId
+    """)
+    fun findByMemberId(memberId: Long): ProductAndBasketProjection
 
 
 }

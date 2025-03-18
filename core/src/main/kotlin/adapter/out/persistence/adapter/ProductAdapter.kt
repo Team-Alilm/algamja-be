@@ -15,6 +15,7 @@ import org.team_alilm.application.port.out.AddProductPort
 import org.team_alilm.application.port.out.LoadCrawlingProductsPort
 import org.team_alilm.application.port.out.LoadProductPort
 import org.team_alilm.application.port.out.LoadProductPort.*
+import org.team_alilm.application.port.out.LoadRelateProductPort
 import org.team_alilm.global.error.NotFoundProductException
 
 @Component
@@ -24,7 +25,8 @@ class ProductAdapter(
     private val productMapper: ProductMapper,
 ) : AddProductPort,
     LoadProductPort,
-    LoadCrawlingProductsPort {
+    LoadCrawlingProductsPort,
+    LoadRelateProductPort {
 
     private val log = LoggerFactory.getLogger(ProductAdapter::class.java)
 
@@ -110,6 +112,10 @@ class ProductAdapter(
                 waitingCount = it.waitingCount
             )
         }
+    }
+
+    override fun loadRelateProduct(firstCategory: String, secondCategory: String?): List<Product> {
+        TODO("Not yet implemented")
     }
 
 }
