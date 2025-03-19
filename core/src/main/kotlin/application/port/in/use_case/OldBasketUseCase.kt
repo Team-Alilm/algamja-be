@@ -4,7 +4,7 @@ import domain.Member
 
 interface OldBasketUseCase {
 
-    fun loadOldBasket(command: OldBasketUseCase.OldBasketCommand): OldBasketUseCase.OldBasketResult
+    fun loadOldBasket(command: OldBasketCommand): OldBasketResult
 
     data class OldBasketCommand(
         val memberId: Member.MemberId
@@ -17,10 +17,18 @@ interface OldBasketUseCase {
 
     data class OldProductInfo(
         val thumbnailUrl: String,
+        val brand: String,
+        val store: String,
+        val price: Int,
+        val category: String,
         val createdDate: Long
     )
 
     data class RelateProduct(
-        val thumbnailUrl: String
+        val thumbnailUrl: String,
+        val brand: String,
+        val store: String,
+        val price: Int,
+        val category: String
     )
 }

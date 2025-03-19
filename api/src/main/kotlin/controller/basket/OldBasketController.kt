@@ -32,11 +32,19 @@ class OldBasketController(
         val response = OldBasketResponse(
             oldProduct = OldProduct(
                 createdDate = result.oldProductInfo.createdDate,
-                thumbnailUrl = result.oldProductInfo.thumbnailUrl
+                thumbnailUrl = result.oldProductInfo.thumbnailUrl,
+                brand = result.oldProductInfo.brand,
+                store = result.oldProductInfo.store,
+                price = result.oldProductInfo.price,
+                category = result.oldProductInfo.category
             ),
             relatedProductList = result.relatedProductList.map {
                 RelateProduct(
-                    thumbnailUrl = it.thumbnailUrl
+                    thumbnailUrl = it.thumbnailUrl,
+                    brand = it.brand,
+                    store = it.store,
+                    price = it.price,
+                    category = it.category
                 )
             }
 
@@ -53,6 +61,14 @@ class OldBasketController(
     data class OldProduct(
         @Schema(description = "상품 썸네일 URL", defaultValue = "https://image.msscdn.net/thumbnails/images/goods_img/20241029/4568222/4568222_17307957146053_500.jpg")
         val thumbnailUrl: String,
+        @Schema(description = "상품 브랜드", defaultValue = "무신사 스탠다드")
+        val brand: String,
+        @Schema(description = "상품 이름", defaultValue = "무신사")
+        val store: String,
+        @Schema(description = "상품 가격", defaultValue = "10000")
+        val price: Int,
+        @Schema(description = "상품 카테고리", defaultValue = "아우터")
+        val category: String,
         @Schema(description = "장바구니에 담긴 날짜 - 유닉스 타임 밀리초 까지 표현", defaultValue = "1736728891362")
         val createdDate: Long
     )
@@ -60,6 +76,14 @@ class OldBasketController(
     data class RelateProduct(
         @Schema(description = "상품 썸네일 URL", defaultValue = "https://image.msscdn.net/thumbnails/images/goods_img/20241029/4568222/4568222_17307957146053_500.jpg")
         val thumbnailUrl: String,
+        @Schema(description = "상품 브랜드", defaultValue = "무신사 스탠다드")
+        val brand: String,
+        @Schema(description = "상품 이름", defaultValue = "무신사")
+        val store: String,
+        @Schema(description = "상품 가격", defaultValue = "10000")
+        val price: Int,
+        @Schema(description = "상품 카테고리", defaultValue = "아우터")
+        val category: String,
     )
 
 }

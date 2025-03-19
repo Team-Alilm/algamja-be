@@ -36,7 +36,7 @@ class BasketsRegisteredController(
     )
     @PostMapping("/v2/baskets/registered")
     fun registered(
-        @RequestBody @Valid request: org.team_alilm.controller.baskets.BasketsRegisteredController.AlilmRegistrationRequest,
+        @RequestBody @Valid request: AlilmRegistrationRequest,
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
 
         bindingResult: BindingResult
