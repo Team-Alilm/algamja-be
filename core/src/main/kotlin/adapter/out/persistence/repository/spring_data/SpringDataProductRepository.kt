@@ -9,7 +9,5 @@ interface SpringDataProductRepository : JpaRepository<ProductJpaEntity,Long> {
 
     fun findByIdAndIsDeleteFalse(value: Long): ProductJpaEntity?
 
-    fun findTop10ByFirstCategoryAndIsDeleteFalseOrderByCreatedDate(category: String): List<ProductJpaEntity>
-
-    fun findAllByIsDeleteFalse(pageRequest: PageRequest): Slice<ProductJpaEntity>
+    fun findTop10ByFirstCategoryAndSecondCategoryAndIsDeleteFalseOrderByCreatedDate(firstCategory: String, secondCategory: String?): List<ProductJpaEntity>
 }

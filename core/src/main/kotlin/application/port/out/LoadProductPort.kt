@@ -35,7 +35,7 @@ interface LoadProductPort {
 
     fun loadRecentProduct(): List<Product>
 
-    fun loadRelatedProduct(category: String): List<Product>
+    fun loadRelatedProduct(firstCategory: String, secondCategory: String?): List<Product>
 
     fun related(category: String) : List<Product>
 

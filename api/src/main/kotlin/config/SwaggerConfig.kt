@@ -47,6 +47,6 @@ class SwaggerConfig {
     }
 
     companion object {
-        private const val BEARER_TOKEN_PREFIX = "Bearer "
+        private const val BEARER_TOKEN_PREFIX = "bearer"
     }
 }

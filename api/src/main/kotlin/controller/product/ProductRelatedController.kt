@@ -26,23 +26,23 @@ class ProductRelatedController(
         summary = "관련 상품 조회 API",
     )
     @GetMapping("/related/{productId}")
-    fun productRecent(@PathVariable productId: Long) : ResponseEntity<org.team_alilm.controller.product.ProductRelatedController.ProductRelatedResponse> {
+    fun productRecent(@PathVariable productId: Long) : ResponseEntity<ProductRelatedResponse> {
         val command = ProductRelatedCommand(productId = productId)
         val result = productRelatedUseCase.productRelated(command)
         val response =
-            org.team_alilm.controller.product.ProductRelatedController.ProductRelatedResponse.Companion.from(result)
+            ProductRelatedResponse.from(result)
 
         return ResponseEntity.ok(response)
     }
 
     data class ProductRelatedResponse(
-        val relatedProductList: List<org.team_alilm.controller.product.ProductRelatedController.RelatedProduct>
+        val relatedProductList: List<RelatedProduct>
     ) {
         companion object {
-            fun from(result: ProductRelatedResult): org.team_alilm.controller.product.ProductRelatedController.ProductRelatedResponse {
-                return org.team_alilm.controller.product.ProductRelatedController.ProductRelatedResponse(
+            fun from(result: ProductRelatedResult): ProductRelatedResponse {
+                return ProductRelatedResponse(
                     relatedProductList = result.productList.map {
-                        org.team_alilm.controller.product.ProductRelatedController.RelatedProduct.Companion.from(
+                        RelatedProduct.from(
                             it
                         )
                     }
@@ -63,8 +63,8 @@ class ProductRelatedController(
         val thirdOption: String?
     ) {
         companion object {
-            fun from(product: Product): org.team_alilm.controller.product.ProductRelatedController.RelatedProduct {
-                return org.team_alilm.controller.product.ProductRelatedController.RelatedProduct(
+            fun from(product: Product): RelatedProduct {
+                return RelatedProduct(
                     id = product.id?.value ?: 0,
                     name = product.name,
                     imageUrl = product.thumbnailUrl,

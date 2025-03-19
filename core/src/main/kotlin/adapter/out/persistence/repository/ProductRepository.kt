@@ -105,7 +105,10 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         FROM ProductJpaEntity p
         WHERE p.firstCategory = :firstCategory
         OR (p.secondCategory = :secondCategory OR :secondCategory IS NULL)
+        AND p.isDelete = false
+        ORDER BY p.createdDate DESC
+        LIMIT 4
     """)
-    fun findByfurstCategoryAndSecondCategory(firstCategory: String, secondCategory: String?): List<ProductJpaEntity>
+    fun findByFirstCategoryAndSecondCategory(firstCategory: String, secondCategory: String?): List<ProductJpaEntity>
 }
 

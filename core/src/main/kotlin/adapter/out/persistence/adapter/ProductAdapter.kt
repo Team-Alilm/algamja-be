@@ -75,8 +75,8 @@ class ProductAdapter(
         }
     }
 
-    override fun loadRelatedProduct(category: String): List<Product> {
-        return springDataProductRepository.findTop10ByFirstCategoryAndIsDeleteFalseOrderByCreatedDate(category).map {
+    override fun loadRelatedProduct(firstCategory: String, secondCategory: String?): List<Product> {
+        return springDataProductRepository.findTop10ByFirstCategoryAndSecondCategoryAndIsDeleteFalseOrderByCreatedDate(firstCategory, secondCategory).map {
             productMapper.mapToDomainEntity(it)
         }
     }
@@ -115,7 +115,7 @@ class ProductAdapter(
     }
 
     override fun loadRelateProduct(firstCategory: String, secondCategory: String?): List<Product> {
-        return productRepository.findByfurstCategoryAndSecondCategory(firstCategory, secondCategory).map {
+        return productRepository.findByFirstCategoryAndSecondCategory(firstCategory, secondCategory).map {
             productMapper.mapToDomainEntity(it)
         }
     }
