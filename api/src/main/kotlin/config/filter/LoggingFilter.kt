@@ -1,4 +1,4 @@
-package org.team_alilm.filter
+package org.team_alilm.config.filter
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

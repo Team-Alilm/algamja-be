@@ -10,6 +10,7 @@ import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
 import org.team_alilm.error.CustomException
 import org.team_alilm.error.ErrorCode
 import org.team_alilm.gateway.CrawlingGateway
+import org.team_alilm.util.CategoryUtil
 
 @Service
 class ZigzagProductCrawlingService(
@@ -30,7 +31,7 @@ class ZigzagProductCrawlingService(
             val (brand, name) = getProductBrandAndName(document.title())
             val (thumbnailUrl, imageList) = getThumbnailUrlAndImageList(document)
             val price = getPrice(document)
-            val (firstCategory, secondCategory) = getCategorys(scriptJsonNode)
+            val (firstCategory, secondCategory) = getCategories(scriptJsonNode)
             val (firstOptions, secondOptions, thirdOptions) = getOptions(scriptJsonNode)
 
             return ProductCrawlingUseCase.CrawlingResult(
@@ -99,15 +100,16 @@ class ZigzagProductCrawlingService(
         }
     }
 
-    private fun getCategorys(jsonNode: JsonNode): Pair<String, String> {
+    private fun getCategories(jsonNode: JsonNode): Pair<String, String> {
         return try {
             val props = jsonNode.get("props")
             val pageProps = props.get("pageProps")
             val product = pageProps.get("product")
             val managedCategoryList = product.get("managed_category_list")
+
             Pair(
-                managedCategoryList[1]?.get("value")?.asText() ?: "",
-                managedCategoryList[2]?.get("value")?.asText() ?: ""
+                CategoryUtil.getCategories(managedCategoryList),
+                CategoryUtil.getCategories(managedCategoryList),
             )
         } catch (e: Exception) {
             throw CustomException(ErrorCode.ZIGZAG_PRODUCT_NOT_FOUND)
