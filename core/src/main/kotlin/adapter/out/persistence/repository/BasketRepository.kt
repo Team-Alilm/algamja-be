@@ -98,7 +98,7 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
           AND p.isDelete = false
           AND b.isAlilm = false
           AND b.memberId = :memberId
-        ORDER BY b.createdDate DESC
+        ORDER BY b.createdDate ASC 
         LIMIT 1
     """)
     fun findByMemberId(memberId: Long): ProductAndBasketProjection
