@@ -23,10 +23,6 @@ interface LoadBasketPort {
         productId: ProductId
     ): List<Basket>
 
-    fun loadBasketSlice(
-        pageRequest: PageRequest
-    ): Slice<ProductAndWaitingCount>
-
     fun loadMyBasket(
         memberId: Member.MemberId
     ): List<Basket>

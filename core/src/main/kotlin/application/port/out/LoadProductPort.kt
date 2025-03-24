@@ -11,7 +11,7 @@ interface LoadProductPort {
 
     fun loadProductSlice(
         pageRequest: PageRequest
-    ): Slice<ProductAndWaitingCount>
+    ): Slice<Product>
 
     fun loadProduct(
         number:Long,

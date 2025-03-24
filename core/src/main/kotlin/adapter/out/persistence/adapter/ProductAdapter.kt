@@ -105,12 +105,9 @@ class ProductAdapter(
         }
     }
 
-    override fun loadProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
-        return productRepository.findAllByWaitingCount(pageRequest).map {
-            ProductAndWaitingCount(
-                product = productMapper.mapToDomainEntity(it.productJpaEntity),
-                waitingCount = it.waitingCount
-            )
+    override fun loadProductSlice(pageRequest: PageRequest): Slice<Product> {
+        return productRepository.findAllByIsDeleteFalse(pageRequest).map {
+            productMapper.mapToDomainEntity(it)
         }
     }
 

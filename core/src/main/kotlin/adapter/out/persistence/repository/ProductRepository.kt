@@ -90,12 +90,12 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         p,
         COUNT(b.id)
     )
-    FROM ProductJpaEntity p
-    JOIN BasketJpaEntity b ON b.productId = p.id
+    FROM BasketJpaEntity b
+    JOIN ProductJpaEntity p ON b.productId = p.id
     WHERE b.isDelete = false
       AND p.isDelete = false
       AND b.isAlilm = false
-    GROUP BY b.productId
+    GROUP BY p.id, p.name, p.brand, p.price
     ORDER BY COUNT(b.id) DESC
     """)
     fun findAllByWaitingCount(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
@@ -110,5 +110,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         LIMIT 4
     """)
     fun findByFirstCategoryAndSecondCategory(firstCategory: String, secondCategory: String?): List<ProductJpaEntity>
+
+    fun findAllByIsDeleteFalse(pageRequest: PageRequest): Slice<ProductJpaEntity>
 }
 
