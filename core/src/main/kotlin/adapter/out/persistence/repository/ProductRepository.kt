@@ -112,5 +112,19 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     fun findByFirstCategoryAndSecondCategory(firstCategory: String, secondCategory: String?): List<ProductJpaEntity>
 
     fun findAllByIsDeleteFalse(pageRequest: PageRequest): Slice<ProductJpaEntity>
+
+    @Query("""
+        SELECT new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(p, COUNT(b.id))
+        FROM ProductJpaEntity p
+        LEFT JOIN BasketJpaEntity b ON p.id = b.productId
+        WHERE p.isDelete = false
+        AND b.isDelete = false
+        AND b.isAlilm = false
+        AND b.isHidden = false
+        GROUP BY p.id
+        HAVING COUNT(b.id) > 0
+        ORDER BY COUNT(b.id) DESC 
+    """)
+    fun findByProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 }
 

@@ -27,11 +27,8 @@ class ProductSliceService (
 
         return ProductSliceUseCase.CustomSlice(
             contents = productSlice.content.map {
-                val waitingCount = loadBasketPort.loadBasketCount(it.id!!)
-
-                ProductSliceResult.from(product = it, waitingCount = waitingCount)
-            }.filter { it.waitingCount > 0 }
-                .sortedBy { it.waitingCount },
+                ProductSliceResult.from(product = it.product, waitingCount = it.waitingCount)
+            },
             hasNext = productSlice.hasNext(),
             isLast = productSlice.isLast,
             number = productSlice.number,
