@@ -106,7 +106,9 @@ class ProductAdapter(
     }
 
     override fun loadProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
-        return productRepository.findAllByWaitingCount(pageRequest).map {
+        val productSlice = productRepository.findByProductSlice(pageRequest)
+
+        return productSlice.map {
             ProductAndWaitingCount(
                 product = productMapper.mapToDomainEntity(it.productJpaEntity),
                 waitingCount = it.waitingCount

@@ -69,7 +69,15 @@ class CM29ProductCrawlingService(
     }
 
     private fun extractImageUrls(data: JsonNode): List<String> {
-        return data["itemImages"]?.drop(1)?.mapNotNull { it["imageUrl"]?.asText()?.let { url -> "https://img.29cm.co.kr$url" } } ?: emptyList()
+        return data["itemImages"]
+            ?.filter { it["imageHeight"].asInt() < 2000 }
+            ?.mapNotNull {
+                it["imageUrl"]
+                    ?.asText()
+                    ?.let {
+                        url -> "https://img.29cm.co.kr$url"
+                    }
+            } ?: emptyList()
     }
 
     private fun extractOptions(data: JsonNode, depth: Int = 0): List<String> {

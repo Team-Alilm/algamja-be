@@ -3,15 +3,12 @@ package org.team_alilm.adapter.out.persistence.adapter
 import domain.Basket
 import domain.Member
 import domain.product.ProductId
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.adapter.data.ProductAndBasket
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 import org.team_alilm.adapter.out.persistence.mapper.BasketMapper
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.BasketRepository
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataBasketRepository
 import org.team_alilm.application.port.out.*
 import org.team_alilm.global.error.NotFoundBasketException
@@ -80,22 +77,13 @@ class BasketAdapter(
     }
 
     override fun loadBasketCount(productId: ProductId): Long {
-        return springDataBasketRepository.countByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
+        return springDataBasketRepository.countByProductIdAndIsAlilmFalseAndIsDeleteFalseAndIsHiddenFalse(productId.value)
     }
 
     override fun loadBasketList(productId: ProductId): List<Basket> {
         val basketJpaEntityList = springDataBasketRepository.findAllByProductIdAndIsAlilmFalseAndIsDeleteFalse(productId.value)
 
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
-    }
-
-    override fun loadBasketSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
-        return basketRepository.findAllByWaitingCount(pageRequest).map {
-            ProductAndWaitingCount(
-                product = productMapper.mapToDomainEntity(it.productJpaEntity),
-                waitingCount = it.waitingCount
-            )
-        }
     }
 
     override fun loadMyBaskets(member: Member) : List<LoadMyBasketsPort.BasketAndProduct> {
