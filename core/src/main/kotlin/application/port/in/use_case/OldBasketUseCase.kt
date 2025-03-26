@@ -16,6 +16,7 @@ interface OldBasketUseCase {
     )
 
     data class OldProductInfo(
+        val productId: Long,
         val thumbnailUrl: String,
         val brand: String,
         val store: String,
@@ -25,6 +26,7 @@ interface OldBasketUseCase {
     )
 
     data class RelateProduct(
+        val productId: Long,
         val thumbnailUrl: String,
         val brand: String,
         val store: String,

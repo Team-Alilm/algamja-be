@@ -31,6 +31,7 @@ class OldBasketController(
 
         val response = OldBasketResponse(
             oldProduct = OldProduct(
+                productId = result.oldProductInfo.productId,
                 createdDate = result.oldProductInfo.createdDate,
                 thumbnailUrl = result.oldProductInfo.thumbnailUrl,
                 brand = result.oldProductInfo.brand,
@@ -40,6 +41,7 @@ class OldBasketController(
             ),
             relatedProductList = result.relatedProductList.map {
                 RelateProduct(
+                    productId = it.productId,
                     thumbnailUrl = it.thumbnailUrl,
                     brand = it.brand,
                     store = it.store,
@@ -59,6 +61,8 @@ class OldBasketController(
     )
 
     data class OldProduct(
+        @Schema(description = "상품 ID", defaultValue = "1")
+        val productId: Long,
         @Schema(description = "상품 썸네일 URL", defaultValue = "https://image.msscdn.net/thumbnails/images/goods_img/20241029/4568222/4568222_17307957146053_500.jpg")
         val thumbnailUrl: String,
         @Schema(description = "상품 브랜드", defaultValue = "무신사 스탠다드")
@@ -74,6 +78,8 @@ class OldBasketController(
     )
 
     data class RelateProduct(
+        @Schema(description = "상품 ID", defaultValue = "1")
+        val productId: Long,
         @Schema(description = "상품 썸네일 URL", defaultValue = "https://image.msscdn.net/thumbnails/images/goods_img/20241029/4568222/4568222_17307957146053_500.jpg")
         val thumbnailUrl: String,
         @Schema(description = "상품 브랜드", defaultValue = "무신사 스탠다드")
