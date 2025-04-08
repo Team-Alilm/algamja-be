@@ -121,10 +121,11 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         AND b.isDelete = false
         AND b.isAlilm = false
         AND b.isHidden = false
+        AND (:category IS NULL OR p.firstCategory = :category)
         GROUP BY p.id
         HAVING COUNT(b.id) > 0
         ORDER BY COUNT(b.id) DESC 
     """)
-    fun findByProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
+    fun findByProductSlice(pageRequest: PageRequest, category: String?): Slice<ProductAndWaitingCountProjection>
 }
 

@@ -6,6 +6,19 @@ spring:
     username: ENC(R1FpK3IkTBlUqe6UGu9ASA==)
     password: ENC(Xg2/I1uWGCs6SKi2H21oNAazYU4qObrp)
 
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+
+
 webhook:
   slack:
     url: ENC(66oIt8AFhAxu4Kt9kV5SIvPbb+QALCAbBJOQAOoftXdYaWp+yAa5H20WZTlGoyeo26OB8UAq8GxkiSlkyWZwUsR+eLr/ZLhPk0lde5A9MLFSZi6/DT5cIiAtOd+el6CP)

@@ -47,7 +47,8 @@ class ProductSliceController(
 
         val command = ProductSliceUseCase.ProductSliceCommand(
             size = productListParameter.size,
-            page = productListParameter.page
+            page = productListParameter.page,
+            category = productListParameter.category
         )
 
         val response = ProductSliceResponse(
@@ -63,9 +64,11 @@ class ProductSliceController(
 
     @Schema(description = "상품 조회 파라미터")
     data class ProductListParameter(
-        @Schema(description = "페이지 사이즈", defaultValue = "10")
+        @Schema(description = "페이지 사이즈", example = "10")
         val size: Int,
-        @Schema(description = "페이지 번호", defaultValue = "0")
-        val page: Int
+        @Schema(description = "페이지 번호", example = "0")
+        val page: Int,
+        @Schema(description = "카테고리 null 가능", example = "상의")
+        val category: String? = null,
     )
 }
