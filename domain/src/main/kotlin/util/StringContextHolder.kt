@@ -4,7 +4,7 @@ enum class StringContextHolder(
     val value: String
 ) {
 
-    MUSINSA_OPTION_API_URL("https://goods-detail.musinsa.com/api2/goods/%s/options?goodsSaleType=SALE"),
+    MUSINSA_OPTION_API_URL("https://goods-detail.musinsa.com/api2/goods/%s/v2/options?goodsSaleType=SALE"),
     MUSINSA_PRODUCT_HTML_URL("https://store.musinsa.com/app/goods/%s"),
     MUSINSA_PRODUCT_IMAGES_URL("https://goods-detail.musinsa.com/api2/goods/%s/recommends/multi?uuid=detail_goods_attributes_allbrand&limit=3"),
     MUSINSA_PRODUCT_URL("https://www.musinsa.com/products/%s"),
