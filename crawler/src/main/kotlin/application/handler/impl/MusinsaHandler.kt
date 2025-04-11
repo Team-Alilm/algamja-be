@@ -56,6 +56,9 @@ class MusinsaHandler(
     private fun isProductAvailable(jsonData: String): Boolean {
         val jsonObject = objectMapper.readTree(jsonData)
         val saleType = jsonObject[goodsSaleTypeKey]?.toString()
+
+        log.info("Sale type from JSON: $saleType")
+
         return saleType == saleValue
     }
 
@@ -66,7 +69,12 @@ class MusinsaHandler(
                 .uri(apiUrl)
                 .retrieve()
                 .body(SoldoutCheckResponse::class.java)
-            val optionItem = response?.data?.optionItems?.first {
+
+            val optionItems = response?.data?.optionItems
+
+            log.info("Response from Musinsa API optionItems : $optionItems")
+
+            val optionItem = optionItems?.first {
                 it.managedCode == product.getManagedCode()
             }
 
