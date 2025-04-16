@@ -86,32 +86,14 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     fun findProductCategories(): List<ProductJpaEntity>
 
     @Query("""
-        SELECT new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(
-        p,
-        COUNT(b.id)
-    )
-    FROM BasketJpaEntity b
-    JOIN ProductJpaEntity p ON b.productId = p.id
-    WHERE b.isDelete = false
-      AND p.isDelete = false
-      AND b.isAlilm = false
-    GROUP BY p.id, p.name, p.brand, p.price
-    ORDER BY COUNT(b.id) DESC
-    """)
-    fun findAllByWaitingCount(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
-
-    @Query("""
         SELECT p
         FROM ProductJpaEntity p
         WHERE p.firstCategory = :firstCategory
-        OR (p.secondCategory = :secondCategory OR :secondCategory IS NULL)
         AND p.isDelete = false
         ORDER BY p.createdDate DESC
         LIMIT 4
     """)
-    fun findByFirstCategoryAndSecondCategory(firstCategory: String, secondCategory: String?): List<ProductJpaEntity>
-
-    fun findAllByIsDeleteFalse(pageRequest: PageRequest): Slice<ProductJpaEntity>
+    fun findByFirstCategory(firstCategory: String, secondCategory: String?): List<ProductJpaEntity>
 
     @Query("""
         SELECT new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(p, COUNT(b.id))
@@ -127,4 +109,3 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     """)
     fun findByProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 }
-
