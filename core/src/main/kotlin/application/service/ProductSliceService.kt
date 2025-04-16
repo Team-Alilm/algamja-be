@@ -22,7 +22,8 @@ class ProductSliceService (
             PageRequest.of(
                 command.page,
                 command.size,
-            )
+            ),
+            command.category
         )
 
         return ProductSliceUseCase.CustomSlice(

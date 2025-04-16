@@ -17,15 +17,18 @@ class Product (
     val thirdOption: String? = null
 ) {
 
-    fun getManagedCode() : String? {
-        return if (this.firstOption?.isNotBlank() == true && this.secondOption?.isNotBlank() == true && this.thirdOption?.isNotBlank() == true) {
-            "${firstOption}^${secondOption}^${thirdOption}"
-        } else if (firstOption?.isNotBlank() == true && secondOption?.isNotBlank() == true) {
-            "${firstOption}^${secondOption}"
-        } else {
-            firstOption
+    fun getManagedCode(): String? {
+        val parts = listOfNotNull(firstOption, secondOption, thirdOption)
+            .filter { it.isNotEmpty() }
+
+        return when (parts.size) {
+            3 -> "${parts[0]}^${parts[1]}^${parts[2]}"
+            2 -> "${parts[0]}^${parts[1]}"
+            1 -> parts[0]
+            else -> null
         }
     }
+
 
     fun toSlackMessage(): String = """
         {

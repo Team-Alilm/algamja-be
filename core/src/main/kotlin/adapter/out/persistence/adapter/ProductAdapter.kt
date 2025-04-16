@@ -83,7 +83,9 @@ class ProductAdapter(
 
     override fun loadProductDetails(productId: ProductId): ProductAndWaitingCountAndImageList? {
         val projectionList = productRepository.findByDetails(productId.value)
+
         log.info("projectionList : $projectionList")
+
         return ProductAndWaitingCountAndImageList.of(
             product = productMapper.mapToDomainEntityOrNull(projectionList.productJpaEntity) ?: throw NotFoundProductException(),
             waitingCount = projectionList.waitingCount,
@@ -105,8 +107,8 @@ class ProductAdapter(
         }
     }
 
-    override fun loadProductSlice(pageRequest: PageRequest): Slice<ProductAndWaitingCount> {
-        val productSlice = productRepository.findByProductSlice(pageRequest)
+    override fun loadProductSlice(pageRequest: PageRequest, category: String?): Slice<ProductAndWaitingCount> {
+        val productSlice = productRepository.findByProductSlice(pageRequest, category)
 
         return productSlice.map {
             ProductAndWaitingCount(
@@ -121,5 +123,4 @@ class ProductAdapter(
             productMapper.mapToDomainEntity(it)
         }
     }
-
 }

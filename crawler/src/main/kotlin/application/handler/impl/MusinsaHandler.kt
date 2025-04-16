@@ -8,6 +8,7 @@ import domain.product.Product
 import org.team_alilm.gateway.CrawlingGateway
 import org.team_alilm.application.handler.PlatformHandler
 import org.team_alilm.application.handler.impl.data.SoldoutCheckResponse
+import org.team_alilm.gateway.SendSlackGateway
 import util.StringContextHolder
 
 @Component
@@ -15,6 +16,7 @@ class MusinsaHandler(
     private val objectMapper: ObjectMapper,
     private val restClient: RestClient,
     private val crawlingGateway: CrawlingGateway,
+    private val sendSlackGateway: SendSlackGateway
 ) : PlatformHandler {
 
     private val goodsSaleTypeKey = "goodsSaleType"
@@ -56,6 +58,9 @@ class MusinsaHandler(
     private fun isProductAvailable(jsonData: String): Boolean {
         val jsonObject = objectMapper.readTree(jsonData)
         val saleType = jsonObject[goodsSaleTypeKey]?.toString()
+
+        log.info("Sale type from JSON: $saleType")
+
         return saleType == saleValue
     }
 
@@ -66,15 +71,22 @@ class MusinsaHandler(
                 .uri(apiUrl)
                 .retrieve()
                 .body(SoldoutCheckResponse::class.java)
-            val optionItem = response?.data?.optionItems?.first {
+
+            val optionItems = response?.data?.optionItems
+
+            log.info("Response from Musinsa API optionItems for product[{}] : {}", product.id, optionItems)
+
+            val optionItem = optionItems?.first {
                 it.managedCode == product.getManagedCode()
             }
 
             return optionItem?.outOfStock ?: true
         } catch (e: Exception) {
-            log.error("Failed to fetch product detail from Musinsa", e)
+            log.error("❌ Failed to fetch product detail from Musinsa product[{}]", product.id)
+            sendSlackGateway.sendMessage(
+                "❌ Failed to fetch product detail from Musinsa product[${product.id}]"
+            )
             true
         }
     }
-
 }

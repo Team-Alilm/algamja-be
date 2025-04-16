@@ -28,7 +28,7 @@ class CM29Handler(
         }
 
         val firstOption = optionItems.get("list")?.firstOrNull {
-            val title = it.get("title").asText()
+            val title = it.get("title").asText() ?: ""
             title == (product.firstOption ?: "")
         }
 
@@ -40,7 +40,7 @@ class CM29Handler(
             return true
         } else if (firstOption.get("list")?.isEmpty == false) {
             val secondOption = firstOption.get("list")?.firstOrNull {
-                val title = it.get("title").asText()
+                val title = it.get("title").asText() ?: ""
                 log.info("Second option title: $title")
                 title == (product.secondOption ?: "")
             }
