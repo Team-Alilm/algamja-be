@@ -10,6 +10,7 @@ import org.team_alilm.error.ErrorCode
 import org.team_alilm.error.CustomException
 import org.team_alilm.gateway.CrawlingGateway
 import org.team_alilm.gateway.SendSlackGateway
+import org.team_alilm.util.CategoryUtil
 import util.StringContextHolder
 
 @Service
@@ -36,7 +37,7 @@ class CM29ProductCrawlingService(
             brand = productDetailData["frontBrand"]?.get("brandNameKor")?.asText() ?: throw CustomException(ErrorCode.CM29_PRODUCT_NOT_FOUND),
             thumbnailUrl = buildImageUrl(productDetailData),
             imageUrlList = extractImageUrls(productDetailData),
-            firstCategory = productCategory["category2Name"]?.asText() ?: "기타",
+            firstCategory = CategoryUtil.getCategories(productCategory["category1Name"]?.asText() ?: "기타"),
             secondCategory = productCategory["category3Name"]?.asText() ?: "기타",
             price = productDetailData["consumerPrice"]?.asInt() ?: 0,
             store = Store.CM29,

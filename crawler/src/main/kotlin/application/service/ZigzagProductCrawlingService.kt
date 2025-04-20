@@ -108,8 +108,8 @@ class ZigzagProductCrawlingService(
             val managedCategoryList = product.get("managed_category_list")
 
             Pair(
-                CategoryUtil.getCategories(managedCategoryList),
-                CategoryUtil.getCategories(managedCategoryList),
+                CategoryUtil.getCategories(managedCategoryList.asText()),
+                CategoryUtil.getCategories(managedCategoryList.asText()),
             )
         } catch (e: Exception) {
             throw CustomException(ErrorCode.ZIGZAG_PRODUCT_NOT_FOUND)

@@ -93,7 +93,7 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
         ORDER BY p.createdDate DESC
         LIMIT 4
     """)
-    fun findByFirstCategory(firstCategory: String, secondCategory: String?): List<ProductJpaEntity>
+    fun findByFirstCategory(firstCategory: String): List<ProductJpaEntity>
 
     @Query("""
         SELECT new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(p, COUNT(b.id))

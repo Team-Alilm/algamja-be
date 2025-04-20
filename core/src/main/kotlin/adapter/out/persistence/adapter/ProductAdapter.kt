@@ -119,7 +119,7 @@ class ProductAdapter(
     }
 
     override fun loadRelateProduct(firstCategory: String, secondCategory: String?): List<Product> {
-        return productRepository.findByFirstCategory(firstCategory, secondCategory).map {
+        return productRepository.findByFirstCategory(firstCategory).map {
             productMapper.mapToDomainEntity(it)
         }
     }
