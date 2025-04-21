@@ -1,5 +1,6 @@
 package org.team_alilm.application.handler.impl
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -7,7 +8,6 @@ import org.springframework.web.client.*
 import domain.product.Product
 import org.team_alilm.gateway.CrawlingGateway
 import org.team_alilm.application.handler.PlatformHandler
-import org.team_alilm.application.handler.impl.data.SoldoutCheckResponse
 import org.team_alilm.gateway.SendSlackGateway
 import util.StringContextHolder
 
@@ -70,22 +70,24 @@ class MusinsaHandler(
             val response = restClient.get()
                 .uri(apiUrl)
                 .retrieve()
-                .body(SoldoutCheckResponse::class.java)
+                .body(JsonNode::class.java)
 
-            val optionItems = response?.data?.optionItems
+            val optionItems = response?.get("data")?.get("optionItems")
 
             log.info("Response from Musinsa API optionItems for product[{}] : {}", product.id, optionItems)
 
             val optionItem = optionItems?.first {
-                it.managedCode == product.getManagedCode()
+                log.info("Option item for product[{}] : {}", product.id, it)
+                it["managedCode"]?.asText() == product.getManagedCode()
             }
 
-            return optionItem?.outOfStock ?: true
+            log.info("Option item for product[{}] : {}", product.id, optionItem)
+
+            return (optionItem?.get("outOfStock"))?.asBoolean() ?: true
         } catch (e: Exception) {
+            log.error("❌ Failed to fetch product detail from Musinsa product[{}]", product.id, e)
             log.error("❌ Failed to fetch product detail from Musinsa product[{}]", product.id)
-            sendSlackGateway.sendMessage(
-                "❌ Failed to fetch product detail from Musinsa product[${product.id}]"
-            )
+            sendSlackGateway.sendMessage("❌ Failed to fetch product detail from Musinsa product[${product.id}]")
             true
         }
     }

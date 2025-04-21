@@ -2,7 +2,6 @@ package org.team_alilm.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
 import domain.product.Store
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.port.use_case.ProductCrawlingUseCase
@@ -17,8 +16,6 @@ class MusinsaProductCrawlingService(
     private val crawlingGateway: CrawlingGateway,
     private val restClient: RestClient
 ) : ProductCrawlingUseCase {
-
-    private val log = LoggerFactory.getLogger(javaClass)
 
     override fun crawling(command: ProductCrawlingUseCase.ProductCrawlingCommand): ProductCrawlingUseCase.CrawlingResult {
         val crawlingGatewayResponse = crawlingGateway.htmlCrawling(request = CrawlingGatewayRequest(url = command.url))
@@ -63,7 +60,6 @@ class MusinsaProductCrawlingService(
         )
     }
 
-
     private fun extractJsonData(scriptContent: String): JsonNode {
         var jsonString: String? = null
 
@@ -89,4 +85,5 @@ class MusinsaProductCrawlingService(
     private fun getThumbnailUrl(thumbnailUrl: String): String {
         return "https://image.msscdn.net/thumbnails${thumbnailUrl}"
     }
+
 }
