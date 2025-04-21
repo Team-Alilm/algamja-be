@@ -9,6 +9,7 @@ import org.team_alilm.error.ErrorCode
 import org.team_alilm.error.CustomException
 import org.team_alilm.gateway.CrawlingGateway
 import org.team_alilm.gateway.CrawlingGateway.CrawlingGatewayRequest
+import org.team_alilm.util.CategoryUtil
 import util.StringContextHolder
 
 @Service
@@ -50,7 +51,7 @@ class MusinsaProductCrawlingService(
             thumbnailUrl = getThumbnailUrl(productHtmlResponse.get("thumbnailImageUrl").asText()),
             imageUrlList = imageUrlListResponse.get("data")?.get("similar")?.get(0)?.get("recommendedGoodsList")?.map { it.get("imageUrl").asText() }
                 ?: emptyList(),
-            firstCategory = productHtmlResponse.get("category").get("categoryDepth1Name").asText(),
+            firstCategory = CategoryUtil.getCategories(productHtmlResponse.get("category").get("categoryDepth1Name").asText()),
             secondCategory = productHtmlResponse.get("category").get("categoryDepth2Name").asText(),
             price = productHtmlResponse.get("goodsPrice").get("normalPrice").asInt(),
             store = Store.MUSINSA,
