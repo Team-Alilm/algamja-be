@@ -45,7 +45,6 @@
 ## 📬 문의 및 제안
 
 - Email: cloudwi@naver.com
-- Kakao: cloudwi
 
 ---
 
