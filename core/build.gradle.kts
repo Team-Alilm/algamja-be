@@ -1,29 +1,36 @@
+val exposedVersion: String by project
+val slackVersion: String by project
+val jasyptVersion: String by project
+val jsoupVersion: String by project
+val firebaseAdminVersion: String by project
+
 dependencies {
+    // ✅ 내부 모듈
     implementation(project(":domain"))
 
-    // jpa
+    // ✅ Spring Framework
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
-    // jsoup
-    implementation("org.jsoup:jsoup:1.15.3")
-
-    // mail
     implementation("org.springframework.boot:spring-boot-starter-mail")
 
-    // slack
-    implementation("com.slack.api:slack-api-client:1.42.0")
+    // ✅ 보안 · 암호화
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:$jasyptVersion")
 
-    // jasypt
-    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+    // ✅ ORM / Database 접근 (Exposed)
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 
-    // h2
-    runtimeOnly("com.h2database:h2")
+    // ✅ Database 드라이버
+    runtimeOnly("com.h2database:h2") // 개발/테스트용
+    runtimeOnly("com.mysql:mysql-connector-j") // 운영용
 
-    //mysql
-    runtimeOnly("com.mysql:mysql-connector-j")
+    // ✅ 외부 서비스 연동
+    implementation("com.google.firebase:firebase-admin:$firebaseAdminVersion") // Firebase Admin SDK
+    implementation("com.slack.api:slack-api-client:$slackVersion")             // Slack API
 
-    // firebase
-    implementation("com.google.firebase:firebase-admin:8.1.0")
+    // ✅ 유틸리티
+    implementation("org.jsoup:jsoup:$jsoupVersion") // HTML 파싱
 }
 
 allOpen {

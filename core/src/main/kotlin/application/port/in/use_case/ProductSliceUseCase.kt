@@ -17,7 +17,8 @@ interface ProductSliceUseCase {
     data class ProductSliceCommand(
         val page: Int,
         val size: Int,
-        val category: String?
+        val category: String?,
+        val sort: String
     )
 
     data class ProductSliceResult(

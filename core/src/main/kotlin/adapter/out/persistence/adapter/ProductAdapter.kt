@@ -107,7 +107,11 @@ class ProductAdapter(
         }
     }
 
-    override fun loadProductSlice(pageRequest: PageRequest, category: String?): Slice<ProductAndWaitingCount> {
+    override fun loadProductSlice(
+        pageRequest: PageRequest,
+        category: String?,
+        sort: String
+    ): Slice<ProductAndWaitingCount> {
         val productSlice = productRepository.findByProductSlice(pageRequest, category)
 
         return productSlice.map {

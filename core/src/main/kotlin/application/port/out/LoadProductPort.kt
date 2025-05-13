@@ -11,7 +11,8 @@ interface LoadProductPort {
 
     fun loadProductSlice(
         pageRequest: PageRequest,
-        category: String?
+        category: String?,
+        sort: String
     ): Slice<ProductAndWaitingCount>
 
     fun loadProduct(
