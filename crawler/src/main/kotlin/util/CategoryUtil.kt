@@ -23,7 +23,7 @@ class CategoryUtil {
             log.info("originalCategory: $originalCategory")
             return categoryMap.entries.firstOrNull {
                 it.value.containsMatchIn(originalCategory)
-            }?.key ?: originalCategory
+            }?.key ?: "기타"
         }
     }
 }
