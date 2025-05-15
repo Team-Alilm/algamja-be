@@ -3,7 +3,7 @@ package domain.product
 import util.StringContextHolder
 
 class Product (
-    val id: ProductId? = null,
+    val id: Long? = null,
     val number: Long = 0,
     val name: String = "",
     val brand: String = "",
@@ -14,7 +14,9 @@ class Product (
     val store: Store = Store.NONE,
     val firstOption: String? = null,
     val secondOption: String? = null,
-    val thirdOption: String? = null
+    val thirdOption: String? = null,
+    val createdDate: Long = 0,
+    val lastModifiedDate: Long = 0,
 ) {
 
     fun getManagedCode(): String? {
@@ -28,7 +30,6 @@ class Product (
             else -> null
         }
     }
-
 
     fun toSlackMessage(): String = """
         {
@@ -56,9 +57,9 @@ class Product (
 
     fun localServiceUrl() : String {
         return when (store) {
-            Store.MUSINSA -> StringContextHolder.LOCAL_HOST.get().format(id!!.value)
-            Store.CM29 -> StringContextHolder.LOCAL_HOST.get().format(id!!.value)
-            Store.ZIGZAG -> StringContextHolder.LOCAL_HOST.get().format(id!!.value)
+            Store.MUSINSA -> StringContextHolder.LOCAL_HOST.get().format(id!!)
+            Store.CM29 -> StringContextHolder.LOCAL_HOST.get().format(id!!)
+            Store.ZIGZAG -> StringContextHolder.LOCAL_HOST.get().format(id!!)
             else -> ""
         }
     }

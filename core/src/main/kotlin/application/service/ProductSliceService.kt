@@ -16,18 +16,11 @@ class ProductSliceService (
 
     override fun productSlice(command: ProductSliceUseCase.ProductSliceCommand): ProductSliceUseCase.CustomSlice {
 
-        val pageRequest = when (command.sort) {
-            "PRICE_ASC" -> PageRequest.of(command.page, command.size, Sort.by(Sort.Direction.ASC, "price"))
-            "PRICE_DESC" -> PageRequest.of(command.page, command.size, Sort.by(Sort.Direction.DESC, "price"))
-            "LATEST" -> PageRequest.of(command.page, command.size, Sort.by(Sort.Direction.DESC, "lastModifiedDate"))
-            "WAITING_COUNT" -> PageRequest.of(command.page, command.size) // 정렬 없음 → JPQL에서 ORDER BY COUNT(b.id)
-            else -> throw IllegalArgumentException("지원하지 않는 정렬 방식입니다.")
-        }
-
-        val productSlice = loadProductPort.loadProductSlice(
-            pageRequest,
-            command.category,
-            command.sort,
+        val productSlice = loadProductPort.getFilteredProductList(
+            size = command.size,
+            page = command.page,
+            category = command.category,
+            sort = command.sort
         )
 
         return ProductSliceUseCase.CustomSlice(
@@ -37,7 +30,8 @@ class ProductSliceService (
             hasNext = productSlice.hasNext(),
             isLast = productSlice.isLast,
             number = productSlice.number,
-            size = productSlice.size
+            size = productSlice.size,
+
         )
     }
 }

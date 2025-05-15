@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.Null
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -65,7 +67,6 @@ class ProductSliceController(
     @GetMapping
     fun productSliceV3(
         @ParameterObject
-        @Valid
         productListParameter: ProductListParameter,
 
         bindingResult: BindingResult

@@ -9,12 +9,6 @@ import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaiti
 
 interface LoadProductPort {
 
-    fun loadProductSlice(
-        pageRequest: PageRequest,
-        category: String?,
-        sort: String
-    ): Slice<ProductAndWaitingCount>
-
     fun loadProduct(
         number:Long,
         store: Store,

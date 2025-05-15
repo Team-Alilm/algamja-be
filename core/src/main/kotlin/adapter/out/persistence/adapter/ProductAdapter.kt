@@ -107,21 +107,6 @@ class ProductAdapter(
         }
     }
 
-    override fun loadProductSlice(
-        pageRequest: PageRequest,
-        category: String?,
-        sort: String
-    ): Slice<ProductAndWaitingCount> {
-        val productSlice = productRepository.findByProductSlice(pageRequest, category)
-
-        return productSlice.map {
-            ProductAndWaitingCount(
-                product = productMapper.mapToDomainEntity(it.productJpaEntity),
-                waitingCount = it.waitingCount
-            )
-        }
-    }
-
     override fun loadRelateProduct(firstCategory: String, secondCategory: String?): List<Product> {
         return productRepository.findByFirstCategory(firstCategory).map {
             productMapper.mapToDomainEntity(it)
