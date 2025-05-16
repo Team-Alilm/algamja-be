@@ -18,7 +18,7 @@ import org.team_alilm.response.ApiResponse
 import org.team_alilm.response.ApiResponseFactory
 
 @RestController
-@RequestMapping("/api/v2/products")
+@RequestMapping("/api")
 @Tag(name = "장바구니 메인 조회 API", description = """
     메인 page에서 사용하는 API를 제공합니다.
 """)
@@ -32,7 +32,7 @@ class ProductSliceController(
             사용자들이 등록한 상품을 조회할 수 있는 기능을 제공해요.
         """
     )
-    @GetMapping
+    @GetMapping("/v2/products")
     fun productSliceV2(
         @ParameterObject
         @Valid
@@ -49,6 +49,8 @@ class ProductSliceController(
             page = productListParameter.page,
             category = productListParameter.parsedCategory(),
             sort = productListParameter.sort.name,
+            lastWaitingCount = null,
+            lastProductId = null
         )
 
         val response = ProductSliceResponse(
@@ -64,7 +66,7 @@ class ProductSliceController(
             사용자들이 등록한 상품을 조회할 수 있는 기능을 제공해요.
         """
     )
-    @GetMapping
+    @GetMapping("/v3/products")
     fun productSliceV3(
         @ParameterObject
         productListParameter: ProductListParameter,
@@ -80,6 +82,8 @@ class ProductSliceController(
             page = productListParameter.page,
             category = productListParameter.parsedCategory(),
             sort = productListParameter.sort.name,
+            lastWaitingCount = null,
+            lastProductId = null
         )
 
         val response = ProductSliceResponse(

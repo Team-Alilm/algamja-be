@@ -2,7 +2,6 @@ package org.team_alilm.adapter.out.persistence.mapper
 
 import domain.Basket
 import domain.Member
-import domain.product.ProductId
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.BasketJpaEntity
 
@@ -24,7 +23,7 @@ class BasketMapper {
         return Basket(
             id = Basket.BasketId(basketJpaEntity.id),
             memberId = Member.MemberId(basketJpaEntity.memberId),
-            productId = ProductId(basketJpaEntity.productId),
+            productId = basketJpaEntity.productId,
             isAlilm = basketJpaEntity.isAlilm,
             alilmDate = basketJpaEntity.alilmDate,
             isHidden = basketJpaEntity.isHidden,

@@ -25,7 +25,7 @@ class OldBasketService(
 
         return OldBasketUseCase.OldBasketResult(
             oldProductInfo = OldBasketUseCase.OldProductInfo(
-                productId = productAndBasket.product.id!!.value,
+                productId = productAndBasket.product.id!!,
                 thumbnailUrl = productAndBasket.product.thumbnailUrl,
                 brand = productAndBasket.product.brand,
                 store = productAndBasket.product.store.name,
@@ -35,7 +35,7 @@ class OldBasketService(
             ),
             relatedProductList = relatedProductList.map {
                 OldBasketUseCase.RelateProduct(
-                    productId = it.id!!.value,
+                    productId = it.id!!,
                     thumbnailUrl = it.thumbnailUrl,
                     brand = it.brand,
                     store = it.store.name,

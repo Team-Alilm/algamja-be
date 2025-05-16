@@ -1,15 +1,11 @@
 package org.team_alilm.adapter.out.persistence.adapter
 
 import domain.product.Product
-import domain.product.ProductId
 import domain.product.Store
 import org.slf4j.LoggerFactory
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.ProductRepository
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
 import org.team_alilm.application.port.out.AddProductPort
 import org.team_alilm.application.port.out.LoadCrawlingProductsPort
@@ -57,12 +53,6 @@ class ProductAdapter(
         return productMapper.mapToDomainEntityOrNull(productJpaEntity)
     }
 
-    override fun loadProduct(productId: ProductId): Product? {
-        val productJpaEntity = springDataProductRepository.findByIdAndIsDeleteFalse(productId.value)
-
-        return productMapper.mapToDomainEntityOrNull(productJpaEntity)
-    }
-
     override fun loadProduct(productId: Long): Product? {
         val productJpaEntity = springDataProductRepository.findByIdAndIsDeleteFalse(productId)
 
@@ -81,8 +71,8 @@ class ProductAdapter(
         }
     }
 
-    override fun loadProductDetails(productId: ProductId): ProductAndWaitingCountAndImageList? {
-        val projectionList = productRepository.findByDetails(productId.value)
+    override fun loadProductDetails(productId: Long): ProductAndWaitingCountAndImageList? {
+        val projectionList = productRepository.findByDetails(productId)
 
         log.info("projectionList : $projectionList")
 

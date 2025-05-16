@@ -30,7 +30,7 @@ interface ProductDetailsUseCase {
         companion object {
             fun from (product: Product, waitingCount: Long, imageUrlList: List<String>): ProductDetailsResult {
                 return ProductDetailsResult(
-                    id = product.id!!.value,
+                    id = product.id!!,
                     number = product.number,
                     name = product.name,
                     brand = product.brand,

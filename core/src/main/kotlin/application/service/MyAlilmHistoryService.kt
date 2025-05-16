@@ -22,8 +22,8 @@ class MyAlilmHistoryService(
         return myAlilmAndProductList.map {
             MyAlilmHistoryUseCase.MyAlilmHistoryResult(
                 alilmId = it.alilm.id.value!!,
-                productid = it.product.id!!.value,
-                productId = it.product.id!!.value,
+                productid = it.product.id!!,
+                productId = it.product.id!!,
                 name = it.product.name,
                 imageUrl = it.product.thumbnailUrl,
                 brand = it.product.brand,

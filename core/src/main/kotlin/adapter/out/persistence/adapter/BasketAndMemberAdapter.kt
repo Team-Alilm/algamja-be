@@ -18,7 +18,7 @@ class BasketAndMemberAdapter(
 ) : LoadBasketAndMemberPort {
 
     override fun loadBasketAndMember(product: Product) : List<BasketAndMemberAndFcm> {
-        val productId = product.id?.value ?: return emptyList()
+        val productId = product.id ?: return emptyList()
 
         return basketRepository.findBasketAndMemberByProductNumberAndMemberId(productId = productId)
             .map {

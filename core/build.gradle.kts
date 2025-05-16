@@ -16,10 +16,7 @@ dependencies {
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:$jasyptVersion")
 
     // ✅ ORM / Database 접근 (Exposed)
-    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-spring-boot-starter:1.0.0-beta-1")
 
     // ✅ Database 드라이버
     runtimeOnly("com.h2database:h2") // 개발/테스트용

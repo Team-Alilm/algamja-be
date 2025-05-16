@@ -49,7 +49,7 @@ interface MyBasketsUseCase {
                     thirdOption = product.thirdOption,
                     isHidden = basket.isHidden,
                     waitingCount = waitingCount,
-                    productId = product.id?.value!!,
+                    productId = product.id!!,
                 )
             }
         }

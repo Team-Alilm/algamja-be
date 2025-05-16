@@ -3,7 +3,6 @@ package org.team_alilm.application.service
 import domain.Basket
 import domain.Member
 import domain.product.Product
-import domain.product.ProductId
 import domain.product.ProductImage
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -44,7 +43,7 @@ class AlilmRegistrationService(
 
     private fun saveBasket(
         memberId: Member.MemberId,
-        productId: ProductId,
+        productId: Long,
     ) {
 
         val basket = loadBasketPort.loadBasketIncludeIsDelete(

@@ -1,7 +1,6 @@
 package org.team_alilm.adapter.out.persistence.mapper
 
 import domain.product.Product
-import domain.product.ProductId
 import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 
@@ -10,7 +9,7 @@ class ProductMapper {
 
     fun mapToJpaEntity(product: Product): ProductJpaEntity {
         return ProductJpaEntity(
-            id = product.id?.value,
+            id = product.id,
             number = product.number,
             name = product.name,
             brand = product.brand,
@@ -36,7 +35,7 @@ class ProductMapper {
     }
 
     private fun product(productJpaEntity: ProductJpaEntity) = Product(
-        id = ProductId(productJpaEntity.id!!),
+        id = productJpaEntity.id!!,
         number = productJpaEntity.number,
         name = productJpaEntity.name,
         brand = productJpaEntity.brand,

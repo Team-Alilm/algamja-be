@@ -9,8 +9,6 @@ interface ProductSliceUseCase {
     data class CustomSlice(
         val contents: List<ProductSliceResult>,
         val hasNext: Boolean,
-        val isLast: Boolean,
-        val number: Int,
         val size: Int
     )
 
@@ -18,7 +16,9 @@ interface ProductSliceUseCase {
         val page: Int,
         val size: Int,
         val category: String?,
-        val sort: String
+        val sort: String,
+        val lastWaitingCount: Long?,
+        val lastProductId: Long?
     )
 
     data class ProductSliceResult(
@@ -27,7 +27,6 @@ interface ProductSliceUseCase {
         val name: String,
         val brand: String,
         val thumbnailUrl: String,
-        val imageUrl: String,
         val store: String,
         val price: Int,
         val firstCategory: String,
@@ -41,12 +40,11 @@ interface ProductSliceUseCase {
         companion object {
             fun from (product: Product, waitingCount: Long): ProductSliceResult {
                 return ProductSliceResult(
-                    id = product.id!!.value,
+                    id = product.id!!,
                     number = product.number,
                     name = product.name,
                     brand = product.brand,
                     thumbnailUrl = product.thumbnailUrl,
-                    imageUrl = product.thumbnailUrl,
                     store = product.store.name,
                     price = product.price,
                     firstCategory = product.firstCategory,

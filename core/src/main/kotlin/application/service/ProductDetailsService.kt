@@ -1,6 +1,5 @@
 package org.team_alilm.application.service
 
-import domain.product.ProductId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.ProductDetailsUseCase
@@ -15,7 +14,7 @@ class ProductDetailsService(
 ) : ProductDetailsUseCase {
 
     override fun productDetails(command: ProductDetailsCommand): ProductDetailsResult {
-        val productAndWaitingCount = loadProductPort.loadProductDetails(ProductId(command.productId)) ?: throw NotFoundProductException()
+        val productAndWaitingCount = loadProductPort.loadProductDetails(command.productId) ?: throw NotFoundProductException()
 
         return ProductDetailsResult.from(
             product = productAndWaitingCount.product,

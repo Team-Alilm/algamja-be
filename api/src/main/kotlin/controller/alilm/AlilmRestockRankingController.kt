@@ -29,7 +29,7 @@ class AlilmRestockRankingController(
         val result = alilmRestockRankingUseCase.alilmRestockRanking(command)
         val alilmRestockRankingProducts = result.map {
             AlilmRestockRankingProduct.from(
-                productId = it.id!!.value,
+                productId = it.id!!,
                 productThumbnailUrl = it.thumbnailUrl
             )
         }

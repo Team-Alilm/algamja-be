@@ -2,25 +2,21 @@ package org.team_alilm.application.port.out
 
 import domain.Basket
 import domain.Member
-import domain.product.ProductId
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Slice
 import org.team_alilm.adapter.out.persistence.adapter.data.ProductAndBasket
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCount
 
 interface LoadBasketPort {
 
     fun loadBasketIncludeIsDelete(
         memberId: Member.MemberId,
-        productId: ProductId
+        productId: Long
     ): Basket?
 
     fun loadBasketCount(
-        productId: ProductId
+        productId: Long
     ): Long
 
     fun loadBasketList(
-        productId: ProductId
+        productId: Long
     ): List<Basket>
 
     fun loadMyBasket(
@@ -28,7 +24,7 @@ interface LoadBasketPort {
     ): List<Basket>
 
     fun loadBasketIncludeIsDelete(
-        productId: ProductId
+        productId: Long
     ): List<Basket>
 
     fun loadBasketIncludeIsDelete(

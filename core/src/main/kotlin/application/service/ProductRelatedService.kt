@@ -1,6 +1,5 @@
 package org.team_alilm.application.service
 
-import domain.product.ProductId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.ProductRelatedUseCase
@@ -15,7 +14,7 @@ class ProductRelatedService(
 ) : ProductRelatedUseCase {
 
     override fun productRelated(command: ProductRelatedCommand): ProductRelatedResult {
-        val product = loadProductPort.loadProduct(ProductId(command.productId)) ?: throw NotFoundProductException()
+        val product = loadProductPort.loadProduct(command.productId) ?: throw NotFoundProductException()
         val productRelatedList = loadProductPort.loadRelatedProduct(product.firstCategory, product.secondCategory)
 
         return ProductRelatedResult(

@@ -17,7 +17,7 @@ class Alilm(
             return Alilm(
                 id = AlilmId(null),
                 memberId = basket.memberId.value,
-                productId = basket.productId.value,
+                productId = basket.productId,
                 readYn = false,
                 createdDate = System.currentTimeMillis()
             )

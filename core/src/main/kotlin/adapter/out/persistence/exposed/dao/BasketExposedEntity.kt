@@ -3,10 +3,9 @@ package org.team_alilm.adapter.out.persistence.exposed.dao
 import domain.Basket
 import domain.Basket.BasketId
 import domain.Member.MemberId
-import domain.product.ProductId
-import org.jetbrains.exposed.dao.LongEntity
-import org.jetbrains.exposed.dao.LongEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.dao.LongEntity
+import org.jetbrains.exposed.v1.dao.LongEntityClass
 import org.team_alilm.adapter.out.persistence.exposed.table.BasketExposedTable
 
 class BasketExposedEntity(id: EntityID<Long>) : LongEntity(id) {
@@ -27,7 +26,7 @@ class BasketExposedEntity(id: EntityID<Long>) : LongEntity(id) {
         return Basket(
             id = BasketId(this.id.value),
             memberId = MemberId(memberId),
-            productId = ProductId(productId),
+            productId = productId,
             isAlilm = isAlilm,
             alilmDate = alilmDate,
             isHidden = isHidden,

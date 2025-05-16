@@ -1,7 +1,7 @@
 package org.team_alilm.adapter.out.persistence.exposed.table
 
-import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 
 object ProductExposedTable : LongIdTable("product") {
 

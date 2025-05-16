@@ -1,12 +1,11 @@
 package domain
 
 import domain.Member.*
-import domain.product.ProductId
 
 class Basket(
     val id: BasketId? = null,
     val memberId: MemberId,
-    val productId: ProductId,
+    val productId: Long,
     var isAlilm: Boolean = false,
     var alilmDate: Long? = null,
     var isHidden: Boolean = false,
@@ -34,7 +33,7 @@ class Basket(
     data class BasketId(val value: Long?)
 
     companion object {
-        fun create(memberId: MemberId, productId: ProductId): Basket {
+        fun create(memberId: MemberId, productId: Long): Basket {
             return Basket(
                 memberId = memberId,
                 productId = productId

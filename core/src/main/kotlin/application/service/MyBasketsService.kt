@@ -36,7 +36,7 @@ class MyBasketsService (
                 thirdOption = it.product.thirdOption,
                 isHidden = it.basket.isHidden,
                 waitingCount = waitingCount,
-                productId = it.product.id?.value ?: throw NotFoundProductException()
+                productId = it.product.id ?: throw NotFoundProductException()
             )
         }
     }

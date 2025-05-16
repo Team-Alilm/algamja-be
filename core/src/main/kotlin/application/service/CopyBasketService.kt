@@ -1,7 +1,6 @@
 package org.team_alilm.application.service
 
 import domain.Basket
-import domain.product.ProductId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.application.port.`in`.use_case.CopyBasketUseCase
@@ -19,7 +18,7 @@ class CopyBasketService(
 
     @Transactional
     override fun copyBasket(command: CopyBasketUseCase.CopyBasketCommand) {
-        val productId = ProductId(command.productId)
+        val productId = command.productId
 
         // 장바구니에 이미 상품이 존재하는 경우 예외 발생
         loadBasketPort.loadBasketIncludeIsDelete(

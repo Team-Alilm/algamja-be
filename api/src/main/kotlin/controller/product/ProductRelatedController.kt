@@ -65,7 +65,7 @@ class ProductRelatedController(
         companion object {
             fun from(product: Product): RelatedProduct {
                 return RelatedProduct(
-                    id = product.id?.value ?: 0,
+                    id = product.id ?: 0,
                     name = product.name,
                     imageUrl = product.thumbnailUrl,
                     brand = product.brand,
