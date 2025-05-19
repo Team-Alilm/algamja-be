@@ -11,7 +11,7 @@ interface LoadFilteredProductListPort {
         category: String?,
         size: Int,
         sort: String,
-        lastProductId: Long?
+        sortKey: String
     ): ProductSliceUseCase.CustomSlice
 
 }

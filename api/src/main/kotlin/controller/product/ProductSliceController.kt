@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import jakarta.validation.constraints.NotEmpty
-import jakarta.validation.constraints.Null
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -46,11 +44,10 @@ class ProductSliceController(
 
         val command = ProductSliceUseCase.ProductSliceCommand(
             size = productListParameter.size,
-            page = productListParameter.page,
             category = productListParameter.parsedCategory(),
             sort = productListParameter.sort.name,
-            lastWaitingCount = null,
-            lastProductId = null
+            lastProductId = productListParameter.lastProductId,
+            waitingCount = productListParameter.waitingCount
         )
 
         val response = ProductSliceResponse(
@@ -79,11 +76,10 @@ class ProductSliceController(
 
         val command = ProductSliceUseCase.ProductSliceCommand(
             size = productListParameter.size,
-            page = productListParameter.page,
             category = productListParameter.parsedCategory(),
             sort = productListParameter.sort.name,
-            lastWaitingCount = null,
-            lastProductId = null
+            lastProductId = productListParameter.lastProductId,
+            waitingCount = productListParameter.waitingCount
         )
 
         val response = ProductSliceResponse(
@@ -96,7 +92,7 @@ class ProductSliceController(
     // "전체"일 경우 null로 치환
     // ProductListParameter에 확장 함수 정의
     fun ProductListParameter.parsedCategory(): String? {
-        return if (category == "전체") null else category
+        return if (category == "all") null else category
     }
 
     data class ProductSliceResponse(
@@ -124,14 +120,29 @@ class ProductSliceController(
             example = "전체",
             requiredMode = Schema.RequiredMode.REQUIRED
         )
-        val category: String = "전체",
+        val category: String = "all",
 
         @Schema(
             description = "정렬 조건",
             example = "WAITING_COUNT",
             requiredMode = Schema.RequiredMode.REQUIRED
         )
-        val sort: ProductSortType = ProductSortType.WAITING_COUNT
+        val sort: ProductSortType = ProductSortType.WAITING_COUNT,
+
+        //마지막 상품
+        @Schema(
+            description = "마지막 상품 ID",
+            example = "1",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+        )
+        val lastProductId: Long?,
+
+        @Schema(
+            description = "대기 인원 수",
+            example = "1",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+        )
+        val waitingCount: Long?
     )
 
     enum class ProductSortType(val description: String) {

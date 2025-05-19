@@ -3,9 +3,9 @@ package org.team_alilm.adapter.out.persistence.exposed.dao
 import domain.Basket
 import domain.Basket.BasketId
 import domain.Member.MemberId
-import org.jetbrains.exposed.v1.core.dao.id.EntityID
-import org.jetbrains.exposed.v1.dao.LongEntity
-import org.jetbrains.exposed.v1.dao.LongEntityClass
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
 import org.team_alilm.adapter.out.persistence.exposed.table.BasketExposedTable
 
 class BasketExposedEntity(id: EntityID<Long>) : LongEntity(id) {

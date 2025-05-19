@@ -13,12 +13,11 @@ interface ProductSliceUseCase {
     )
 
     data class ProductSliceCommand(
-        val page: Int,
         val size: Int,
         val category: String?,
         val sort: String,
-        val lastWaitingCount: Long?,
-        val lastProductId: Long?
+        val lastProductId: Long?,
+        val waitingCount: Long?,
     )
 
     data class ProductSliceResult(
