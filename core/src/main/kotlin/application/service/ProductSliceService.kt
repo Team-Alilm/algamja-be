@@ -8,13 +8,12 @@ import org.team_alilm.application.port.out.LoadFilteredProductListPort
 import org.team_alilm.application.port.out.LoadProductPort
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, transactionManager = "springTransactionManager")
 class ProductSliceService (
     private val loadFilteredProductListPort: LoadFilteredProductListPort,
     private val loadProductPort: LoadProductPort,
 ) : ProductSliceUseCase {
 
-    @Transactional(readOnly = true)
     override fun productSlice(command: ProductSliceUseCase.ProductSliceCommand): ProductSliceUseCase.CustomSlice {
         val lastProduct = product(command.lastProductId)
 
@@ -28,14 +27,16 @@ class ProductSliceService (
         return productSlice
     }
 
-    private fun getSortKey(sort: String, lastProduct: Product?, waitingCount: Long?): String {
-        return when(sort) {
-            "WAITING_COUNT" -> waitingCount?.toString() ?: Long.MAX_VALUE.toString()
+    private fun getSortKey(
+        sort: String,
+        lastProduct: Product?,
+        waitingCount: Long?
+    ): String? = when(sort) {
+            "WAITING_COUNT" -> waitingCount?.toString()
             "LATEST" -> lastProduct?.createdDate.toString()
             "PRICE_ASC" -> lastProduct?.price.toString()
             "PRICE_DESC" -> lastProduct?.price.toString()
             else -> throw IllegalArgumentException("Invalid sort type: $sort")
-        }
     }
 
     private fun product(productId: Long?) = productId

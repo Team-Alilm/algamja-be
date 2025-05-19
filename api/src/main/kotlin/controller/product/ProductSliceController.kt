@@ -138,7 +138,7 @@ class ProductSliceController(
         val lastProductId: Long?,
 
         @Schema(
-            description = "대기 인원 수",
+            description = "마지막 상품 대기 인원 수",
             example = "1",
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
         )
@@ -149,9 +149,23 @@ class ProductSliceController(
         WAITING_COUNT("함께 기다리는 사람이 많은 순"),
         LATEST("최신 등록순"),
         PRICE_ASC("낮은 가격 순"),
-        PRICE_DESC("높은 가격 순"),;
+        PRICE_DESC("높은 가격 순");
 
         override fun toString(): String = name // Swagger 문서에서 값으로 표시됨
     }
 
+    enum class ProductCategory(val description: String) {
+        ALL("전체"),
+        TOPS("상의"),
+        OUTERWEAR("아우터"),
+        PANTS("바지"),
+        DRESSES_SKIRTS("원피스/스커트"),
+        SHOES("신발"),
+        BAGS("가방"),
+        FASHION_ACCESSORIES("패션소품"),
+        UNDERWEAR_HOMEWEAR("속옷/홈웨어"),
+        SPORTS_LEISURE("스포츠/레저");
+
+        override fun toString(): String = name // Swagger 문서에서 값으로 표시됨
+    }
 }

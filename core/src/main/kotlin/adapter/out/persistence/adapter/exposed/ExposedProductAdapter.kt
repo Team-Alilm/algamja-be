@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
 import org.jetbrains.exposed.sql.alias
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.innerJoin
 
@@ -25,7 +26,7 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
         category: String?,
         size: Int,
         sort: String,
-        sortKey: String
+        sortKey: String?
     ): ProductSliceUseCase.CustomSlice {
         val waitingCount = BasketExposedTable.id.count().alias("waitingCount")
 
@@ -51,7 +52,7 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
             else /*CREATED_DATE_DESC*/ -> ProductExposedTable.createdDate to SortOrder.DESC
         }
 
-        val cursorCondition: Op<Boolean>? = sortKey.let { key ->
+        val cursorCondition: Op<Boolean>? = sortKey?.let { key ->
             when (sort) {
                 "PRICE_ASC" -> {
                     // 가격
@@ -71,13 +72,18 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
                     waitingCount less lastCount
                 }
 
-                else /*CREATED_DATE_DESC*/ -> {
+                "CREATED_DATE_DESC" -> {
                     // 생성일
                     val lastDate = key.toLong()
                     sortCol less lastDate
                 }
+
+                else -> null
             }
         }
+
+        val baseFilter = baseConditions.reduce { acc, op -> acc and op }
+        val fullFilter = cursorCondition?.let { baseFilter and it } ?: baseFilter
 
         val rows = joined
             .select(
@@ -95,10 +101,7 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
                 ProductExposedTable.thirdOption,
                 waitingCount
             )
-            .apply {
-                baseConditions.forEach { where(it) }
-                cursorCondition?.let { where(it) }
-            }
+            .where { fullFilter }
             .groupBy(ProductExposedTable.id)
             .orderBy(sortCol to sortOrder)
             .limit(size + 1)
