@@ -1,14 +1,9 @@
 package org.team_alilm.adapter.out.persistence.adapter.exposed
 
-import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
-import org.jetbrains.exposed.sql.alias
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.count
-import org.jetbrains.exposed.sql.innerJoin
-import org.jetbrains.exposed.sql.or
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.adapter.out.persistence.exposed.table.BasketExposedTable
@@ -28,8 +23,9 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
         productId: Long?,
         waitingCount: Long?,
     ): ProductSliceUseCase.CustomSlice {
+
         val countExpr = BasketExposedTable.id.count()
-        val waitingCount = countExpr.alias("waitingCount")
+        val waitingCountAlias = countExpr.alias("waitingCount")
 
         val joined = ProductExposedTable.innerJoin(BasketExposedTable) {
             ProductExposedTable.id eq BasketExposedTable.productId
@@ -46,7 +42,7 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
         val (sortCol, sortOrder) = when (sort) {
             "PRICE_ASC"       -> ProductExposedTable.price to SortOrder.ASC
             "PRICE_DESC"      -> ProductExposedTable.price to SortOrder.DESC
-            "WAITING_COUNT"   -> waitingCount to SortOrder.DESC
+            "WAITING_COUNT"   -> waitingCountAlias to SortOrder.DESC
             else               -> ProductExposedTable.createdDate to SortOrder.DESC
         }
 
@@ -60,12 +56,12 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
             "PRICE_DESC" -> {
                 if (price != null && productId != null) {
                     (ProductExposedTable.price less price) or
-                            ((ProductExposedTable.price eq price) and (ProductExposedTable.id less productId))
+                            ((ProductExposedTable.price eq price) and (ProductExposedTable.id greater  productId))
                 } else null
             }
             "CREATED_DATE_DESC" -> {
                 if (productId != null) {
-                    (ProductExposedTable.id less productId)
+                    ProductExposedTable.id less productId
                 } else null
             }
             else -> null
@@ -74,9 +70,9 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
         val filter = baseConditions.reduce { acc, op -> acc and op }
         val fullFilter = cursorCondition?.let { filter and it } ?: filter
 
-        val havingFilter = if (sort == "WAITING_COUNT" && productId != null) {
+        val havingFilter = if (sort == "WAITING_COUNT" && waitingCount != null && productId != null) {
             (countExpr less waitingCount) or
-                    ((countExpr eq waitingCount) and (ProductExposedTable.id less productId))
+                    ((countExpr eq waitingCount) and (ProductExposedTable.id greater productId))
         } else null
 
         val rows = joined
@@ -93,12 +89,15 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
                 ProductExposedTable.firstOption,
                 ProductExposedTable.secondOption,
                 ProductExposedTable.thirdOption,
-                waitingCount
+                waitingCountAlias
             )
             .where { fullFilter }
             .groupBy(ProductExposedTable.id)
             .apply { havingFilter?.let { having { it } } }
-            .orderBy(sortCol to sortOrder)
+            .orderBy(
+                sortCol to sortOrder,
+                ProductExposedTable.id to SortOrder.ASC
+            )
             .limit(size + 1)
 
         val result = rows.map { row ->
@@ -115,7 +114,7 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
                 firstOption = row[ProductExposedTable.firstOption],
                 secondOption = row[ProductExposedTable.secondOption],
                 thirdOption = row[ProductExposedTable.thirdOption],
-                waitingCount = row[waitingCount]
+                waitingCount = row[waitingCountAlias]
             )
         }
 
@@ -124,7 +123,7 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
         return ProductSliceUseCase.CustomSlice(
             contents = result.take(size),
             hasNext = hasNext,
-            size = size,
+            size = result.take(size).size,
         )
     }
 }
