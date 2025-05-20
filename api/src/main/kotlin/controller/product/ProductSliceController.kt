@@ -47,7 +47,9 @@ class ProductSliceController(
             category = productListParameter.parsedCategory(),
             sort = productListParameter.sort.name,
             lastProductId = productListParameter.lastProductId,
-            waitingCount = productListParameter.waitingCount
+            waitingCount = productListParameter.waitingCount,
+            createdDate = productListParameter.createdDate,
+            price = productListParameter.price
         )
 
         val response = ProductSliceResponse(
@@ -79,7 +81,9 @@ class ProductSliceController(
             category = productListParameter.parsedCategory(),
             sort = productListParameter.sort.name,
             lastProductId = productListParameter.lastProductId,
-            waitingCount = productListParameter.waitingCount
+            waitingCount = productListParameter.waitingCount,
+            createdDate = productListParameter.createdDate,
+            price = productListParameter.price
         )
 
         val response = ProductSliceResponse(
@@ -92,7 +96,7 @@ class ProductSliceController(
     // "전체"일 경우 null로 치환
     // ProductListParameter에 확장 함수 정의
     fun ProductListParameter.parsedCategory(): String? {
-        return if (category == "all") null else category
+        return if (category == ProductCategory.ALL) null else category.description
     }
 
     data class ProductSliceResponse(
@@ -109,18 +113,11 @@ class ProductSliceController(
         val size: Int = 10,
 
         @Schema(
-            description = "페이지 번호",
-            example = "0",
-            requiredMode = Schema.RequiredMode.REQUIRED
-        )
-        val page: Int = 0,
-
-        @Schema(
             description = "카테고리 null 가능",
             example = "전체",
             requiredMode = Schema.RequiredMode.REQUIRED
         )
-        val category: String = "all",
+        val category: ProductCategory = ProductCategory.ALL,
 
         @Schema(
             description = "정렬 조건",
@@ -142,7 +139,21 @@ class ProductSliceController(
             example = "1",
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
         )
-        val waitingCount: Long?
+        val waitingCount: Long?,
+
+        @Schema(
+            description = "마지막 상품 생성일",
+            example = "1",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+        )
+        val createdDate: Long?,
+
+        @Schema(
+            description = "상품 가격",
+            example = "1",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+        )
+        val price: Int? = null
     )
 
     enum class ProductSortType(val description: String) {

@@ -5,10 +5,13 @@ import org.team_alilm.application.port.`in`.use_case.ProductSliceUseCase
 interface LoadFilteredProductListPort {
 
     fun getFilteredProductList(
-        category: String?,
         size: Int,
+        category: String?,
         sort: String,
-        sortKey: String?
+        price: Int?,
+        productId: Long?,
+        waitingCount: Long?,
+        createdDate: Long?
     ): ProductSliceUseCase.CustomSlice
 
 }

@@ -15,13 +15,14 @@ class ProductSliceService (
 ) : ProductSliceUseCase {
 
     override fun productSlice(command: ProductSliceUseCase.ProductSliceCommand): ProductSliceUseCase.CustomSlice {
-        val lastProduct = product(command.lastProductId)
-
         val productSlice = loadFilteredProductListPort.getFilteredProductList(
             size = command.size,
             category = command.category,
             sort = command.sort,
-            sortKey = getSortKey(command.sort, lastProduct, command.waitingCount),
+            price = command.price,
+            productId = command.lastProductId,
+            waitingCount = command.waitingCount,
+            createdDate = command.createdDate
         )
 
         return productSlice
@@ -29,15 +30,15 @@ class ProductSliceService (
 
     private fun getSortKey(
         sort: String,
-        lastProduct: Product?,
-        waitingCount: Long?
+        price: Long?,
+        waitingCount: Long?,
     ): String? = when(sort) {
-            "WAITING_COUNT" -> waitingCount?.toString()
-            "LATEST" -> lastProduct?.createdDate.toString()
-            "PRICE_ASC" -> lastProduct?.price.toString()
-            "PRICE_DESC" -> lastProduct?.price.toString()
-            else -> throw IllegalArgumentException("Invalid sort type: $sort")
-    }
+        "WAITING_COUNT" -> waitingCount
+        "LATEST" -> price
+        "PRICE_ASC" -> price
+        "PRICE_DESC" -> price
+        else -> throw IllegalArgumentException("Invalid sort type: $sort")
+    } as String?
 
     private fun product(productId: Long?) = productId
         ?.let { loadProductPort.loadProduct(it) }
