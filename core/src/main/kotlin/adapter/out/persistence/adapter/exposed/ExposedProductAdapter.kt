@@ -3,9 +3,7 @@ package org.team_alilm.adapter.out.persistence.adapter.exposed
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.count
@@ -28,8 +26,7 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
         sort: String,
         price: Int?,
         productId: Long?,
-        waitingCountKey: Long?,
-        createdDate: Long?
+        waitingCount: Long?,
     ): ProductSliceUseCase.CustomSlice {
         val countExpr = BasketExposedTable.id.count()
         val waitingCount = countExpr.alias("waitingCount")
@@ -67,9 +64,8 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
                 } else null
             }
             "CREATED_DATE_DESC" -> {
-                if (createdDate != null && productId != null) {
-                    (ProductExposedTable.createdDate less createdDate) or
-                            ((ProductExposedTable.createdDate eq createdDate) and (ProductExposedTable.id less productId))
+                if (productId != null) {
+                    (ProductExposedTable.id less productId)
                 } else null
             }
             else -> null
@@ -78,9 +74,9 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
         val filter = baseConditions.reduce { acc, op -> acc and op }
         val fullFilter = cursorCondition?.let { filter and it } ?: filter
 
-        val havingFilter = if (sort == "WAITING_COUNT" && waitingCountKey != null && productId != null) {
-            (countExpr less waitingCountKey) or
-                    ((countExpr eq waitingCountKey) and (ProductExposedTable.id less productId))
+        val havingFilter = if (sort == "WAITING_COUNT" && productId != null) {
+            (countExpr less waitingCount) or
+                    ((countExpr eq waitingCount) and (ProductExposedTable.id less productId))
         } else null
 
         val rows = joined

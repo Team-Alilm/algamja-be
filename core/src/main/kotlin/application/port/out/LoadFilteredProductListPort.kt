@@ -11,7 +11,6 @@ interface LoadFilteredProductListPort {
         price: Int?,
         productId: Long?,
         waitingCount: Long?,
-        createdDate: Long?
     ): ProductSliceUseCase.CustomSlice
 
 }

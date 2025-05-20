@@ -48,7 +48,6 @@ class ProductSliceController(
             sort = productListParameter.sort.name,
             lastProductId = productListParameter.lastProductId,
             waitingCount = productListParameter.waitingCount,
-            createdDate = productListParameter.createdDate,
             price = productListParameter.price
         )
 
@@ -82,7 +81,6 @@ class ProductSliceController(
             sort = productListParameter.sort.name,
             lastProductId = productListParameter.lastProductId,
             waitingCount = productListParameter.waitingCount,
-            createdDate = productListParameter.createdDate,
             price = productListParameter.price
         )
 
@@ -140,13 +138,6 @@ class ProductSliceController(
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
         )
         val waitingCount: Long?,
-
-        @Schema(
-            description = "마지막 상품 생성일",
-            example = "1",
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
-        )
-        val createdDate: Long?,
 
         @Schema(
             description = "상품 가격",

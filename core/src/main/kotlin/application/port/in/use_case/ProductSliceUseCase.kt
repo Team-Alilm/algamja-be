@@ -18,7 +18,6 @@ interface ProductSliceUseCase {
         val sort: String,
         val lastProductId: Long?,
         val waitingCount: Long?,
-        val createdDate: Long?,
         val price: Int?
     )
 

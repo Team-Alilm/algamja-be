@@ -22,7 +22,6 @@ class ProductSliceService (
             price = command.price,
             productId = command.lastProductId,
             waitingCount = command.waitingCount,
-            createdDate = command.createdDate
         )
 
         return productSlice
