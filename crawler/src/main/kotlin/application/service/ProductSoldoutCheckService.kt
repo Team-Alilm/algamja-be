@@ -33,7 +33,7 @@ class ProductSoldoutCheckService(
             if (restock) {
                 slackGateway.sendMessage("${payload.id} ${payload.getStoreUrl()} 재입고 되었습니다.")
 
-                val requestBody = RequestBody(productId = payload.id!!.value)
+                val requestBody = RequestBody(productId = payload.id!!)
                 restClient.put()
                     .uri("https://api.algamja.com/api/v1/baskets/alilm")
                     .header("authorization", jwtToken)

@@ -25,18 +25,13 @@ class FcmSendGateway(
         지금 바로 확인해보세요.
     """.trimIndent()
 
-        val messageBuilder = Message.builder()
+        val message = Message.builder()
             .setToken(fcmToken.token)
-            .setNotification(
-                Notification.builder()
-                    .setTitle(title)
-                    .setBody(body)
-                    .setImage(product.thumbnailUrl)
-                    .build()
-            )
+            .putData("title", title)
+            .putData("body", body)
+            .putData("image", product.thumbnailUrl ?: "")
             .putData("click_action", product.localServiceUrl())
-
-        val message = messageBuilder.build()
+            .build()
 
         try {
             firebaseMessaging.send(message)
