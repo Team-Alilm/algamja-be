@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import jakarta.validation.constraints.Min
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.ProductSliceUseCase
+import org.team_alilm.domain.product.ProductCategory
+import org.team_alilm.domain.product.ProductSortType
 import org.team_alilm.global.error.RequestValidateException
 import org.team_alilm.response.ApiResponse
 import org.team_alilm.response.ApiResponseFactory
@@ -24,75 +27,48 @@ class ProductSliceController(
     private val productSliceUseCase: ProductSliceUseCase
 ) {
 
-    @Operation(
-        summary = "상품 조회 API V2",
-        description = """
+    @Operation(summary = "상품 조회 API V2", description = """
             사용자들이 등록한 상품을 조회할 수 있는 기능을 제공해요.
-        """
-    )
+        """)
     @GetMapping("/v2/products")
     fun productSliceV2(
-        @ParameterObject
-        @Valid
-        productListParameter: ProductListParameter,
-
+        @ParameterObject @Valid productListParameter: ProductListParameter,
         bindingResult: BindingResult
     ): ResponseEntity<ProductSliceResponse> {
-        if (bindingResult.hasErrors()) {
-            throw RequestValidateException(bindingResult)
-        }
-
-        val command = ProductSliceUseCase.ProductSliceCommand(
-            size = productListParameter.size,
-            category = productListParameter.parsedCategory(),
-            sort = productListParameter.sort.name,
-            lastProductId = productListParameter.lastProductId,
-            waitingCount = productListParameter.waitingCount,
-            price = productListParameter.price
-        )
-
-        val response = ProductSliceResponse(
-            customSlice = productSliceUseCase.productSlice(command)
-        )
-
-        return ResponseEntity.ok(response)
+        validate(bindingResult)
+        return ResponseEntity.ok(getResponse(productListParameter))
     }
 
-    @Operation(
-        summary = "상품 조회 API V3",
-        description = """
+    @Operation(summary = "상품 조회 API V3", description = """
             사용자들이 등록한 상품을 조회할 수 있는 기능을 제공해요.
-        """
-    )
-    @GetMapping("/v3/products")
+        """)
+    @GetMapping("/products/v3")
     fun productSliceV3(
-        @ParameterObject
-        productListParameter: ProductListParameter,
-
+        @ParameterObject @Valid productListParameter: ProductListParameter,
         bindingResult: BindingResult
     ): ResponseEntity<ApiResponse<ProductSliceResponse>> {
+        validate(bindingResult)
+        return ApiResponseFactory.ok(getResponse(productListParameter))
+    }
+
+    private fun validate(bindingResult: BindingResult) {
         if (bindingResult.hasErrors()) {
             throw RequestValidateException(bindingResult)
         }
-
-        val command = ProductSliceUseCase.ProductSliceCommand(
-            size = productListParameter.size,
-            category = productListParameter.parsedCategory(),
-            sort = productListParameter.sort.name,
-            lastProductId = productListParameter.lastProductId,
-            waitingCount = productListParameter.waitingCount,
-            price = productListParameter.price
-        )
-
-        val response = ProductSliceResponse(
-            customSlice = productSliceUseCase.productSlice(command)
-        )
-
-        return ApiResponseFactory.ok(response)
     }
 
-    // "전체"일 경우 null로 치환
-    // ProductListParameter에 확장 함수 정의
+    private fun getResponse(param: ProductListParameter): ProductSliceResponse {
+        val command = ProductSliceUseCase.ProductSliceCommand(
+            size = param.size,
+            category = param.parsedCategory(),
+            sort = param.sort.name,
+            lastProductId = param.lastProductId,
+            waitingCount = param.waitingCount,
+            price = param.price
+        )
+        return ProductSliceResponse(productSliceUseCase.productSlice(command))
+    }
+
     fun ProductListParameter.parsedCategory(): String? {
         return if (category == ProductCategory.ALL) null else category.description
     }
@@ -103,71 +79,27 @@ class ProductSliceController(
 
     @Schema(description = "상품 조회 파라미터")
     data class ProductListParameter(
-        @Schema(
-            description = "페이지 사이즈",
-            example = "10",
-            requiredMode = Schema.RequiredMode.REQUIRED
-        )
+
+        @field:Min(1)
+        @Schema(description = "페이지 사이즈", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
         val size: Int = 10,
 
-        @Schema(
-            description = "카테고리 null 가능",
-            example = "전체",
-            requiredMode = Schema.RequiredMode.REQUIRED
-        )
+        @Schema(description = "카테고리 null 가능", example = "전체", requiredMode = Schema.RequiredMode.REQUIRED)
         val category: ProductCategory = ProductCategory.ALL,
 
-        @Schema(
-            description = "정렬 조건",
-            example = "WAITING_COUNT",
-            requiredMode = Schema.RequiredMode.REQUIRED
-        )
+        @Schema(description = "정렬 조건", example = "WAITING_COUNT", requiredMode = Schema.RequiredMode.REQUIRED)
         val sort: ProductSortType = ProductSortType.WAITING_COUNT,
 
-        //마지막 상품
-        @Schema(
-            description = "마지막 상품 ID",
-            example = "1",
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
-        )
+        @field:Min(1)
+        @Schema(description = "마지막 상품 ID", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         val lastProductId: Long?,
 
-        @Schema(
-            description = "마지막 상품 대기 인원 수",
-            example = "1",
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
-        )
+        @field:Min(0)
+        @Schema(description = "마지막 상품 대기 인원 수", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         val waitingCount: Long?,
 
-        @Schema(
-            description = "상품 가격",
-            example = "1",
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
-        )
+        @field:Min(0)
+        @Schema(description = "상품 가격", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         val price: Int? = null
     )
-
-    enum class ProductSortType(val description: String) {
-        WAITING_COUNT("함께 기다리는 사람이 많은 순"),
-        LATEST("최신 등록순"),
-        PRICE_ASC("낮은 가격 순"),
-        PRICE_DESC("높은 가격 순");
-
-        override fun toString(): String = name // Swagger 문서에서 값으로 표시됨
-    }
-
-    enum class ProductCategory(val description: String) {
-        ALL("전체"),
-        TOPS("상의"),
-        OUTERWEAR("아우터"),
-        PANTS("바지"),
-        DRESSES_SKIRTS("원피스/스커트"),
-        SHOES("신발"),
-        BAGS("가방"),
-        FASHION_ACCESSORIES("패션소품"),
-        UNDERWEAR_HOMEWEAR("속옷/홈웨어"),
-        SPORTS_LEISURE("스포츠/레저");
-
-        override fun toString(): String = name // Swagger 문서에서 값으로 표시됨
-    }
 }
