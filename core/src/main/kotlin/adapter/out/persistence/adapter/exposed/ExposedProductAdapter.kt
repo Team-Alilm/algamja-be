@@ -126,4 +126,77 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
             size = result.take(size).size,
         )
     }
+
+    override fun getFilteredProductListV2(
+        size: Int,
+        page: Int,
+        category: String?
+    ): ProductSliceUseCase.CustomSlice {
+
+        val countExpr = BasketExposedTable.id.count()
+        val waitingCountAlias = countExpr.alias("waitingCount")
+
+        val joined = ProductExposedTable.innerJoin(BasketExposedTable) {
+            ProductExposedTable.id eq BasketExposedTable.productId
+        }
+
+        val baseConditions = buildList {
+            add(ProductExposedTable.isDeleted eq false)
+            add(BasketExposedTable.isDeleted eq false)
+            add(BasketExposedTable.isAlilm eq false)
+            add(BasketExposedTable.isHidden eq false)
+            category?.let { add(ProductExposedTable.firstCategory eq it) }
+        }
+
+        val filter = baseConditions.reduce { acc, op -> acc and op }
+
+        val rows = joined
+            .select(
+                ProductExposedTable.id,
+                ProductExposedTable.number,
+                ProductExposedTable.name,
+                ProductExposedTable.brand,
+                ProductExposedTable.thumbnailUrl,
+                ProductExposedTable.store,
+                ProductExposedTable.price,
+                ProductExposedTable.firstCategory,
+                ProductExposedTable.secondCategory,
+                ProductExposedTable.firstOption,
+                ProductExposedTable.secondOption,
+                ProductExposedTable.thirdOption,
+                waitingCountAlias
+            )
+            .where { filter }
+            .groupBy(ProductExposedTable.id)
+            .orderBy(
+                ProductExposedTable.createdDate to SortOrder.DESC
+            )
+            .limit(size).offset(start = (page * size).toLong())
+
+        val result = rows.map { row ->
+            ProductSliceUseCase.ProductSliceResult(
+                id = row[ProductExposedTable.id].value,
+                number = row[ProductExposedTable.number],
+                name = row[ProductExposedTable.name],
+                brand = row[ProductExposedTable.brand],
+                thumbnailUrl = row[ProductExposedTable.thumbnailUrl],
+                store = row[ProductExposedTable.store],
+                price = row[ProductExposedTable.price],
+                firstCategory = row[ProductExposedTable.firstCategory],
+                secondCategory = row[ProductExposedTable.secondCategory],
+                firstOption = row[ProductExposedTable.firstOption],
+                secondOption = row[ProductExposedTable.secondOption],
+                thirdOption = row[ProductExposedTable.thirdOption],
+                waitingCount = row[waitingCountAlias]
+            )
+        }
+
+        val hasNext = result.size > size
+
+        return ProductSliceUseCase.CustomSlice(
+            contents = result.take(size),
+            hasNext = hasNext,
+            size = result.take(size).size,
+        )
+    }
 }

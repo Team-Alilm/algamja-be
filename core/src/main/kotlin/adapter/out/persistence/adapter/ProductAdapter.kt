@@ -3,14 +3,19 @@ package org.team_alilm.adapter.out.persistence.adapter
 import domain.product.Product
 import domain.product.Store
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
+import org.team_alilm.adapter.out.persistence.adapter.data.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.ProductRepository
+import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
 import org.team_alilm.application.port.out.AddProductPort
 import org.team_alilm.application.port.out.LoadCrawlingProductsPort
 import org.team_alilm.application.port.out.LoadProductPort
 import org.team_alilm.application.port.out.LoadProductPort.*
+import org.team_alilm.application.port.out.LoadProductSlicePort
 import org.team_alilm.application.port.out.LoadRelateProductPort
 import org.team_alilm.global.error.NotFoundProductException
 
@@ -22,7 +27,9 @@ class ProductAdapter(
 ) : AddProductPort,
     LoadProductPort,
     LoadCrawlingProductsPort,
-    LoadRelateProductPort {
+    LoadRelateProductPort,
+    LoadProductSlicePort
+{
 
     private val log = LoggerFactory.getLogger(ProductAdapter::class.java)
 
@@ -101,5 +108,15 @@ class ProductAdapter(
         return productRepository.findByFirstCategory(firstCategory).map {
             productMapper.mapToDomainEntity(it)
         }
+    }
+
+    override fun loadProductSlice(pageRequest: PageRequest, category: String?): Slice<ProductAndWaitingCount> {
+        return productRepository.findByProductSlice(
+            pageRequest = pageRequest,
+            category = category
+        ).map { ProductAndWaitingCount(
+            product = productMapper.mapToDomainEntity(it.productJpaEntity),
+            waitingCount = it.waitingCount
+        )}
     }
 }

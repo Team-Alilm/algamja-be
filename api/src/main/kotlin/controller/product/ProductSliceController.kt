@@ -32,11 +32,22 @@ class ProductSliceController(
         """)
     @GetMapping("/v2/products")
     fun productSliceV2(
-        @ParameterObject @Valid productListParameter: ProductListParameter,
+        @ParameterObject @Valid param: ProductListParameterV2,
         bindingResult: BindingResult
     ): ResponseEntity<ProductSliceResponse> {
         validate(bindingResult)
-        return ResponseEntity.ok(getResponse(productListParameter))
+
+        val command = ProductSliceUseCase.ProductSliceCommandV2(
+            size = param.size,
+            page = param.page,
+            category = param.parsedCategory(),
+        )
+
+        val result = productSliceUseCase.productSliceV2(command)
+
+        val response = ProductSliceResponse(customSlice = result)
+
+        return ResponseEntity.ok(response)
     }
 
     @Operation(summary = "상품 조회 API V3", description = """
@@ -44,11 +55,11 @@ class ProductSliceController(
         """)
     @GetMapping("/products/v3")
     fun productSliceV3(
-        @ParameterObject @Valid productListParameter: ProductListParameter,
+        @ParameterObject @Valid productListParameterV3: ProductListParameterV3,
         bindingResult: BindingResult
     ): ResponseEntity<ApiResponse<ProductSliceResponse>> {
         validate(bindingResult)
-        return ApiResponseFactory.ok(getResponse(productListParameter))
+        return ApiResponseFactory.ok(getResponse(productListParameterV3))
     }
 
     private fun validate(bindingResult: BindingResult) {
@@ -57,7 +68,7 @@ class ProductSliceController(
         }
     }
 
-    private fun getResponse(param: ProductListParameter): ProductSliceResponse {
+    private fun getResponse(param: ProductListParameterV3): ProductSliceResponse {
         val command = ProductSliceUseCase.ProductSliceCommand(
             size = param.size,
             category = param.parsedCategory(),
@@ -66,10 +77,11 @@ class ProductSliceController(
             waitingCount = param.waitingCount,
             price = param.price
         )
+
         return ProductSliceResponse(productSliceUseCase.productSlice(command))
     }
 
-    fun ProductListParameter.parsedCategory(): String? {
+    fun ProductListParameterV3.parsedCategory(): String? {
         return if (category == ProductCategory.ALL) null else category.description
     }
 
@@ -78,7 +90,22 @@ class ProductSliceController(
     )
 
     @Schema(description = "상품 조회 파라미터")
-    data class ProductListParameter(
+    data class ProductListParameterV2(
+
+        @field:Min(1)
+        @Schema(description = "페이지 사이즈", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
+        val size: Int = 10,
+
+        @field:Min(0)
+        @Schema(description = "페이지 번호", example = "0", requiredMode = Schema.RequiredMode.REQUIRED)
+        val page: Int = 0,
+
+        @Schema(description = "카테고리 null 가능", example = "전체", requiredMode = Schema.RequiredMode.REQUIRED)
+        val category: ProductCategory = ProductCategory.ALL,
+    )
+
+    @Schema(description = "상품 조회 파라미터")
+    data class ProductListParameterV3(
 
         @field:Min(1)
         @Schema(description = "페이지 사이즈", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -102,4 +129,8 @@ class ProductSliceController(
         @Schema(description = "상품 가격", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         val price: Int? = null
     )
+
+    fun ProductListParameterV2.parsedCategory(): String? {
+        return if (category == ProductCategory.ALL) null else category.description
+    }
 }

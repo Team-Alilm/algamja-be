@@ -8,7 +8,6 @@ import org.team_alilm.adapter.out.persistence.entity.ProductJpaEntity
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection
 import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
 import domain.product.Store
-import org.springframework.data.repository.query.Param
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 

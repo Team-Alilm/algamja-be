@@ -13,4 +13,10 @@ interface LoadFilteredProductListPort {
         waitingCount: Long?,
     ): ProductSliceUseCase.CustomSlice
 
+    fun getFilteredProductListV2(
+        size: Int,
+        page: Int,
+        category: String?,
+    ): ProductSliceUseCase.CustomSlice
+
 }
