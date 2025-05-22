@@ -6,12 +6,31 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.team_alilm.application.port.out.gateway.SendSlackGateway
 import org.team_alilm.global.error.BasketAlreadyExistsException
+import org.team_alilm.global.error.BusinessException
+import org.team_alilm.response.ApiResponse
 
 @RestControllerAdvice
-class GlobalRestControllerAdvice {
+class GlobalRestControllerAdvice(
+    val slackGateway: SendSlackGateway
+) {
 
     private val log = LoggerFactory.getLogger(GlobalRestControllerAdvice::class.java)
+
+    @ExceptionHandler(value = [BusinessException::class])
+    fun handleBusinessException(e: BusinessException): ResponseEntity<ApiResponse<Unit>> {
+        log.warn("BusinessException error log : ${e.message}")
+
+        return ResponseEntity.badRequest()
+            .body(
+                ApiResponse
+                    .fail(
+                        code = e.error.code,
+                        message = e.error.message,
+                    )
+            )
+    }
 
     @ExceptionHandler(value = [BasketAlreadyExistsException::class])
     fun handleBasketAlreadyExistsException(e: BasketAlreadyExistsException): ResponseEntity<String> {

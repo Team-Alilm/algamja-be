@@ -1,6 +1,6 @@
 package org.team_alilm.global.error
 
-enum class ErrorMessage(
+enum class Error(
     val code: String,
     val message: String
 ) {

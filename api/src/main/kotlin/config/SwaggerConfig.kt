@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
+import org.springdoc.core.models.GroupedOpenApi
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -36,15 +37,19 @@ class SwaggerConfig {
             )
 
         return OpenAPI()
-            .servers(
-                listOf(
-                    Server().url("https://api.algamja.com").description("prod Server"),
-                    Server().url("http://localhost:8080").description("dev Server")
-                )
-            )
             .addSecurityItem(securityRequirement)
             .components(components)
     }
+
+    @Bean
+    fun userApi() : GroupedOpenApi {
+        return GroupedOpenApi.builder()
+            .group("User API")
+            .pathsToMatch("/api/*/user/**")
+            .build()
+    }
+
+
 
     companion object {
         private const val BEARER_TOKEN_PREFIX = "bearer"

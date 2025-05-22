@@ -34,11 +34,6 @@ class SecurityConfig (
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 리소스 무시
-                .requestMatchers(HttpMethod.GET, "/api/v1/baskets")
-                .requestMatchers(HttpMethod.GET, "/api/v1/baskets/alilm")
-                .requestMatchers(HttpMethod.GET, "/api/*/products/**")
-                .requestMatchers(HttpMethod.GET, "/api/v1/notifications/**")
-                .requestMatchers(HttpMethod.GET, "/api/v1/alilms/**")
                 .requestMatchers("/health-check")
                 .requestMatchers("/swagger-ui/**")
                 .requestMatchers("/swagger-resources/**")
@@ -58,6 +53,8 @@ class SecurityConfig (
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { authorizeRequest ->
                 authorizeRequest
+                    .requestMatchers(*PublicApiPaths.all.toTypedArray()).permitAll()
+//                    .requestMatchers(HttpMethod.GET, *PublicApiPaths.getOnly.toTypedArray()).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(
@@ -78,4 +75,10 @@ class SecurityConfig (
         return http.build()
     }
 
+    object PublicApiPaths {
+        val all = listOf(
+            "/api/*/products/**",
+        )
+
+    }
 }
