@@ -4,5 +4,5 @@ class NotFoundRoleException(
 ) : RuntimeException() {
 
     override val message: String
-        get() { return Error.NOT_FOUND_ROLE.message }
+        get() { return ErrorCode.NOT_FOUND_ROLE.message }
 }

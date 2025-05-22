@@ -1,7 +1,5 @@
 package org.team_alilm.response
 
-import java.util.logging.ErrorManager
-
 data class ApiResponse<T>(
     val code: String,
     val message: String,
