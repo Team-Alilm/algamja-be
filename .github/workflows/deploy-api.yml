@@ -40,7 +40,7 @@ jobs:
           overwrite: true
 
       - name: Run JAR on EC2
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.API_EC2_HOST }}
           username: ${{ secrets.API_EC2_USER }}
