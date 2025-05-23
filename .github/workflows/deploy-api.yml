@@ -38,7 +38,7 @@ jobs:
           host: ${{ secrets.API_EC2_HOST }}
           username: ${{ secrets.API_EC2_USER }}
           key: ${{ secrets.API_EC2_KEY }}
-          source: "build/libs/api-0.0.1-SNAPSHOT.jar"
+          source: "build/libs/alilm-0.0.1-SNAPSHOT.jar"
           target: "~"
 
       - name: Run remote deploy script on EC2
