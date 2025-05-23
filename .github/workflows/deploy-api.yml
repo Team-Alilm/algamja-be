@@ -19,6 +19,11 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build
 
+      - name: Echo environment variables
+        run: |
+          echo "API_EC2_HOST=${{ secrets.API_EC2_HOST }}"
+          ll
+
       - name: Copy JAR to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
