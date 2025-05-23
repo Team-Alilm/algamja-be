@@ -38,6 +38,7 @@ jobs:
           source: "build/libs/alilm-0.0.1-SNAPSHOT.jar"
           target: "/home/ec2-user"  # 홈 디렉토리에 복사
           overwrite: true
+          strip_components: 2
 
       - name: Run JAR on EC2
         uses: appleboy/ssh-action@master
