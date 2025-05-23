@@ -40,6 +40,9 @@ jobs:
           key: ${{ secrets.API_EC2_KEY }}
           source: "build/libs/alilm-0.0.1-SNAPSHOT.jar"
           target: "~"
+          strip_components: 0  # ❌ 생략 가능
+          rm: true              # 🟡 성공하면 tar 지움
+          overwrite: true       # 🟡 동일 파일 있으면 덮어쓰기
 
       - name: Run remote deploy script on EC2
         uses: appleboy/ssh-action@v0.1.10
