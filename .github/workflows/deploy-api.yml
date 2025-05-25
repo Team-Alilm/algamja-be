@@ -27,10 +27,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Build JAR
-        run: ./gradlew clean build
+        run: ./gradlew :api:clean :api:build
 
       - name: List JAR
-        run: ls -al build/libs
+        run: ls -al api/build/libs
 
       - name: Copy JAR to EC2
         uses: appleboy/scp-action@master
@@ -38,8 +38,8 @@ jobs:
           host: ${{ secrets.API_EC2_HOST }}
           username: ${{ secrets.API_EC2_USER }}
           key: ${{ secrets.API_EC2_KEY }}
-          source: "build/libs/api-0.0.1-SNAPSHOT.jar"
-          target: "/home/ec2-user"  # 홈 디렉토리에 복사
+          source: "api/build/libs/api-0.0.1-SNAPSHOT.jar"  # ✅ 수정된 경로
+          target: "/home/ec2-user"
           overwrite: true
           strip_components: 2
 
@@ -54,4 +54,4 @@ jobs:
             if [ -n "$PID" ]; then
               kill -9 $PID
             fi
-            nohup java -jar alilm-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > /dev/null 2>&1 &
+            nohup java -jar api-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > /dev/null 2>&1 &
