@@ -41,7 +41,7 @@ jobs:
           source: "api/build/libs/api-0.0.1-SNAPSHOT.jar"  # ✅ 수정된 경로
           target: "/home/ec2-user"
           overwrite: true
-          strip_components: 2
+          strip_components: 3
 
       - name: Run JAR on EC2
         uses: appleboy/ssh-action@master
