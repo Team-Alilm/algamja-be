@@ -51,4 +51,4 @@ jobs:
             if [ -n "$PID" ]; then
               kill -9 $PID
             fi
-            nohup java -jar alilm-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > ~/alilm.log 2>&1 &
+            nohup java -jar alilm-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > /dev/null 2>&1 &
