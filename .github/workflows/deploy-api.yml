@@ -31,6 +31,9 @@ jobs:
           mkdir -p core/src/main/resources/firebase
           echo "${{ secrets.FIREBASE_SECRET_KEY }}" > core/src/main/resources/firebase/serviceAccountKey.json
 
+      - name: List JAR
+        run: ls -al
+
       - name: Build JAR
         run: ./gradlew :api:clean :api:build
 
