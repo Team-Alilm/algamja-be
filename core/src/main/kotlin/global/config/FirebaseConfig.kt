@@ -11,18 +11,24 @@ import org.springframework.core.io.ClassPathResource
 @Configuration
 class FirebaseConfig {
 
-    @Bean
-    fun firebaseApp(): FirebaseApp {
-        val firebaseSecretKey = ClassPathResource("/firebase/FirebaseSecretKey.json")
-        val firebaseOptions = FirebaseOptions.builder()
-            .setCredentials(GoogleCredentials.fromStream(firebaseSecretKey.inputStream))
-            .build()
-
-        return FirebaseApp.initializeApp(firebaseOptions)
+    companion object {
+        private const val FIREBASE_KEY_PATH = "firebase/FirebaseSecretKey.json"
     }
 
     @Bean
-    fun firebaseMessaging(firebaseApp: FirebaseApp?): FirebaseMessaging {
+    fun firebaseApp(): FirebaseApp {
+        if (FirebaseApp.getApps().isEmpty()) {
+            val resource = ClassPathResource(FIREBASE_KEY_PATH)
+            val options = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(resource.inputStream))
+                .build()
+            return FirebaseApp.initializeApp(options)
+        }
+        return FirebaseApp.getInstance()
+    }
+
+    @Bean
+    fun firebaseMessaging(firebaseApp: FirebaseApp): FirebaseMessaging {
         return FirebaseMessaging.getInstance(firebaseApp)
     }
 }
