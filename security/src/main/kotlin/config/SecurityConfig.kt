@@ -49,6 +49,7 @@ class SecurityConfig (
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .cors {  }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
             .csrf { it.disable() }
@@ -81,6 +82,21 @@ class SecurityConfig (
 
         val all = listOf(
             "/api/*/products/**",
+            "/api/v2/alilms/count",
         )
+    }
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val config = CorsConfiguration()
+        config.allowedOrigins = listOf("*")
+        config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+        config.allowedHeaders = listOf("*")
+        config.allowCredentials = false
+        config.maxAge = 3600
+
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", config)
+        return source
     }
 }
