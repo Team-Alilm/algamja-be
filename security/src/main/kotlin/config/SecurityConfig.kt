@@ -49,7 +49,6 @@ class SecurityConfig (
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .cors {  }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
             .csrf { it.disable() }
@@ -58,7 +57,6 @@ class SecurityConfig (
             .authorizeHttpRequests { authorizeRequest ->
                 authorizeRequest
                     .requestMatchers(*PublicApiPaths.all.toTypedArray()).permitAll()
-//                    .requestMatchers(HttpMethod.GET, *PublicApiPaths.getOnly.toTypedArray()).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(
@@ -84,19 +82,5 @@ class SecurityConfig (
             "/api/*/products/**",
         )
 
-    }
-
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val config = CorsConfiguration()
-        config.allowedOrigins = listOf("https://algamja.com", "http://localhost:3000") // 필요한 도메인만 명시
-        config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
-        config.allowedHeaders = listOf("*")
-        config.allowCredentials = true
-        config.maxAge = 3600
-
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", config)
-        return source
     }
 }
