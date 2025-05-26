@@ -26,6 +26,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Create Firebase key file
+        run: |
+          mkdir -p core/src/main/resources/firebase
+          echo "${{ secrets.FIREBASE_SECRET_KEY }}" > core/src/main/resources/firebase/serviceAccountKey.json
+
       - name: Build JAR
         run: ./gradlew :api:clean :api:build
 
