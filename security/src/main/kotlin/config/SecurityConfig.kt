@@ -82,7 +82,8 @@ class SecurityConfig (
 
         val all = listOf(
             "/api/*/products/**",
-            "/api/v2/alilms/count",
+            "/api/*/alilms/count",
+            "/api/*/alilms/restock/ranking",
         )
     }
 
