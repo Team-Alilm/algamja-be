@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.team_alilm.handler.CustomFailureHandler
 import org.team_alilm.service.CustomUserDetailsService
 import org.team_alilm.handler.CustomSuccessHandler
@@ -46,6 +49,7 @@ class SecurityConfig (
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .cors {  }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
             .csrf { it.disable() }
@@ -80,5 +84,19 @@ class SecurityConfig (
             "/api/*/products/**",
         )
 
+    }
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val config = CorsConfiguration()
+        config.allowedOrigins = listOf("https://algamja.com", "http://localhost:3000") // 필요한 도메인만 명시
+        config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        config.allowedHeaders = listOf("*")
+        config.allowCredentials = true
+        config.maxAge = 3600
+
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", config)
+        return source
     }
 }
