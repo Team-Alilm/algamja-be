@@ -56,7 +56,7 @@ class SecurityConfig (
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { authorizeRequest ->
                 authorizeRequest
-                    .requestMatchers(*PublicApiPaths.all.toTypedArray()).permitAll()
+                    .requestMatchers(HttpMethod.GET,*PublicApiPaths.all.toTypedArray()).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(
