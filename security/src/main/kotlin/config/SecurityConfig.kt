@@ -78,9 +78,9 @@ class SecurityConfig (
     }
 
     object PublicApiPaths {
+
         val all = listOf(
             "/api/*/products/**",
         )
-
     }
 }
