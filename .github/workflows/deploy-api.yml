@@ -26,10 +26,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Setup Firebase service key
+      - name: Create Firebase key file
         run: |
           mkdir -p core/src/main/resources/firebase
-          echo ${{ secrets.FIREBASE_SECRET_KEY }} | base64 -d > core/src/main/resources/firebase/FirebaseSecretKey.json
+          echo "${{ secrets.FIREBASE_SECRET_KEY }}" | base64 -d > core/src/main/resources/firebase/FirebaseSecretKey.json
 
       - name: List JAR
         run: ls -al core/src/main/resources/firebase
