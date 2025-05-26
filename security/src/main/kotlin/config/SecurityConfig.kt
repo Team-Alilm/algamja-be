@@ -55,9 +55,9 @@ class SecurityConfig (
             .csrf { it.disable() }
             .headers { it.frameOptions { frameOptionsCustomizer -> frameOptionsCustomizer.sameOrigin() } }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeHttpRequests { authorizeRequest ->
-                authorizeRequest
-                    .requestMatchers(HttpMethod.GET,*PublicApiPaths.all.toTypedArray()).permitAll()
+            .authorizeHttpRequests { authorize ->
+                authorize
+                    .requestMatchers(HttpMethod.GET, *ApiPath.all().toTypedArray()).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(
@@ -76,15 +76,6 @@ class SecurityConfig (
             }
 
         return http.build()
-    }
-
-    object PublicApiPaths {
-
-        val all = listOf(
-            "/api/*/products/**",
-            "/api/*/alilms/count",
-            "/api/*/alilms/restock/ranking",
-        )
     }
 
     @Bean
