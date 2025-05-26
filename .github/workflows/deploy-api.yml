@@ -32,7 +32,7 @@ jobs:
           echo "${{ secrets.FIREBASE_SECRET_KEY }}" > core/src/main/resources/firebase/serviceAccountKey.json
 
       - name: List JAR
-        run: ls -al
+        run: ls -al core/src/main/resources/firebase
 
       - name: Build JAR
         run: ./gradlew :api:clean :api:build
