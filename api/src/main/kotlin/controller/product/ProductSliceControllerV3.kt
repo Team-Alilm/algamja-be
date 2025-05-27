@@ -38,8 +38,8 @@ class ProductSliceControllerV3(
 
         val command = ProductSliceUseCase.ProductSliceCommand(
             size = param.size,
-            category = if (param.category == ProductCategory.ALL) null else param.category.description,
-            sort = param.sort.name,
+            category = if (param.category == ProductCategory.ALL) null else param.category,
+            sort = param.sort,
             lastProductId = param.lastProductId,
             waitingCount = param.waitingCount,
             price = param.price
@@ -64,7 +64,7 @@ class ProductSliceControllerV3(
         val category: ProductCategory = ProductCategory.ALL,
 
         @Schema(description = "정렬 조건", example = "WAITING_COUNT", requiredMode = Schema.RequiredMode.REQUIRED)
-        val sort: ProductSortType = ProductSortType.WAITING_COUNT,
+        val sort: ProductSortType = ProductSortType.WAITING_COUNT_DESC,
 
         @field:Min(1)
         @Schema(description = "마지막 상품 ID", example = "1")

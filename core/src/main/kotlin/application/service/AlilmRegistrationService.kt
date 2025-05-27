@@ -71,7 +71,7 @@ class AlilmRegistrationService(
 
     private fun createAndSaveProductWithImages(command: AlilmRegistrationCommand) : Product =
         loadProductPort.loadProduct(
-            number = command.number,
+            storeNumber = command.number,
             store = command.store,
             firstOption = command.firstOption,
             secondOption = command.secondOption,
@@ -80,7 +80,7 @@ class AlilmRegistrationService(
             val product = addProductPort.addProduct(
                 Product(
                     id = null,
-                    number = command.number,
+                    storeNumber = command.number,
                     name = command.name,
                     brand = command.brand,
                     store = command.store,
@@ -99,7 +99,7 @@ class AlilmRegistrationService(
                     command.imageUrlList.map { ProductImage(
                         id = null,
                         imageUrl = it,
-                        productNumber = product.number,
+                        productNumber = product.storeNumber,
                         productStore = product.store
                     ) }
                 )

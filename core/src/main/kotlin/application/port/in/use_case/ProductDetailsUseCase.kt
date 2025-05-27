@@ -31,7 +31,7 @@ interface ProductDetailsUseCase {
             fun from (product: Product, waitingCount: Long, imageUrlList: List<String>): ProductDetailsResult {
                 return ProductDetailsResult(
                     id = product.id!!,
-                    number = product.number,
+                    number = product.storeNumber,
                     name = product.name,
                     brand = product.brand,
                     thumbnailUrl = product.thumbnailUrl,

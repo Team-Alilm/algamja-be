@@ -4,7 +4,7 @@ import util.StringContextHolder
 
 class Product (
     val id: Long? = null,
-    val number: Long = 0,
+    val storeNumber: Long = 0,
     val name: String = "",
     val brand: String = "",
     val thumbnailUrl: String = "",
@@ -36,7 +36,7 @@ class Product (
             "text":"${this.name} 상품이 재 입고 되었습니다.
         
                 상품명: ${this.name}
-                상품번호: ${this.number}
+                상품번호: ${this.storeNumber}
                 상품 옵션1: ${this.firstOption}
                 상품 옵션2: ${this.secondOption}
                 상품 옵션3: ${this.thirdOption}
@@ -48,9 +48,9 @@ class Product (
 
     fun getStoreUrl(): String {
         return when (store) {
-            Store.MUSINSA -> StringContextHolder.MUSINSA_PRODUCT_URL.get().format(number)
-            Store.CM29 -> StringContextHolder.CM29_PRODUCT_URL.get().format(number)
-            Store.ZIGZAG -> StringContextHolder.ZIGZAG_PRODUCT_URL.get().format(number)
+            Store.MUSINSA -> StringContextHolder.MUSINSA_PRODUCT_URL.get().format(storeNumber)
+            Store.CM29 -> StringContextHolder.CM29_PRODUCT_URL.get().format(storeNumber)
+            Store.ZIGZAG -> StringContextHolder.ZIGZAG_PRODUCT_URL.get().format(storeNumber)
             else -> ""
         }
     }

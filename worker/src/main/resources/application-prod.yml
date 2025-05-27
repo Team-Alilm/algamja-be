@@ -1,8 +1,11 @@
 spring:
+  config:
+    import: "optional:classpath:application-core-prod.yml"
+
   quartz:
     job-store-type: jdbc
-    soldout-job-interval-minutes: 1
-    member-count-job-interval-minutes: 5
+    soldout-job-interval-minutes: 10
+    member-count-job-interval-minutes: 1440
 
   cloud:
     aws:

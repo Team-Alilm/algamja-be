@@ -22,7 +22,7 @@ class MyBasketsService (
 
             MyBasketsResult(
                 id = it.basket.id!!.value!!,
-                number = it.product.number,
+                number = it.product.storeNumber,
                 name = it.product.name,
                 brand = it.product.brand,
                 imageUrl = it.product.thumbnailUrl,

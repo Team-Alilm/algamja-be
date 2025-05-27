@@ -35,7 +35,7 @@ interface MyBasketsUseCase {
             fun from(basket: Basket, product: Product, waitingCount: Long) : MyBasketsResult {
                 return MyBasketsResult(
                     id = basket.id?.value!!,
-                    number = product.number,
+                    number = product.storeNumber,
                     name = product.name,
                     brand = product.brand,
                     imageUrl = product.thumbnailUrl,

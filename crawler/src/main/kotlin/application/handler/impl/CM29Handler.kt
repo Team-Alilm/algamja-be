@@ -20,36 +20,32 @@ class CM29Handler(
     }
 
     private fun isSoldOut(product: Product): Boolean {
-        val productDetailJsonNode = getProductDetailJsonNode(product.number) ?: return true
-        val optionItems = productDetailJsonNode.get("optionItems")
+        val productDetailJsonNode = getProductDetailJsonNode(product.storeNumber) ?: return true
+        val optionItems = productDetailJsonNode["optionItems"]
 
-        if (optionItems == null || optionItems.size() == 0) {
-            return productDetailJsonNode.get("itemStockStatus").asText() == "5"
+        if (optionItems == null || optionItems["list"] == null || optionItems["list"].size() == 0) {
+            return productDetailJsonNode["itemStockStatus"]?.asText() == "5"
         }
 
-        val firstOption = optionItems.get("list")?.firstOrNull {
-            val title = it.get("title").asText() ?: ""
+        val firstOption = optionItems["list"].firstOrNull {
+            val title = it["title"]?.asText().orEmpty()
             title == (product.firstOption ?: "")
-        }
+        } ?: return true
 
-        if (firstOption == null) {
+        val firstOptionList = firstOption["list"]
+
+        if (firstOption["optionStockStatus"]?.asText() == "5" && (firstOptionList == null || firstOptionList.size() == 0)) {
             return true
         }
 
-        if (firstOption.get("optionStockStatus")?.asText() == "5" && firstOption.get("list")?.isEmpty == true) {
-            return true
-        } else if (firstOption.get("list")?.isEmpty == false) {
-            val secondOption = firstOption.get("list")?.firstOrNull {
-                val title = it.get("title").asText() ?: ""
+        if (firstOptionList != null && firstOptionList.size() > 0) {
+            val secondOption = firstOptionList.firstOrNull {
+                val title = it["title"]?.asText().orEmpty()
                 log.info("Second option title: $title")
                 title == (product.secondOption ?: "")
-            }
+            } ?: return true
 
-            if (secondOption == null) {
-                return true
-            }
-
-            return secondOption.get("optionStockStatus")?.asText() == "5"
+            return secondOption["optionStockStatus"]?.asText() == "5"
         }
 
         return false

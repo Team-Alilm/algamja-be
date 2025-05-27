@@ -1,6 +1,8 @@
 package org.team_alilm.application.port.`in`.use_case
 
 import domain.product.Product
+import org.team_alilm.domain.product.ProductCategory
+import org.team_alilm.domain.product.ProductSortType
 
 interface ProductSliceUseCase {
 
@@ -21,8 +23,8 @@ interface ProductSliceUseCase {
 
     data class ProductSliceCommand(
         val size: Int,
-        val category: String?,
-        val sort: String,
+        val category: ProductCategory?,
+        val sort: ProductSortType,
         val lastProductId: Long?,
         val waitingCount: Long?,
         val price: Int?
@@ -48,7 +50,7 @@ interface ProductSliceUseCase {
             fun from (product: Product, waitingCount: Long): ProductSliceResult {
                 return ProductSliceResult(
                     id = product.id!!,
-                    number = product.number,
+                    number = product.storeNumber,
                     name = product.name,
                     brand = product.brand,
                     thumbnailUrl = product.thumbnailUrl,

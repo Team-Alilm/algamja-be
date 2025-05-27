@@ -10,7 +10,7 @@ class ProductMapper {
     fun mapToJpaEntity(product: Product): ProductJpaEntity {
         return ProductJpaEntity(
             id = product.id,
-            number = product.number,
+            storeNumber = product.storeNumber,
             name = product.name,
             brand = product.brand,
             thumbnailUrl = product.thumbnailUrl,
@@ -36,7 +36,7 @@ class ProductMapper {
 
     private fun product(productJpaEntity: ProductJpaEntity) = Product(
         id = productJpaEntity.id!!,
-        number = productJpaEntity.number,
+        storeNumber = productJpaEntity.storeNumber,
         name = productJpaEntity.name,
         brand = productJpaEntity.brand,
         thumbnailUrl = productJpaEntity.thumbnailUrl,

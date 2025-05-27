@@ -6,7 +6,7 @@ import domain.product.Store
 interface LoadProductPort {
 
     fun loadProduct(
-        number:Long,
+        storeNumber: Long,
         store: Store,
         firstOption: String?,
         secondOption: String?,

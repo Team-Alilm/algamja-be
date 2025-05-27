@@ -2,6 +2,7 @@ package org.team_alilm.application.handler.impl
 
 import com.fasterxml.jackson.databind.JsonNode
 import domain.product.Product
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.team_alilm.application.handler.PlatformHandler
@@ -12,45 +13,53 @@ class ZigzagHandler(
     private val restClient: RestClient
 ) : PlatformHandler {
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     override fun process(product: Product): Boolean {
         return !isSoldOut(product)
     }
 
     private fun isSoldOut(product: Product): Boolean {
         val responseUrl = StringContextHolder.ZIGZAG_PRODUCT_SOLD_API_URL.get()
-        // GraphQL 쿼리
         val query = loadGraphQLQuery()
-        val variables = mapOf("catalog_product_id" to product.number)
+
         val requestBody = mapOf(
             "query" to query,
-            "variables" to variables
+            "variables" to mapOf("catalog_product_id" to product.storeNumber)
         )
-        val response = restClient.post()
-            .uri(responseUrl)
-            .header("Content-Type", "application/json")
-            .body(requestBody)
-            .retrieve()
-            .body(JsonNode::class.java)
 
-        val itemList = response?.get("data")?.get("pdp_option_info")?.get("catalog_product")?.get("item_list") ?: return true
+        return try {
+            val response = restClient.post()
+                .uri(responseUrl)
+                .header("Content-Type", "application/json")
+                .body(requestBody)
+                .retrieve()
+                .body(JsonNode::class.java)
 
-        itemList.filter {
-            it.get("name")?.asText() == product.getZigzagOptionName()
-        }.forEach {
-            if (it.get("sales_status")?.asText() != "SOLD_OUT") {
-                return false
+            val itemList = response?.path("data")
+                ?.path("pdp_option_info")
+                ?.path("catalog_product")
+                ?.path("item_list")
+
+            if (itemList == null || !itemList.isArray) return true
+
+            itemList.none {
+                val name = it.path("name").asText(null)
+                val status = it.path("sales_status").asText(null)
+                name == product.getZigzagOptionName() && status != "SOLD_OUT"
             }
+        } catch (e: Exception) {
+            log.error("Zigzag API 호출 실패: ${product.storeNumber}", e)
+            true
         }
-
-        return true
     }
 
     private fun loadGraphQLQuery(): String {
-        val classLoader = Thread.currentThread().contextClassLoader
-        val inputStream = classLoader.getResourceAsStream("graphql/zigzag.graphql")
+        return Thread.currentThread()
+            .contextClassLoader
+            .getResourceAsStream("graphql/zigzag.graphql")
+            ?.bufferedReader()
+            ?.use { it.readText() }
             ?: throw IllegalArgumentException("File not found: graphql/zigzag.graphql")
-
-        return inputStream.bufferedReader().use { it.readText() }
     }
-
 }

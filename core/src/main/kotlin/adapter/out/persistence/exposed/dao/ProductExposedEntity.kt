@@ -16,7 +16,7 @@ class ProductExposedEntity(id: EntityID<Long>) : LongEntity(id) {
 
     var brand by ProductExposedTable.brand
     var name by ProductExposedTable.name
-    var number by ProductExposedTable.number
+    var number by ProductExposedTable.storeNumber
     var price by ProductExposedTable.price
 
     var firstCategory by ProductExposedTable.firstCategory
@@ -32,7 +32,7 @@ class ProductExposedEntity(id: EntityID<Long>) : LongEntity(id) {
     fun toDomain(): Product {
         return Product(
             id = this.id.value,
-            number = number,
+            storeNumber = number,
             name = name,
             brand = brand,
             thumbnailUrl = thumbnailUrl,

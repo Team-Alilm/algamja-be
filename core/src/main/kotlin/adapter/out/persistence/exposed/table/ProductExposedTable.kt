@@ -11,7 +11,7 @@ object ProductExposedTable : LongIdTable("product") {
 
     val brand: Column<String> = varchar("brand", 255)
     val name: Column<String> = varchar("name", 255)
-    val number: Column<Long> = long("number")
+    val storeNumber: Column<Long> = long("store_number")
     val price: Column<Int> = integer("price")
 
     val firstCategory: Column<String> = varchar("first_category", 255)
@@ -28,7 +28,7 @@ object ProductExposedTable : LongIdTable("product") {
     init {
         uniqueIndex(
             "tag_key_number_size_color",
-            store, number, firstOption, secondOption, thirdOption
+            store, storeNumber, firstOption, secondOption, thirdOption
         )
     }
 

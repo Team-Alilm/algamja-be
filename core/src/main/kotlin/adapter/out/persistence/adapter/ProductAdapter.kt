@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component
 import org.team_alilm.adapter.out.persistence.adapter.data.ProductAndWaitingCount
 import org.team_alilm.adapter.out.persistence.mapper.ProductMapper
 import org.team_alilm.adapter.out.persistence.repository.ProductRepository
-import org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection
 import org.team_alilm.adapter.out.persistence.repository.spring_data.SpringDataProductRepository
 import org.team_alilm.application.port.out.AddProductPort
 import org.team_alilm.application.port.out.LoadCrawlingProductsPort
@@ -43,14 +42,14 @@ class ProductAdapter(
     }
 
     override fun loadProduct(
-        number: Long,
+        storeNumber: Long,
         store: Store,
         firstOption: String?,
         secondOption: String?,
         thirdOption: String?,
     ): Product? {
-        val productJpaEntity = productRepository.findByNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
-            number = number,
+        val productJpaEntity = productRepository.findByStoreNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
+            storeNumber = storeNumber,
             store = store,
             firstOption = firstOption,
             secondOption = secondOption,

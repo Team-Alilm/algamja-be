@@ -29,7 +29,7 @@ class MusinsaHandler(
     }
 
     private fun isSoldOut(product: Product): Boolean {
-        val productHtmlUrl = StringContextHolder.MUSINSA_PRODUCT_HTML_URL.get().format(product.number)
+        val productHtmlUrl = StringContextHolder.MUSINSA_PRODUCT_HTML_URL.get().format(product.storeNumber)
         val crawlingResponse = crawlProductHtml(productHtmlUrl)
         val jsonData = extractJsonFromHtml(crawlingResponse)
 
@@ -65,7 +65,7 @@ class MusinsaHandler(
     }
 
     private fun checkSoldOutViaApi(product: Product): Boolean {
-        val apiUrl = StringContextHolder.MUSINSA_OPTION_API_URL.get().format(product.number)
+        val apiUrl = StringContextHolder.MUSINSA_OPTION_API_URL.get().format(product.storeNumber)
         return try {
             val response = restClient.get()
                 .uri(apiUrl)

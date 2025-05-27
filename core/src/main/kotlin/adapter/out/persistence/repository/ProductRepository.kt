@@ -11,8 +11,8 @@ import domain.product.Store
 
 interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 
-    fun findByNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
-        number: Long,
+    fun findByStoreNumberAndStoreAndFirstOptionAndSecondOptionAndThirdOption(
+        storeNumber: Long,
         store: Store,
         firstOption: String?,
         secondOption: String?,
@@ -35,7 +35,8 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
 """)
     fun findCrawlingProducts(): List<ProductJpaEntity>
 
-    @Query("""
+    @Query(
+        """
     SELECT 
         new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountAndImageUrlListProjection(
             p,
@@ -47,11 +48,12 @@ interface ProductRepository : JpaRepository<ProductJpaEntity, Long> {
     LEFT JOIN 
         BasketJpaEntity b ON b.productId = p.id AND b.isDelete = false
     LEFT JOIN 
-        ProductImageJpaEntity pi ON pi.productNumber = p.number AND pi.productStore = p.store
+        ProductImageJpaEntity pi ON pi.productNumber = p.storeNumber AND pi.productStore = p.store
     WHERE 
         p.id = :productId AND p.isDelete = false
     order by pi.createdDate
-""")
+"""
+    )
     fun findByDetails(productId: Long): ProductAndWaitingCountAndImageUrlListProjection
 
     @Query("""

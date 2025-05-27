@@ -30,7 +30,8 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
 """)
     fun myBasketList(memberId: Long): List<BasketAndProductProjection>
 
-    @Query("""
+    @Query(
+        """
         SELECT 
             b as basketJpaEntity
         FROM
@@ -42,8 +43,9 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
             b.isDelete = false
             AND p.isDelete = false
             AND b.isAlilm = false
-            AND p.number = :productNumber
-    """)
+            AND p.storeNumber = :productNumber
+    """
+    )
     fun findByProductNumber(productNumber: Number): List<BasketJpaEntity>
 
     @Query(
@@ -73,21 +75,6 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
     fun findBasketAndMemberByProductNumberAndMemberId(
         productId: Long
     ): List<BasketAndMemberProjection>
-
-    @Query("""
-    SELECT new org.team_alilm.adapter.out.persistence.repository.product.ProductAndWaitingCountProjection(
-        p,
-        COUNT(b.id)
-    )
-    FROM BasketJpaEntity b
-    JOIN ProductJpaEntity p ON b.productId = p.id
-    WHERE b.isDelete = false
-      AND p.isDelete = false
-      AND b.isAlilm = false
-    GROUP BY b.productId
-    ORDER BY COUNT(b.id) DESC
-""")
-    fun findAllByWaitingCount(pageRequest: PageRequest): Slice<ProductAndWaitingCountProjection>
 
     @Query("""
         SELECT 
