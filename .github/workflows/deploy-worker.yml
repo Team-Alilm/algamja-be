@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.WORKER_EC2_USER }}
           key: ${{ secrets.WORKER_EC2_KEY }}
           script: |
-            PID=$(lsof -ti:8080)
+            PID=$(lsof -ti:8081)
             if [ -n "$PID" ]; then
               kill -9 $PID
             fi

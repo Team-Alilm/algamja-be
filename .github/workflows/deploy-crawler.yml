@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.CRAWLER_EC2_USER }}
           key: ${{ secrets.CRAWLER_EC2_KEY }}
           script: |
-            PID=$(lsof -ti:8080)
+            PID=$(lsof -ti:8082)
             if [ -n "$PID" ]; then
               kill -9 $PID
             fi
