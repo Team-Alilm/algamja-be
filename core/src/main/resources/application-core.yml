@@ -51,3 +51,6 @@ springdoc:
   model-and-view-allowed: true
   paths-to-match:
     - /api/**
+
+logging:
+  config: classpath:logback-spring.xml
