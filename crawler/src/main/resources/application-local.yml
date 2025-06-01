@@ -1,11 +1,5 @@
 jwt-token: ENC(rXuDwvLwBpLMyzIe9KWLOHH1OKn/nyCUHmah2IyHMd0uXfNwAdIWPwO65s+NPLJg58Nv7ekYK1NqJoIryTVzqQP3M97G/7GxlSGDlntAJGkbDGAR9jEDwOeaVoEOpmFivbVnrvB5QnSMSoXsUlEk4zVH1KCjwaCzKEZsP/SrwNYm61TPZswTFuwYwqcuvnycI7QJfb/udxufCwfJixTy8AOj+/VsSH2AugQKxupR2JrDV3/6qxDYfw==)
 
-jasypt:
-  encryptor:
-    bean: jasyptStringEncryptor
-    password: ${JASYPT_PASSWORD}
-    algorithm: ${JASYPT_ALGORITHM}
-
 webhook:
   slack:
     url: ENC(ZaEdZrZmyxJlGPIk0zgsxBR7D2K8h/F5nqyHyEDh2XIsn0mpi4+UE/jL7zvDAyiewcDDIsd1xc+HspuW3FWd84mebkC4k0H0vXciOaARckAz7xgu/c6+1kRy0hDbLLXP)

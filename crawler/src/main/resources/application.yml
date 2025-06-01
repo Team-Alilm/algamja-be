@@ -6,6 +6,12 @@ spring:
   profiles:
     active: local
 
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_PASSWORD}
+    algorithm: ${JASYPT_ALGORITHM}
+
 server:
   port: 8082
 
