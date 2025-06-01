@@ -64,4 +64,8 @@ jobs:
               kill -9 $PID
               sleep 3  # 💡 딜레이 추가
             fi
+            
+            export JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}
+            export JASYPT_ALGORITHM=${{ secrets.JASYPT_ALGORITHM }}
+            
             nohup java -jar crawler-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > /dev/null 2>&1 &

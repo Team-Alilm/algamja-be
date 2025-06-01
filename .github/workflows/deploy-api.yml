@@ -58,10 +58,14 @@ jobs:
           username: ${{ secrets.API_EC2_USER }}
           key: ${{ secrets.API_EC2_KEY }}
           script: |
-            PID=$(lsof -ti:8080)
+            PID=$(lsof -ti:8082)
             if [ -n "$PID" ]; then
-              echo "Killing existing process: $PID"
               kill -9 $PID
-              sleep 3  # 💡 딜레이 추가
+              sleep 3
             fi
-            nohup java -jar api-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > /dev/null 2>&1 &
+
+            export JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}
+            export JASYPT_ALGORITHM=${{ secrets.JASYPT_ALGORITHM }}
+
+            nohup java -jar api-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > app.log 2>&1 &
+            
