@@ -31,5 +31,4 @@ class JasyptConfig(
 
         return encryptor
     }
-    
 }
