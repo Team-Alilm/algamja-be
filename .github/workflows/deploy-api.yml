@@ -67,5 +67,5 @@ jobs:
             export JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}
             export JASYPT_ALGORITHM=${{ secrets.JASYPT_ALGORITHM }}
 
-            nohup java -jar api-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > app.log 2>&1 &
+            nohup java -jar api-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > /dev/null 2>&1 &
             
