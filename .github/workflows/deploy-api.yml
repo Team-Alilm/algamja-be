@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.API_EC2_USER }}
           key: ${{ secrets.API_EC2_KEY }}
           script: |
-            PID=$(lsof -ti:8082)
+            PID=$(lsof -ti:8080)
             if [ -n "$PID" ]; then
               kill -9 $PID
               sleep 3
