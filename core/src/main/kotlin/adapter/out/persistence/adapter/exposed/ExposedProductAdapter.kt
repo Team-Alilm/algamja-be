@@ -87,7 +87,7 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
         }
 
         val havingFilter = if (sort == ProductSortType.WAITING_COUNT_DESC && waitingCount != null && productId != null) {
-            (countExpr less waitingCount) or ((countExpr eq waitingCount) and (ProductExposedTable.id greater productId))
+            (countExpr less waitingCount) or ((countExpr eq waitingCount) and (ProductExposedTable.id less productId))
         } else null
 
         val filter = baseConditions.reduce { acc, op -> acc and op }

@@ -28,19 +28,19 @@ class ProductSliceService (
         return productSlice
     }
 
-    override fun productSliceV2(command: ProductSliceUseCase.ProductSliceCommandV2): ProductSliceUseCase.CustomSlice {
-        loadProductSlicePort.loadProductSlice(
-            pageRequest = PageRequest.of(command.page, command.size),
-            category = command.category,
-        ).let {
-            return ProductSliceUseCase.CustomSlice(
-                contents = it.map { ProductSliceResult.from(
-                    product = it.product,
-                    waitingCount = it.waitingCount,
-                )}.toList(),
-                hasNext = it.hasNext(),
-                size = it.size
-            )
-        }
-    }
+//    override fun productSliceV2(command: ProductSliceUseCase.ProductSliceCommandV2): ProductSliceUseCase.CustomSlice {
+//        loadProductSlicePort.loadProductSlice(
+//            pageRequest = PageRequest.of(command.page, command.size),
+//            category = command.category,
+//        ).let {
+//            return ProductSliceUseCase.CustomSlice(
+//                contents = it.map { ProductSliceResult.from(
+//                    product = it.product,
+//                    waitingCount = it.waitingCount,
+//                )}.toList(),
+//                hasNext = it.hasNext(),
+//                size = it.size
+//            )
+//        }
+//    }
 }

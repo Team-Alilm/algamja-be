@@ -7,7 +7,7 @@ import org.team_alilm.domain.product.ProductSortType
 interface ProductSliceUseCase {
 
     fun productSlice(command: ProductSliceCommand): CustomSlice
-    fun productSliceV2(command: ProductSliceCommandV2): CustomSlice
+//    fun productSliceV2(command: ProductSliceCommandV2): CustomSlice
 
     data class CustomSlice(
         val contents: List<ProductSliceResult>,
