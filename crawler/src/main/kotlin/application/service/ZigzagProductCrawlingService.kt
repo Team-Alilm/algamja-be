@@ -106,10 +106,11 @@ class ZigzagProductCrawlingService(
             val pageProps = props.get("pageProps")
             val product = pageProps.get("product")
             val managedCategoryList = product.get("managed_category_list")
+            val categoryJson = objectMapper.writeValueAsString(managedCategoryList)
 
             Pair(
-                CategoryUtil.getCategories(managedCategoryList.asText()),
-                CategoryUtil.getCategories(managedCategoryList.asText()),
+                CategoryUtil.getCategories(categoryJson),
+                CategoryUtil.getCategories(categoryJson),
             )
         } catch (e: Exception) {
             throw CustomException(ErrorCode.ZIGZAG_PRODUCT_NOT_FOUND)
