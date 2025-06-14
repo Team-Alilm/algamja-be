@@ -76,7 +76,7 @@ class MusinsaHandler(
 
             log.info("Response from Musinsa API optionItems for product[{}] : {}", product.id, optionItems)
 
-            val optionItem = optionItems?.first {
+            val optionItem = optionItems?.firstOrNull {
                 log.info("Option item for product[{}] : {}", product.id, it)
                 it["managedCode"]?.asText() == product.getManagedCode()
             }
