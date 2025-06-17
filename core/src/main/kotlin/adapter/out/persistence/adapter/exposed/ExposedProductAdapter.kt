@@ -83,7 +83,7 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
             ProductSortType.PRICE_ASC -> price?.let { p -> productId?.let { ProductExposedTable.price greater p or (ProductExposedTable.price eq p and (ProductExposedTable.id greater it)) } }
             ProductSortType.PRICE_DESC -> price?.let { p -> productId?.let { ProductExposedTable.price less p or (ProductExposedTable.price eq p and (ProductExposedTable.id greater it)) } }
             ProductSortType.WAITING_COUNT_DESC -> productId?.let { ProductExposedTable.id greater it }
-            ProductSortType.CREATED_DATE_DESC -> productId?.let { ProductExposedTable.id greater it }
+            else -> null
         }
 
         val havingFilter = if (sort == ProductSortType.WAITING_COUNT_DESC && waitingCount != null && productId != null) {
