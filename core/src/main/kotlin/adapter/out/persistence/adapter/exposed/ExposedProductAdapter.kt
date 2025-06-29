@@ -76,14 +76,14 @@ class ExposedProductAdapter : LoadFilteredProductListPort {
             ProductSortType.PRICE_ASC -> ProductExposedTable.price to SortOrder.ASC
             ProductSortType.PRICE_DESC -> ProductExposedTable.price to SortOrder.DESC
             ProductSortType.WAITING_COUNT_DESC -> waitingCountAlias to SortOrder.DESC
-            ProductSortType.CREATED_DATE_DESC -> ProductExposedTable.createdDate to SortOrder.DESC
+            ProductSortType.CREATED_DATE_DESC -> ProductExposedTable.id to SortOrder.DESC
         }
 
         val cursorCondition = when (sort) {
             ProductSortType.PRICE_ASC -> price?.let { p -> productId?.let { ProductExposedTable.price greater p or (ProductExposedTable.price eq p and (ProductExposedTable.id greater it)) } }
             ProductSortType.PRICE_DESC -> price?.let { p -> productId?.let { ProductExposedTable.price less p or (ProductExposedTable.price eq p and (ProductExposedTable.id greater it)) } }
             ProductSortType.WAITING_COUNT_DESC -> productId?.let { ProductExposedTable.id greater it }
-            ProductSortType.CREATED_DATE_DESC -> productId?.let { ProductExposedTable.id greater it }
+            ProductSortType.CREATED_DATE_DESC -> productId?.let { ProductExposedTable.id less it }
         }
 
         val havingFilter = if (sort == ProductSortType.WAITING_COUNT_DESC && waitingCount != null && productId != null) {
