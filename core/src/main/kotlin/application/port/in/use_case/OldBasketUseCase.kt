@@ -11,7 +11,7 @@ interface OldBasketUseCase {
     )
 
     data class OldBasketResult(
-        val oldProductInfo: OldProductInfo,
+        val oldProductInfo: OldProductInfo?,
         val relatedProductList: List<RelateProduct>
     )
 

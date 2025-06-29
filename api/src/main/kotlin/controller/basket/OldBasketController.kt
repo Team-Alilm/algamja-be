@@ -27,19 +27,19 @@ class OldBasketController(
             memberId = customMemberDetails.member.id!!
         )
 
-        val result = oldBasketUseCase.loadOldBasket(command) ?: return ResponseEntity.ok().build()
+        val result = oldBasketUseCase.loadOldBasket(command)
 
         val response = OldBasketResponse(
             oldProduct = OldProduct(
-                productId = result.oldProductInfo.productId,
-                createdDate = result.oldProductInfo.createdDate,
-                thumbnailUrl = result.oldProductInfo.thumbnailUrl,
-                brand = result.oldProductInfo.brand,
-                store = result.oldProductInfo.store,
-                price = result.oldProductInfo.price,
-                category = result.oldProductInfo.category
+                productId = result?.oldProductInfo?.productId,
+                createdDate = result?.oldProductInfo?.createdDate,
+                thumbnailUrl = result?.oldProductInfo?.thumbnailUrl,
+                brand = result?.oldProductInfo?.brand,
+                store = result?.oldProductInfo?.store,
+                price = result?.oldProductInfo?.price,
+                category = result?.oldProductInfo?.category
             ),
-            relatedProductList = result.relatedProductList.map {
+            relatedProductList = result?.relatedProductList?.map {
                 RelateProduct(
                     productId = it.productId,
                     thumbnailUrl = it.thumbnailUrl,
@@ -48,7 +48,7 @@ class OldBasketController(
                     price = it.price,
                     category = it.category
                 )
-            }
+            } ?: emptyList(),
 
         )
 
@@ -62,19 +62,19 @@ class OldBasketController(
 
     data class OldProduct(
         @Schema(description = "상품 ID", defaultValue = "1")
-        val productId: Long,
+        val productId: Long?,
         @Schema(description = "상품 썸네일 URL", defaultValue = "https://image.msscdn.net/thumbnails/images/goods_img/20241029/4568222/4568222_17307957146053_500.jpg")
-        val thumbnailUrl: String,
+        val thumbnailUrl: String?,
         @Schema(description = "상품 브랜드", defaultValue = "무신사 스탠다드")
-        val brand: String,
+        val brand: String?,
         @Schema(description = "상품 이름", defaultValue = "무신사")
-        val store: String,
+        val store: String?,
         @Schema(description = "상품 가격", defaultValue = "10000")
-        val price: Int,
+        val price: Int?,
         @Schema(description = "상품 카테고리", defaultValue = "아우터")
-        val category: String,
+        val category: String?,
         @Schema(description = "장바구니에 담긴 날짜 - 유닉스 타임 밀리초 까지 표현", defaultValue = "1736728891362")
-        val createdDate: Long
+        val createdDate: Long?
     )
 
     data class RelateProduct(
