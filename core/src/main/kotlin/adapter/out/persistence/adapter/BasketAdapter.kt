@@ -54,8 +54,8 @@ class BasketAdapter(
         return basketJpaEntityList.map { basketMapper.mapToDomainEntity(it) }
     }
 
-    override fun loadOldBasket(memberId: Member.MemberId): ProductAndBasket {
-        val productAndBasket = basketRepository.findByMemberId(memberId.value)
+    override fun loadOldBasket(memberId: Member.MemberId): ProductAndBasket? {
+        val productAndBasket = basketRepository.findByMemberId(memberId.value) ?: return null
 
         return ProductAndBasket(
             product = productMapper.mapToDomainEntity(productAndBasket.productJpaEntity),

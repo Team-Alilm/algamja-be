@@ -27,7 +27,7 @@ class OldBasketController(
             memberId = customMemberDetails.member.id!!
         )
 
-        val result = oldBasketUseCase.loadOldBasket(command)
+        val result = oldBasketUseCase.loadOldBasket(command) ?: return ResponseEntity.ok().build()
 
         val response = OldBasketResponse(
             oldProduct = OldProduct(

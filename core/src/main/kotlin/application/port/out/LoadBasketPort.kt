@@ -33,6 +33,6 @@ interface LoadBasketPort {
 
     fun loadOldBasket(
         memberId: Member.MemberId
-    ): ProductAndBasket
+    ): ProductAndBasket?
 
 }

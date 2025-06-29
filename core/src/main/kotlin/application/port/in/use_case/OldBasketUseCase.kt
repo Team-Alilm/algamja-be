@@ -4,7 +4,7 @@ import domain.Member
 
 interface OldBasketUseCase {
 
-    fun loadOldBasket(command: OldBasketCommand): OldBasketResult
+    fun loadOldBasket(command: OldBasketCommand): OldBasketResult?
 
     data class OldBasketCommand(
         val memberId: Member.MemberId

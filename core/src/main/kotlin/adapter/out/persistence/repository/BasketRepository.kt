@@ -88,7 +88,7 @@ interface BasketRepository : JpaRepository<BasketJpaEntity, Long> {
         ORDER BY b.createdDate ASC 
         LIMIT 1
     """)
-    fun findByMemberId(memberId: Long): ProductAndBasketProjection
+    fun findByMemberId(memberId: Long): ProductAndBasketProjection?
 
 
 }

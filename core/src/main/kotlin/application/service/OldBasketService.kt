@@ -13,10 +13,10 @@ class OldBasketService(
     private val loadRelateProductPort: LoadRelateProductPort
 ) : OldBasketUseCase {
 
-    override fun loadOldBasket(command: OldBasketUseCase.OldBasketCommand): OldBasketUseCase.OldBasketResult {
+    override fun loadOldBasket(command: OldBasketUseCase.OldBasketCommand): OldBasketUseCase.OldBasketResult? {
         val productAndBasket = loadBasketPort.loadOldBasket(
             command.memberId
-        )
+        ) ?:  return null
 
         val relatedProductList = loadRelateProductPort.loadRelateProduct(
             productAndBasket.product.firstCategory,
