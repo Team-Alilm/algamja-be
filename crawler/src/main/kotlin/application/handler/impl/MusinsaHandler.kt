@@ -83,7 +83,7 @@ class MusinsaHandler(
 
             log.info("Option item for product[{}] : {}", product.id, optionItem)
 
-            return (optionItem?.get("outOfStock"))?.asBoolean() ?: true
+            return (optionItem?.get("isSoldOut"))?.asBoolean() ?: true
         } catch (e: Exception) {
             log.error("❌ Failed to fetch product detail from Musinsa product[{}]", product.id, e)
             sendSlackGateway.sendMessage("❌ Failed to fetch product detail from Musinsa product[${product.id}]")
