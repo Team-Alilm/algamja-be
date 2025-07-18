@@ -33,6 +33,7 @@ class MusinsaHandler(
         val crawlingResponse = crawlProductHtml(productHtmlUrl)
         val jsonData = extractJsonFromHtml(crawlingResponse)
 
+        log.info("Crawled HTML for product[{}]: {}", product.id, crawlingResponse)
         return if (jsonData != null) {
             isProductAvailable(jsonData) && checkSoldOutViaApi(product)
         } else {
