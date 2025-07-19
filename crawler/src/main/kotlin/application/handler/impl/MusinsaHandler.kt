@@ -33,6 +33,7 @@ class MusinsaHandler(
         val crawlingResponse = crawlProductHtml(productHtmlUrl)
         val jsonData = extractJsonFromHtml(crawlingResponse)
 
+        log.info("Crawled HTML for product[{}]: {}", product.id, crawlingResponse)
         return if (jsonData != null) {
             isProductAvailable(jsonData) && checkSoldOutViaApi(product)
         } else {
@@ -51,8 +52,32 @@ class MusinsaHandler(
         if (startIndex == -1) return null
 
         val jsonStart = html.substring(startIndex + pattern.length)
-        val endIndex = jsonStart.indexOf("};") + 1
-        return if (endIndex > 0) jsonStart.substring(0, endIndex) else null
+        var braceCount = 0
+        var isInString = false
+        var escapeNext = false
+        var endIndex = -1
+
+        for ((i, c) in jsonStart.withIndex()) {
+            if (escapeNext) {
+                escapeNext = false
+                continue
+            }
+
+            when (c) {
+                '\\' -> escapeNext = true
+                '"' -> isInString = !isInString
+                '{' -> if (!isInString) braceCount++
+                '}' -> if (!isInString) {
+                    braceCount--
+                    if (braceCount == 0) {
+                        endIndex = i
+                        break
+                    }
+                }
+            }
+        }
+
+        return if (endIndex != -1) jsonStart.substring(0, endIndex + 1) else null
     }
 
     private fun isProductAvailable(jsonData: String): Boolean {
