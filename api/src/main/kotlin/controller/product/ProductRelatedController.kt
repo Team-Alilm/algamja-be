@@ -29,8 +29,7 @@ class ProductRelatedController(
     fun productRecent(@PathVariable productId: Long) : ResponseEntity<ProductRelatedResponse> {
         val command = ProductRelatedCommand(productId = productId)
         val result = productRelatedUseCase.productRelated(command)
-        val response =
-            ProductRelatedResponse.from(result)
+        val response = ProductRelatedResponse.from(result)
 
         return ResponseEntity.ok(response)
     }

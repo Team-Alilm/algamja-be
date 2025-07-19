@@ -20,7 +20,7 @@ class MusinsaHandler(
 ) : PlatformHandler {
 
     private val goodsSaleTypeKey = "goodsSaleType"
-    private val saleValue = "\"SALE\""
+    private val saleValue = "\"SOLDOUT\""
 
     private val log = LoggerFactory.getLogger(this::class.java)
 

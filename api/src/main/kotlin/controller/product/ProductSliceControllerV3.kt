@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.Null
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -56,6 +57,9 @@ class ProductSliceControllerV3(
     @Schema(description = "상품 조회 파라미터")
     data class ProductListParameterV3(
 
+        @Schema(description = "신발")
+        val keyword: String?,
+
         @field:Min(1)
         @Schema(description = "페이지 사이즈", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
         val size: Int = 10,
@@ -76,6 +80,6 @@ class ProductSliceControllerV3(
 
         @field:Min(0)
         @Schema(description = "상품 가격", example = "1")
-        val price: Int? = null
+        val price: Int?
     )
 }
