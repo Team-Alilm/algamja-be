@@ -31,14 +31,10 @@ class MusinsaHandler(
     private fun isSoldOut(product: Product): Boolean {
         val productHtmlUrl = StringContextHolder.MUSINSA_PRODUCT_HTML_URL.get().format(product.storeNumber)
         val crawlingResponse = crawlProductHtml(productHtmlUrl)
-        val jsonData = extractJsonFromHtml(crawlingResponse)
+        val jsonData = extractJsonFromHtml(crawlingResponse) ?: ""
 
         log.info("Crawled HTML for product[{}]: {}", product.id, crawlingResponse)
-        return if (jsonData != null) {
-            isProductAvailable(jsonData) && checkSoldOutViaApi(product)
-        } else {
-            checkSoldOutViaApi(product)
-        }
+        return isProductAvailable(jsonData) || checkSoldOutViaApi(product)
     }
 
     private fun crawlProductHtml(url: String): String {
