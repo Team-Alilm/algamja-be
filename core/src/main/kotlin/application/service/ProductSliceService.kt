@@ -12,7 +12,7 @@ class ProductSliceService (
 ) : ProductSliceUseCase {
 
     override fun productSlice(command: ProductSliceUseCase.ProductSliceCommand): ProductSliceUseCase.CustomSlice {
-        val productSlice = loadFilteredProductListPort.getFilteredProductList(
+        val productSlice = loadFilteredProductListPort.getFilteredProductListV3(
             size = command.size,
             category = command.category,
             sort = command.sort,

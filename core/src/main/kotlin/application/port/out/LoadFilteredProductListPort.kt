@@ -6,7 +6,7 @@ import org.team_alilm.domain.product.ProductSortType
 
 interface LoadFilteredProductListPort {
 
-    fun getFilteredProductList(
+    fun getFilteredProductListV3(
         size: Int,
         category: ProductCategory?,
         sort: ProductSortType,

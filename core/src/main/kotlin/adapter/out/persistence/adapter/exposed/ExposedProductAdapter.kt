@@ -17,7 +17,7 @@ import org.team_alilm.domain.product.ProductSortType
 @Transactional(readOnly = true)
 class ExposedProductAdapter : LoadFilteredProductListPort {
 
-    override fun getFilteredProductList(
+    override fun getFilteredProductListV3(
         size: Int,
         category: ProductCategory?,
         sort: ProductSortType,
