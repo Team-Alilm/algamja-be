@@ -1,4 +1,4 @@
-package org.team_alilm.controller.member
+package org.team_alilm.member
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

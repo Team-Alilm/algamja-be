@@ -1,4 +1,4 @@
-package org.team_alilm.controller.fcm
+package org.team_alilm.fcm
 
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.http.ResponseEntity

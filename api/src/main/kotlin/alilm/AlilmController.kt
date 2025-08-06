@@ -1,19 +1,20 @@
-package org.team_alilm.controller.alilm
+package org.team_alilm.alilm
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.application.port.`in`.use_case.AlilmHistoryUseCase
-import org.team_alilm.response.ApiResponse
+
 
 @RestController
-@RequestMapping("/api/v2/alilms")
+@RequestMapping("/api/v1/alilms")
 @Tag(name = "알림 API", description = """
     알림 API 들을 모아둔 컨트롤러 입니다.
 """)
-class AlilmControllerV2(
+class AlilmController(
     private val alilmHistoryUseCase: AlilmHistoryUseCase
 ) {
 
@@ -25,11 +26,13 @@ class AlilmControllerV2(
             한국 시간으로 운영되고 있습니다.
     """)
     @GetMapping("/count")
-    fun alilmHistory(): ApiResponse<AlilmHistoryResponse> {
+    fun alilmHistory(): ResponseEntity<AlilmHistoryResponse> {
         val result = alilmHistoryUseCase.alilmHistory()
-        val data = AlilmHistoryResponse.Companion.from(result)
-
-        return ApiResponse.success(data = data)
+        return ResponseEntity.ok(
+            AlilmHistoryResponse.Companion.from(
+                result
+            )
+        )
     }
 
     data class AlilmHistoryResponse(
@@ -39,10 +42,11 @@ class AlilmControllerV2(
         companion object {
             fun from(alilmHistoryResult: AlilmHistoryUseCase.AlilmHistoryResult): AlilmHistoryResponse {
                 return AlilmHistoryResponse(
-                    allCount = (alilmHistoryResult.allCount ?: 0),
-                    dailyCount = (alilmHistoryResult.dailyCount ?: 0),
+                    allCount = (alilmHistoryResult.allCount ?: 0) + 10,
+                    dailyCount = (alilmHistoryResult.dailyCount ?: 0) + 2,
                 )
             }
         }
     }
 }
+

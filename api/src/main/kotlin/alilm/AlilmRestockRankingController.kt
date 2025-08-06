@@ -1,4 +1,4 @@
-package org.team_alilm.controller.alilm
+package org.team_alilm.alilm
 
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity

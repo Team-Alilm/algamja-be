@@ -1,4 +1,4 @@
-package org.team_alilm.controller.product
+package org.team_alilm.product
 
 import domain.product.Product
 import io.swagger.v3.oas.annotations.Operation
