@@ -28,11 +28,11 @@ class ProductDetailsController(
         @PathVariable
         productId: Long
 
-    ) : ResponseEntity<org.team_alilm.controller.product.ProductDetailsController.ProductDetailsResponse> {
+    ) : ResponseEntity<ProductDetailsResponse> {
         val command = ProductDetailsCommand(productId = productId)
         val result = productDetailsUseCase.productDetails(command = command)
         val response =
-            org.team_alilm.controller.product.ProductDetailsController.ProductDetailsResponse.Companion.from(result)
+            ProductDetailsResponse.Companion.from(result)
 
         return ResponseEntity.ok(response)
     }
@@ -53,8 +53,8 @@ class ProductDetailsController(
     ) {
 
         companion object {
-            fun from (productDetails: ProductDetailsResult): org.team_alilm.controller.product.ProductDetailsController.ProductDetailsResponse {
-                return org.team_alilm.controller.product.ProductDetailsController.ProductDetailsResponse(
+            fun from (productDetails: ProductDetailsResult): ProductDetailsResponse {
+                return ProductDetailsResponse(
                     id = productDetails.id,
                     number = productDetails.number,
                     name = productDetails.name,

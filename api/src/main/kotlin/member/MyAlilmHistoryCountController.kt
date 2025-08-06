@@ -27,11 +27,11 @@ class MyAlilmHistoryCountController (
     @GetMapping("/my-alilm-history/read-n-count")
     fun myAlilmHistoryCount(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
-    ) : ResponseEntity<org.team_alilm.controller.member.MyAlilmHistoryCountController.MyAlilmHistoryCountResponse> {
+    ) : ResponseEntity<MyAlilmHistoryCountResponse> {
         val command = MyAlilmHistoryCountUseCase.MyAlilmHistoryCountCommand(customMemberDetails.member)
         val result = myAlilmHistoryCountUseCase.myAlilmHistoryCount(command)
         val response =
-            org.team_alilm.controller.member.MyAlilmHistoryCountController.MyAlilmHistoryCountResponse.Companion.from(
+            MyAlilmHistoryCountResponse.Companion.from(
                 result
             )
 
@@ -42,8 +42,8 @@ class MyAlilmHistoryCountController (
         val readNCount: Long
     ) {
         companion object {
-            fun from (myAlilmHistoryCountResult: MyAlilmHistoryCountUseCase.MyAlilmHistoryCountResult): org.team_alilm.controller.member.MyAlilmHistoryCountController.MyAlilmHistoryCountResponse {
-                return org.team_alilm.controller.member.MyAlilmHistoryCountController.MyAlilmHistoryCountResponse(
+            fun from (myAlilmHistoryCountResult: MyAlilmHistoryCountUseCase.MyAlilmHistoryCountResult): MyAlilmHistoryCountResponse {
+                return MyAlilmHistoryCountResponse(
                     readNCount = myAlilmHistoryCountResult.readYCount
                 )
             }

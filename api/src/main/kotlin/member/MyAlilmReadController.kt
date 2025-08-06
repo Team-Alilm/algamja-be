@@ -24,7 +24,7 @@ class MyAlilmReadController(
     @PatchMapping("/my-alilm-read")
     fun myAlilmRead(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
-        @RequestBody request: org.team_alilm.controller.member.MyAlilmReadController.UpdateMyAlilmRead
+        @RequestBody request: UpdateMyAlilmRead
     ) : ResponseEntity<Unit> {
         val command = MyAlilmReadUseCase.MyAlilmReadCommand(
             member = customMemberDetails.member,

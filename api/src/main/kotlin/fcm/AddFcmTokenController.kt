@@ -18,7 +18,7 @@ class AddFcmTokenController(
 
     @PostMapping
     fun addFcmToken(
-        @RequestBody request: org.team_alilm.controller.fcm.AddFcmTokenController.FcmTokenRequest,
+        @RequestBody request: FcmTokenRequest,
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ) : ResponseEntity<Unit> {
         val command = AddFcmTokenUseCase.AddFcmTokenCommand(
