@@ -1,4 +1,4 @@
-rootProject.name = "alilm"
+rootProject.name = "Algamja"
 
 pluginManagement {
     val kotlinVersion: String by settings
@@ -21,10 +21,3 @@ pluginManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
-
-include("worker")
-include("api")
-include("core")
-include("crawler")
-include("security")
-include("domain")

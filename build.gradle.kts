@@ -1,64 +1,53 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm") version "1.9.21"
-    id("org.springframework.boot") apply false
-    id("io.spring.dependency-management") apply false
-    kotlin("plugin.spring") version "1.9.21" apply false
-    kotlin("plugin.jpa") version "1.9.21" apply false
-    kotlin("kapt") version "1.9.21" apply false
+    java
+    kotlin("jvm")
+    kotlin("plugin.spring") version "2.2.0" // ✅ 자동 open 처리
+    id("org.springframework.boot") version "3.5.4"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
-allprojects {
-    val projectGroup: String by project
-    val applicationVersion: String by project
+group = "com.skylabs"
+version = "0.0.1-SNAPSHOT"
 
-    group = projectGroup
-    version = applicationVersion
-
-    repositories {
-        mavenCentral()
-    }
+kotlin {
+    jvmToolchain(21) // Java 21 명확하게 지정
 }
 
-subprojects {
-    apply(plugin = "org.springframework.boot")
-    apply(plugin = "io.spring.dependency-management")
-    apply(plugin = "kotlin")
-    apply(plugin = "kotlin-kapt")
-    apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
-    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-    apply(plugin = "org.jetbrains.kotlin.plugin.allopen")
+repositories {
+    mavenCentral()
+}
 
-    dependencies {
-        implementation("org.springframework.boot:spring-boot-starter")
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
-        implementation("org.jetbrains.kotlin:kotlin-reflect")
-        implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter")
 
-        // web
-        implementation("org.springframework.boot:spring-boot-starter-web")
-    }
+    // web
+    implementation("org.springframework.boot:spring-boot-starter-web")
 
-    tasks.getByName("bootJar") {
-        enabled = false
-    }
+    // swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_21
-    }
+    // security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    testImplementation("org.springframework.security:spring-security-test")
 
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs += listOf("-Xjsr305=strict")
-            jvmTarget = "21"
-        }
-    }
+    // jpa
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    configurations {
-        compileOnly {
-            extendsFrom(configurations.annotationProcessor.get())
-        }
-    }
+    // jwt
+    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
 
+    // oauth2
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

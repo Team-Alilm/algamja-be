@@ -1,0 +1,16 @@
+spring:
+  config:
+    import:
+      - optional:classpath:common:application-local-common.yml
+  profiles:
+    active: local
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+
+app:
+  base-url: http://localhost:3000

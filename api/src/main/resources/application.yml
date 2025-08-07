@@ -1,8 +1,0 @@
-spring:
-  config:
-    import:
-      - optional:classpath:application-core.yml
-      - optional:classpath:application-core-${spring.profiles.active}.yml
-      - optional:classpath:application-security-${spring.profiles.active}.yml
-  profiles:
-    active: local
