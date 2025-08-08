@@ -2,6 +2,7 @@ plugins {
     java
     kotlin("jvm")
     kotlin("plugin.spring") version "2.2.0" // ✅ 자동 open 처리
+    kotlin("plugin.jpa") version "2.2.0" // ✅ 자동 open 처리
     id("org.springframework.boot") version "3.5.4"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -46,6 +47,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
+
+    implementation("org.jetbrains.exposed:exposed-spring-boot-starter:0.61.0")
 }
 
 tasks.withType<Test> {
