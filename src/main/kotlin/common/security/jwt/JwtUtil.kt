@@ -56,11 +56,11 @@ class JwtUtil(
         }
     }
 
-    fun createJwt(memberId: Member.MemberId, expireMs: Long): String {
+    fun createJwt(memberId: Long, expireMs: Long): String {
         val now = System.currentTimeMillis()
 
         return "Bearer " + Jwts.builder()
-            .claim(MEMBER_ID_KEY, memberId.value)
+            .claim(MEMBER_ID_KEY, memberId)
             .issuedAt(Date(now))
             .expiration(Date(now + expireMs))
             .signWith(secretKey)

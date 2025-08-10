@@ -1,28 +1,23 @@
-package org.team_alilm.application.service
+package org.team_alilm.common.security.oauth
 
-import domain.Member
-import domain.Role
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-import org.team_alilm.application.port.`in`.use_case.LoginMemberUseCase
-import org.team_alilm.application.port.out.AddMemberPort
-import org.team_alilm.application.port.out.AddMemberRoleMappingPort
-import org.team_alilm.application.port.out.LoadMemberPort
-import org.team_alilm.application.port.out.LoadRolePort
-import org.team_alilm.global.error.NotFoundRoleException
+import org.team_alilm.common.enum.Provider
+import org.team_alilm.member.entity.Member
+import org.team_alilm.member.repository.MemberRepository
 
 @Service
 @Transactional(readOnly = true)
 class OauthLoginMemberService(
-    private val loadMemberPort: LoadMemberPort,
+    private val memberRepository: MemberRepository,
     private val addMemberPort: AddMemberPort,
     private val addMemberRoleMappingPort: AddMemberRoleMappingPort,
     private val loadRolePort: LoadRolePort
-) : LoginMemberUseCase {
+) {
 
     @Transactional
-    override fun loginMember(provider: Member.Provider, providerId: String, attributes: Map<String, Any>): Member {
-        return loadMemberPort.loadMember(provider, providerId)?: run {
+    fun loginMember(provider: Provider, providerId: String, attributes: Map<String, Any>): Member {
+        return memberRepository.findByProviderAndProviderId(provider, providerId)?: run {
             val newMember = saveMember(attributes)
             saveMemberRoleMapping(newMember)
             newMember

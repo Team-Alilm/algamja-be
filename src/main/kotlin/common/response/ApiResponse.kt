@@ -1,6 +1,7 @@
 package common.response
 
 import org.springframework.http.ResponseEntity
+import org.team_alilm.notification.controller.v1.NotificationControllerV1
 
 data class ApiResponse<T>(
     val code: String,
@@ -11,7 +12,7 @@ data class ApiResponse<T>(
 
         fun <T> success(
             data: T, message: String = "요청이 성공적으로 처리되었습니다"
-        ): ResponseEntity<ApiResponse<T>> {
+        ): ApiResponse<NotificationControllerV1.UnreadNotificationCountResponse> {
             return ResponseEntity.ok(
                 ApiResponse(
                     code = "0000", message = message, data = data

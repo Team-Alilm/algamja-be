@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
+import org.team_alilm.common.enum.Provider
+import org.team_alilm.global.jpa.base.BaseTimeEntity
 
 @Entity
 @Table(
@@ -23,7 +25,7 @@ import jakarta.persistence.UniqueConstraint
 class Member(
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val provider: Member.Provider,
+    val provider: Provider,
 
     @Column(nullable = false)
     val providerId: Long,

@@ -8,10 +8,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
-import org.team_alilm.adapter.out.gateway.SlackGateway
-import org.team_alilm.application.service.OauthLoginMemberService
-import domain.Member
+import org.team_alilm.common.enum.Provider
 import org.team_alilm.common.security.jwt.JwtUtil
+import org.team_alilm.common.security.oauth.OauthLoginMemberService
 
 @Component
 class CustomSuccessHandler(
@@ -29,7 +28,7 @@ class CustomSuccessHandler(
         val oAuth2User = authentication?.principal as OAuth2User
         val attributes = oAuth2User.attributes
         val providerId = attributes["id"].toString()
-        val provider = Member.Provider.from(attributes["provider"].toString())
+        val provider = Provider.from(attributes["provider"].toString())
 
         val member = oauthLoginMemberService.loginMember(provider, providerId, attributes)  // 비즈니스 로직 처리
 

@@ -1,4 +1,4 @@
-package org.team_alilm.fcm
+package org.team_alilm.fcm.controller
 
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.http.ResponseEntity
@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.application.port.`in`.use_case.AddFcmTokenUseCase
 import org.team_alilm.common.security.CustomMemberDetails
 
 @RestController

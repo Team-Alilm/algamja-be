@@ -7,7 +7,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 import org.team_alilm.common.security.CustomUserDetailsService
-import org.team_alilm.global.error.NotFoundMemberException
 
 class JwtFilter(
     private val jwtUtil: JwtUtil,
@@ -28,12 +27,6 @@ class JwtFilter(
                 val authToken = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 SecurityContextHolder.getContext().authentication = authToken
             }
-
-        } catch (e: NotFoundMemberException) {
-            response.status = HttpServletResponse.SC_NOT_FOUND
-            response.writer.write("Member not found")
-            response.writer.flush()
-            return
         } catch (e: Exception) {
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             response.writer.write("Unauthorized: ${e.message}")
