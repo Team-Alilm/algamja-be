@@ -6,7 +6,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 @RestControllerAdvice
 class GlobalRestControllerAdvice {
@@ -14,17 +13,30 @@ class GlobalRestControllerAdvice {
     @ExceptionHandler(BusinessException::class)
     fun handleBusinessException(ex: BusinessException): ResponseEntity<ErrorResponse> {
         val code = ex.errorCode
+        val message = ex.message ?: code.message // null 방어
         return ResponseEntity
             .status(code.status)
-            .body(ErrorResponse.of(code, ex.message))
+            .body(ErrorResponse.of(code, message))
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         val code = ErrorCode.INVALID_INPUT_VALUE
-        val message = ex.bindingResult.fieldErrors.joinToString(", ") {
-            "${it.field}: ${it.defaultMessage}"
-        }
+
+        // 필드 에러: 같은 필드의 중복 메시지 제거
+        val fieldMessage = ex.bindingResult.fieldErrors
+            .groupBy({ it.field }) { it.defaultMessage ?: "Invalid value" }
+            .map { (field, messages) -> "$field: ${messages.distinct().joinToString(", ")}" }
+
+        // 글로벌 에러(object-level)
+        val globalMessage = ex.bindingResult.globalErrors
+            .map { it.defaultMessage ?: "Invalid request" }
+
+        val message = (fieldMessage + globalMessage)
+            .takeIf { it.isNotEmpty() }
+            ?.joinToString("; ")
+            ?: "요청 값이 올바르지 않습니다."
+
         return ResponseEntity
             .status(code.status)
             .body(ErrorResponse.of(code, message))
@@ -36,15 +48,6 @@ class GlobalRestControllerAdvice {
         return ResponseEntity
             .status(code.status)
             .body(ErrorResponse.of(code, ex.message))
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
-    fun handleTypeMismatch(ex: MethodArgumentTypeMismatchException): ResponseEntity<ErrorResponse> {
-        val code = ErrorCode.INVALID_REQUEST
-        val message = "요청 파라미터 타입이 올바르지 않습니다. ${ex.name}=${ex.value}"
-        return ResponseEntity
-            .status(code.status)
-            .body(ErrorResponse.of(code, message))
     }
 
     @ExceptionHandler(Exception::class)
