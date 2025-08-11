@@ -10,6 +10,7 @@ import org.team_alilm.product.controller.dto.param.ProductListParam
 import org.team_alilm.product.controller.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.dto.response.ProductDetailResponse
 import org.team_alilm.product.controller.dto.response.ProductListResponse
+import org.team_alilm.product.controller.dto.response.SimilarProductListResponse
 
 @Tag(name = "Product", description = "상품 관련 API")
 interface ProductDocs {
@@ -93,10 +94,23 @@ interface ProductDocs {
                         name = "ok",
                         value = """
                         {
-                          "id": 1,
-                          "name": "Sample Product",
-                          "price": 10000,
-                          "description": "This is a sample product."
+                            "products": [
+                                {
+                                    "id": 1,
+                                    "name": "Sample Product",
+                                    "price": 10000,
+                                    "description": "This is a sample product.",
+                                    "brand": "Sample Brand",
+                                    "thumbnailUrl": "http://example.com/thumbnail.jpg",
+                                    "imageUrlList": ["http://example.com/image1.jpg", "http://example.com/image2.jpg"],
+                                    "store": "Sample Store",
+                                    "firstOption": "Size: M",
+                                    "secondOption": "Color: Red",
+                                    "thirdOption": null,
+                                    "waitingCount": 5
+                                }
+                            ],
+                            "hasNext": false
                         }
                         """
                     )
@@ -105,4 +119,54 @@ interface ProductDocs {
         ]
     )
     fun getProductList(param : ProductListParam): common.response.ApiResponse<ProductListResponse>
+
+    @Operation(
+        summary = "유사 상품 조회",
+        description = "유사한 상품 목록을 반환합니다. 최대 10개까지 반환됩니다."
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "정상 응답",
+        content = [
+            Content(
+                mediaType = "application/json",
+                schema = Schema(implementation = ProductListResponse::class),
+                examples = [
+                    ExampleObject(
+                        name = "ok",
+                        value = """
+                        {
+                            "products": [
+                                {
+                                    "id": 1,
+                                    "name": "Similar Product 1",
+                                    "price": 12000,
+                                    "brand": "Brand A",
+                                    "thumbnailUrl": "http://example.com/similar1.jpg",
+                                    "firstCategory": "Category A",
+                                    "firstOption": "Size: L",
+                                    "secondOption": null,
+                                    "thirdOption": null
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "Similar Product 2",
+                                    "price": 15000,
+                                    "brand": "Brand B",
+                                    "thumbnailUrl": "http://example.com/similar2.jpg",
+                                    "firstCategory": "Category B",
+                                    "firstOption": null,
+                                    "secondOption": null,
+                                    "thirdOption": null
+                                }
+                            ],
+                            "hasNext": false
+                        }
+                        """
+                    )
+                ]
+            )
+        ]
+    )
+    fun getSimilarProducts(productId: Long): common.response.ApiResponse<SimilarProductListResponse>
 }

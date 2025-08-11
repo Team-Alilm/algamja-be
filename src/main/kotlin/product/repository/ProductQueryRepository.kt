@@ -13,6 +13,8 @@ import org.team_alilm.common.enums.Sort
 import org.team_alilm.product.controller.dto.param.ProductListParam
 import org.team_alilm.product.controller.dto.response.ProductListResponse
 import org.team_alilm.product.controller.dto.response.ProductResponse
+import org.team_alilm.product.controller.dto.response.SimilarProductListResponse
+import org.team_alilm.product.controller.dto.response.SimilarProductResponse
 import java.math.BigDecimal
 
 @Repository
@@ -248,5 +250,51 @@ class ProductQueryRepository {
         val waitingMap = fetchWaitingCounts(ids)
 
         return ProductListResponse(mapProducts(page, waitingMap), hasNext)
+    }
+
+    fun getSimilarProducts(productId: Long): SimilarProductListResponse = transaction {
+        // 1) 기준 상품을 base라는 alias로 생성
+        val base = ProductTable.alias("base")
+
+        // 2) ProductTable과 기준 상품(base)을 self join
+        val rows = ProductTable
+            .join(
+                otherTable = base,
+                joinType = JoinType.INNER,
+                // 기준 상품 한 건만 선택 (base.id = productId)
+                additionalConstraint = { base[ProductTable.id] eq productId }
+            )
+            .select(
+                ProductTable.id,
+                ProductTable.name,
+                ProductTable.brand,
+                ProductTable.thumbnailUrl
+            )
+            .where {
+                // 자기 자신은 제외
+                (ProductTable.id neq productId) and (
+                        // 1차 카테고리가 같거나,
+                        (ProductTable.firstCategory eq base[ProductTable.firstCategory]) or
+                                // 2차 카테고리가 존재하고, 2차 카테고리도 같을 때
+                                (base[ProductTable.secondCategory].isNotNull() and
+                                        (ProductTable.secondCategory eq base[ProductTable.secondCategory]))
+                        )
+            }
+            // id 내림차순 정렬
+            .orderBy(ProductTable.id to SortOrder.DESC)
+            // 최대 10개까지
+            .limit(10)
+            // DTO 매핑
+            .map {
+                SimilarProductResponse(
+                    productId = it[ProductTable.id],
+                    name = it[ProductTable.name],
+                    brand = it[ProductTable.brand],
+                    thumbnailUrl = it[ProductTable.thumbnailUrl]
+                )
+            }
+
+        // 3) 응답 래핑
+        SimilarProductListResponse(rows)
     }
 }
