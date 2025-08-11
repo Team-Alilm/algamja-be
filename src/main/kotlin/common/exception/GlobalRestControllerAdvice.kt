@@ -13,10 +13,9 @@ class GlobalRestControllerAdvice {
     @ExceptionHandler(BusinessException::class)
     fun handleBusinessException(ex: BusinessException): ResponseEntity<ErrorResponse> {
         val code = ex.errorCode
-        val message = ex.message ?: code.message // null 방어
         return ResponseEntity
             .status(code.status)
-            .body(ErrorResponse.of(code, message))
+            .body(ErrorResponse.of(code))
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
