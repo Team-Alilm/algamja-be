@@ -1,4 +1,4 @@
-package org.team_alilm.common.enum
+package org.team_alilm.common.enums
 
 enum class Provider {
 

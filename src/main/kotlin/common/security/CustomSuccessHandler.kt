@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
-import org.team_alilm.common.enum.Provider
+import org.team_alilm.common.enums.Provider
 import org.team_alilm.common.security.jwt.JwtUtil
 import org.team_alilm.common.security.oauth.OauthLoginMemberService
 

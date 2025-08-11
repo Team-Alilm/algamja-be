@@ -2,17 +2,21 @@ package org.team_alilm.product.controller
 
 import common.response.ApiResponse
 import common.response.ApiResponse.Companion.success
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.product.controller.docs.ProductDocs
-import org.team_alilm.product.controller.dto.ProductCountResponse
-import org.team_alilm.product.controller.dto.ProductDetailResponse
+import org.team_alilm.product.controller.dto.param.ProductListParam
+import org.team_alilm.product.controller.dto.response.ProductCountResponse
+import org.team_alilm.product.controller.dto.response.ProductDetailResponse
+import org.team_alilm.product.controller.dto.response.ProductListResponse
 import org.team_alilm.product.service.ProductService
 
 @RestController
 @RequestMapping("/api/v1/products")
 class ProductController(
+
     private val productService: ProductService
 ) : ProductDocs {
 
@@ -26,6 +30,16 @@ class ProductController(
     @GetMapping("{productId}")
     override fun getProductDetail(productId: Long): ApiResponse<ProductDetailResponse> {
         val response = productService.getProductDetail(productId)
+        return success(
+            data = response
+        )
+    }
+
+    @GetMapping
+    override fun getProductList(
+        @ParameterObject param : ProductListParam
+    ): ApiResponse<ProductListResponse>{
+        val response = productService.getProductList(param)
         return success(
             data = response
         )

@@ -1,4 +1,4 @@
-package org.team_alilm.product.controller.dto
+package org.team_alilm.product.controller.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
 
