@@ -7,6 +7,7 @@ import org.team_alilm.product.controller.dto.param.ProductListParam
 import org.team_alilm.product.controller.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.dto.response.ProductDetailResponse
 import org.team_alilm.product.controller.dto.response.ProductListResponse
+import org.team_alilm.product.controller.dto.response.RecentlyRestockedProductListResponse
 import org.team_alilm.product.controller.dto.response.SimilarProductListResponse
 import org.team_alilm.product.repository.ProductQueryRepository
 import org.team_alilm.product.repository.ProductRepository
@@ -45,7 +46,10 @@ class ProductService(
         productQueryRepository.findProductsByCursor(param)
 
     fun getSimilarProducts(productId: Long) : SimilarProductListResponse =
-        productQueryRepository.getSimilarProducts()
+        productQueryRepository.getSimilarProducts(productId)
+
+    fun getRecentlyRestockedProducts() : RecentlyRestockedProductListResponse =
+        productQueryRepository.getRecentlyRestockedProducts()
 
 }
 

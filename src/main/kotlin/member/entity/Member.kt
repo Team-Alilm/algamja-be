@@ -4,13 +4,11 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.Comment
 import org.team_alilm.common.enums.Provider
-import org.team_alilm.global.jpa.base.BaseTimeEntity
+import org.team_alilm.common.jpa.base.BaseEntity
 
 @Entity
 @Table(
@@ -20,23 +18,23 @@ import org.team_alilm.global.jpa.base.BaseTimeEntity
             columnNames = ["provider", "provider_id"]
         ),
     ]
-
 )
 class Member(
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Comment("회원 가입 경로 제공자 (예: GOOGLE, KAKAO, NAVER)")
     val provider: Provider,
 
     @Column(nullable = false)
+    @Comment("제공자별 회원 식별 ID")
     val providerId: Long,
 
     @Column(nullable = false, length = 30)
+    @Comment("회원 이메일")
     var email: String,
 
     @Column(nullable = false, length = 10)
+    @Comment("회원 닉네임")
     var nickname: String,
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
-) : BaseTimeEntity()
+) : BaseEntity<Long>()

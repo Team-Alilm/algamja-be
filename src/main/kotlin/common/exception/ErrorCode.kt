@@ -15,5 +15,6 @@ enum class ErrorCode(
     // 공통
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "COMMON_001", "잘못된 요청입니다."),
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "COMMON_002", "입력 값이 유효하지 않습니다."),
-    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_999", "서버 내부 오류가 발생했습니다.")
+    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_999", "서버 내부 오류가 발생했습니다."),
+    MEMBER_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "MEMBER_001", "해당 회원을 찾을 수 없습니다.")
 }

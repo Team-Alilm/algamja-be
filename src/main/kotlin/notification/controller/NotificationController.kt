@@ -1,33 +1,32 @@
-package org.team_alilm.notification.controller.v1
+package org.team_alilm.notification.controller
 
 import common.response.ApiResponse
 import notification.service.NotificationService
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.team_alilm.common.exception.BusinessException
+import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.common.security.CustomMemberDetails
-import org.team_alilm.notification.controller.v1.docs.NotificationDocsV1
+import org.team_alilm.notification.controller.dto.response.UnreadNotificationCountResponse
+import org.team_alilm.notification.controller.v1.docs.NotificationDocs
 
 @RestController
 @RequestMapping("/api/v1/notifications")
-class NotificationControllerV1(
+class NotificationController(
+
     private val notificationService: NotificationService
-) : NotificationDocsV1 {
+) : NotificationDocs {
 
     @GetMapping("/unread-count")
     override fun getUnreadNotificationCount(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ): ApiResponse<UnreadNotificationCountResponse> {
         val unreadNotificationCountResponse = notificationService.getUnreadNotificationCount(
-            memberId = customMemberDetails.member.id
-        ))
+            memberId = customMemberDetails.member.id ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
+        )
 
-        return ApiResponse.success(unreadNotificationCountResponse)
+        return ApiResponse.Companion.success(unreadNotificationCountResponse)
     }
-
-    data class UnreadNotificationCountResponse(
-        val count: Int
-    )
 }

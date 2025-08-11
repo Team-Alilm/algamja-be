@@ -10,6 +10,7 @@ import org.team_alilm.product.controller.dto.param.ProductListParam
 import org.team_alilm.product.controller.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.dto.response.ProductDetailResponse
 import org.team_alilm.product.controller.dto.response.ProductListResponse
+import org.team_alilm.product.controller.dto.response.RecentlyRestockedProductListResponse
 import org.team_alilm.product.controller.dto.response.SimilarProductListResponse
 
 @Tag(name = "Product", description = "상품 관련 API")
@@ -169,4 +170,44 @@ interface ProductDocs {
         ]
     )
     fun getSimilarProducts(productId: Long): common.response.ApiResponse<SimilarProductListResponse>
+
+    // 최근 재 입고 상품
+    @Operation(
+        summary = "최근 재 입고 상품 조회",
+        description = "최근 재 입고된 상품 목록을 반환합니다. 최대 10개까지 반환됩니다."
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "정상 응답",
+        content = [
+            Content(
+                mediaType = "application/json",
+                schema = Schema(implementation = ProductListResponse::class),
+                examples = [
+                    ExampleObject(
+                        name = "ok",
+                        value = """
+                        {
+                            "products": [
+                                {
+                                    "id": 1,
+                                    "name": "Recently Restocked Product 1",
+                                    "brand": "Brand C",
+                                    "thumbnailUrl": "http://example.com/restocked1.jpg",
+                                },
+                                {
+                                    "id": 2,
+                                    "name": "Recently Restocked Product 2",
+                                    "brand": "Brand D",
+                                    "thumbnailUrl": "http://example.com/restocked2.jpg",
+                                }
+                            ],
+                        }
+                        """
+                    )
+                ]
+            )
+        ]
+    )
+    fun getRecentlyRestockedProducts(): common.response.ApiResponse<RecentlyRestockedProductListResponse>
 }

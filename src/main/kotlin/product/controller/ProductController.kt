@@ -12,6 +12,7 @@ import org.team_alilm.product.controller.dto.param.ProductListParam
 import org.team_alilm.product.controller.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.dto.response.ProductDetailResponse
 import org.team_alilm.product.controller.dto.response.ProductListResponse
+import org.team_alilm.product.controller.dto.response.RecentlyRestockedProductListResponse
 import org.team_alilm.product.controller.dto.response.SimilarProductListResponse
 import org.team_alilm.product.service.ProductService
 
@@ -48,6 +49,12 @@ class ProductController(
         @PathVariable("productId") productId: Long
     ): ApiResponse<SimilarProductListResponse> {
         val response = productService.getSimilarProducts(productId)
+        return success(data = response)
+    }
+
+    @GetMapping("/recently-restocked")
+    override fun getRecentlyRestockedProducts(): ApiResponse<RecentlyRestockedProductListResponse> {
+        val response = productService.getRecentlyRestockedProducts()
         return success(data = response)
     }
 }

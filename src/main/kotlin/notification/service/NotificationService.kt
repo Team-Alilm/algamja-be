@@ -1,7 +1,8 @@
 package notification.service
 
 import org.springframework.stereotype.Service
-import org.team_alilm.notification.controller.v1.NotificationControllerV1.*
+import org.team_alilm.notification.controller.NotificationController.*
+import org.team_alilm.notification.controller.dto.response.UnreadNotificationCountResponse
 import org.team_alilm.notification.repository.NotificationRepository
 
 @Service
@@ -10,7 +11,7 @@ class NotificationService(
 ) {
 
     fun getUnreadNotificationCount(memberId: Long): UnreadNotificationCountResponse {
-        notificationRepository.countByMemberIdAndReadYnFalse()
+        notificationRepository.countByMemberIdAndReadYnFalse(memberId)
         val unreadNotificationCountResponse = UnreadNotificationCountResponse(count = 1)
 
         return unreadNotificationCountResponse

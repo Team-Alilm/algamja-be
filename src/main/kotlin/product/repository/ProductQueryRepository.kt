@@ -13,6 +13,8 @@ import org.team_alilm.common.enums.Sort
 import org.team_alilm.product.controller.dto.param.ProductListParam
 import org.team_alilm.product.controller.dto.response.ProductListResponse
 import org.team_alilm.product.controller.dto.response.ProductResponse
+import org.team_alilm.product.controller.dto.response.RecentlyRestockedProductListResponse
+import org.team_alilm.product.controller.dto.response.RecentlyRestockedProductResponse
 import org.team_alilm.product.controller.dto.response.SimilarProductListResponse
 import org.team_alilm.product.controller.dto.response.SimilarProductResponse
 import java.math.BigDecimal
@@ -35,14 +37,14 @@ class ProductQueryRepository {
                 ProductTable.secondOption,
                 ProductTable.thirdOption
             )
-            .where { ProductTable.id eq productId }
+            .where { (ProductTable.id eq productId) and ProductTable.notDeleted() }
             .limit(1)
             .firstOrNull() ?: return@transaction null
 
         // 2) 이미지 목록 (정렬 보장)
         val images = ProductImageTable
             .select(ProductImageTable.imageUrl)
-            .where { ProductImageTable.productId eq productId }
+            .where { (ProductImageTable.productId eq productId) and ProductImageTable.notDeleted() }
             .orderBy(ProductImageTable.id to SortOrder.ASC)
             .mapNotNull { it[ProductImageTable.imageUrl] }
             .distinct()
@@ -79,7 +81,9 @@ class ProductQueryRepository {
     fun findProductsByCursor(param: ProductListParam): ProductListResponse = transaction {
         val size = (param.size.takeIf { it > 0 } ?: 20).coerceAtMost(100)
 
-        val where = buildBaseWhere(param) and buildCursorCond(param)
+        val where = buildBaseWhere(param) and
+                buildCursorCond(param) and
+                ProductTable.notDeleted()
 
         // WAITING_COUNT_DESC는 별도 분기
         if (param.sort == Sort.WAITING_COUNT_DESC) {
@@ -175,7 +179,10 @@ class ProductQueryRepository {
         val cnt = BasketTable.id.count().alias("waiting_count")
         return BasketTable
             .select(BasketTable.productId, cnt)
-            .where { (BasketTable.productId inList ids) and (BasketTable.isNotification eq false) }
+            .where {
+                (BasketTable.productId inList ids) and
+                        (BasketTable.isNotification eq false)
+            }
             .groupBy(BasketTable.productId)
             .associate { it[BasketTable.productId] to it[cnt] }
     }
@@ -206,7 +213,11 @@ class ProductQueryRepository {
         val waitingCnt = BasketTable.id.count().alias("waiting_count")
         val basketAgg = BasketTable
             .select(BasketTable.productId, waitingCnt)
-            .where { BasketTable.isNotification eq false }
+            .where {
+                (BasketTable.isNotification eq false) and
+                        (BasketTable.isHidden eq false) and
+                        (BasketTable.isDelete eq false)
+            }
             .groupBy(BasketTable.productId)
             .alias("basket_agg")
 
@@ -237,7 +248,7 @@ class ProductQueryRepository {
                 ProductTable.thirdOption,
                 basketAgg[waitingCnt]
             )
-            .where { where and wcCursor }
+            .where { (where and wcCursor) and ProductTable.notDeleted() }
             .orderBy(basketAgg[waitingCnt] to SortOrder.DESC, ProductTable.id to SortOrder.DESC)
             .limit(size + 1)
             .toList()
@@ -278,7 +289,8 @@ class ProductQueryRepository {
                                 // 2차 카테고리가 존재하고, 2차 카테고리도 같을 때
                                 (base[ProductTable.secondCategory].isNotNull() and
                                         (ProductTable.secondCategory eq base[ProductTable.secondCategory]))
-                        )
+                        ) and
+                        (ProductTable.notDeleted())
             }
             // id 내림차순 정렬
             .orderBy(ProductTable.id to SortOrder.DESC)
@@ -296,5 +308,34 @@ class ProductQueryRepository {
 
         // 3) 응답 래핑
         SimilarProductListResponse(rows)
+    }
+
+    fun getRecentlyRestockedProducts(): RecentlyRestockedProductListResponse = transaction {
+        val rows = BasketTable
+            .join(ProductTable, JoinType.INNER, BasketTable.productId, ProductTable.id)
+            .select(
+                ProductTable.id,
+                ProductTable.name,
+                ProductTable.brand,
+                ProductTable.thumbnailUrl
+            )
+            .where {
+                (BasketTable.isNotification eq true) and
+                        (BasketTable.notificationDate.isNotNull()) and
+                        (BasketTable.isHidden eq false) and
+                        (BasketTable.isDelete eq false)
+            }
+            .orderBy(BasketTable.notificationDate to SortOrder.DESC, BasketTable.id to SortOrder.DESC)
+            .limit(10)
+            .map {
+                RecentlyRestockedProductResponse(
+                    productId = it[ProductTable.id],
+                    name = it[ProductTable.name],
+                    brand = it[ProductTable.brand],
+                    thumbnailUrl = it[ProductTable.thumbnailUrl]
+                )
+            }
+
+        RecentlyRestockedProductListResponse(rows)
     }
 }

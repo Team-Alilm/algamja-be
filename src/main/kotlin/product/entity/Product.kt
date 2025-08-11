@@ -36,38 +36,47 @@ class Product(
 
     @Column(name = "store_number", nullable = false)
     @Comment("외부몰(무신사/지그재그/29CM) 내 상품 식별자")
-    val storeNumber :Long,
+    val storeNumber: Long,
 
     @Column(nullable = false, length = 200)
+    @Comment("상품명")
     val name: String,
 
     @Column(nullable = false, length = 120)
+    @Comment("브랜드명")
     val brand: String,
 
     @Column(name = "thumbnail_url", nullable = false, length = 512)
+    @Comment("상품 썸네일 이미지 URL")
     val thumbnailUrl: String,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
+    @Comment("입점 쇼핑몰 (예: MUSINSA, ZIGZAG, 29CM)")
     val store: Store,
 
     @Column(name = "first_category", length = 80)
+    @Comment("상품 1차 카테고리")
     val firstCategory: String,
 
     @Column(name = "second_category", length = 80)
+    @Comment("상품 2차 카테고리 (없을 수 있음)")
     var secondCategory: String? = null,
 
-    // 금액은 BigDecimal 권장(원 단위면 scale=0)
     @Column(nullable = false, precision = 15, scale = 0)
+    @Comment("상품 가격 (원 단위, 소수점 없음)")
     var price: BigDecimal,
 
     @Column(name = "first_option", length = 120)
+    @Comment("상품 옵션1 (예: 색상)")
     var firstOption: String? = null,
 
     @Column(name = "second_option", length = 120)
+    @Comment("상품 옵션2 (예: 사이즈)")
     var secondOption: String? = null,
 
     @Column(name = "third_option", length = 120)
+    @Comment("상품 옵션3 (추가 옵션이 있을 경우)")
     var thirdOption: String? = null,
 ) : BaseEntity<Long>() {
 
