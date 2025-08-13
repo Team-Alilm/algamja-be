@@ -1,17 +1,19 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.kotlin.jpa)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
     java
-    kotlin("jvm")
-    kotlin("plugin.spring") version "2.2.0" // ✅ 자동 open 처리
-    kotlin("plugin.jpa") version "2.2.0" // ✅ 자동 open 처리
-    id("org.springframework.boot") version "3.5.4"
-    id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "com.skylabs"
 version = "0.0.1-SNAPSHOT"
 
 kotlin {
-    jvmToolchain(21) // Java 21 명확하게 지정
+    jvmToolchain(21)
 }
 
 repositories {
@@ -19,38 +21,41 @@ repositories {
 }
 
 dependencies {
+    // Spring Boot 스타터 (버전 생략 = Boot BOM 관리)
     implementation("org.springframework.boot:spring-boot-starter")
-
-    // web
     implementation("org.springframework.boot:spring-boot-starter-web")
-
-    // swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-
-    // security
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 
-    // jpa
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    // Swagger
+    implementation(libs.springdoc.webmvc.ui)
 
-    // jwt
-    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
+    // JWT
+    implementation(libs.jjwt.api)
+    runtimeOnly(libs.jjwt.impl)
+    runtimeOnly(libs.jjwt.jackson)
 
-    // oauth2
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    // Jackson / Kotlin
+    implementation(libs.jackson.module.kotlin)
+    implementation(libs.kotlin.reflect)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // Exposed
+    implementation(libs.exposed.spring.boot.starter)
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
+    // H2 (local/test)
+    runtimeOnly(libs.h2)
 
-    implementation("org.jetbrains.exposed:exposed-spring-boot-starter:0.61.0")
+    implementation(libs.jsoup)
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.compilerOptions {
+    freeCompilerArgs.set(listOf("-Xannotation-default-target=param-property"))
 }

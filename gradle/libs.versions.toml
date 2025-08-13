@@ -1,0 +1,32 @@
+[versions]
+kotlin = "2.2.0"
+spring-boot = "3.5.4"
+spring-dep-mgmt = "1.1.7"
+springdoc = "2.2.0"
+jjwt = "0.12.3"
+jackson = "2.17.2"
+exposed = "0.61.0"
+h2 = "2.2.224"
+jsoup = "1.17.2" # 필요하면 최신으로 올려도 됨
+
+[libraries]
+springdoc-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+
+jjwt-api     = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl    = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
+
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+
+exposed-spring-boot-starter = { module = "org.jetbrains.exposed:exposed-spring-boot-starter", version.ref = "exposed" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+
+[plugins]
+kotlin-jvm     = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring  = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-jpa     = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
+spring-boot    = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dep-mgmt" }

@@ -1,6 +1,7 @@
 package org.team_alilm.product.controller.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
+import org.team_alilm.product.entity.Product
 
 @Schema(description = "상품 상세 응답")
 data class ProductDetailResponse(
@@ -40,4 +41,26 @@ data class ProductDetailResponse(
 
     @field:Schema(description = "현재 대기 인원 수", example = "25")
     val waitingCount: Long
-)
+) {
+
+    companion object {
+        fun from(
+            product: Product,                        // JPA 엔티티
+            imageUrls: List<String>,
+            waitingCount: Long
+        ): ProductDetailResponse = ProductDetailResponse(
+            id = product.id!!,
+            number = product.storeNumber,
+            name = product.name,
+            brand = product.brand,
+            thumbnailUrl = product.thumbnailUrl,
+            imageUrlList = imageUrls.distinct(),
+            store = product.store.name,              // enum 이면 .name 또는 .label
+            price = product.price.toLong(),         // BigDecimal → Long (scale=0 가정)
+            firstOption = product.firstOption,
+            secondOption = product.secondOption,
+            thirdOption = product.thirdOption,
+            waitingCount = waitingCount
+        )
+    }
+}

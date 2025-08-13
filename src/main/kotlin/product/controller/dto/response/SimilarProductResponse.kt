@@ -1,6 +1,7 @@
 package org.team_alilm.product.controller.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
+import org.team_alilm.product.entity.Product
 
 @Schema(description = "유사 상품 응답")
 data class SimilarProductResponse(
@@ -16,4 +17,16 @@ data class SimilarProductResponse(
 
     @Schema(description = "상품 썸네일 URL", example = "https://example.com/images/galaxy_s24.jpg")
     val thumbnailUrl: String
-)
+) {
+
+    companion object {
+        fun from(product: Product): SimilarProductResponse {
+            return SimilarProductResponse(
+                productId = product.id!!,
+                name = product.name,
+                brand = product.brand,
+                thumbnailUrl = product.thumbnailUrl
+            )
+        }
+    }
+}

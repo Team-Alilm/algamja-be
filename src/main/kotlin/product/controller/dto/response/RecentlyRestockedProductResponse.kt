@@ -1,6 +1,7 @@
 package org.team_alilm.product.controller.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
+import org.team_alilm.product.entity.Product
 
 @Schema(description = "최근 재 입고 상품 응답")
 data class RecentlyRestockedProductResponse(
@@ -15,4 +16,18 @@ data class RecentlyRestockedProductResponse(
 
     @Schema(description = "상품 썸네일 URL", example = "http://example.com/restocked1.jpg")
     val thumbnailUrl: String
-)
+) {
+
+    companion object {
+        fun from(
+            product: Product
+        ) : RecentlyRestockedProductResponse {
+            return RecentlyRestockedProductResponse(
+                productId = product.id!!,
+                name = product.name,
+                brand = product.brand,
+                thumbnailUrl = product.thumbnailUrl
+            )
+        }
+    }
+}

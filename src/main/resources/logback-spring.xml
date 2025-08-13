@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <!-- 공통: 로그 패턴에서 사용할 변수 -->
+    <property name="LOG_DIR" value="/var/log/algamja" />
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg [traceId=%X{traceId}]%n%wEx"/>
+
+    <!-- =========================================================
+         LOCAL: 컬러 콘솔 출력 (개발자 눈호강 모드)
+         ========================================================= -->
+    <springProfile name="local">
+        <!-- 콘솔 컬러 패턴 (Spring Boot의 %clr 지원 사용) -->
+        <property name="CONSOLE_LOG_PATTERN"
+                  value="%d{HH:mm:ss.SSS} %clr(%-5level){blue} [%thread] %clr(%logger{36}){cyan} %clr(-){faint} %msg %clr([traceId=%X{traceId}]){yellow}%n%wEx"/>
+
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- 패키지별 레벨(필요 시 조절) -->
+        <logger name="org.team_alilm" level="INFO"/>
+
+        <!-- 루트 로거: 콘솔만 -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- =========================================================
+         DEV/PROD: 파일 전용 + 사이즈/일자 롤링, 비동기
+         ========================================================= -->
+    <springProfile name="dev,prod">
+        <!-- 메인 파일 appender -->
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_DIR}/application.log</file>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+
+            <!-- 사이즈+일자 롤링 -->
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_DIR}/application.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+                <maxFileSize>100MB</maxFileSize>
+                <totalSizeCap>5GB</totalSizeCap>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+        </appender>
+
+        <!-- 비동기 래퍼(쓰기 지연 최소화) -->
+        <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+            <queueSize>8192</queueSize>
+            <discardingThreshold>0</discardingThreshold>
+            <neverBlock>true</neverBlock>
+            <appender-ref ref="FILE"/>
+        </appender>
+
+        <!-- 패키지별 레벨(필요 시 조절) -->
+        <logger name="org.team_algamja" level="INFO"/>
+
+        <!-- 루트 로거: 파일만 -->
+        <root level="INFO">
+            <appender-ref ref="ASYNC_FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>

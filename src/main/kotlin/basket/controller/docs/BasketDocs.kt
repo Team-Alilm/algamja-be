@@ -2,7 +2,7 @@ package org.team_alilm.basket.controller.docs
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import org.team_alilm.basket.controller.dto.response.MyBasketItemListResponse
+import org.team_alilm.basket.controller.dto.response.MyBasketProductListResponse
 import org.team_alilm.common.security.CustomMemberDetails
 
 interface BasketDocs {
@@ -36,5 +36,21 @@ interface BasketDocs {
             )
         ]
     )
-    fun getMyBasketItem(customMemberDetails: CustomMemberDetails): common.response.ApiResponse<MyBasketItemListResponse>
+    fun getMyBasketItem(customMemberDetails: CustomMemberDetails): common.response.ApiResponse<MyBasketProductListResponse>
+
+    @Operation(
+        summary = "함께 기다리기",
+        description = "사용자의 장바구니에 상품을 추가합니다."
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "장바구니에 상품이 추가되었습니다.",
+        content = [
+            io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                schema = io.swagger.v3.oas.annotations.media.Schema(implementation = common.response.ApiResponse::class)
+            )
+        ]
+    )
+    fun copyBasket(customMemberDetails: CustomMemberDetails, productId: Long): common.response.ApiResponse<Unit>
 }

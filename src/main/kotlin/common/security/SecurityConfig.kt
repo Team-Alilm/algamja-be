@@ -47,6 +47,7 @@ class SecurityConfig (
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .cors { it.disable() }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
             .csrf { it.disable() }
@@ -73,19 +74,5 @@ class SecurityConfig (
             }
 
         return http.build()
-    }
-
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val config = CorsConfiguration()
-        config.allowedOrigins = listOf("*")
-        config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-        config.allowedHeaders = listOf("*")
-        config.allowCredentials = false
-        config.maxAge = 3600
-
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", config)
-        return source
     }
 }

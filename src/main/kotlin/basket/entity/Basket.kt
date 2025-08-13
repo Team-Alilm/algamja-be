@@ -38,9 +38,23 @@ class Basket(
 
 ) : BaseEntity<Long>() {
 
-    // JPA 기본 생성자 (protected로 제한)
+    // JPA 프록시용 무인자 생성자 — 반드시 protected
     protected constructor() : this(
         memberId = 0L,
         productId = 0L
     )
+
+    // 보조 생성자 — 주 생성자와 동일한 파라미터 순서 사용
+    constructor(memberId: Long, productId: Long) : this(
+        memberId = memberId,
+        productId = productId,
+        isNotification = false,
+        notificationDate = null,
+        isHidden = false
+    )
+
+    companion object {
+        fun of(memberId: Long, productId: Long): Basket =
+            Basket(memberId, productId)  // 기본값으로 안전 생성
+    }
 }

@@ -2,13 +2,18 @@ package org.team_alilm.product.controller
 
 import common.response.ApiResponse
 import common.response.ApiResponse.Companion.success
+import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.product.controller.docs.ProductDocs
 import org.team_alilm.product.controller.dto.param.ProductListParam
+import org.team_alilm.product.controller.dto.request.RegisterProductRequest
 import org.team_alilm.product.controller.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.dto.response.ProductDetailResponse
 import org.team_alilm.product.controller.dto.response.ProductListResponse
@@ -23,6 +28,14 @@ class ProductController(
     private val productService: ProductService
 ) : ProductDocs {
 
+    @GetMapping
+    override fun getProductList(
+        @ParameterObject @Valid param : ProductListParam
+    ): ApiResponse<ProductListResponse>{
+        val response = productService.getProductList(param)
+        return success(data = response)
+    }
+
     @GetMapping("/api/v1/products/count")
     override fun getProductCount(): ApiResponse<ProductCountResponse> {
         return success(data = productService.getProductCount())
@@ -33,14 +46,6 @@ class ProductController(
         @PathVariable("productId") productId: Long
     ): ApiResponse<ProductDetailResponse> {
         val response = productService.getProductDetail(productId)
-        return success(data = response)
-    }
-
-    @GetMapping
-    override fun getProductList(
-        @ParameterObject param : ProductListParam
-    ): ApiResponse<ProductListResponse>{
-        val response = productService.getProductList(param)
         return success(data = response)
     }
 
@@ -56,5 +61,14 @@ class ProductController(
     override fun getRecentlyRestockedProducts(): ApiResponse<RecentlyRestockedProductListResponse> {
         val response = productService.getRecentlyRestockedProducts()
         return success(data = response)
+    }
+
+    @PostMapping
+    override fun registerProduct(
+        @RequestBody @Valid request: RegisterProductRequest
+    ): ResponseEntity<ApiResponse<Unit>> {
+        productService.registerProduct(request)
+
+        return ApiResponse.created(data = Unit)
     }
 }
