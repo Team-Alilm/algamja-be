@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.spring.boot.starter.mail)
 
     implementation(libs.slack.api.client)
+
+    implementation(libs.spring.boot.starter.validation)
 }
 
 tasks.withType<Test> {

@@ -74,6 +74,16 @@ management:
     health:
       show-details: always
 
+springdoc:
+  api-docs.path: /v3/api-docs
+  group-configs:
+    - group: api
+      paths-to-match: /api/**
+  swagger-ui:
+    path: /swagger-ui/index.html
+    url: /v3/api-docs/api
+    disable-swagger-default-url: true
+
 server:
   port: 8080
   tomcat:

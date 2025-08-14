@@ -2,6 +2,7 @@ package notification.controller.docs
 
 import common.response.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -27,7 +28,7 @@ interface NotificationDocs {
         ]
     )
     fun getUnreadNotificationCount(
-        customMemberDetails: CustomMemberDetails
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
     ): ApiResponse<UnreadNotificationCountResponse>
 
     @Operation(
@@ -45,7 +46,7 @@ interface NotificationDocs {
         ]
     )
     fun getRecentNotifications(
-        customMemberDetails: CustomMemberDetails
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
     ): ApiResponse<RecentNotificationResponseList>
 
     @Operation(
@@ -58,7 +59,7 @@ interface NotificationDocs {
     )
     fun readNotification(
         notificationId: Long,
-        customMemberDetails: CustomMemberDetails
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
     ): ApiResponse<Unit>
 
     @Operation(
@@ -70,6 +71,6 @@ interface NotificationDocs {
         description = "정상 응답",
     )
     fun readAllNotifications(
-        customMemberDetails: CustomMemberDetails
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
     ): ApiResponse<Unit>
 }

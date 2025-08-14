@@ -1,6 +1,7 @@
 package org.team_alilm.basket.controller.docs
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.team_alilm.basket.controller.dto.response.MyBasketProductListResponse
 import org.team_alilm.common.security.CustomMemberDetails
@@ -36,7 +37,9 @@ interface BasketDocs {
             )
         ]
     )
-    fun getMyBasketItem(customMemberDetails: CustomMemberDetails): common.response.ApiResponse<MyBasketProductListResponse>
+    fun getMyBasketItem(
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
+    ): common.response.ApiResponse<MyBasketProductListResponse>
 
     @Operation(
         summary = "함께 기다리기",
@@ -52,7 +55,10 @@ interface BasketDocs {
             )
         ]
     )
-    fun copyBasket(customMemberDetails: CustomMemberDetails, productId: Long): common.response.ApiResponse<Unit>
+    fun copyBasket(
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails,
+        productId: Long
+    ): common.response.ApiResponse<Unit>
 
     @Operation(
         summary = "장바구니 삭제",
@@ -68,5 +74,5 @@ interface BasketDocs {
             )
         ]
     )
-    fun deleteBasket(customMemberDetails: CustomMemberDetails, basketId: Long): common.response.ApiResponse<Unit>
+    fun deleteBasket(@Parameter(hidden = true) customMemberDetails: CustomMemberDetails, basketId: Long): common.response.ApiResponse<Unit>
 }

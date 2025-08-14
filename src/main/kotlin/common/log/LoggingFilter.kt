@@ -16,6 +16,7 @@ class LoggingFilter : OncePerRequestFilter() {
         "config",
         "health",
         "h2-console",
+        "favicon.ico",
     )
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {

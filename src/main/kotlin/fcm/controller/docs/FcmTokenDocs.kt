@@ -1,6 +1,7 @@
 package org.team_alilm.fcm.controller.docs
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 
@@ -32,7 +33,7 @@ interface FcmTokenDocs {
         ]
     )
     fun registerFcmToken(
-        customMemberDetails: org.team_alilm.common.security.CustomMemberDetails,
+        @Parameter(hidden = true) customMemberDetails: org.team_alilm.common.security.CustomMemberDetails,
         request: org.team_alilm.fcm.controller.dto.request.RegisterFcmTokenRequest
     ) : common.response.ApiResponse<Unit>
 }

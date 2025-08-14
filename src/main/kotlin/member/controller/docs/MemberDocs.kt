@@ -2,6 +2,7 @@ package org.team_alilm.member.controller.docs
 
 import common.response.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -38,7 +39,7 @@ interface MemberDocs {
         ]
     )
     fun getMyInfo(
-        customMemberDetails: CustomMemberDetails
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
     ): ApiResponse<MyInfoResponse>
 
     @Operation(
@@ -50,7 +51,7 @@ interface MemberDocs {
         description = "정상 응답",
     )
     fun updateMyInfo(
-        customMemberDetails: CustomMemberDetails,
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails,
         request: UpdateMyInfoRequest
     ): ApiResponse<Unit>
 }
