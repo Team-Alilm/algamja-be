@@ -1,4 +1,4 @@
-package org.team_alilm.product.controller.dto.request
+package org.team_alilm.product.controller.v1.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank

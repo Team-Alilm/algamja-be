@@ -1,4 +1,4 @@
-package org.team_alilm.product.controller.dto.param
+package org.team_alilm.product.controller.v1.dto.param
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min

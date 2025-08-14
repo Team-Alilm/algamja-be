@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 import org.team_alilm.product.entity.ProductTable
 import org.team_alilm.basket.exposed.BasketTable
 import org.team_alilm.common.enums.Sort
-import org.team_alilm.product.controller.dto.param.ProductListParam
+import org.team_alilm.product.controller.v1.dto.param.ProductListParam
 import org.team_alilm.product.repository.projection.ProductProjection
 
 @Repository

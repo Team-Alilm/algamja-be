@@ -2,22 +2,22 @@ package org.team_alilm.notification.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import org.hibernate.annotations.Comment
+import org.team_alilm.common.jpa.base.BaseEntity
 
 @Entity
 class Notification(
-    @Column(nullable = false)
+
+    @Comment("상품 ID")
+    @Column(nullable = false, updatable = false)
     val productId: Long,
 
-    @Column(nullable = false)
+    @Comment("회원 ID")
+    @Column(nullable = false, updatable = false)
     val memberId: Long,
 
+    @Comment("읽음 여부")
     @Column(nullable = false)
-    val readYn: Boolean,
+    var readYn: Boolean
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
-) { }
+) : BaseEntity<Long>()

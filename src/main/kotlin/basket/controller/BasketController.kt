@@ -2,6 +2,7 @@ package org.team_alilm.basket.controller
 
 import common.response.ApiResponse
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -47,4 +48,16 @@ class BasketController(
         return ApiResponse.success(Unit)
     }
 
+    @DeleteMapping("/{basketId}")
+    override fun deleteBasket(
+        @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
+        @PathVariable basketId: Long
+    ): ApiResponse<Unit> {
+        basketService.deleteBasket(
+            memberId = customMemberDetails.member.id
+                ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR),
+            basketId = basketId
+        )
+        return ApiResponse.success(Unit)
+    }
 }

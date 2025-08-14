@@ -53,4 +53,20 @@ interface BasketDocs {
         ]
     )
     fun copyBasket(customMemberDetails: CustomMemberDetails, productId: Long): common.response.ApiResponse<Unit>
+
+    @Operation(
+        summary = "장바구니 삭제",
+        description = "사용자의 장바구니에서 상품을 삭제합니다."
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "장바구니에서 상품이 삭제되었습니다.",
+        content = [
+            io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                schema = io.swagger.v3.oas.annotations.media.Schema(implementation = common.response.ApiResponse::class)
+            )
+        ]
+    )
+    fun deleteBasket(customMemberDetails: CustomMemberDetails, basketId: Long): common.response.ApiResponse<Unit>
 }

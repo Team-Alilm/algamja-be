@@ -1,4 +1,4 @@
-package org.team_alilm.product.controller.docs
+package org.team_alilm.product.controller.v1.docs
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -7,13 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
-import org.team_alilm.product.controller.dto.param.ProductListParam
-import org.team_alilm.product.controller.dto.request.RegisterProductRequest
-import org.team_alilm.product.controller.dto.response.ProductCountResponse
-import org.team_alilm.product.controller.dto.response.ProductDetailResponse
-import org.team_alilm.product.controller.dto.response.ProductListResponse
-import org.team_alilm.product.controller.dto.response.RecentlyRestockedProductListResponse
-import org.team_alilm.product.controller.dto.response.SimilarProductListResponse
+import org.team_alilm.product.controller.v1.dto.param.ProductListParam
+import org.team_alilm.product.controller.v1.dto.request.RegisterProductRequest
+import org.team_alilm.product.controller.v1.dto.response.ProductCountResponse
+import org.team_alilm.product.controller.v1.dto.response.ProductDetailResponse
+import org.team_alilm.product.controller.v1.dto.response.ProductListResponse
+import org.team_alilm.product.controller.v1.dto.response.RecentlyRestockedProductListResponse
+import org.team_alilm.product.controller.v1.dto.response.SimilarProductListResponse
 
 @Tag(name = "Product", description = "상품 관련 API")
 interface ProductDocs {
