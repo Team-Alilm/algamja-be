@@ -58,14 +58,12 @@ class GlobalRestControllerAdvice {
     }
 
     data class ErrorResponse(
-        val status: Int,
         val errorCode: String,
         val message: String
     ) {
         companion object {
             fun of(errorCode: ErrorCode, overrideMessage: String? = null) =
                 ErrorResponse(
-                    status = errorCode.status.value(),
                     errorCode = errorCode.code,
                     message = overrideMessage ?: errorCode.message
                 )

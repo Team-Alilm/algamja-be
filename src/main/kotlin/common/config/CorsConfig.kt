@@ -1,47 +1,24 @@
 package org.team_alilm.common.config
 
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Bean
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.team_alilm.common.props.CorsProps
 
 @Configuration
+@EnableConfigurationProperties(CorsProps::class)
 class CorsConfig(
+    private val props: CorsProps
+) : WebMvcConfigurer {
 
-    @Value("\${cors.origins}")
-    private val origins: List<String>,
-
-    @Value("\${cors.methods}")
-    private val methods: List<String>,
-
-    @Value("\${cors.headers}")
-    private val headers: List<String>,
-
-    @Value("\${cors.allow-credentials:false}")
-    private val allowCredentials: Boolean,
-
-    @Value("\${cors.max-age:3600}")
-    private val maxAge: Long
-) {
-
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val cfg = CorsConfiguration().apply {
-            if (allowCredentials) {
-                // credentials=true에서는 wildcard(*) 금지 → patterns 사용
-                allowedOriginPatterns = origins
-            } else {
-                allowedOrigins = origins
-            }
-            allowedMethods = methods
-            allowedHeaders = headers
-            this.allowCredentials = allowCredentials
-            this.maxAge = maxAge
-        }
-        return UrlBasedCorsConfigurationSource().also {
-            it.registerCorsConfiguration("/**", cfg)
-        }
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry.addMapping("/**")
+            // 와일드카드/패턴 허용하려면 allowedOriginPatterns 사용
+            .allowedOriginPatterns(*props.origins.toTypedArray())
+            .allowedMethods(*props.methods.toTypedArray())
+            .allowedHeaders(*props.headers.toTypedArray())
+            .allowCredentials(props.allowCredentials)
+            .maxAge(props.maxAge)
     }
 }

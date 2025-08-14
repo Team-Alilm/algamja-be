@@ -36,11 +36,10 @@ class SecurityConfig (
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 리소스 무시
                 .requestMatchers("/health-check")
                 .requestMatchers("/swagger-ui/**")
-                .requestMatchers("/swagger-ui.html")
-                .requestMatchers("/swagger-resources/**")
                 .requestMatchers("/api-docs/**")
                 .requestMatchers("/favicon.ico")
                 .requestMatchers("/h2-console/**")
+                .requestMatchers("/v3/api-docs/**")
         }
     }
 

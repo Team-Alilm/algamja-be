@@ -1,6 +1,6 @@
 package org.team_alilm.common.security.oauth
 
-import domain.Member
+import org.team_alilm.common.enums.Provider
 import kotlin.collections.get
 
 class OAuth2Attribute(
@@ -32,8 +32,8 @@ class OAuth2Attribute(
             provider: String,
             attributeKey: String
         ): OAuth2Attribute {
-            return when (Member.Provider.from(provider)) {
-                Member.Provider.KAKAO -> ofKakao(provider, attributeKey, attributes)
+            return when (Provider.from(provider)) {
+                Provider.KAKAO -> ofKakao(provider, attributeKey, attributes)
             }
         }
 

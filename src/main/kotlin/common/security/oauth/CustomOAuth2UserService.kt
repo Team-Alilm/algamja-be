@@ -1,13 +1,11 @@
 package org.team_alilm.common.security.oauth
 
-import domain.Role
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Component
-import org.team_alilm.common.security.oauth.OAuth2Attribute
 import java.util.Collections
 
 @Component
@@ -32,11 +30,9 @@ class CustomOAuth2UserService : DefaultOAuth2UserService() {
         )
 
         return DefaultOAuth2User(
-            Collections.singleton(SimpleGrantedAuthority(Role.RoleType.ROLE_USER.name)),
+            Collections.singleton(SimpleGrantedAuthority("ROLE_USER")),
             oAuth2Attribute.convertToMap(),
             userNameAttributeName
         )
-
     }
-
 }

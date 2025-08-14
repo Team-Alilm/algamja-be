@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: local
 
   datasource:
     url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
@@ -44,15 +42,6 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-  springdoc:
-    api-docs:
-      enabled: true
-      path: /v3/api-docs
-    swagger-ui:
-      enabled: true
-      path: /swagger-ui
-      display-request-duration: true
-
   task:
     execution:
       pool:
@@ -60,6 +49,21 @@ spring:
         max-size: 8
         queue-capacity: 200
       thread-name-prefix: app-
+
+  jwt:
+    secretKey: ENC(mxDkiICDmwXtM+XYo86WsIPQinTUrl1YUfp3UDuU6Ng6wocaNlw5jF8QkMRRE7l5ZSFjThY7+uY=)
+
+  mail:
+    username: ENC(eU8Z9QnlOF/xdJqYet1WqPG8MRBFVQh1EywdUwSyiu0=)
+    password: ENC(FJG+X4eMpGC06M6MkUkgce2fHONRA59vmnLkPL9XJLuDIY5JbMbO3R7Hr/vom6hfR0wuqcAA3AA=)
+    host: smtp.example.com
+    port: 587
+    protocol: smtp
+
+jasypt:
+  encryptor:
+    algorithm: ${JASYPT_ALGORITHM}
+    password: ${JASYPT_PASSWORD}
 
 management:
   endpoints:

@@ -48,20 +48,6 @@ interface MemberDocs {
     @io.swagger.v3.oas.annotations.responses.ApiResponse(
         responseCode = "200",
         description = "정상 응답",
-        content = [
-            Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = Unit::class),
-                examples = [
-                    io.swagger.v3.oas.annotations.media.ExampleObject(
-                        name = "ok",
-                        value = """
-                        {}
-                        """
-                    )
-                ]
-            )
-        ]
     )
     fun updateMyInfo(
         customMemberDetails: CustomMemberDetails,

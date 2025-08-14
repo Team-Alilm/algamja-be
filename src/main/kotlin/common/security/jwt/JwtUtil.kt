@@ -1,6 +1,5 @@
 package org.team_alilm.common.security.jwt
 
-import domain.Member
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException

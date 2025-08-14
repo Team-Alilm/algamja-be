@@ -74,7 +74,7 @@ class ProductService(
         val product = productRepository.findByIdOrNull(productId)
             ?: throw BusinessException(errorCode = ErrorCode.PRODUCT_NOT_FOUND)
 
-        val productList = productRepository.findTop10ByIdNotAndFirstCategoryOrSecondCategoryAndDeletedFalseOrderByIdDesc(
+        val productList = productRepository.findTop10ByIdNotAndFirstCategoryOrSecondCategoryAndIsDeleteFalseOrderByIdDesc(
             id = productId,
             firstCategory = product.firstCategory,
             secondCategory = product.secondCategory

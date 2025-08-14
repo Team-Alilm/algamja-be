@@ -14,8 +14,7 @@ import org.team_alilm.common.jpa.base.BaseEntity
         )
     ],
     indexes = [
-        Index(name = "idx_product_image_product_id", columnList = "product_id"),
-        Index(name = "idx_product_image_product_id_sort", columnList = "product_id, sort_order")
+        Index(name = "idx_product_image_product_id", columnList = "product_id")
     ]
 )
 @Comment("상품 이미지")

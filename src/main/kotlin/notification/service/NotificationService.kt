@@ -1,6 +1,7 @@
-package notification.service
+package org.team_alilm.notification.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponse
@@ -10,6 +11,7 @@ import org.team_alilm.notification.repository.NotificationRepository
 import org.team_alilm.product.repository.ProductRepository
 
 @Service
+@Transactional(readOnly = true)
 class NotificationService(
     private val notificationRepository: NotificationRepository,
     private val productRepository: ProductRepository
@@ -57,6 +59,7 @@ class NotificationService(
         return RecentNotificationResponseList(recentNotificationResponseList)
     }
 
+    @Transactional
     fun readNotification(
         notificationId: Long,
         memberId: Long
@@ -77,6 +80,7 @@ class NotificationService(
         notificationRepository.save(notification)
     }
 
+    @Transactional
     fun readAllNotifications(memberId: Long) {
         val notifications = notificationRepository.findAllByMemberIdAndReadYnFalse(memberId)
 

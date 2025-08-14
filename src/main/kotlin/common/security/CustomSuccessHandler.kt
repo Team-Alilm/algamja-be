@@ -11,12 +11,13 @@ import org.springframework.web.util.UriComponentsBuilder
 import org.team_alilm.common.enums.Provider
 import org.team_alilm.common.security.jwt.JwtUtil
 import org.team_alilm.common.security.oauth.OauthLoginMemberService
+import org.team_alilm.common.slack.SlackClient
 
 @Component
 class CustomSuccessHandler(
     private val oauthLoginMemberService: OauthLoginMemberService,  // Member 관련 서비스 계층
     private val jwtUtil: JwtUtil,
-    private val slackGateway: SlackGateway,
+    private val slackClient: SlackClient,
     @Value("\${app.base-url}") private val baseUrl: String
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
@@ -33,16 +34,18 @@ class CustomSuccessHandler(
         val member = oauthLoginMemberService.loginMember(provider, providerId, attributes)  // 비즈니스 로직 처리
 
         // Slack 메시지 전송
-        slackGateway.sendMessage("""
+        slackClient.sendMessage("""
             로그인 성공 : ${member.nickname}
             이메일 : ${member.email}
             """.trimIndent())
 
         val jwt = jwtUtil.createJwt(member.id!!, 1000L * 60 * 60 * 24 * 30 * 1000)
-        val redirectUri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+        val redirectUri = UriComponentsBuilder
+            .fromUriString(baseUrl)
             .path("/oauth/kakao")
             .queryParam("Authorization", jwt)
-            .build().toUriString()
+            .build()
+            .toUriString()
 
         redirectStrategy.sendRedirect(request, response, redirectUri)
     }

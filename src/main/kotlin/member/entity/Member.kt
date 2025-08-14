@@ -28,7 +28,7 @@ class Member(
 
     @Column(nullable = false)
     @Comment("제공자별 회원 식별 ID")
-    val providerId: Long,
+    val providerId: String,
 
     @Column(nullable = false, length = 30)
     @Comment("회원 이메일")

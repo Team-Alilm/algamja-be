@@ -64,7 +64,12 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.compilerOptions {
     freeCompilerArgs.set(listOf("-Xannotation-default-target=param-property"))
+}
+
+configurations.all {
+    exclude(group = "io.springfox")
 }

@@ -1,7 +1,7 @@
 package org.team_alilm.notification.controller
 
 import common.response.ApiResponse
-import notification.service.NotificationService
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,6 +14,7 @@ import org.team_alilm.common.security.CustomMemberDetails
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponseList
 import org.team_alilm.notification.controller.dto.response.UnreadNotificationCountResponse
 import notification.controller.docs.NotificationDocs
+import org.team_alilm.notification.service.NotificationService
 
 @RestController
 @RequestMapping("/api/v1/notifications")

@@ -1,4 +1,4 @@
-package common.config
+package org.team_alilm.common.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
