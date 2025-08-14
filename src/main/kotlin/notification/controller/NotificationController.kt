@@ -13,7 +13,7 @@ import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.common.security.CustomMemberDetails
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponseList
 import org.team_alilm.notification.controller.dto.response.UnreadNotificationCountResponse
-import org.team_alilm.notification.controller.v1.docs.NotificationDocs
+import notification.controller.docs.NotificationDocs
 
 @RestController
 @RequestMapping("/api/v1/notifications")
@@ -61,6 +61,7 @@ class NotificationController(
         )
     }
 
+    @PutMapping("/read-all")
     override fun readAllNotifications(customMemberDetails: CustomMemberDetails): ApiResponse<Unit> {
         return ApiResponse.Companion.success(
             data = notificationService.readAllNotifications(

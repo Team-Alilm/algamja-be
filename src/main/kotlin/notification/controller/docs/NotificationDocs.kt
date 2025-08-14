@@ -1,7 +1,9 @@
-package org.team_alilm.notification.controller.v1.docs
+package notification.controller.docs
 
 import common.response.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.team_alilm.common.security.CustomMemberDetails
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponseList
@@ -18,9 +20,9 @@ interface NotificationDocs {
         responseCode = "200",
         description = "정상 응답",
         content = [
-            io.swagger.v3.oas.annotations.media.Content(
+            Content(
                 mediaType = "application/json",
-                schema = io.swagger.v3.oas.annotations.media.Schema(implementation = UnreadNotificationCountResponse::class)
+                schema = Schema(implementation = UnreadNotificationCountResponse::class)
             )
         ]
     )
@@ -36,9 +38,9 @@ interface NotificationDocs {
         responseCode = "200",
         description = "정상 응답",
         content = [
-            io.swagger.v3.oas.annotations.media.Content(
+            Content(
                 mediaType = "application/json",
-                schema = io.swagger.v3.oas.annotations.media.Schema(implementation = UnreadNotificationCountResponse::class)
+                schema = Schema(implementation = UnreadNotificationCountResponse::class)
             )
         ]
     )

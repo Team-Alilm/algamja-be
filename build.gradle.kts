@@ -43,6 +43,9 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
 
+    // Firebase Admin SDK (FCM)
+    implementation(libs.firebase.admin)
+
     // Exposed
     implementation(libs.exposed.spring.boot.starter)
 
@@ -50,6 +53,12 @@ dependencies {
     runtimeOnly(libs.h2)
 
     implementation(libs.jsoup)
+
+    implementation(libs.jasypt.spring.boot.starter)
+
+    implementation(libs.spring.boot.starter.mail)
+
+    implementation(libs.slack.api.client)
 }
 
 tasks.withType<Test> {

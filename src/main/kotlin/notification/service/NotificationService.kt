@@ -3,14 +3,11 @@ package notification.service
 import org.springframework.stereotype.Service
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
-import org.team_alilm.notification.controller.NotificationController.*
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponse
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponseList
 import org.team_alilm.notification.controller.dto.response.UnreadNotificationCountResponse
-import org.team_alilm.notification.controller.v1.docs.NotificationDocs
 import org.team_alilm.notification.repository.NotificationRepository
 import org.team_alilm.product.repository.ProductRepository
-import java.time.LocalDateTime
 
 @Service
 class NotificationService(

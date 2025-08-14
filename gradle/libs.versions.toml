@@ -8,6 +8,9 @@ jackson = "2.17.2"
 exposed = "0.61.0"
 h2 = "2.2.224"
 jsoup = "1.17.2" # 필요하면 최신으로 올려도 됨
+firebase-admin = "9.5.0"   # FCM Admin SDK
+jasypt-spring-boot = "3.0.5"
+slack-sdk = "1.42.0" # 예시
 
 [libraries]
 springdoc-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
@@ -23,6 +26,14 @@ exposed-spring-boot-starter = { module = "org.jetbrains.exposed:exposed-spring-b
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
 
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+
+jasypt-spring-boot-starter = { module = "com.github.ulisesbocchio:jasypt-spring-boot-starter", version.ref = "jasypt-spring-boot" }
+
+firebase-admin = { module = "com.google.firebase:firebase-admin", version.ref = "firebase-admin" }
+
+spring-boot-starter-mail = { module = "org.springframework.boot:spring-boot-starter-mail" }
+
+slack-api-client = { module = "com.slack.api:slack-api-client", version.ref = "slack-sdk" }
 
 [plugins]
 kotlin-jvm     = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

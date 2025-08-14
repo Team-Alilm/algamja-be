@@ -26,8 +26,8 @@ object BasketTable : Table("basket") {
 
     init {
         // JPA @Index 와 동일하게 구성
-        index(name = "idx_basket_member_id", columns = arrayOf(memberId))
-        index(name = "idx_basket_product_id", columns = arrayOf(productId))
-        index(name = "idx_basket_member_product", columns = arrayOf(memberId, productId))
+//        index(name = "idx_basket_member_id", columns = arrayOf(memberId))
+//        index(name = "idx_basket_product_id", columns = arrayOf(productId))
+//        index(name = "idx_basket_member_product", columns = arrayOf(memberId, productId))
     }
 }

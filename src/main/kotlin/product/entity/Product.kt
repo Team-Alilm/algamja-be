@@ -90,4 +90,19 @@ class Product(
         secondCategory = null,
         price = BigDecimal.ZERO
     )
+
+    fun toSlackMessage(): String = """
+        {
+            "text":"${this.name} 상품이 재 입고 되었습니다.
+        
+                상품명: ${this.name}
+                상품번호: ${this.storeNumber}
+                상품 옵션1: ${this.firstOption}
+                상품 옵션2: ${this.secondOption}
+                상품 옵션3: ${this.thirdOption}
+                상품 구매링크 : ${this.store.url}
+                바구니에서 삭제되었습니다.
+                "
+        }
+    """.trimIndent()
 }

@@ -24,5 +24,8 @@ enum class ErrorCode(
     NOTIFICATION_NOT_FOUND_ERROR(
         HttpStatus.NOT_FOUND, "NOTIFICATION_001", "해당 알림을 찾을 수 없습니다."
     ),
+    SLACK_CLIENT_NOT_INITIALIZED(
+        HttpStatus.INTERNAL_SERVER_ERROR, "SLACK_001", "Slack 클라이언트가 초기화되지 않았습니다."
+    ),
 
 }
