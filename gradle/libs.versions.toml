@@ -11,6 +11,7 @@ jsoup = "1.17.2" # 필요하면 최신으로 올려도 됨
 firebase-admin = "9.5.0"   # FCM Admin SDK
 jasypt-spring-boot = "3.0.5"
 slack-sdk = "1.42.0" # 예시
+mysql = "9.4.0"   # ✅ 추가 (최신 MySQL Connector/J)
 
 [libraries]
 springdoc-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
@@ -36,6 +37,8 @@ spring-boot-starter-mail = { module = "org.springframework.boot:spring-boot-star
 slack-api-client = { module = "com.slack.api:slack-api-client", version.ref = "slack-sdk" }
 
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+
+mysql-connector-j = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" } # ✅ 추가
 
 [plugins]
 kotlin-jvm     = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

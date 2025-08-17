@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.skylabs"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.1"
 
 kotlin {
     jvmToolchain(21)
@@ -61,6 +61,8 @@ dependencies {
     implementation(libs.slack.api.client)
 
     implementation(libs.spring.boot.starter.validation)
+
+    implementation(libs.mysql.connector.j)
 }
 
 tasks.withType<Test> {
@@ -74,4 +76,12 @@ compileKotlin.compilerOptions {
 
 configurations.all {
     exclude(group = "io.springfox")
+}
+
+tasks.jar {
+    enabled = false
+}
+
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    archiveFileName.set("app.jar")
 }
