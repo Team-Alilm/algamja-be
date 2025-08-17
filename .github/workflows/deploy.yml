@@ -29,6 +29,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Decode Firebase Secret
+        run: |
+          echo "${{ secrets.FIREBASE_SECRET_B64 }}" | base64 --decode > src/main/resources/firebase/FirebaseSecretKey.json
+
       # repo 경로 소문자 + IMAGE_TAG 주입
       - name: Compute env (lowercase repo, tag)
         run: |
