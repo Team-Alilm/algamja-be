@@ -10,8 +10,6 @@ services:
       - .env.app
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - JASYPT_ALGORITHM=PBEWithMD5AndDES
-      - JASYPT_PASSWORD=1ASDWQ45ASDQW
     restart: always
 
   nginx:
