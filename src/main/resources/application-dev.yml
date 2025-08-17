@@ -1,14 +1,10 @@
 spring:
+
   datasource:
     url: ENC(ZDpqWge75lwCaJv1jaPNNkx3tAzKi294wP7G31nhJK8Jd0kJvPDvgVQ0R99RxuoYI5WHKzOQLBclY2MiGsYXcl8WEPX5hA8EjCd+5ClhynvgZUUX9U2NCLZSUq2Che2t)
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ENC(kuV4NDaVfXCAy3oZAFZvsw==)
     password: ENC(eFBbprUYt6AEtXC9wqz5ebIg8oKK1bOr)
-
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
 
   jpa:
     open-in-view: false
@@ -26,8 +22,8 @@ spring:
         registration:
           kakao:
             client-name: Kakao
-            client-id: ENC(kxlkqxO0NBEpaPla5xepuqS4lPRqowdcsA1tO0EDSmJ8ajStyuGPqPy892vtwLPY)
-            client-secret: ENC(r3cFkFHBsImYzYvGwY+u2pNNVviwX3FELqdnJF2wV+3OpicqNlnU6AlraDJnGZk9)
+            client-id: ENC(bY4du5OfPJoCLyJvvrX7eADU3O1p/oze8c+pvSD3EZxwVvB/YAY0xvUm+8/TzDKa)
+            client-secret: ENC(nnyQJdgGymYjFygho+1+UWazDq7XADUoc+wuk8gBfB4MRhT7abns0AZZK7aqqaOB)
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
@@ -41,14 +37,28 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-  springdoc:
-    api-docs:
-      enabled: true
-      path: /v3/api-docs
-    swagger-ui:
-      enabled: true
-      path: /swagger-ui
-      display-request-duration: true
+  task:
+    execution:
+      pool:
+        core-size: 4
+        max-size: 8
+        queue-capacity: 200
+      thread-name-prefix: app-
+
+  jwt:
+    secretKey: ENC(xorjoiJeOmHgf/KnMkve2p5bqLOXkT61EN4/7KjLj+n8MUO83PX8DGwdJg640uxAA9LNtAw13as=)
+
+  mail:
+    username: ENC(koD2J28i6xwgA1KbFpuccdvYlzyeNmsnPf2nU4eLdHQ=)
+    password: ENC(0qgNE0XPTb2fIWOPO5yyPO1/G2lLSoONenAFRHUL9xnW9lYrB41eBvC4tNlFiXQYHsbv0C3TVgk=)
+    host: smtp.example.com
+    port: 587
+    protocol: smtp
+
+jasypt:
+  encryptor:
+    algorithm: ${JASYPT_ALGORITHM}
+    password: ${JASYPT_PASSWORD}
 
 management:
   endpoints:
@@ -59,6 +69,16 @@ management:
     health:
       show-details: always
 
+springdoc:
+  api-docs.path: /v3/api-docs
+  group-configs:
+    - group: api
+      paths-to-match: /api/**
+  swagger-ui:
+    path: /swagger-ui/index.html
+    url: /v3/api-docs/api
+    disable-swagger-default-url: true
+
 server:
   port: 8080
   tomcat:
@@ -67,10 +87,21 @@ server:
       min-spare: 10
 
 app:
-  base-url: http://localhost:3000
+  base-url: https://algamja.com
+
+cors:
+  origins: ["https://algamja.com"]
+  methods: ["GET","POST","PUT","DELETE","PATCH","OPTIONS"]
+  headers: ["*"]
+  allow-credentials: false
+  max-age: 3600
 
 logging:
   level:
     root: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
+
+webhook:
+  slack:
+    url: ENC(YijqXtKSR+hmi4rktbHRSWMIdUEDp2tF8oAW5nr7lAumQKrK0+4W8iDVtCk7sJOToMhj2vNCuC+Ylw1A0nV8jOW9dgnzc+5+xuxyx+rhkMvZisBfY8WXr/78avU4htho)

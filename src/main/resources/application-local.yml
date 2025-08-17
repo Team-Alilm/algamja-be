@@ -1,10 +1,10 @@
 spring:
 
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ENC(ZDpqWge75lwCaJv1jaPNNkx3tAzKi294wP7G31nhJK8Jd0kJvPDvgVQ0R99RxuoYI5WHKzOQLBclY2MiGsYXcl8WEPX5hA8EjCd+5ClhynvgZUUX9U2NCLZSUq2Che2t)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ENC(kuV4NDaVfXCAy3oZAFZvsw==)
+    password: ENC(eFBbprUYt6AEtXC9wqz5ebIg8oKK1bOr)
 
   h2:
     console:
@@ -51,11 +51,11 @@ spring:
       thread-name-prefix: app-
 
   jwt:
-    secretKey: ENC(mxDkiICDmwXtM+XYo86WsIPQinTUrl1YUfp3UDuU6Ng6wocaNlw5jF8QkMRRE7l5ZSFjThY7+uY=)
+    secretKey: ENC(xorjoiJeOmHgf/KnMkve2p5bqLOXkT61EN4/7KjLj+n8MUO83PX8DGwdJg640uxAA9LNtAw13as=)
 
   mail:
-    username: ENC(eU8Z9QnlOF/xdJqYet1WqPG8MRBFVQh1EywdUwSyiu0=)
-    password: ENC(FJG+X4eMpGC06M6MkUkgce2fHONRA59vmnLkPL9XJLuDIY5JbMbO3R7Hr/vom6hfR0wuqcAA3AA=)
+    username: ENC(koD2J28i6xwgA1KbFpuccdvYlzyeNmsnPf2nU4eLdHQ=)
+    password: ENC(0qgNE0XPTb2fIWOPO5yyPO1/G2lLSoONenAFRHUL9xnW9lYrB41eBvC4tNlFiXQYHsbv0C3TVgk=)
     host: smtp.example.com
     port: 587
     protocol: smtp
@@ -109,4 +109,4 @@ logging:
 
 webhook:
   slack:
-    url: ENC(ZaEdZrZmyxJlGPIk0zgsxBR7D2K8h/F5nqyHyEDh2XIsn0mpi4+UE/jL7zvDAyiewcDDIsd1xc+HspuW3FWd84mebkC4k0H0vXciOaARckAz7xgu/c6+1kRy0hDbLLXP)
+    url: ENC(YijqXtKSR+hmi4rktbHRSWMIdUEDp2tF8oAW5nr7lAumQKrK0+4W8iDVtCk7sJOToMhj2vNCuC+Ylw1A0nV8jOW9dgnzc+5+xuxyx+rhkMvZisBfY8WXr/78avU4htho)
