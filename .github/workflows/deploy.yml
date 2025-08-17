@@ -7,32 +7,30 @@ on:
     types: [ closed ]
     branches: [ "main" ]
 
-# 같은 브랜치에서 여러 배포가 겹치면 이전 실행 취소
+# 같은 브랜치에서 동시에 여러 배포가 겹치면 이전 실행 취소
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   deploy:
-    # push 또는 merged PR 에만 실행
+    # PR이 merge 되었을 때만 실행
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
 
+    # GHCR 푸시 권한
     permissions:
       contents: read
       packages: write
 
     env:
       IMAGE_TAG: ${{ github.sha }}
-      # 리포지토리 경로를 전부 소문자로(OWNER/REPO → owner/repo)
-      REPO: ghcr.io/${{ github.repository_owner}}/${{ github.event.repository.name}}
       HEALTH_URL: https://api.algamja.com/health-check
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Buildx 활성화 (docker-container 드라이버) → GHA 캐시 사용 가능
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
@@ -54,11 +52,10 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ env.REPO }}/app:${{ env.IMAGE_TAG }}
-            ${{ env.REPO }}/app:latest
+            ghcr.io/${{ github.repository }}/app:${{ env.IMAGE_TAG }}
+            ghcr.io/${{ github.repository }}/app:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # builder: ${{ steps.buildx.outputs.name }}  # (선택) 명시하고 싶으면 사용
 
       - name: Copy compose & nginx to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -69,7 +66,7 @@ jobs:
           source: "docker-compose.yml,nginx/**"
           target: "${{ secrets.EC2_APP_DIR }}"
 
-      - name: Deploy on EC2 (pull → up -d, no 'down')
+      - name: Deploy on EC2 (pull → up -d → restart, no 'down')
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -90,7 +87,7 @@ jobs:
 
             # 최신 이미지 받기 + 다운타임 최소화
             docker compose pull
-            docker compose up -d
+            docker compose up -d           # 변경된 서비스만 재생성
             docker compose ps
 
             # (선택) 디스크 정리
