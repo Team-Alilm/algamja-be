@@ -9,7 +9,7 @@ services:
     env_file:
       - .env.app
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=dev
     restart: always
 
   nginx:
