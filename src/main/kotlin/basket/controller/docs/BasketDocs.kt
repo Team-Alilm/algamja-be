@@ -3,15 +3,9 @@ package org.team_alilm.basket.controller.docs
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import io.swagger.v3.oas.annotations.tags.Tag
 import org.team_alilm.basket.controller.dto.response.MyBasketProductListResponse
 import org.team_alilm.common.security.CustomMemberDetails
 
-
-@Tag(
-    name = "Basket",
-    description = "장바구니 관련 API"
-)
 interface BasketDocs {
 
     @Operation(

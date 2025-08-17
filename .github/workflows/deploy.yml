@@ -1,124 +1,71 @@
-name: Deploy to EC2
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    types: [ closed ]
-    branches: [ "main" ]
-
-# 같은 브랜치에서 동시에 여러 배포가 겹치면 이전 실행 취소
-concurrency:
-  group: deploy-${{ github.ref }}
-  cancel-in-progress: true
-
-jobs:
-  deploy:
-    # PR이 merge 되었을 때만 실행
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-    runs-on: ubuntu-latest
-
-    # GHCR 푸시 권한
-    permissions:
-      contents: read
-      packages: write
-
-    env:
-      IMAGE_TAG: ${{ github.sha }}
-      HEALTH_URL: https://api.algamja.com/health-check
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build & Push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/app:${{ env.IMAGE_TAG }}
-            ghcr.io/${{ github.repository }}/app:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Copy compose & nginx to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "docker-compose.yml,nginx/**"
-          target: "${{ secrets.EC2_APP_DIR }}"
-
-      - name: Deploy on EC2 (pull → up -d → restart, no 'down')
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            set -e
-            cd ${{ secrets.EC2_APP_DIR }}
-
-            # 이번 커밋으로 이미지 태그 고정
-            echo "IMAGE_TAG=${{ env.IMAGE_TAG }}" > .env
-
-            # GHCR 로그인(일시 오류 대비 재시도)
-            for i in 1 2 3; do
-              docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && break
-              echo "docker login retry $i"; sleep 2
-            done
-
-            # 최신 이미지 받기 + 다운타임 최소화
-            docker compose pull
-            docker compose up -d           # 변경된 서비스만 재생성
-            docker compose ps
-
-            # (선택) 디스크 정리
-            docker system prune -af --volumes || true
-
-      - name: Health check
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            set -e
-            echo "Checking ${HEALTH_URL}"
-            for i in $(seq 1 12); do
-              code=$(curl -sk -o /dev/null -w "%{http_code}" "${HEALTH_URL}" || true)
-              if [ "$code" = "200" ]; then
-                echo "Health OK"
-                exit 0
-              fi
-              echo "Waiting health... ($i/12) got $code"
-              sleep 5
-            done
-            echo "Health check failed"
-            exit 1
-
-      - name: Rollback on failure (to latest)
-        if: failure()
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            set -e
-            cd ${{ secrets.EC2_APP_DIR }}
-            echo "Rolling back to 'latest'..."
-            echo "IMAGE_TAG=latest" > .env
-            docker compose pull
-            docker compose up -d
-            docker compose ps
+#on:
+#  push:
+#    branches: [main]
+#
+#jobs:
+#  deploy:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#
+#      - name: Cache Gradle
+#        uses: actions/cache@v3
+#        with:
+#          path: |
+#            ~/.gradle/caches
+#            ~/.gradle/wrapper
+#          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+#          restore-keys: |
+#            gradle-${{ runner.os }}-
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '21'
+#          distribution: 'temurin'
+#
+#      - name: Create Firebase key file
+#        run: |
+#          mkdir -p core/src/main/resources/firebase
+#          echo "${{ secrets.FIREBASE_SECRET_KEY }}" | base64 -d > core/src/main/resources/firebase/FirebaseSecretKey.json
+#
+#      - name: List JAR
+#        run: ls -al core/src/main/resources/firebase
+#
+#      - name: Build JAR
+#        run: ./gradlew :api:clean :api:build
+#
+#      - name: List JAR
+#        run: ls -al api/build/libs
+#
+#      - name: Copy JAR to EC2
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ secrets.API_EC2_HOST }}
+#          username: ${{ secrets.API_EC2_USER }}
+#          key: ${{ secrets.API_EC2_KEY }}
+#          source: "api/build/libs/api-0.0.1-SNAPSHOT.jar"  # ✅ 수정된 경로
+#          target: "/home/ec2-user"
+#          overwrite: true
+#          strip_components: 3
+#
+#      - name: Run JAR on EC2
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.API_EC2_HOST }}
+#          username: ${{ secrets.API_EC2_USER }}
+#          key: ${{ secrets.API_EC2_KEY }}
+#          script: |
+#            PID=$(lsof -ti:8080)
+#            if [ -n "$PID" ]; then
+#              kill -9 $PID
+#              sleep 3
+#            fi
+#
+#            export JASYPT_PASSWORD=${{ secrets.JASYPT_PASSWORD }}
+#            export JASYPT_ALGORITHM=${{ secrets.JASYPT_ALGORITHM }}
+#
+#            nohup java -jar api-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > /dev/null 2>&1 &
+#
