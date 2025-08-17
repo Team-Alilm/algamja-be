@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   app:
-    image: ghcr.io/algamja/algamja-api/app:${IMAGE_TAG}   # ← GitHub Actions가 sha로 덮어씁니다
+    image: ghcr.io/team-alilm/alilm-be/app:${IMAGE_TAG}   # Actions에서 푸시하는 경로랑 일치
     container_name: app
     expose:
       - "8080"
