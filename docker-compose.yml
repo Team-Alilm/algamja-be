@@ -11,6 +11,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     restart: always
+    volumes:
+      - /srv/app/logs:/var/log/algamja
 
   nginx:
     image: nginx:1.27-alpine
