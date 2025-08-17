@@ -29,10 +29,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create FirebaseSecretKey.json
+      - name: Create FirebaseSecretKey.json (for JAR resources)
         run: |
+          set -e
           mkdir -p src/main/resources/firebase
           echo "${{ secrets.FIREBASE_KEY_B64 }}" | base64 --decode > src/main/resources/firebase/FirebaseSecretKey.json
+          # 빠른 검증: JSON 키의 대표 필드가 있는지 체크
+          grep -q '"type": "service_account"' src/main/resources/firebase/FirebaseSecretKey.json
+          echo "FirebaseSecretKey.json ready."
 
       # repo 경로 소문자 + IMAGE_TAG 주입
       - name: Compute env (lowercase repo, tag)
