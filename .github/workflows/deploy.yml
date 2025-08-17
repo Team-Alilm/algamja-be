@@ -29,9 +29,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Decode Firebase Secret
+      - name: Create FirebaseSecretKey.json
         run: |
-          echo "${{ secrets.FIREBASE_SECRET_B64 }}" | base64 --decode > src/main/resources/firebase/FirebaseSecretKey.json
+          mkdir -p src/main/resources/firebase
+          echo "${{ secrets.FIREBASE_KEY_B64 }}" | base64 --decode > src/main/resources/firebase/FirebaseSecretKey.json
 
       # repo 경로 소문자 + IMAGE_TAG 주입
       - name: Compute env (lowercase repo, tag)
@@ -107,14 +108,21 @@ jobs:
           script: |
             set -e
             echo "Checking ${{ env.HEALTH_URL }}"
-            for i in $(seq 1 12); do
+            echo "Warm-up sleep 10s..."
+            sleep 10                          # 🔹 최초 10초 대기
+
+            for i in $(seq 1 12); do          # 총 1분 동안 재시도(12×5s)
               code=$(curl -sk -o /dev/null -w "%{http_code}" "${{ env.HEALTH_URL }}" || true)
               if [ "$code" = "200" ]; then
-                echo "Health OK"; exit 0
+                echo "Health OK"
+                exit 0
               fi
-              echo "Waiting health... ($i/12) got $code"; sleep 5
+              echo "Waiting health... ($i/12) got $code"
+              sleep 5
             done
-            echo "Health check failed"; exit 1
+
+            echo "Health check failed"
+            exit 1
 
       - name: Rollback on failure (to latest)
         if: failure()
