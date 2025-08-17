@@ -94,8 +94,6 @@ cors:
 logging:
   level:
     root: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
 
 webhook:
   slack:
