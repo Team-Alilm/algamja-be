@@ -10,7 +10,7 @@ import org.team_alilm.common.security.CustomMemberDetails
 import org.team_alilm.member.controller.dto.request.UpdateMyInfoRequest
 import org.team_alilm.member.controller.dto.response.MyInfoResponse
 
-@Tag(name = "회원 API", description = "회원 관련 API 명세")
+@Tag(name = "Member", description = "회원 관련 API")
 interface MemberDocs {
 
     @Operation(
