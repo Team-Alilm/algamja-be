@@ -3,48 +3,39 @@ name: Deploy to EC2
 on:
   push:
     branches: [ "main" ]
+  # PR이 닫힐 때(merge 포함)도 트리거하려면 아래 유지
   pull_request:
     types: [ closed ]
-    branches: [ "main" ]
 
-# 같은 브랜치에서 동시에 여러 배포가 겹치면 이전 실행 취소
+# 같은 브랜치에서 여러 배포가 겹치면 이전 실행 취소
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   deploy:
-    # PR이 merge 되었을 때만 실행
+    # push 또는 merged PR 에만 실행
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
 
-    # GHCR 푸시 권한
     permissions:
       contents: read
       packages: write
 
     env:
-      IMAGE_TAG: ${{ github.sha }}
       HEALTH_URL: https://api.algamja.com/health-check
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Compute lowercase repo path
+      # repo 경로 소문자 + IMAGE_TAG 주입
+      - name: Compute env (lowercase repo, tag)
         run: |
           echo "REPO=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
           echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          install: true
-          driver: docker-container
-
-
-
+      # Buildx 한 번만 설정 (docker-container 드라이버 → GHA 캐시 사용)
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
@@ -81,7 +72,7 @@ jobs:
           source: "docker-compose.yml,nginx/**"
           target: "${{ secrets.EC2_APP_DIR }}"
 
-      - name: Deploy on EC2 (pull → up -d → restart, no 'down')
+      - name: Deploy on EC2 (pull → up -d, no 'down')
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -89,9 +80,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            cd ${{ secrets.EC2_APP_DIR }}
-
-            # 이번 커밋으로 이미지 태그 고정
+            cd "${{ secrets.EC2_APP_DIR }}"
             echo "IMAGE_TAG=${{ env.IMAGE_TAG }}" > .env
 
             # GHCR 로그인(일시 오류 대비 재시도)
@@ -100,12 +89,9 @@ jobs:
               echo "docker login retry $i"; sleep 2
             done
 
-            # 최신 이미지 받기 + 다운타임 최소화
             docker compose pull
-            docker compose up -d           # 변경된 서비스만 재생성
+            docker compose up -d
             docker compose ps
-
-            # (선택) 디스크 정리
             docker system prune -af --volumes || true
 
       - name: Health check
@@ -116,18 +102,15 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            echo "Checking ${HEALTH_URL}"
+            echo "Checking ${{ env.HEALTH_URL }}"
             for i in $(seq 1 12); do
-              code=$(curl -sk -o /dev/null -w "%{http_code}" "${HEALTH_URL}" || true)
+              code=$(curl -sk -o /dev/null -w "%{http_code}" "${{ env.HEALTH_URL }}" || true)
               if [ "$code" = "200" ]; then
-                echo "Health OK"
-                exit 0
+                echo "Health OK"; exit 0
               fi
-              echo "Waiting health... ($i/12) got $code"
-              sleep 5
+              echo "Waiting health... ($i/12) got $code"; sleep 5
             done
-            echo "Health check failed"
-            exit 1
+            echo "Health check failed"; exit 1
 
       - name: Rollback on failure (to latest)
         if: failure()
@@ -138,9 +121,14 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            cd ${{ secrets.EC2_APP_DIR }}
+            cd "${{ secrets.EC2_APP_DIR }}"
             echo "Rolling back to 'latest'..."
             echo "IMAGE_TAG=latest" > .env
-            docker compose pull
-            docker compose up -d
-            docker compose ps
+
+            FILE=docker-compose.yml
+            [ -f compose.yaml ] && FILE=compose.yaml
+
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} || true
+            docker compose -f "$FILE" pull
+            docker compose -f "$FILE" up -d
+            docker compose -f "$FILE" ps
