@@ -65,6 +65,8 @@ dependencies {
     implementation(libs.mysql.connector.j)
 
     implementation(libs.spring.boot.starter.actuator)
+
+    implementation(libs.spring.boot.starter.data.jpa)
 }
 
 tasks.withType<Test> {
