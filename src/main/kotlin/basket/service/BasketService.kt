@@ -1,6 +1,7 @@
 package org.team_alilm.basket.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.basket.controller.dto.response.MyBasketProductListResponse
 import org.team_alilm.basket.entity.Basket
 import org.team_alilm.basket.repository.BasketQueryRepository
@@ -9,6 +10,7 @@ import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
 
 @Service
+@Transactional(readOnly = true)
 class BasketService(
 
     private val basketQueryRepository: BasketQueryRepository,

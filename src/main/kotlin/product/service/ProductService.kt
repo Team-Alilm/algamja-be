@@ -52,6 +52,7 @@ class ProductService(
         )
     }
 
+    @Transactional("exposedTxManager")
     fun getProductList(param : ProductListParam) : ProductListResponse {
         val slice = productQueryRepository.sliceProducts(param)
         if (slice.content.isEmpty()) {
@@ -92,6 +93,7 @@ class ProductService(
         return SimilarProductListResponse(similarProductList = similarProductList)
     }
 
+    @Transactional("exposedTxManager")
     fun getRecentlyRestockedProducts() : RecentlyRestockedProductListResponse {
         val ids = productQueryRepository.getTop10RecentlyNotifiedProductIds().ifEmpty {
             return RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = emptyList())
