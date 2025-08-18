@@ -14,28 +14,7 @@ interface BasketDocs {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            io.swagger.v3.oas.annotations.media.Content(
-                mediaType = "application/json",
-                schema = io.swagger.v3.oas.annotations.media.Schema(implementation = List::class),
-                examples = [
-                    io.swagger.v3.oas.annotations.media.ExampleObject(
-                        name = "ok",
-                        value = """
-                        [
-                          {
-                            "productId": 1,
-                            "productName": "상품명",
-                            "quantity": 2,
-                            "price": 10000
-                          }
-                        ]
-                        """
-                    )
-                ]
-            )
-        ]
+        description = "정상 응답"
     )
     fun getMyBasketItem(
         @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
@@ -47,13 +26,7 @@ interface BasketDocs {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "장바구니에 상품이 추가되었습니다.",
-        content = [
-            io.swagger.v3.oas.annotations.media.Content(
-                mediaType = "application/json",
-                schema = io.swagger.v3.oas.annotations.media.Schema(implementation = common.response.ApiResponse::class)
-            )
-        ]
+        description = "장바구니에 상품이 추가되었습니다."
     )
     fun copyBasket(
         @Parameter(hidden = true) customMemberDetails: CustomMemberDetails,

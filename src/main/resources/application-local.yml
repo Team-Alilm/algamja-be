@@ -1,10 +1,10 @@
 spring:
 
   datasource:
-    url: ENC(ZDpqWge75lwCaJv1jaPNNkx3tAzKi294wP7G31nhJK8Jd0kJvPDvgVQ0R99RxuoYI5WHKzOQLBclY2MiGsYXcl8WEPX5hA8EjCd+5ClhynvgZUUX9U2NCLZSUq2Che2t)
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ENC(kuV4NDaVfXCAy3oZAFZvsw==)
-    password: ENC(eFBbprUYt6AEtXC9wqz5ebIg8oKK1bOr)
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
 
   h2:
     console:
@@ -15,7 +15,7 @@ spring:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -27,8 +27,8 @@ spring:
         registration:
           kakao:
             client-name: Kakao
-            client-id: ENC(bY4du5OfPJoCLyJvvrX7eADU3O1p/oze8c+pvSD3EZxwVvB/YAY0xvUm+8/TzDKa)
-            client-secret: ENC(nnyQJdgGymYjFygho+1+UWazDq7XADUoc+wuk8gBfB4MRhT7abns0AZZK7aqqaOB)
+            client-id: ENC(eNKiMXAG3vf/L7Xvgu1eu4nxbu0r1tt02WjWIWyWFBQyN9AGAB7x/bN9t9uQAckm)
+            client-secret: ENC(iRjZnKtYJK7ToWDLTt0k8hC4Yg+fMvIf+2A+mk1A674NejBzJkdnphCb6kkgTR4I)
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
