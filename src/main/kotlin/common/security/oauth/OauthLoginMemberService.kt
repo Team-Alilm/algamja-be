@@ -1,7 +1,7 @@
 package org.team_alilm.common.security.oauth
 
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.common.enums.Provider
 import org.team_alilm.member.entity.Member
 import org.team_alilm.member.repository.MemberRepository
