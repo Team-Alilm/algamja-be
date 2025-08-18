@@ -19,7 +19,7 @@ spring:
             client-name: Kakao
             client-id: ENC(VNeX4m+L95XZwn4AOw5sZB5Zv3z1sU/SM2d21vW/3f/ppojX8xmFlQoNznyALZl/)
             client-secret: ENC(ysUCLugq5Vz6MAgJcKNDNeIXHn4r7CTn39tBf054U80yEELDZ+EPMhIUX5OzZCmD)
-            redirect-uri: http://api.algamja.com/login/oauth2/code/kakao
+            redirect-uri: https://api.algamja.com/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
