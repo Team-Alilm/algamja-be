@@ -36,7 +36,7 @@ class ProductController(
         return success(data = response)
     }
 
-    @GetMapping("/api/v1/products/count")
+    @GetMapping("/count")
     override fun getProductCount(): ApiResponse<ProductCountResponse> {
         return success(data = productService.getProductCount())
     }
