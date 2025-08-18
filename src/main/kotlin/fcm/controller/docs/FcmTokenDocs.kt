@@ -14,23 +14,7 @@ interface FcmTokenDocs {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            io.swagger.v3.oas.annotations.media.Content(
-                mediaType = "application/json",
-                schema = io.swagger.v3.oas.annotations.media.Schema(implementation = String::class),
-                examples = [
-                    io.swagger.v3.oas.annotations.media.ExampleObject(
-                        name = "ok",
-                        value = """
-                        {
-                          "message": "FCM 토큰이 성공적으로 등록되었습니다."
-                        }
-                        """
-                    )
-                ]
-            )
-        ]
+        description = "정상 응답"
     )
     fun registerFcmToken(
         @Parameter(hidden = true) customMemberDetails: org.team_alilm.common.security.CustomMemberDetails,

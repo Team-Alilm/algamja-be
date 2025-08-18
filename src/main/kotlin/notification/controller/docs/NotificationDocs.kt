@@ -3,8 +3,6 @@ package notification.controller.docs
 import common.response.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.team_alilm.common.security.CustomMemberDetails
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponseList
@@ -19,13 +17,7 @@ interface NotificationDocs {
     )
     @io.swagger.v3.oas.annotations.responses.ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = UnreadNotificationCountResponse::class)
-            )
-        ]
+        description = "정상 응답"
     )
     fun getUnreadNotificationCount(
         @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
@@ -37,13 +29,7 @@ interface NotificationDocs {
     )
     @io.swagger.v3.oas.annotations.responses.ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = UnreadNotificationCountResponse::class)
-            )
-        ]
+        description = "정상 응답"
     )
     fun getRecentNotifications(
         @Parameter(hidden = true) customMemberDetails: CustomMemberDetails

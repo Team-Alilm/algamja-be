@@ -39,13 +39,7 @@ interface BasketDocs {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "장바구니에서 상품이 삭제되었습니다.",
-        content = [
-            io.swagger.v3.oas.annotations.media.Content(
-                mediaType = "application/json",
-                schema = io.swagger.v3.oas.annotations.media.Schema(implementation = common.response.ApiResponse::class)
-            )
-        ]
+        description = "장바구니에서 상품이 삭제되었습니다."
     )
     fun deleteBasket(@Parameter(hidden = true) customMemberDetails: CustomMemberDetails, basketId: Long): common.response.ApiResponse<Unit>
 }

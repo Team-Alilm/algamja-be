@@ -3,8 +3,6 @@ package org.team_alilm.member.controller.docs
 import common.response.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.team_alilm.common.security.CustomMemberDetails
 import org.team_alilm.member.controller.dto.request.UpdateMyInfoRequest
@@ -19,24 +17,7 @@ interface MemberDocs {
     )
     @io.swagger.v3.oas.annotations.responses.ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = MyInfoResponse::class),
-                examples = [
-                    io.swagger.v3.oas.annotations.media.ExampleObject(
-                        name = "ok",
-                        value = """
-                        {
-                          "email": "examples@gmail.com",
-                          "nickname": "exampleUser",
-                        }
-                        """
-                    )
-                ]
-            )
-        ]
+        description = "정상 응답"
     )
     fun getMyInfo(
         @Parameter(hidden = true) customMemberDetails: CustomMemberDetails

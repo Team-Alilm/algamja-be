@@ -1,9 +1,6 @@
 package org.team_alilm.product.controller.v1.docs
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.ExampleObject
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
@@ -24,23 +21,7 @@ interface ProductDocs {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = ProductCountResponse::class),
-                examples = [
-                    ExampleObject(
-                        name = "ok",
-                        value = """
-                        {
-                          "count": 12345
-                        }
-                        """
-                    )
-                ]
-            )
-        ]
+        description = "정상 응답"
     )
     fun getProductCount(): common.response.ApiResponse<ProductCountResponse>
 
@@ -50,34 +31,7 @@ interface ProductDocs {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = ProductDetailResponse::class),
-                examples = [
-                    ExampleObject(
-                        name = "ok",
-                        value = """
-                        {
-                            "id": 1,
-                            "name": "Sample Product",
-                            "price": 10000,
-                            "description": "This is a sample product.",
-                            "brand": "Sample Brand",
-                            "thumbnailUrl": "http://example.com/thumbnail.jpg",
-                            "imageUrlList": ["http://example.com/image1.jpg", "http://example.com/image2.jpg"],
-                            "store": "Sample Store",
-                            "firstOption": "Size: M",
-                            "secondOption": "Color: Red",
-                            "thirdOption": null,
-                            "waitingCount": 5
-                        }
-                        """
-                    )
-                ]
-            )
-        ]
+        description = "정상 응답"
     )
     fun getProductDetail(productId: Long): common.response.ApiResponse<ProductDetailResponse>
 
@@ -87,39 +41,7 @@ interface ProductDocs {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = ProductDetailResponse::class),
-                examples = [
-                    ExampleObject(
-                        name = "ok",
-                        value = """
-                        {
-                            "products": [
-                                {
-                                    "id": 1,
-                                    "name": "Sample Product",
-                                    "price": 10000,
-                                    "description": "This is a sample product.",
-                                    "brand": "Sample Brand",
-                                    "thumbnailUrl": "http://example.com/thumbnail.jpg",
-                                    "imageUrlList": ["http://example.com/image1.jpg", "http://example.com/image2.jpg"],
-                                    "store": "Sample Store",
-                                    "firstOption": "Size: M",
-                                    "secondOption": "Color: Red",
-                                    "thirdOption": null,
-                                    "waitingCount": 5
-                                }
-                            ],
-                            "hasNext": false
-                        }
-                        """
-                    )
-                ]
-            )
-        ]
+        description = "정상 응답"
     )
     fun getProductList(param : ProductListParam): common.response.ApiResponse<ProductListResponse>
 
@@ -129,47 +51,7 @@ interface ProductDocs {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = ProductListResponse::class),
-                examples = [
-                    ExampleObject(
-                        name = "ok",
-                        value = """
-                        {
-                            "products": [
-                                {
-                                    "id": 1,
-                                    "name": "Similar Product 1",
-                                    "price": 12000,
-                                    "brand": "Brand A",
-                                    "thumbnailUrl": "http://example.com/similar1.jpg",
-                                    "firstCategory": "Category A",
-                                    "firstOption": "Size: L",
-                                    "secondOption": null,
-                                    "thirdOption": null
-                                },
-                                {
-                                    "id": 2,
-                                    "name": "Similar Product 2",
-                                    "price": 15000,
-                                    "brand": "Brand B",
-                                    "thumbnailUrl": "http://example.com/similar2.jpg",
-                                    "firstCategory": "Category B",
-                                    "firstOption": null,
-                                    "secondOption": null,
-                                    "thirdOption": null
-                                }
-                            ],
-                            "hasNext": false
-                        }
-                        """
-                    )
-                ]
-            )
-        ]
+        description = "정상 응답"
     )
     fun getSimilarProducts(productId: Long): common.response.ApiResponse<SimilarProductListResponse>
 
@@ -180,36 +62,7 @@ interface ProductDocs {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "정상 응답",
-        content = [
-            Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = ProductListResponse::class),
-                examples = [
-                    ExampleObject(
-                        name = "ok",
-                        value = """
-                        {
-                            "products": [
-                                {
-                                    "id": 1,
-                                    "name": "Recently Restocked Product 1",
-                                    "brand": "Brand C",
-                                    "thumbnailUrl": "http://example.com/restocked1.jpg",
-                                },
-                                {
-                                    "id": 2,
-                                    "name": "Recently Restocked Product 2",
-                                    "brand": "Brand D",
-                                    "thumbnailUrl": "http://example.com/restocked2.jpg",
-                                }
-                            ],
-                        }
-                        """
-                    )
-                ]
-            )
-        ]
+        description = "정상 응답"
     )
     fun getRecentlyRestockedProducts(): common.response.ApiResponse<RecentlyRestockedProductListResponse>
 
@@ -219,20 +72,7 @@ interface ProductDocs {
     )
     @ApiResponse(
         responseCode = "201",
-        description = "상품이 성공적으로 등록되었습니다.",
-        content = [
-            Content(
-                mediaType = "application/json",
-                examples = [
-                    ExampleObject(
-                        name = "ok",
-                        value = """
-                        
-                        """
-                    )
-                ]
-            )
-        ]
+        description = "상품이 성공적으로 등록되었습니다."
     )
     fun registerProduct(request: RegisterProductRequest): ResponseEntity<common.response.ApiResponse<Unit>>
 }
