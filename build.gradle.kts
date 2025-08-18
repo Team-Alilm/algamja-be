@@ -63,6 +63,8 @@ dependencies {
     implementation(libs.spring.boot.starter.validation)
 
     implementation(libs.mysql.connector.j)
+
+    implementation(libs.spring.boot.starter.actuator)
 }
 
 tasks.withType<Test> {

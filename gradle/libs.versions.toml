@@ -40,6 +40,8 @@ spring-boot-starter-validation = { module = "org.springframework.boot:spring-boo
 
 mysql-connector-j = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" } # ✅ 추가
 
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
+
 [plugins]
 kotlin-jvm     = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring  = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }

@@ -34,7 +34,7 @@ class SecurityConfig (
         return WebSecurityCustomizer { web: WebSecurity ->
             web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()) // 정적 리소스 무시
-                .requestMatchers("/health-check")
+                .requestMatchers("/actuator/health")
                 .requestMatchers("/swagger-ui/**")
                 .requestMatchers("/api-docs/**")
                 .requestMatchers("/favicon.ico")
