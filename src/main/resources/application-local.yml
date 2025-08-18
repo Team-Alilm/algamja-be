@@ -1,7 +1,6 @@
 spring:
-
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:algamja;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -19,7 +18,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
 
   security:
     oauth2:
@@ -69,7 +67,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,threaddump,env,loggers
+        include: health,beans
   endpoint:
     health:
       show-details: always
