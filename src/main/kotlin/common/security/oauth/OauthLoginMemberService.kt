@@ -3,30 +3,30 @@ package org.team_alilm.common.security.oauth
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.common.enums.Provider
-import org.team_alilm.member.entity.Member
-import org.team_alilm.member.repository.MemberRepository
+import org.team_alilm.member.entity.dto.MemberRow
+import org.team_alilm.member.repository.MemberExposedRepository
 
 @Service
 class OauthLoginMemberService(
-    private val memberRepository: MemberRepository
+    private val memberExposedRepository: MemberExposedRepository
 ) {
 
     @Transactional
-    fun loginMember(provider: Provider, providerId: String, attributes: Map<String, Any>): Member {
-        return memberRepository.findByProviderAndProviderId(provider, providerId)?: run {
+    fun loginMember(provider: Provider, providerId: String, attributes: Map<String, Any>): MemberRow {
+        return memberExposedRepository.findByProviderAndProviderId(provider, providerId)?: run {
             val newMember = saveMember(attributes)
             newMember
         }
     }
 
-    private fun saveMember(attributes: Map<String, Any>): Member {
+    private fun saveMember(attributes: Map<String, Any>): MemberRow {
         val provider = Provider.from(attributes["provider"].toString())
         val providerId = attributes["id"].toString()
         val email = attributes["email"].toString()
         val nickname = attributes["nickname"].toString()
 
-        return memberRepository.save(
-            Member(
+        return memberExposedRepository.save(
+            MemberRow(
                 provider = provider,
                 providerId = providerId,
                 email = email,

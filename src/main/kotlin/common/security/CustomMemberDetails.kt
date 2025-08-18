@@ -2,7 +2,6 @@ package org.team_alilm.common.security
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.team_alilm.member.entity.Member
 
 /**
  * Custom implementation of UserDetails to integrate with Spring Security.

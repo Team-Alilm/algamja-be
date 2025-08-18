@@ -6,15 +6,15 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
-import org.team_alilm.member.repository.MemberRepository
+import org.team_alilm.member.repository.MemberExposedRepository
 
 @Service
 class CustomUserDetailsService(
-    private val memberRepository: MemberRepository
+    private val memberExposedRepository: MemberExposedRepository
 ) : UserDetailsService {
 
     override fun loadUserByUsername(memberId: String): UserDetails {
-        val member = memberRepository.findByIdOrNull(memberId.toLong())
+        val member = memberExposedRepository.findByIdOrNull(memberId.toLong())
             ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
 
         return CustomMemberDetails(member = member)

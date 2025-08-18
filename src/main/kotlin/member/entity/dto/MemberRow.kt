@@ -1,0 +1,30 @@
+package org.team_alilm.member.entity.dto
+
+import org.jetbrains.exposed.sql.ResultRow
+import org.team_alilm.common.enums.Provider
+import org.team_alilm.member.entity.MemberTable
+
+data class MemberRow(
+    val id: Long,
+    val provider: Provider,
+    val providerId: String,
+    val email: String,
+    val nickname: String,
+    val isDelete: Boolean,
+    val createdDate: Long,
+    val updatedDate: Long
+) {
+
+    companion object {
+        fun from(row: ResultRow) = MemberRow(
+            id          = row[MemberTable.id].value,
+            provider    = row[MemberTable.provider],
+            providerId  = row[MemberTable.providerId],
+            email       = row[MemberTable.email],
+            nickname    = row[MemberTable.nickname],
+            isDelete    = row[MemberTable.isDelete],
+            createdDate = row[MemberTable.createdDate],
+            updatedDate = row[MemberTable.updatedDate],
+        )
+    }
+}
