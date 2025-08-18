@@ -23,7 +23,7 @@ jobs:
       packages: write
 
     env:
-      HEALTH_URL: https://api.algamja.com/health-check
+      HEALTH_URL: https://api.algamja.com/actuator/health
 
     steps:
       - name: Checkout
