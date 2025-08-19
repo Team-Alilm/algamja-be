@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class MyBasketProductListResponse(
 
     @field:ArraySchema(
-        schema = Schema(implementation = MyBasketItem::class),
+        schema = Schema(implementation = MyBasketProduct::class),
         arraySchema = Schema(description = "장바구니 상품 목록 예시")
     )
-    val items: List<MyBasketItem>
+    val myBasketProductList: List<MyBasketProduct>
 )

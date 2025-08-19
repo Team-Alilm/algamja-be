@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
-import org.team_alilm.product.entity.Product
 
 @Component
 class SlackClient(

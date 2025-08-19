@@ -1,8 +1,6 @@
 package org.team_alilm.product.controller.v1.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
-import org.team_alilm.product.entity.Product
-import org.team_alilm.product.repository.projection.ProductProjection
 
 @Schema(description = "상품 응답 DTO")
 data class ProductResponse(
@@ -42,24 +40,4 @@ data class ProductResponse(
 
     @Schema(description = "대기 인원 수", example = "12")
     val waitingCount: Long
-) {
-
-    companion object {
-        fun from(productProjection: ProductProjection, waitingCount: Long): ProductResponse {
-            return ProductResponse(
-                id = productProjection.id,
-                name = productProjection.name,
-                brand = productProjection.brand,
-                thumbnailUrl = productProjection.thumbnailUrl,
-                store = productProjection.store,
-                price = productProjection.price.toLong(),
-                firstCategory = productProjection.firstCategory,
-                secondCategory = productProjection.secondCategory,
-                firstOption = productProjection.firstOption,
-                secondOption = productProjection.secondOption,
-                thirdOption = productProjection.thirdOption,
-                waitingCount = waitingCount
-            )
-        }
-    }
-}
+)

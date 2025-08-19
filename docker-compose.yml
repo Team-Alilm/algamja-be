@@ -2,17 +2,51 @@ version: "3.9"
 
 services:
   app:
-    image: ghcr.io/team-alilm/alilm-be/app:${IMAGE_TAG}   # Actions에서 푸시하는 경로랑 일치
+    image: ghcr.io/team-alilm/alilm-be/app:${IMAGE_TAG}
     container_name: app
+    depends_on:
+      - redis
     expose:
       - "8080"
     env_file:
       - .env.app
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+      # Redis 접속정보를 컨테이너 내부에 주입 (서비스명 = redis)
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      # 비번 쓰는 경우 .env.app에 SPRING_DATA_REDIS_PASSWORD=... 넣어두기
     restart: always
     volumes:
       - /srv/app/logs:/var/log/algamja
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: >
+      sh -c '
+        mkdir -p /usr/local/etc/redis &&
+        echo "appendonly yes" > /usr/local/etc/redis/redis.conf &&
+        if [ -n "$REDIS_PASSWORD" ]; then
+          echo "requirepass $REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf
+        fi &&
+        exec redis-server /usr/local/etc/redis/redis.conf
+      '
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    env_file:
+      - .env.app
+    volumes:
+      - /srv/redis/data:/data
+    expose:
+      - "6379"
+    healthcheck:
+      # 비번 있으면 -a로, 없으면 그냥 ping
+      test: [ "CMD-SHELL", "if [ -n \"$REDIS_PASSWORD\" ]; then redis-cli -a \"$REDIS_PASSWORD\" ping; else redis-cli ping; fi" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: always
 
   nginx:
     image: nginx:1.27-alpine

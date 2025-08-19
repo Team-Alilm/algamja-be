@@ -17,7 +17,7 @@ class CustomUserDetailsService(
         val member = memberExposedRepository.findByIdOrNull(memberId.toLong())
             ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
 
-        return CustomMemberDetails(member = member)
+        return CustomMemberDetails(memberRow = member)
     }
 
 }

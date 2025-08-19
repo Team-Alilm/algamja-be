@@ -28,7 +28,7 @@ class MemberController(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ): ApiResponse<MyInfoResponse> {
         val response = memberService.getMyInfo(
-            memberId = customMemberDetails.member.id
+            memberId = customMemberDetails.memberRow.id
                 ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
         )
 
@@ -41,7 +41,7 @@ class MemberController(
         @RequestBody @Valid request: UpdateMyInfoRequest
     ): ApiResponse<Unit> {
         memberService.updateMyInfo(
-            memberId = customMemberDetails.member.id
+            memberId = customMemberDetails.memberRow.id
                 ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR),
             request = request
         )

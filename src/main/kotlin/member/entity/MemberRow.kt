@@ -1,8 +1,7 @@
-package org.team_alilm.member.entity.dto
+package org.team_alilm.member.entity
 
 import org.jetbrains.exposed.sql.ResultRow
 import org.team_alilm.common.enums.Provider
-import org.team_alilm.member.entity.MemberTable
 
 data class MemberRow(
     val id: Long,

@@ -8,7 +8,6 @@ import org.team_alilm.notification.controller.dto.response.RecentNotificationRes
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponseList
 import org.team_alilm.notification.controller.dto.response.UnreadNotificationCountResponse
 import org.team_alilm.notification.repository.NotificationRepository
-import org.team_alilm.product.repository.ProductRepository
 
 @Service
 @Transactional(readOnly = true)

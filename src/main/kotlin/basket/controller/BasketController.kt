@@ -27,8 +27,7 @@ class BasketController(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
     ): ApiResponse<MyBasketProductListResponse> {
         val response = basketService.getMyBasketProductList(
-            memberId = customMemberDetails.member.id
-                ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
+            memberId = customMemberDetails.memberRow.id
         )
 
         return ApiResponse.success(response)
@@ -41,8 +40,7 @@ class BasketController(
         @PathVariable productId: Long
     ): ApiResponse<Unit> {
         basketService.copyBasket(
-            memberId = customMemberDetails.member.id
-                ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR),
+            memberId = customMemberDetails.memberRow.id,
             productId = productId
         )
         return ApiResponse.success(Unit)
@@ -54,7 +52,7 @@ class BasketController(
         @PathVariable basketId: Long
     ): ApiResponse<Unit> {
         basketService.deleteBasket(
-            memberId = customMemberDetails.member.id
+            memberId = customMemberDetails.memberRow.id
                 ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR),
             basketId = basketId
         )
