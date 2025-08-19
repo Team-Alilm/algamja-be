@@ -11,7 +11,7 @@ data class MemberRow(
     val nickname: String,
     val isDelete: Boolean,
     val createdDate: Long,
-    val updatedDate: Long
+    val lastModifiedDate: Long
 ) {
 
     companion object {
@@ -23,7 +23,7 @@ data class MemberRow(
             nickname    = row[MemberTable.nickname],
             isDelete    = row[MemberTable.isDelete],
             createdDate = row[MemberTable.createdDate],
-            updatedDate = row[MemberTable.updatedDate],
+            lastModifiedDate = row[MemberTable.lastModifiedDate],
         )
     }
 }

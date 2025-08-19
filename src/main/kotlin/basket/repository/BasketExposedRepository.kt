@@ -74,20 +74,27 @@ class BasketExposedRepository {
         }
     }
 
-    fun createBasket(
-        memberId: Long,
-        productId: Long
-    ) : Long {
-        val now = System.currentTimeMillis()
+    fun createBasket(memberId: Long, productId: Long): Long {
         val stmt = BasketTable.insertAudited {
-            it[memberId] = memberId
-            it[productId] = productId
-            it[isNotification] = false
-            it[notificationDate] = null
-            it[isHidden] = false
-            it[isDelete] = false
-            it[createdDate] = now
-            it[lastModifiedDate] = now
+            it[this.memberId]         = memberId
+            it[this.productId]        = productId
+            it[this.isNotification]   = false
+            it[this.notificationDate] = null
+            it[this.isHidden]         = false
+            it[this.isDelete]         = false
         }
+        return stmt[BasketTable.id].value
+    }
+
+    fun existsByMemberIdAndProductId(memberId: Long, productId: Long): BasketRow? {
+        return BasketTable
+            .selectAll()
+            .where {
+                (BasketTable.memberId eq memberId) and
+                        (BasketTable.productId eq productId) and
+                        (BasketTable.isDelete eq false)
+            }
+            .map(BasketRow::from)
+            .firstOrNull()
     }
 }

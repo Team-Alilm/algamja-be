@@ -53,8 +53,11 @@ class BasketService(
         memberId: Long,
         productId: Long
     ) {
-        val basket = BasketRow()
-        basketExposedRepository.
+        if(basketExposedRepository.existsByMemberIdAndProductId(memberId, productId)) {
+            return
+        }
+
+
     }
 
     fun deleteBasket(memberId: Long, basketId: Long) {
