@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.web.WebAttributes
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
@@ -14,26 +15,19 @@ import org.springframework.web.util.UriComponentsBuilder
 class CustomFailureHandler(
     @Value("\${app.base-url}") private val baseUrl: String
 ) : SimpleUrlAuthenticationFailureHandler() {
+
     override fun onAuthenticationFailure(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        exception: AuthenticationException?
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        exception: AuthenticationException
     ) {
-        response?.status = HttpStatus.UNAUTHORIZED.value()
-        response?.contentType = MediaType.APPLICATION_JSON_VALUE
-        response?.characterEncoding = "UTF-8"
-        response?.writer?.write(
-            """
-            {
-                "message": "로그인에 실패하였습니다."
-            }
-            """.trimIndent()
-        )
+        // (선택) 세션에 남은 예외 제거 – 성공 핸들러의 clearAuthenticationAttributes 역할
+        val session = request.getSession(false)
+        session?.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION)
 
-        val redirectUri = UriComponentsBuilder.fromHttpUrl(baseUrl)
-            .path("/oauth/kakao")
-            .build().toUriString()
-
-        redirectStrategy.sendRedirect(request, response, redirectUri)
+        // JSON 응답 or 리다이렉트 중 하나만 택1 (예시는 JSON)
+        response.status = HttpStatus.UNAUTHORIZED.value()
+        response.contentType = "${MediaType.APPLICATION_JSON_VALUE};charset=UTF-8"
+        response.writer.use { it.write("""{"message":"로그인에 실패하였습니다."}""") }
     }
 }

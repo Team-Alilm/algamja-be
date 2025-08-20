@@ -26,9 +26,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation(libs.spring.boot.starter.actuator)
 
-    // ✅ JPA 제거
-    // implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
     // ✅ Exposed를 위한 JDBC 스타터 추가
     implementation(libs.spring.boot.starter.jdbc)
 

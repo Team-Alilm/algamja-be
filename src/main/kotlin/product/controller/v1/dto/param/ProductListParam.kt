@@ -24,7 +24,7 @@ data class ProductListParam(
     val category: String?,
 
     @field:NotNull(message = "정렬 방식은 필수 값입니다.")
-    @Schema(description = "정렬 방식", example = "LATEST", required = true)
+    @Schema(description = "정렬 방식", example = "CREATED_DATE_DESC", required = true)
     val sort: Sort? = Sort.CREATED_DATE_DESC,
 
     @field:Min(value = 1, message = "마지막 상품 ID는 1 이상이어야 합니다.")

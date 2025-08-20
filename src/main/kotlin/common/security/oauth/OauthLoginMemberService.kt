@@ -6,11 +6,11 @@ import org.team_alilm.common.enums.Provider
 import org.team_alilm.member.repository.MemberExposedRepository
 
 @Service
+@Transactional
 class OauthLoginMemberService(
     private val memberExposedRepository: MemberExposedRepository
 ) {
 
-    @Transactional
     fun loginMember(provider: Provider, providerId: String, attributes: Map<String, Any>): Long {
         // 이미 존재하는 회원인지 확인
         val existingMember = memberExposedRepository.fetchByProviderAndProviderId(provider, providerId)

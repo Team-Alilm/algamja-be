@@ -47,7 +47,6 @@ class ProductService(
         )
     }
 
-    @Transactional
     fun getProductList(param: ProductListParam): ProductListResponse {
         // 1) 정렬 분기: 인기순(대기자수 내림차순) vs 일반 정렬
         val slice = when (param.sort) {
