@@ -28,8 +28,4 @@ class SlackClient(
 
         slackClient.send(SLACK_NOTICE_CH_WEBHOOK_URL, payload)
     }
-
-    fun sendMessage(product: Product) {
-        slackClient.send(SLACK_NOTICE_CH_WEBHOOK_URL, product.toSlackMessage())
-    }
 }

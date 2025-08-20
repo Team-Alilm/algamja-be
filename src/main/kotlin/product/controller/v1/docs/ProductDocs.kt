@@ -23,7 +23,9 @@ interface ProductDocs {
         responseCode = "200",
         description = "정상 응답"
     )
-    fun getProductCount(): common.response.ApiResponse<ProductCountResponse>
+    fun getProductCount(
+        param : ProductListParam
+    ): common.response.ApiResponse<ProductCountResponse>
 
     @Operation(
         summary = "상품 조회",

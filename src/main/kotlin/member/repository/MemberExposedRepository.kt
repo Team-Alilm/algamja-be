@@ -19,9 +19,8 @@ class MemberExposedRepository {
         MemberTable
             .selectAll()
             .where { (MemberTable.id eq id) and (MemberTable.isDelete eq false) }
-            .limit(1)
+            .map { MemberRow.from(it) }
             .firstOrNull()
-            ?.let(MemberRow::from)
 
     /** 단건 조회 (provider + providerId) */
     fun fetchByProviderAndProviderId(
@@ -98,6 +97,14 @@ class MemberExposedRepository {
     /** 소프트 삭제 */
     fun softDelete(id: Long): Int =
         MemberTable.softDeleteById(id)
+
+    fun updateMember(nickname: String, email: String, memberId: Long): Int =
+        MemberTable.updateAudited(
+            where = { MemberTable.id eq memberId }
+        ) {
+            it[this.nickname] = nickname
+            it[this.email] = email
+        }
 
     /*
      * (옵션) MySQL 전용 Upsert가 필요하다면 아래 주석을 참고하세요.

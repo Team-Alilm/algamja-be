@@ -7,12 +7,23 @@ import org.team_alilm.basket.entity.BasketRow
 import org.team_alilm.basket.entity.BasketTable
 import org.jetbrains.exposed.sql.SortOrder.DESC
 import org.jetbrains.exposed.sql.Expression
+import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.alias
+import org.jetbrains.exposed.sql.max
 import org.jetbrains.exposed.sql.selectAll
 import org.team_alilm.common.entity.insertAudited
+import org.team_alilm.common.entity.updateAudited
 import org.team_alilm.product.repository.projection.ProductWaitingCountProjection
 
 @Repository
 class BasketExposedRepository {
+
+    fun fetchBasketById(basketId: Long): BasketRow? =
+        BasketTable
+            .selectAll()
+            .where { (BasketTable.id eq basketId) and (BasketTable.isDelete eq false) }
+            .map(BasketRow::from)
+            .firstOrNull()
 
     /** 1) 회원의 장바구니 행만 조회 */
     fun fetchBasketsByMemberId(memberId: Long): List<BasketRow> =
@@ -25,6 +36,35 @@ class BasketExposedRepository {
             }
             .orderBy(BasketTable.id to DESC)
             .map(BasketRow::from)
+
+    fun fetchBasketByMemberIdAndProductId(
+        memberId: Long,
+        productId: Long
+    ): BasketRow? =
+        BasketTable
+            .selectAll()
+            .where {
+                (BasketTable.memberId eq memberId) and
+                (BasketTable.productId eq productId) and
+                (BasketTable.isDelete eq false)
+            }
+            .limit(1)
+            .firstOrNull()
+            ?.let(BasketRow::from)
+
+    fun fetchAnyBasketByMemberIdAndProductId(
+        memberId: Long,
+        productId: Long
+    ): BasketRow? =
+        BasketTable
+            .selectAll()
+            .where {
+                (BasketTable.memberId eq memberId) and
+                        (BasketTable.productId eq productId)
+            }
+            .limit(1)
+            .firstOrNull()
+            ?.let(BasketRow::from)
 
     /** 2) productId별 대기 인원 수 집계 (다건) */
     fun fetchWaitingCounts(productIds: List<Long>): List<ProductWaitingCountProjection> =
@@ -86,15 +126,44 @@ class BasketExposedRepository {
         return stmt[BasketTable.id].value
     }
 
-    fun existsByMemberIdAndProductId(memberId: Long, productId: Long): BasketRow? {
-        return BasketTable
-            .selectAll()
-            .where {
-                (BasketTable.memberId eq memberId) and
-                        (BasketTable.productId eq productId) and
+    fun deleteBasket(basketId: Long) {
+        BasketTable.updateAudited(
+            where = {
+                (BasketTable.id eq basketId) and
                         (BasketTable.isDelete eq false)
             }
-            .map(BasketRow::from)
-            .firstOrNull()
+        ) {
+            it[isDelete] = true
+        }
+    }
+
+    fun restoreBasket(
+        basketId: Long
+    ) {
+        BasketTable.updateAudited(
+            where = {
+                (BasketTable.id eq basketId)
+            }
+        ) {
+            it[isDelete] = false
+            it[isHidden] = false
+        }
+    }
+
+    fun fetchTop10RecentlyNotifiedProductIds(): List<Long> {
+        val maxId = BasketTable.id.max().alias("max_id")
+
+        return BasketTable
+            .select(BasketTable.productId, maxId)   // ← slice 대신 select(vararg)
+            .where {
+                (BasketTable.isNotification eq true) and
+                (BasketTable.isDelete eq false) and
+                (BasketTable.isHidden eq false) and
+                (BasketTable.isNotification eq true)
+            }
+            .groupBy(BasketTable.productId)
+            .orderBy(maxId to DESC)
+            .limit(10)
+            .map { it[BasketTable.productId] }
     }
 }

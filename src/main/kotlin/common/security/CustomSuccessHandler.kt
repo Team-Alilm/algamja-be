@@ -31,15 +31,15 @@ class CustomSuccessHandler(
         val providerId = attributes["id"].toString()
         val provider = Provider.from(attributes["provider"].toString())
 
-        val member = oauthLoginMemberService.loginMember(provider, providerId, attributes)  // 비즈니스 로직 처리
-
+        val memberId = oauthLoginMemberService.loginMember(provider, providerId, attributes)  // 비즈니스 로직 처리
+        attributes["nickname"].toString()
         // Slack 메시지 전송
         slackClient.sendMessage("""
-            로그인 성공 : ${member.nickname}
-            이메일 : ${member.email}
+            로그인 성공 : ${attributes["nickname"].toString()}
+            이메일 : ${attributes["email"].toString()}
             """.trimIndent())
 
-        val jwt = jwtUtil.createJwt(member.id!!, 1000L * 60 * 60 * 24 * 30 * 1000)
+        val jwt = jwtUtil.createJwt(memberId, 1000L * 60 * 60 * 24 * 30 * 1000)
         val redirectUri = UriComponentsBuilder
             .fromUriString(baseUrl)
             .path("/oauth/kakao")

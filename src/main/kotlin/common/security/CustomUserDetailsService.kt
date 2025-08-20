@@ -1,6 +1,5 @@
 package org.team_alilm.common.security
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
@@ -14,7 +13,7 @@ class CustomUserDetailsService(
 ) : UserDetailsService {
 
     override fun loadUserByUsername(memberId: String): UserDetails {
-        val member = memberExposedRepository.findByIdOrNull(memberId.toLong())
+        val member = memberExposedRepository.fetchById(memberId.toLong())
             ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
 
         return CustomMemberDetails(memberRow = member)

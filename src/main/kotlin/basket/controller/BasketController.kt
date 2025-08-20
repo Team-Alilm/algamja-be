@@ -52,8 +52,7 @@ class BasketController(
         @PathVariable basketId: Long
     ): ApiResponse<Unit> {
         basketService.deleteBasket(
-            memberId = customMemberDetails.memberRow.id
-                ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR),
+            memberId = customMemberDetails.memberRow.id,
             basketId = basketId
         )
         return ApiResponse.success(Unit)

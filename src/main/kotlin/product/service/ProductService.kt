@@ -8,9 +8,14 @@ import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
 import org.team_alilm.product.controller.v1.dto.request.RegisterProductRequest
+import org.team_alilm.product.controller.v1.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductDetailResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductListResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductResponse
+import org.team_alilm.product.controller.v1.dto.response.RecentlyRestockedProductListResponse
+import org.team_alilm.product.controller.v1.dto.response.RecentlyRestockedProductResponse
+import org.team_alilm.product.controller.v1.dto.response.SimilarProductListResponse
+import org.team_alilm.product.controller.v1.dto.response.SimilarProductResponse
 import org.team_alilm.product.crawler.CrawlerRegistry
 import org.team_alilm.product.image.repository.ProductImageExposedRepository
 import org.team_alilm.product.repository.ProductExposedRepository
@@ -21,7 +26,7 @@ class ProductService(
     private val productExposedRepository: ProductExposedRepository,
     private val basketExposedRepository: BasketExposedRepository,
     private val productImageExposedRepository: ProductImageExposedRepository,
-    private val crawlerRegistry: CrawlerRegistry,
+    private val crawlerRegistry: CrawlerRegistry
 ) {
 
     fun getProductDetail(productId: Long) : ProductDetailResponse {
@@ -96,45 +101,56 @@ class ProductService(
         )
     }
 
-//    fun getSimilarProducts(productId: Long) : SimilarProductListResponse {
-//        val product = productRepository.findByIdOrNull(productId)
-//            ?: throw BusinessException(errorCode = ErrorCode.PRODUCT_NOT_FOUND)
-//
-//        val productList = productRepository.findTop10ByIdNotAndFirstCategoryOrSecondCategoryAndIsDeleteFalseOrderByIdDesc(
-//            id = productId,
-//            firstCategory = product.firstCategory,
-//            secondCategory = product.secondCategory
-//        ) .ifEmpty {
-//            return SimilarProductListResponse(similarProductList = emptyList())
-//
-//        }
-//
-//        val similarProductList = productList.map {
-//            SimilarProductResponse.from(
-//                product = it,
-//            )
-//        }
-//
-//        return SimilarProductListResponse(similarProductList = similarProductList)
-//    }
-//
-//    @Transactional("exposedTxManager")
-//    fun getRecentlyRestockedProducts() : RecentlyRestockedProductListResponse {
-//        val ids = productQueryRepository.getTop10RecentlyNotifiedProductIds().ifEmpty {
-//            return RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = emptyList())
-//        }
-//
-//        return productRepository.findAllById(ids)
-//            .map { product ->
-//                RecentlyRestockedProductResponse.from(
-//                    product = product
-//                )
-//            }
-//            .let { RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = it) }
-//    }
-//
-//    @Transactional
-//    fun registerProduct(request: RegisterProductRequest) {
-//        crawlerRegistry.resolve(url = request.productUrl)
-//    }
+    fun getSimilarProducts(productId: Long): SimilarProductListResponse {
+        val product = productExposedRepository.fetchProductById(productId)
+            ?: throw BusinessException(errorCode = ErrorCode.PRODUCT_NOT_FOUND)
+
+        val productList = productExposedRepository.fetchTop10SimilarProducts(
+            excludeId = productId,
+            firstCategory = product.firstCategory,
+            secondCategory = product.secondCategory,
+        ).ifEmpty {
+            return SimilarProductListResponse(similarProductList = emptyList())
+        }
+
+        val similarProductList = productList.map {
+            SimilarProductResponse(
+                productId = it.id,
+                name = it.name,
+                brand = it.brand,
+                thumbnailUrl = it.thumbnailUrl
+            )
+        }
+        return SimilarProductListResponse(similarProductList = similarProductList)
+    }
+
+
+    fun getRecentlyRestockedProducts(): RecentlyRestockedProductListResponse {
+        val ids = basketExposedRepository.fetchTop10RecentlyNotifiedProductIds().ifEmpty {
+            return RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = emptyList())
+        }
+
+        val products = productExposedRepository.fetchProductsByIds(ids)
+        val responses = products.map { product ->
+            RecentlyRestockedProductResponse(
+                productId = product.id,
+                name = product.name,
+                brand = product.brand,
+                thumbnailUrl = product.thumbnailUrl
+            )
+        }
+
+        return RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = responses)
+    }
+
+    @Transactional
+    fun registerProduct(request: RegisterProductRequest) {
+        crawlerRegistry.resolve(url = request.productUrl)
+    }
+
+    @Transactional
+    fun getProductCount(param: ProductListParam): ProductCountResponse {
+        val count = productExposedRepository.countProducts(param)
+        return ProductCountResponse(productCount = count)
+    }
 }

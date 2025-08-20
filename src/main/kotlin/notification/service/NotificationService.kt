@@ -7,92 +7,77 @@ import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponse
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponseList
 import org.team_alilm.notification.controller.dto.response.UnreadNotificationCountResponse
-import org.team_alilm.notification.repository.NotificationRepository
+import org.team_alilm.notification.repository.NotificationExposedRepository
+import org.team_alilm.product.repository.ProductExposedRepository
 
 @Service
 @Transactional(readOnly = true)
 class NotificationService(
-    private val notificationRepository: NotificationRepository,
-    private val productRepository: ProductRepository
+    private val notificationExposedRepository: NotificationExposedRepository,
+    private val productExposedRepository: ProductExposedRepository
 ) {
 
     private val log = org.slf4j.LoggerFactory.getLogger(NotificationService::class.java)
 
     fun getUnreadNotificationCount(memberId: Long): UnreadNotificationCountResponse {
-        notificationRepository.countByMemberIdAndReadYnFalse(memberId)
-        val unreadNotificationCountResponse = UnreadNotificationCountResponse(count = 1)
-
-        return unreadNotificationCountResponse
+        val count = notificationExposedRepository.countUnreadByMemberId(memberId)
+        return UnreadNotificationCountResponse(count = count)
     }
 
-    fun getRecentNotifications(
-        memberId: Long,
-    ): RecentNotificationResponseList {
-        val notificationList = notificationRepository.findAllByMemberIdAndReadYnIsFalseAndCreatedDateAfter(
-            memberId = memberId,
-            createdDate = System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000
-        )
+    fun getRecentNotifications(memberId: Long): RecentNotificationResponseList {
+        // 최근 30일
+        val thirtyDaysMillis = 30L * 24 * 60 * 60 * 1000
+        val since = System.currentTimeMillis() - thirtyDaysMillis
 
-        if (notificationList.isEmpty()) {
+        val notifications = notificationExposedRepository.fetchUnreadByMemberIdCreatedAfter(
+            memberId = memberId,
+            createdDateExclusive = since
+        )
+        if (notifications.isEmpty()) {
             return RecentNotificationResponseList(emptyList())
         }
 
-        val productIds = notificationList.map { it.productId }.toSet()
-        val productMap = productRepository.findAllById(productIds).associateBy { it.id!! }
+        // 관련 상품 일괄 조회 (Exposed)
+        val productIds = notifications.map { it.productId }.toSet().toList()
+        val products = productExposedRepository.fetchProductsByIds(productIds)
+        val productById = products.associateBy { it.id }
 
-        val recentNotificationResponseList = notificationList.map { notification ->
-            val product = productMap[notification.productId]
-                ?: throw IllegalArgumentException("Product not found for ID: ${notification.productId}")
-
+        val result = notifications.mapNotNull { n ->
+            val p = productById[n.productId] ?: run {
+                log.warn("Product not found for productId=${n.productId} (notificationId=${n.id})")
+                return@mapNotNull null
+            }
             RecentNotificationResponse(
-                id = notification.id!!,
-                productId = notification.productId,
-                productTitle = product.name,
-                productThumbnailUrl = product.thumbnailUrl,
-                brand = product.brand,
-                readYn = notification.readYn,
-                createdData = notification.createdDate
+                id = n.id,
+                productId = n.productId,
+                productTitle = p.name,
+                productThumbnailUrl = p.thumbnailUrl,
+                brand = p.brand,
+                readYn = n.readYn,
+                createdData = n.createdDate
             )
         }
 
-        return RecentNotificationResponseList(recentNotificationResponseList)
+        return RecentNotificationResponseList(result)
     }
 
     @Transactional
-    fun readNotification(
-        notificationId: Long,
-        memberId: Long
-    ) {
-
-        val notification = notificationRepository.findById(notificationId)
-            .orElseThrow {
-                log.warn("Notification with ID $notificationId not found")
-                BusinessException(errorCode = ErrorCode.NOTIFICATION_NOT_FOUND_ERROR)
-            }
-
-        if (notification.memberId != memberId) {
-            log.warn("Member with ID $memberId attempted to read notification with ID $notificationId, but it does not belong to them")
-            throw BusinessException(errorCode = ErrorCode.MEMBER_NOT_FOUND_ERROR)
+    fun readNotification(notificationId: Long, memberId: Long) {
+        // 소유자 조건으로 바로 업데이트 → 0건이면 예외
+        val updated = notificationExposedRepository.markReadByIdAndMemberId(
+            notificationId = notificationId,
+            memberId = memberId
+        )
+        if (updated == 0) {
+            log.warn("readNotification failed: notificationId={}, memberId={}", notificationId, memberId)
+            throw BusinessException(ErrorCode.NOTIFICATION_NOT_FOUND_ERROR)
         }
-
-        notification.readYn = true
-        notificationRepository.save(notification)
     }
 
     @Transactional
     fun readAllNotifications(memberId: Long) {
-        val notifications = notificationRepository.findAllByMemberIdAndReadYnFalse(memberId)
-
-        if (notifications.isEmpty()) {
-            log.warn("No unread notifications found for member with ID $memberId")
-            return
-        }
-
-        notifications.forEach { notification ->
-            notification.readYn = true
-        }
-
-        notificationRepository.saveAll(notifications)
-        log.info("All unread notifications for member with ID $memberId have been marked as read")
+        // 읽지 않은 것만 일괄 업데이트 (영향 0건이어도 정상 처리)
+        val updated = notificationExposedRepository.markAllUnreadReadByMemberId(memberId)
+        log.info("readAllNotifications: memberId={}, updated={}", memberId, updated)
     }
 }
