@@ -1,0 +1,28 @@
+review:
+  enable: true
+  summarize: true
+  inline_comments: true
+  auto_review_on:
+    - pull_request_opened
+    - pull_request_synchronize
+filters:
+  exclude:
+    - "**/build/**"
+    - "**/out/**"
+    - "**/.idea/**"
+    - "**/node_modules/**"
+    - "**/*.md"
+languages:
+  enable:
+    - kotlin
+style_guides:
+  general:
+    prefer_immutability: true
+    small_functions: true
+kotlin:
+  frameworks:
+    spring: true
+security:
+  enable: true
+performance:
+  enable: true
