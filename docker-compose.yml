@@ -26,10 +26,12 @@ services:
     command: >
       sh -c '
         mkdir -p /usr/local/etc/redis &&
-        echo "appendonly yes" > /usr/local/etc/redis/redis.conf &&
-        if [ -n "$REDIS_PASSWORD" ]; then
-          echo "requirepass $REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf
-        fi &&
+        {
+          echo "appendonly yes";
+          echo "requirepass ${REDIS_PASSWORD}";
+          echo "bind 0.0.0.0";           # 컨테이너 내부 바인딩
+          echo "protected-mode yes";     # 기본 보안 유지
+        } > /usr/local/etc/redis/redis.conf &&
         exec redis-server /usr/local/etc/redis/redis.conf
       '
     environment:
@@ -38,10 +40,10 @@ services:
       - .env.app
     volumes:
       - /srv/redis/data:/data
-    expose:
-      - "6379"
+    # expose: ["6379"]    # 제거
+    ports:
+      - "127.0.0.1:6379:6379"   # 호스트 로컬만 개방 (외부 차단)
     healthcheck:
-      # 비번 있으면 -a로, 없으면 그냥 ping
       test: [ "CMD-SHELL", "if [ -n \"$REDIS_PASSWORD\" ]; then redis-cli -a \"$REDIS_PASSWORD\" ping; else redis-cli ping; fi" ]
       interval: 10s
       timeout: 3s

@@ -6,6 +6,14 @@ spring:
     username: ENC(kuV4NDaVfXCAy3oZAFZvsw==)
     password: ENC(eFBbprUYt6AEtXC9wqz5ebIg8oKK1bOr)
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ${REDIS_PASSWORD:}
+      timeout: 1000ms
+      database: 0
+
   flyway:
     enabled: true
     locations: classpath:db/migration
