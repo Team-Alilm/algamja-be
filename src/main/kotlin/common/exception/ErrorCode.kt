@@ -27,5 +27,8 @@ enum class ErrorCode(
     SLACK_CLIENT_NOT_INITIALIZED(
         HttpStatus.INTERNAL_SERVER_ERROR, "SLACK_001", "Slack 클라이언트가 초기화되지 않았습니다."
     ),
+    MUSINSA_INVALID_RESPONSE(
+        HttpStatus.BAD_REQUEST, "MUSINSA_001", "무신사 응답이 유효하지 않습니다."
+    ),
 
 }

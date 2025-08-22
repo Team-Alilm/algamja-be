@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.basket.repository.BasketExposedRepository
 import org.team_alilm.common.enums.Sort
+import org.team_alilm.common.enums.Store
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
@@ -144,7 +145,47 @@ class ProductService(
 
     @Transactional
     fun registerProduct(request: RegisterProductRequest) {
-        crawlerRegistry.resolve(url = request.productUrl)
+        val productCrawler = crawlerRegistry.resolve(url = request.productUrl)
+        // 2. URL 정규화 (불필요한 파라미터, 리다이렉션 제거 등)
+        val normalizedUrl = productCrawler.normalize(request.productUrl)
+        // 3. 크롤링 실행 → 상품 정보 얻기
+        val crawledProduct = productCrawler.fetch(normalizedUrl)
+
+        // 4. 이미 존재하는 상품인지 확인
+        val existingProduct = productExposedRepository.fetchByCompositeKey(
+            store = Store.valueOf(crawledProduct.store),
+            storeNumber = crawledProduct.storeNumber,
+            firstOption = crawledProduct.firstOption,
+            secondOption = crawledProduct.secondOption,
+            thirdOption = crawledProduct.thirdOption
+        )
+
+        // 5) 업데이트 or 신규 생성
+        val productId: Long = if (existingProduct != null) {
+            // 업데이트 (필요 필드 갱신)
+            productExposedRepository.updateProduct(
+                existingProductId = existingProduct.id,
+                crawledProduct = crawledProduct,
+            )
+            existingProduct.id
+        } else {
+            // 신규 저장
+            productExposedRepository.insertProduct(
+                crawledProduct = crawledProduct
+            )
+        }
+
+        // 6) 이미지 저장 (중복/공백 제거 후 교체)
+        val distinctImages = crawledProduct.imageUrls.asSequence()
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .distinct()
+            .toList()
+
+        if (distinctImages.isNotEmpty()) {
+            // 구현체 예시: 기존 이미지 삭제 후 일괄 insert
+            productImageExposedRepository.replaceImages(productId, distinctImages)
+        }
     }
 
     @Transactional

@@ -4,18 +4,42 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.like
 import org.springframework.stereotype.Repository
 import org.team_alilm.basket.entity.BasketTable
 import org.team_alilm.common.enums.Sort.*
+import org.team_alilm.common.enums.Store
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
+import org.team_alilm.product.crawler.dto.CrawledProduct
 import org.team_alilm.product.entity.ProductRow
 import org.team_alilm.product.entity.ProductTable
 import org.team_alilm.product.repository.projection.ProductSliceProjection
 
 @Repository
 class ProductExposedRepository {
+
+    /** 복합키(store, storeNumber, first/second/thirdOption)로 단건 조회 */
+    fun fetchByCompositeKey(
+        store: Store,
+        storeNumber: Long,
+        firstOption: String?,
+        secondOption: String?,
+        thirdOption: String?
+    ): ProductRow? =
+        ProductTable
+            .selectAll()
+            .where {
+                (ProductTable.isDelete eq false) and
+                        (ProductTable.store eq store) and
+                        (ProductTable.storeNumber eq storeNumber) and
+                        ProductTable.firstOption.eqNullable(firstOption) and
+                        ProductTable.secondOption.eqNullable(secondOption) and
+                        ProductTable.thirdOption.eqNullable(thirdOption)
+            }
+            .singleOrNull()
+            ?.let(ProductRow::from)
 
     /** 공통 WHERE 빌더 (목록/카운트에서 재사용) */
     private fun buildBaseWhere(param: ProductListParam): Op<Boolean> {
@@ -175,4 +199,38 @@ class ProductExposedRepository {
             .where { (ProductTable.id eq productId) and (ProductTable.isDelete eq false) }
             .singleOrNull()
             ?.let(ProductRow::from)
+
+    fun insertProduct(
+        crawledProduct: CrawledProduct
+    ): Long =
+        ProductTable.insertAndGetId {
+            it[ProductTable.store]          = Store.valueOf(crawledProduct.store)
+            it[ProductTable.storeNumber]    = crawledProduct.storeNumber
+            it[ProductTable.name]           = crawledProduct.name
+            it[ProductTable.brand]          = crawledProduct.brand
+            it[ProductTable.thumbnailUrl]   = crawledProduct.thumbnailUrl
+            it[ProductTable.price]          = crawledProduct.price
+            it[ProductTable.firstCategory]  = crawledProduct.firstCategory
+            it[ProductTable.secondCategory] = crawledProduct.secondCategory
+            it[ProductTable.firstOption]    = crawledProduct.firstOption
+            it[ProductTable.secondOption]   = crawledProduct.secondOption
+            it[ProductTable.thirdOption]    = crawledProduct.thirdOption
+        }.value
+
+    /** 부분 수정 (반환: 영향 행 수) */
+    fun updateProduct(
+        existingProductId: Long,
+        crawledProduct: CrawledProduct
+    ): Int =
+        ProductTable.update({ (ProductTable.id eq existingProductId) and (ProductTable.isDelete eq false) }) {
+            it[ProductTable.name]          = crawledProduct.name
+            it[ProductTable.brand]         = crawledProduct.brand
+            it[ProductTable.thumbnailUrl]  = crawledProduct.thumbnailUrl
+            it[ProductTable.price]         = crawledProduct.price
+            it[ProductTable.firstCategory] = crawledProduct.firstCategory
+            it[ProductTable.secondCategory]= crawledProduct.secondCategory
+        }
+
+    private fun Column<String?>.eqNullable(value: String?): Op<Boolean> =
+        if (value == null) this.isNull() else (this eq value)
 }
