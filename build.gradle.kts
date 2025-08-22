@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
-    alias(libs.plugins.kotlin.jpa)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
     java
@@ -21,15 +20,17 @@ repositories {
 }
 
 dependencies {
-    // Spring Boot 스타터 (버전 생략 = Boot BOM 관리)
-    implementation("org.springframework.boot:spring-boot-starter")
+    // Spring Boot 기본
+    implementation("org.springframework.boot:spring-boot-starter")           // 로깅 등
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(libs.spring.boot.starter.actuator)
+
+    // ✅ Exposed를 위한 JDBC 스타터 추가
+    implementation(libs.spring.boot.starter.jdbc)
+
+    // OAuth2
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
 
     // Swagger
     implementation(libs.springdoc.webmvc.ui)
@@ -43,30 +44,28 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
 
-    // Firebase Admin SDK (FCM)
+    // Firebase Admin SDK
     implementation(libs.firebase.admin)
 
     // Exposed
     implementation(libs.exposed.spring.boot.starter)
 
-    // H2 (local/test)
+    // DB 드라이버 (profile로 관리 권장: 로컬 H2 / 운영 MySQL)
     runtimeOnly(libs.h2)
-
-    implementation(libs.jsoup)
-
-    implementation(libs.jasypt.spring.boot.starter)
-
-    implementation(libs.spring.boot.starter.mail)
-
-    implementation(libs.slack.api.client)
-
-    implementation(libs.spring.boot.starter.validation)
-
     implementation(libs.mysql.connector.j)
 
-    implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.jsoup)
+    implementation(libs.jasypt.spring.boot.starter)
+    implementation(libs.spring.boot.starter.mail)
+    implementation(libs.slack.api.client)
+    implementation(libs.spring.boot.starter.validation)
 
-    implementation(libs.spring.boot.starter.data.jpa)
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+
+    // Flyway
+    implementation(libs.flyway.core)
+    implementation(libs.flyway.mysql)
 }
 
 tasks.withType<Test> {
@@ -82,9 +81,7 @@ configurations.all {
     exclude(group = "io.springfox")
 }
 
-tasks.jar {
-    enabled = false
-}
+tasks.jar { enabled = false }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     archiveFileName.set("app.jar")

@@ -2,13 +2,13 @@ package org.team_alilm.common.security
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.team_alilm.member.entity.Member
+import org.team_alilm.member.entity.MemberRow
 
 /**
  * Custom implementation of UserDetails to integrate with Spring Security.
  */
 class CustomMemberDetails(
-    val member: Member
+    val memberRow: MemberRow
 ) : UserDetails {
 
     override fun getAuthorities(): Collection<GrantedAuthority>? {
@@ -22,7 +22,7 @@ class CustomMemberDetails(
     }
 
     override fun getUsername(): String {
-        return member.id.toString()
+        return memberRow.id.toString()
     }
 
     override fun isAccountNonExpired(): Boolean {

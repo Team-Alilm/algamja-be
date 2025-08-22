@@ -30,7 +30,7 @@ class NotificationController(
 
         return ApiResponse.Companion.success(
             data = notificationService.getUnreadNotificationCount(
-                memberId = customMemberDetails.member.id ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
+                memberId = customMemberDetails.memberRow.id ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
             )
         )
     }
@@ -42,7 +42,7 @@ class NotificationController(
 
         return ApiResponse.Companion.success(
             data = notificationService.getRecentNotifications(
-                memberId = customMemberDetails.member.id
+                memberId = customMemberDetails.memberRow.id
                     ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR),
             )
         )
@@ -57,7 +57,7 @@ class NotificationController(
         return ApiResponse.Companion.success(
             data = notificationService.readNotification(
                 notificationId = notificationId,
-                memberId = customMemberDetails.member.id ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
+                memberId = customMemberDetails.memberRow.id
             )
         )
     }
@@ -66,7 +66,7 @@ class NotificationController(
     override fun readAllNotifications(customMemberDetails: CustomMemberDetails): ApiResponse<Unit> {
         return ApiResponse.Companion.success(
             data = notificationService.readAllNotifications(
-                memberId = customMemberDetails.member.id ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
+                memberId = customMemberDetails.memberRow.id
             )
         )
     }

@@ -1,10 +1,9 @@
 package org.team_alilm.product.service
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.team_alilm.basket.repository.BasketQueryRepository
-import org.team_alilm.basket.repository.BasketRepository
+import org.team_alilm.basket.repository.BasketExposedRepository
+import org.team_alilm.common.enums.Sort
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
@@ -18,98 +17,139 @@ import org.team_alilm.product.controller.v1.dto.response.RecentlyRestockedProduc
 import org.team_alilm.product.controller.v1.dto.response.SimilarProductListResponse
 import org.team_alilm.product.controller.v1.dto.response.SimilarProductResponse
 import org.team_alilm.product.crawler.CrawlerRegistry
-import org.team_alilm.product.image.repository.ProductImageRepository
-import org.team_alilm.product.repository.ProductQueryRepository
-import org.team_alilm.product.repository.ProductRepository
+import org.team_alilm.product.image.repository.ProductImageExposedRepository
+import org.team_alilm.product.repository.ProductExposedRepository
 
 @Service
 @Transactional(readOnly = true)
 class ProductService(
-    private val productRepository: ProductRepository,
-    private val productQueryRepository: ProductQueryRepository,
-    private val productImageRepository: ProductImageRepository,
-    private val basketRepository: BasketRepository,
-    private val basketQueryRepository: BasketQueryRepository,
-    private val crawlerRegistry: CrawlerRegistry,
+    private val productExposedRepository: ProductExposedRepository,
+    private val basketExposedRepository: BasketExposedRepository,
+    private val productImageExposedRepository: ProductImageExposedRepository,
+    private val crawlerRegistry: CrawlerRegistry
 ) {
 
-    fun getProductCount(): ProductCountResponse {
-        return ProductCountResponse(productCount = productRepository.count())
-    }
-
     fun getProductDetail(productId: Long) : ProductDetailResponse {
-        val product = productRepository.findByIdOrNull(productId)
+        // 1) 상품 정보 조회
+        val productRow = productExposedRepository.fetchProductById(productId)
             ?: throw BusinessException(errorCode = ErrorCode.PRODUCT_NOT_FOUND)
 
-        val productImageList = productImageRepository.findAllByProductId(productId).map { it.imageUrl }
+        // 2) 상품 이미지 조회
+        val productImageList = productImageExposedRepository.fetchProductImageById(productRow.id)
 
-        val waitingCount = basketRepository.countByProductId(productId)
+        // 3) 상품 대기수 집계
+        val waitingCount = basketExposedRepository.fetchWaitingCount(productId)
 
         return ProductDetailResponse.from(
-            product = product,
-            imageUrls = productImageList,
+            productRow = productRow,
+            imageUrls = productImageList.map {  it.imageUrl },
             waitingCount = waitingCount
         )
     }
 
-    @Transactional("exposedTxManager")
-    fun getProductList(param : ProductListParam) : ProductListResponse {
-        val slice = productQueryRepository.sliceProducts(param)
-        if (slice.content.isEmpty()) {
+    fun getProductList(param: ProductListParam): ProductListResponse {
+        // 1) 정렬 분기: 인기순(대기자수 내림차순) vs 일반 정렬
+        val slice = when (param.sort) {
+            Sort.WAITING_COUNT_DESC -> productExposedRepository.fetchProductsOrderByWaitingCountDesc(param)
+            else                    -> productExposedRepository.fetchProducts(param)
+        }
+
+        val productRows = slice.productRows
+        if (productRows.isEmpty()) {
             return ProductListResponse(productList = emptyList(), hasNext = false)
         }
 
-        // 2) 대기수 집계 (해당 페이지의 상품 id 만)
-        val ids = slice.content.map { it.id }
-        val waitingMap: Map<Long, Long> = basketQueryRepository.fetchWaitingCounts(ids)
+        // 2) 이번 페이지의 상품 id만 추출(중복 제거)
+        val productIds = productRows.asSequence().map { it.id }.distinct().toList()
 
-        // 3) 응답 매핑 (waitingCount 주입)
-        val products = slice.content.map { productProjection ->
-            ProductResponse.from(productProjection, waitingCount = waitingMap[productProjection.id] ?: 0L)
-        }
+        // 3) 이미지 한번에 조회 → productId -> List<url>
+        val imagesByProductId: Map<Long, List<String>> =
+            productImageExposedRepository
+                .fetchProductImagesByProductIds(productIds)
+                .groupBy({ it.productId }, { it.imageUrl })
 
-        return ProductListResponse(productList = products, hasNext = slice.hasNext())
-    }
+        // 4) 대기수 집계 한번에 조회 → productId -> count
+        //    (※ fetchProductsOrderByWaitingCountDesc 에서 이미 waitingCount를 담아온다면
+        //       여기 호출을 생략하고 productRows에서 꺼내 쓰면 됨)
+        val waitingByProductId: Map<Long, Long> =
+            basketExposedRepository
+                .fetchWaitingCounts(productIds)
+                .associate { wc -> wc.productId to wc.waitingCount }
 
-    fun getSimilarProducts(productId: Long) : SimilarProductListResponse {
-        val product = productRepository.findByIdOrNull(productId)
-            ?: throw BusinessException(errorCode = ErrorCode.PRODUCT_NOT_FOUND)
-
-        val productList = productRepository.findTop10ByIdNotAndFirstCategoryOrSecondCategoryAndIsDeleteFalseOrderByIdDesc(
-            id = productId,
-            firstCategory = product.firstCategory,
-            secondCategory = product.secondCategory
-        ) .ifEmpty {
-            return SimilarProductListResponse(similarProductList = emptyList())
-
-        }
-
-        val similarProductList = productList.map {
-            SimilarProductResponse.from(
-                product = it,
+        // 5) 매핑
+        val responses = productRows.map { row ->
+            ProductResponse(
+                id = row.id,
+                name = row.name,
+                brand = row.brand,
+                thumbnailUrl = imagesByProductId[row.id]?.firstOrNull() ?: row.thumbnailUrl,
+                store = row.store.name,
+                price = row.price.toLong(),
+                firstCategory = row.firstCategory,
+                secondCategory = row.secondCategory,
+                firstOption = row.firstOption,
+                secondOption = row.secondOption,
+                thirdOption = row.thirdOption,
+                waitingCount = waitingByProductId[row.id] ?: 0L
             )
         }
 
+        return ProductListResponse(
+            productList = responses,
+            hasNext = slice.hasNext
+        )
+    }
+
+    fun getSimilarProducts(productId: Long): SimilarProductListResponse {
+        val product = productExposedRepository.fetchProductById(productId)
+            ?: throw BusinessException(errorCode = ErrorCode.PRODUCT_NOT_FOUND)
+
+        val productList = productExposedRepository.fetchTop10SimilarProducts(
+            excludeId = productId,
+            firstCategory = product.firstCategory,
+            secondCategory = product.secondCategory,
+        ).ifEmpty {
+            return SimilarProductListResponse(similarProductList = emptyList())
+        }
+
+        val similarProductList = productList.map {
+            SimilarProductResponse(
+                productId = it.id,
+                name = it.name,
+                brand = it.brand,
+                thumbnailUrl = it.thumbnailUrl
+            )
+        }
         return SimilarProductListResponse(similarProductList = similarProductList)
     }
 
-    @Transactional("exposedTxManager")
-    fun getRecentlyRestockedProducts() : RecentlyRestockedProductListResponse {
-        val ids = productQueryRepository.getTop10RecentlyNotifiedProductIds().ifEmpty {
+
+    fun getRecentlyRestockedProducts(): RecentlyRestockedProductListResponse {
+        val ids = basketExposedRepository.fetchTop10RecentlyNotifiedProductIds().ifEmpty {
             return RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = emptyList())
         }
 
-        return productRepository.findAllById(ids)
-            .map { product ->
-                RecentlyRestockedProductResponse.from(
-                    product = product
-                )
-            }
-            .let { RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = it) }
+        val products = productExposedRepository.fetchProductsByIds(ids)
+        val responses = products.map { product ->
+            RecentlyRestockedProductResponse(
+                productId = product.id,
+                name = product.name,
+                brand = product.brand,
+                thumbnailUrl = product.thumbnailUrl
+            )
+        }
+
+        return RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = responses)
     }
 
     @Transactional
     fun registerProduct(request: RegisterProductRequest) {
         crawlerRegistry.resolve(url = request.productUrl)
+    }
+
+    @Transactional
+    fun getProductCount(param: ProductListParam): ProductCountResponse {
+        val count = productExposedRepository.countProducts(param)
+        return ProductCountResponse(productCount = count)
     }
 }

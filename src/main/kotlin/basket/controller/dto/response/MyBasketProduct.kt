@@ -1,14 +1,16 @@
 package org.team_alilm.basket.controller.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
+import org.team_alilm.basket.entity.BasketRow
+import org.team_alilm.product.entity.ProductRow
 
-data class MyBasketItem(
+data class MyBasketProduct(
 
     @Schema(description = "장바구니 ID", example = "101")
     val basketId: Long,
 
     @Schema(description = "외부몰 상품 번호", example = "202410123456")
-    val number: Long,
+    val storeNumber: Long,
 
     @Schema(description = "상품명", example = "나이키 에어포스 1 화이트")
     val name: String,
@@ -17,13 +19,13 @@ data class MyBasketItem(
     val brand: String,
 
     @Schema(description = "상품 이미지 URL", example = "https://example.com/images/product.jpg")
-    val imageUrl: String,
+    val thumbnailUrl: String,
 
     @Schema(description = "스토어명", example = "무신사")
     val store: String,
 
     @Schema(description = "상품 가격(원)", example = "129000")
-    val price: Int,
+    val price: Long,
 
     @Schema(description = "재입고 알림 여부", example = "true")
     val notification: Boolean,
@@ -51,4 +53,32 @@ data class MyBasketItem(
 
     @Schema(description = "상품 ID", example = "301")
     val productId: Long
-)
+) {
+
+    companion object {
+        fun from(
+            basketRow: BasketRow,
+            productRow: ProductRow,
+            waitingCount: Long
+        ): MyBasketProduct {
+            return MyBasketProduct(
+                basketId = basketRow.id,
+                storeNumber = productRow.storeNumber,
+                name = productRow.name,
+                brand = productRow.brand,
+                thumbnailUrl = productRow.thumbnailUrl,
+                store = productRow.store.name,
+                price = productRow.price.toLong(),
+                notification = basketRow.isNotification,
+                notificationDate = basketRow.notificationDate,
+                firstCategory = productRow.firstCategory,
+                firstOption = productRow.firstOption,
+                secondOption = productRow.secondOption,
+                thirdOption = productRow.thirdOption,
+                hidden = basketRow.isHidden,
+                waitingCount = waitingCount,
+                productId = productRow.id
+            )
+        }
+    }
+}

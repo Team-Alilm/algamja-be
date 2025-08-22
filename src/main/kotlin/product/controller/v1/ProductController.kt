@@ -37,8 +37,12 @@ class ProductController(
     }
 
     @GetMapping("/count")
-    override fun getProductCount(): ApiResponse<ProductCountResponse> {
-        return success(data = productService.getProductCount())
+    override fun getProductCount(
+        @ParameterObject @Valid param : ProductListParam
+    ): ApiResponse<ProductCountResponse> {
+        return success(
+            data = productService.getProductCount(param)
+        )
     }
 
     @GetMapping("/{productId}")

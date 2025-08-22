@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
-import org.team_alilm.product.entity.Product
 
 @Component
 class SlackClient(
@@ -28,9 +27,5 @@ class SlackClient(
         """.trimIndent()
 
         slackClient.send(SLACK_NOTICE_CH_WEBHOOK_URL, payload)
-    }
-
-    fun sendMessage(product: Product) {
-        slackClient.send(SLACK_NOTICE_CH_WEBHOOK_URL, product.toSlackMessage())
     }
 }

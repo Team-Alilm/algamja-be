@@ -1,7 +1,7 @@
 package org.team_alilm.product.controller.v1.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
-import org.team_alilm.product.entity.Product
+import org.team_alilm.product.entity.ProductRow
 
 @Schema(description = "상품 상세 응답")
 data class ProductDetailResponse(
@@ -45,21 +45,21 @@ data class ProductDetailResponse(
 
     companion object {
         fun from(
-            product: Product,                        // JPA 엔티티
+            productRow: ProductRow,                        // JPA 엔티티
             imageUrls: List<String>,
             waitingCount: Long
         ): ProductDetailResponse = ProductDetailResponse(
-            id = product.id!!,
-            number = product.storeNumber,
-            name = product.name,
-            brand = product.brand,
-            thumbnailUrl = product.thumbnailUrl,
+            id = productRow.id,
+            number = productRow.storeNumber,
+            name = productRow.name,
+            brand = productRow.brand,
+            thumbnailUrl = productRow.thumbnailUrl,
             imageUrlList = imageUrls.distinct(),
-            store = product.store.name,              // enum 이면 .name 또는 .label
-            price = product.price.toLong(),         // BigDecimal → Long (scale=0 가정)
-            firstOption = product.firstOption,
-            secondOption = product.secondOption,
-            thirdOption = product.thirdOption,
+            store = productRow.store.name,              // enum 이면 .name 또는 .label
+            price = productRow.price.toLong(),         // BigDecimal → Long (scale=0 가정)
+            firstOption = productRow.firstOption,
+            secondOption = productRow.secondOption,
+            thirdOption = productRow.thirdOption,
             waitingCount = waitingCount
         )
     }

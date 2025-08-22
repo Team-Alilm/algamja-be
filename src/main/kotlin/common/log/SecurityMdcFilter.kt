@@ -22,7 +22,7 @@ class SecurityMdcFilter : OncePerRequestFilter() {
         val principal = auth?.principal
         // 예) CustomMemberDetails 에 member.id 가 있다고 가정
         val memberId = (principal as? org.team_alilm.common.security.CustomMemberDetails)
-            ?.member?.id?.toString()
+            ?.memberRow?.id?.toString()
 
         memberId?.let { MDC.put("memberId", it) }
 

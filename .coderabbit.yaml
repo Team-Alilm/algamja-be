@@ -1,0 +1,62 @@
+review:
+  enable: true
+  summarize: true          # PR 요약 코멘트 생성
+  inline_comments: true    # 라인 단위 코멘트
+  request_changes: false   # 자동으로 "변경 요청" 막음 (사람 리뷰어 보조로만 활용)
+  auto_review_on:
+    - pull_request_opened
+    - pull_request_synchronize
+    - pull_request_reopened
+
+filters:
+  exclude:
+    - "**/build/**"
+    - "**/out/**"
+    - "**/.idea/**"
+    - "**/node_modules/**"
+    - "**/*.md"
+    - "**/*.yml"
+    - "**/*.yaml"
+    - "**/docker/**"
+    - "**/gradle/**"
+
+languages:
+  enable:
+    - kotlin
+    - java
+
+style_guides:
+  general:
+    prefer_immutability: true      # var 대신 val 권장
+    avoid_nulls: true              # 불필요한 nullable 지양
+    small_functions: true          # 함수는 작게 유지
+    naming_conventions: true       # 클래스/메서드 네이밍 체크
+  kotlin:
+    frameworks:
+      spring: true
+    rules:
+      use_data_classes_where_possible: true
+      prefer_val_over_var: true
+      avoid_nullable_in_equals: true
+      no_wildcard_imports: true
+      explicit_return_types: false   # API 반환 타입은 명시 권장
+
+security:
+  enable: true
+  detect_secrets: true     # 비밀 키/토큰 노출 감지
+
+performance:
+  enable: true
+  rules:
+    avoid_blocking_calls_in_coroutines: true
+    prefer_collection_functions_over_loops: true
+
+comments:
+  max_per_file: 30
+  max_total: 150
+  grouping: by_severity
+
+conventions:
+  test_naming: true
+  package_naming: true
+  logging_best_practices: true

@@ -6,5 +6,5 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class UnreadNotificationCountResponse(
 
     @Schema(description = "안 읽은 알림 개수", example = "5")
-    val count: Int
+    val count: Long
 )

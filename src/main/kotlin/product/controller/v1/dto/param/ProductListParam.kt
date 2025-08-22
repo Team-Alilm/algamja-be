@@ -12,20 +12,20 @@ data class ProductListParam(
 
     @field:Size(max = 100, message = "검색 키워드는 최대 100자까지 입력 가능합니다.")
     @Schema(description = "검색 키워드", example = "노트북", maxLength = 100)
-    val keyword: String? = null,
+    val keyword: String?,
 
     @field:Min(value = 1, message = "페이지당 조회 개수는 1 이상이어야 합니다.")
     @field:Max(value = 100, message = "페이지당 조회 개수는 100 이하이어야 합니다.")
     @Schema(description = "페이지당 조회 개수 (기본값 20)", example = "20", defaultValue = "20", minimum = "1", maximum = "100")
-    val size: Int = 20,
+    val size: Int? = 20,
 
     @field:Size(max = 50, message = "카테고리 코드는 최대 50자까지 입력 가능합니다.")
     @Schema(description = "카테고리 코드", example = "ELECTRONICS", maxLength = 50)
-    val category: String? = null,
+    val category: String?,
 
     @field:NotNull(message = "정렬 방식은 필수 값입니다.")
-    @Schema(description = "정렬 방식", example = "LATEST", required = true)
-    val sort: Sort,
+    @Schema(description = "정렬 방식", example = "CREATED_DATE_DESC", required = true)
+    val sort: Sort? = Sort.CREATED_DATE_DESC,
 
     @field:Min(value = 1, message = "마지막 상품 ID는 1 이상이어야 합니다.")
     @Schema(description = "마지막 상품 ID (무한 스크롤용)", example = "100", minimum = "1")

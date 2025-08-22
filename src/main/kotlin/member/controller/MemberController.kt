@@ -27,12 +27,12 @@ class MemberController(
     override fun getMyInfo(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ): ApiResponse<MyInfoResponse> {
-        val response = memberService.getMyInfo(
-            memberId = customMemberDetails.member.id
-                ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
+        val myInfoResponse = MyInfoResponse(
+            email = customMemberDetails.memberRow.email,
+            nickname = customMemberDetails.memberRow.nickname
         )
 
-        return ApiResponse.success(response)
+        return ApiResponse.success(myInfoResponse)
     }
 
     @PutMapping
@@ -41,7 +41,7 @@ class MemberController(
         @RequestBody @Valid request: UpdateMyInfoRequest
     ): ApiResponse<Unit> {
         memberService.updateMyInfo(
-            memberId = customMemberDetails.member.id
+            memberId = customMemberDetails.memberRow.id
                 ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR),
             request = request
         )

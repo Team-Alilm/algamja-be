@@ -49,6 +49,7 @@ class SecurityConfig (
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .cors { it.configurationSource(corsConfigurationSource()) }
+            // ✅ CORS를 Security 체인에서 활성화 (기존 disable 제거)
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
             .csrf { it.disable() }

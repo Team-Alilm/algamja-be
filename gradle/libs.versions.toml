@@ -7,11 +7,12 @@ jjwt = "0.12.3"
 jackson = "2.17.2"
 exposed = "0.61.0"
 h2 = "2.2.224"
-jsoup = "1.17.2" # 필요하면 최신으로 올려도 됨
-firebase-admin = "9.5.0"   # FCM Admin SDK
+jsoup = "1.17.2"
+firebase-admin = "9.5.0"
 jasypt-spring-boot = "3.0.5"
-slack-sdk = "1.42.0" # 예시
-mysql = "9.4.0"   # ✅ 추가 (최신 MySQL Connector/J)
+slack-sdk = "1.42.0"
+mysql = "9.4.0"
+flyway = "10.16.0"   # ✅ 추가
 
 [libraries]
 springdoc-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
@@ -38,15 +39,18 @@ slack-api-client = { module = "com.slack.api:slack-api-client", version.ref = "s
 
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 
-mysql-connector-j = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" } # ✅ 추가
+mysql-connector-j = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" }
 
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
 
-spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
+spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "spring-boot" }
+
+# ✅ Flyway 추가
+flyway-core  = { module = "org.flywaydb:flyway-core",  version.ref = "flyway" }
+flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
 
 [plugins]
 kotlin-jvm     = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring  = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
-kotlin-jpa     = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 spring-boot    = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dep-mgmt" }

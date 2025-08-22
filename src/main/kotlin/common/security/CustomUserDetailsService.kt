@@ -1,23 +1,24 @@
 package org.team_alilm.common.security
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
-import org.team_alilm.member.repository.MemberRepository
+import org.team_alilm.member.repository.MemberExposedRepository
 
 @Service
+@Transactional(readOnly = true)
 class CustomUserDetailsService(
-    private val memberRepository: MemberRepository
+    private val memberExposedRepository: MemberExposedRepository
 ) : UserDetailsService {
 
     override fun loadUserByUsername(memberId: String): UserDetails {
-        val member = memberRepository.findByIdOrNull(memberId.toLong())
+        val member = memberExposedRepository.fetchById(memberId.toLong())
             ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
 
-        return CustomMemberDetails(member = member)
+        return CustomMemberDetails(memberRow = member)
     }
 
 }

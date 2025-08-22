@@ -1,17 +1,16 @@
 package org.team_alilm.fcm.service
 
 import org.springframework.stereotype.Service
-import org.team_alilm.fcm.entity.FcmToken
-import org.team_alilm.fcm.repository.FcmTokenRepository
+import org.springframework.transaction.annotation.Transactional
+import org.team_alilm.fcm.repository.FcmTokenExposedRepository
 
 @Service
 class FcmTokenService(
-    private val fcmTokenRepository: FcmTokenRepository
+    private val fcmTokenExposedRepository: FcmTokenExposedRepository
 ) {
 
+    @Transactional
     fun registerFcmToken(memberId: Long, fcmToken: String) {
-        val fcmToken = FcmToken(token = fcmToken,memberId = memberId)
-
-        fcmTokenRepository.save(fcmToken)
+        fcmTokenExposedRepository.createFcmToken(memberId, fcmToken)
     }
 }

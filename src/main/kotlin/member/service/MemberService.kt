@@ -6,32 +6,20 @@ import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.member.controller.dto.request.UpdateMyInfoRequest
 import org.team_alilm.member.controller.dto.response.MyInfoResponse
-import org.team_alilm.member.repository.MemberRepository
+import org.team_alilm.member.repository.MemberExposedRepository
 
 @Service
 @Transactional(readOnly = true)
 class MemberService(
-    private val memberRepository: MemberRepository
+    private val memberExposedRepository: MemberExposedRepository
 ) {
-
-    fun getMyInfo(memberId: Long) : MyInfoResponse =
-        memberRepository.findById(memberId)
-            .orElseThrow { BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR) }
-            .let { member ->
-                MyInfoResponse(
-                    email = member.email,
-                    nickname = member.nickname
-                )
-            }
 
     @Transactional
     fun updateMyInfo(memberId: Long, request: UpdateMyInfoRequest) {
-        val member = memberRepository.findById(memberId)
-            .orElseThrow { BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR) }
-
-        member.email = request.email
-        member.nickname = request.nickname
-
-        memberRepository.save(member)
+        memberExposedRepository.updateMember(
+            memberId = memberId,
+            email = request.email,
+            nickname = request.nickname
+        )
     }
 }
