@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.team_alilm.common.security.jwt.JwtFilter
 import org.team_alilm.common.security.jwt.JwtUtil
 import org.team_alilm.common.security.oauth.CustomOAuth2UserService
@@ -37,13 +40,15 @@ class SecurityConfig (
                 .requestMatchers("/favicon.ico")
                 .requestMatchers("/h2-console/**")
                 .requestMatchers("/v3/api-docs/**")
+                .requestMatchers("health/**")
+                .requestMatchers("/actuator/health")
         }
     }
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .cors { it.disable() }
+            .cors { it.configurationSource(corsConfigurationSource()) }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
             .csrf { it.disable() }
@@ -70,5 +75,22 @@ class SecurityConfig (
             }
 
         return http.build()
+    }
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val cfg = CorsConfiguration()
+        cfg.setAllowedOrigins(
+            mutableListOf<String?>(
+                "http://localhost:3000", "http://127.0.0.1:3000", "https://algamja.com"
+            )
+        )
+        cfg.setAllowedMethods(mutableListOf<String?>("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"))
+        cfg.setAllowedHeaders(mutableListOf<String?>("Authorization", "Content-Type", "Accept", "X-Requested-With"))
+        cfg.setAllowCredentials(true)
+        cfg.setMaxAge(3600L)
+        val src = UrlBasedCorsConfigurationSource()
+        src.registerCorsConfiguration("/**", cfg)
+        return src
     }
 }
