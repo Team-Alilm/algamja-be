@@ -41,7 +41,6 @@ class SecurityConfig (
                 .requestMatchers("/h2-console/**")
                 .requestMatchers("/v3/api-docs/**")
                 .requestMatchers("health/**")
-                .requestMatchers("/actuator/health")
         }
     }
 
@@ -57,6 +56,12 @@ class SecurityConfig (
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { authorize ->
                 authorize
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers(
+                        "/login/**",
+                        "/oauth2/**",
+                        "/login/oauth2/code/**"
+                    ).permitAll()
                     .requestMatchers(HttpMethod.GET, *PublicApiPaths.Companion.all().toTypedArray()).permitAll()
                     .anyRequest().authenticated()
             }

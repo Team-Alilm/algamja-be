@@ -13,6 +13,14 @@ class JwtFilter(
     private val userDetailsService: CustomUserDetailsService,
 ) : OncePerRequestFilter() {
 
+    // 1) 특정 요청은 아예 필터링하지 않기
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        val uri = request.requestURI
+        if (request.method.equals("OPTIONS", ignoreCase = true)) return true
+        if (uri.startsWith("/login/") || uri.startsWith("/oauth2/")) return true
+        return false
+    }
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
