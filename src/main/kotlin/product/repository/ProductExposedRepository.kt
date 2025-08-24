@@ -200,22 +200,22 @@ class ProductExposedRepository {
             .singleOrNull()
             ?.let(ProductRow::from)
 
-    fun insertProduct(
-        crawledProduct: CrawledProduct
-    ): Long =
-        ProductTable.insertAndGetId {
-            it[ProductTable.store]          = Store.valueOf(crawledProduct.store)
-            it[ProductTable.storeNumber]    = crawledProduct.storeNumber
-            it[ProductTable.name]           = crawledProduct.name
-            it[ProductTable.brand]          = crawledProduct.brand
-            it[ProductTable.thumbnailUrl]   = crawledProduct.thumbnailUrl
-            it[ProductTable.price]          = crawledProduct.price
-            it[ProductTable.firstCategory]  = crawledProduct.firstCategory
-            it[ProductTable.secondCategory] = crawledProduct.secondCategory
-            it[ProductTable.firstOption]    = crawledProduct.firstOption
-            it[ProductTable.secondOption]   = crawledProduct.secondOption
-            it[ProductTable.thirdOption]    = crawledProduct.thirdOption
-        }.value
+//    fun insertProduct(
+//        crawledProduct: CrawledProduct
+//    ): Long =
+//        ProductTable.insertAudited {
+//            it[ProductTable.store]          = Store.valueOf(crawledProduct.store)
+//            it[ProductTable.storeNumber]    = crawledProduct.storeNumber
+//            it[ProductTable.name]           = crawledProduct.name
+//            it[ProductTable.brand]          = crawledProduct.brand
+//            it[ProductTable.thumbnailUrl]   = crawledProduct.thumbnailUrl
+//            it[ProductTable.price]          = crawledProduct.price
+//            it[ProductTable.firstCategory]  = crawledProduct.firstCategory
+//            it[ProductTable.secondCategory] = crawledProduct.secondCategory
+//            it[ProductTable.firstOption]    = crawledProduct.firstOption
+//            it[ProductTable.secondOption]   = crawledProduct.secondOption
+//            it[ProductTable.thirdOption]    = crawledProduct.thirdOption
+//        }[ProductTable.id].value
 
     /** 부분 수정 (반환: 영향 행 수) */
     fun updateProduct(

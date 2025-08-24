@@ -12,7 +12,7 @@ data class CrawledProduct(
     val price: BigDecimal,
     val firstCategory: String,
     val secondCategory: String?,
-    val firstOption: String?,
-    val secondOption: String?,
-    val thirdOption: String?
+    val firstOptions: List<String>,
+    val secondOptions: List<String>,
+    val thirdOptions: List<String>
 )

@@ -5,7 +5,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
-import org.team_alilm.product.controller.v1.dto.request.RegisterProductRequest
+import org.team_alilm.product.controller.v1.dto.request.CrawlProductRequest
+import org.team_alilm.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductDetailResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductListResponse
@@ -73,8 +74,8 @@ interface ProductDocs {
         description = "새로운 상품을 등록합니다."
     )
     @ApiResponse(
-        responseCode = "201",
+        responseCode = "200",
         description = "상품이 성공적으로 등록되었습니다."
     )
-    fun registerProduct(request: RegisterProductRequest): ResponseEntity<common.response.ApiResponse<Unit>>
+    fun crawlProduct(request: CrawlProductRequest): ResponseEntity<common.response.ApiResponse<CrawlProductResponse>>
 }

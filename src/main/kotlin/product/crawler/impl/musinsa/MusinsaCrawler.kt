@@ -2,15 +2,16 @@ package org.team_alilm.product.crawler.impl.musinsa
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.jsoup.Jsoup
-import org.springframework.core.ParameterizedTypeReference
+import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.product.crawler.ProductCrawler
 import org.team_alilm.product.crawler.dto.CrawledProduct
-import org.team_alilm.product.crawler.impl.musinsa.dto.OptionApiResponse
+import org.team_alilm.product.crawler.impl.musinsa.dto.option.OptionApiResponse
 import org.team_alilm.product.crawler.impl.musinsa.dto.ProductState
 
+@Component
 class MusinsaCrawler(
     private val objectMapper: ObjectMapper,
     private val restClient: RestClient,
@@ -54,6 +55,14 @@ class MusinsaCrawler(
         val price = state.goodsPrice.salePrice
             .toBigDecimal()
 
+        // 4) 옵션 API 호출 → 옵션명 리스트 추출
+        val option = fetchOptionData(state.goodsNo) // OptionApiResponse
+        val basic = option.data?.basic.orEmpty()    // depth별 옵션 배열
+
+        val firstOptions  = basic.getOrNull(0)?.optionValues?.map { it.name } ?: emptyList()
+        val secondOptions = basic.getOrNull(1)?.optionValues?.map { it.name } ?: emptyList()
+        val thirdOptions  = basic.getOrNull(2)?.optionValues?.map { it.name } ?: emptyList()
+
         return CrawledProduct(
             storeNumber    = state.goodsNo,
             name           = state.goodsNm,
@@ -64,9 +73,9 @@ class MusinsaCrawler(
             price          = price,
             firstCategory  = state.category.categoryDepth1Name,
             secondCategory = state.category.categoryDepth2Name,
-            firstOption    = null,
-            secondOption   = null,
-            thirdOption    = null
+            firstOptions   = firstOptions,
+            secondOptions  = secondOptions,
+            thirdOptions   = thirdOptions
         )
     }
 
@@ -85,14 +94,13 @@ class MusinsaCrawler(
         }
     }
 
+    /** 옵션 API 호출 */
     private fun fetchOptionData(goodsNo: Long): OptionApiResponse {
-        val optionUri = "https://goods-detail.musinsa.com/api2/goods/$goodsNo/v2/options?goodsSaleType=SALE"
-        val response: OptionApiResponse? = restClient.get()
-            .uri(optionUri)
+        val uri = "https://goods-detail.musinsa.com/api2/goods/$goodsNo/v2/options?goodsSaleType=SALE"
+        return restClient.get()
+            .uri(uri)
             .retrieve()
-            .body(object : ParameterizedTypeReference<OptionApiResponse>() {})
-
-        return response ?: throw BusinessException(ErrorCode.MUSINSA_INVALID_RESPONSE)
-
+            .body(OptionApiResponse::class.java)
+            ?: throw BusinessException(ErrorCode.MUSINSA_INVALID_RESPONSE)
     }
 }

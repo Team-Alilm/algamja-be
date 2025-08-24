@@ -3,9 +3,9 @@ package org.team_alilm.product.image.repository
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.springframework.stereotype.Repository
+import org.team_alilm.common.entity.insertAudited
 import org.team_alilm.product.image.entity.ProductImageRow
 import org.team_alilm.product.image.entity.ProductImageTable
 import org.team_alilm.product.image.repository.projection.ProductImageProjection
@@ -49,7 +49,7 @@ class ProductImageExposedRepository {
             .filter { it.isNotEmpty() }
             .distinct()
             .forEach { url ->
-                ProductImageTable.insert { row ->
+                ProductImageTable.insertAudited { row ->
                     row[ProductImageTable.productId] = productId
                     row[ProductImageTable.imageUrl]  = url
                     // row[ProductImageTable.sortOrder] = ...  // 정렬 컬럼 있으면 사용
