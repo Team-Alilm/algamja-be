@@ -4,7 +4,6 @@ import common.response.ApiResponse
 import common.response.ApiResponse.Companion.success
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -71,9 +70,7 @@ class ProductController(
     @PostMapping
     override fun crawlProduct(
         @RequestBody @Valid request: CrawlProductRequest
-    ): ResponseEntity<ApiResponse<CrawlProductResponse>> {
-        productService.crawlProduct(request)
-
-        return ApiResponse.created(data = productService.crawlProduct(request))
+    ): ApiResponse<CrawlProductResponse> {
+        return success(data = productService.crawlProduct(request))
     }
 }

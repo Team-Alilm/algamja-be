@@ -3,7 +3,6 @@ package org.team_alilm.product.controller.v1.docs
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.http.ResponseEntity
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
 import org.team_alilm.product.controller.v1.dto.request.CrawlProductRequest
 import org.team_alilm.product.controller.v1.dto.response.CrawlProductResponse
@@ -77,5 +76,5 @@ interface ProductDocs {
         responseCode = "200",
         description = "상품이 성공적으로 등록되었습니다."
     )
-    fun crawlProduct(request: CrawlProductRequest): ResponseEntity<common.response.ApiResponse<CrawlProductResponse>>
+    fun crawlProduct(request: CrawlProductRequest): common.response.ApiResponse<CrawlProductResponse>
 }
