@@ -23,6 +23,15 @@ class ProductImageExposedRepository {
             .map(ProductImageRow::from)
     }
 
+    /**
+     * Retrieves non-deleted image projections for the given product IDs.
+     *
+     * Returns a list of ProductImageProjection containing the image id, productId, and imageUrl
+     * for every row in ProductImageTable whose productId is in `productIds` and isDelete is false.
+     *
+     * @param productIds List of product IDs to fetch images for.
+     * @return List of ProductImageProjection matching the provided product IDs.
+     */
     fun fetchProductImagesByProductIds(productIds: List<Long>): List<ProductImageProjection> {
         val table = ProductImageTable
 
@@ -38,7 +47,17 @@ class ProductImageExposedRepository {
             }
     }
 
-    /** 기존 이미지 전부 삭제 후 전달한 목록으로 재삽입 */
+    /**
+     * Replace all images for a product by hard-deleting existing rows and inserting the provided URLs.
+     *
+     * Performs a hard delete of all ProductImageTable rows for the given productId, then inserts each
+     * non-empty, trimmed, distinct URL from imageUrls as a new row. URLs are deduplicated and blank
+     * entries are ignored. Inserts use the audited insert helper and may populate additional columns
+     * (e.g., sortOrder) if needed.
+     *
+     * @param imageUrls List of image URLs to insert; entries will be trimmed, empty strings removed,
+     * and duplicates discarded before insertion.
+     */
     fun replaceImages(productId: Long, imageUrls: List<String>) {
         // 1) 기존 삭제 (하드 삭제)
         ProductImageTable.deleteWhere { ProductImageTable.productId eq productId }

@@ -12,6 +12,15 @@ class CrawlerRegistry(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    /**
+     * Selects the first registered ProductCrawler that supports the given product URL.
+     *
+     * Iterates the injected crawlers and returns the first whose `supports(url)` is true.
+     *
+     * @param url The product page URL to find a matching crawler for.
+     * @return The first ProductCrawler that supports the provided URL.
+     * @throws BusinessException with ErrorCode.CRAWLER_NOT_FOUND if no crawler supports the URL.
+     */
     fun resolve(url: String): ProductCrawler {
         return crawlers.firstOrNull { it.supports(url) }
             ?: run {

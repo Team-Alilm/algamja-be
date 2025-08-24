@@ -62,12 +62,26 @@ class ProductController(
         return success(data = response)
     }
 
+    /**
+     * Returns a list of recently restocked products.
+     *
+     * @return ApiResponse wrapping a RecentlyRestockedProductListResponse containing recently restocked product data.
+     */
     @GetMapping("/recently-restocked")
     override fun getRecentlyRestockedProducts(): ApiResponse<RecentlyRestockedProductListResponse> {
         val response = productService.getRecentlyRestockedProducts()
         return success(data = response)
     }
 
+    /**
+     * Initiates crawling for the given product request and returns the created crawl result.
+     *
+     * Validates the incoming CrawlProductRequest, triggers a crawl operation, and responds with
+     * HTTP 201 Created wrapping the resulting CrawlProductResponse.
+     *
+     * @param request Details of the product to crawl (validated).
+     * @return A ResponseEntity containing an ApiResponse with the created CrawlProductResponse.
+     */
     @PostMapping
     override fun crawlProduct(
         @RequestBody @Valid request: CrawlProductRequest

@@ -125,6 +125,16 @@ class ProductService(
     }
 
 
+    /**
+     * Returns up to 10 products that were recently restocked and notified to users.
+     *
+     * Fetches the top 10 recently-notified product IDs and loads their product records, mapping each to
+     * a RecentlyRestockedProductResponse (productId, name, brand, thumbnailUrl). If no notified products
+     * are found, returns an empty RecentlyRestockedProductListResponse. The result may contain fewer than
+     * 10 items if some product IDs cannot be resolved.
+     *
+     * @return A RecentlyRestockedProductListResponse containing the mapped recently restocked products.
+     */
     fun getRecentlyRestockedProducts(): RecentlyRestockedProductListResponse {
         val ids = basketExposedRepository.fetchTop10RecentlyNotifiedProductIds().ifEmpty {
             return RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = emptyList())
@@ -143,6 +153,16 @@ class ProductService(
         return RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = responses)
     }
 
+    /**
+     * Crawls product information from the given product URL and returns the parsed result.
+     *
+     * Uses the crawler registry to resolve the appropriate crawler for the URL, normalizes
+     * the URL, fetches crawled product data, and returns a response containing the product
+     * name, thumbnail URL, and up to three option lists extracted by the crawler.
+     *
+     * @param request Contains the productUrl to crawl.
+     * @return A [CrawlProductResponse] with `name`, `thumbnailUrl`, `firstOptions`, `secondOptions`, and `thirdOptions` populated from the crawler result.
+     */
     @Transactional
     fun crawlProduct(request: CrawlProductRequest) : CrawlProductResponse {
         val productCrawler = crawlerRegistry.resolve(url = request.productUrl)
@@ -160,6 +180,12 @@ class ProductService(
         )
     }
 
+    /**
+     * Counts products that match the given list parameters.
+     *
+     * @param param Filtering and pagination criteria used to restrict which products are counted.
+     * @return A [ProductCountResponse] containing the total number of matching products.
+     */
     @Transactional
     fun getProductCount(param: ProductListParam): ProductCountResponse {
         val count = productExposedRepository.countProducts(param)

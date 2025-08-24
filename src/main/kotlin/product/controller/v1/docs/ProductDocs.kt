@@ -69,6 +69,12 @@ interface ProductDocs {
     )
     fun getRecentlyRestockedProducts(): common.response.ApiResponse<RecentlyRestockedProductListResponse>
 
+    /**
+     * 새로운 상품을 등록하고 등록 결과를 반환합니다.
+     *
+     * @param request 등록할 상품을 생성하기 위한 크롤링/등록 요청 데이터
+     * @return HTTP 응답으로 래핑된 ApiResponse\<CrawlProductResponse\> — 등록된 상품 정보(예: ID 및 관련 메타)를 포함합니다.
+     */
     @Operation(
         summary = "상품 등록",
         description = "새로운 상품을 등록합니다."

@@ -25,11 +25,38 @@ class MusinsaCrawler(
         options = setOf(RegexOption.DOT_MATCHES_ALL)
     )
 
-    override fun supports(url: String): Boolean =
+    /**
+         * Returns true when the given URL targets the Musinsa site.
+         *
+         * The check is case-insensitive and only tests for the presence of "musinsa.com" in the URL.
+         *
+         * @param url The URL to check.
+         * @return `true` if the URL contains "musinsa.com" (case-insensitive); otherwise `false`.
+         */
+        override fun supports(url: String): Boolean =
         url.contains("musinsa.com", ignoreCase = true)
 
-    override fun normalize(url: String): String =
-        url.substringBefore("?") // 불필요한 쿼리 제거 (필요 시 로직 확장)
+    /**
+         * Returns the given URL without any query string.
+         *
+         * Removes the first `?` and everything after it; if no query string is present, returns the original URL.
+         *
+         * @param url The URL to normalize.
+         * @return The URL stripped of its query parameters.
+         */
+        override fun normalize(url: String): String =
+        url.substringBefore("?") /**
+     * Crawls a Musinsa product page and returns a populated CrawledProduct.
+     *
+     * Normalizes the provided URL (removes query string), fetches the page HTML via Jsoup,
+     * extracts the embedded product state JSON, maps it to a ProductState, and builds a
+     * CrawledProduct containing store number, name, brand, thumbnail, image URLs, price,
+     * categories, and up to three option lists derived from the Musinsa options API.
+     *
+     * @param url The original Musinsa product page URL; query parameters will be stripped during normalization.
+     * @return A CrawledProduct populated with data extracted from the page and the Musinsa options API.
+     * @throws BusinessException If the embedded product state JSON cannot be found or the options API returns an invalid response (MUSINSA_INVALID_RESPONSE).
+     */
 
     override fun fetch(url: String): CrawledProduct {
         val normalized = normalize(url)
@@ -79,12 +106,28 @@ class MusinsaCrawler(
         )
     }
 
+    /**
+     * Extracts the JSON payload assigned to `window.__MSS__.product.state` from the provided HTML.
+     *
+     * @param html HTML document text to search for the embedded product state JSON.
+     * @return The captured JSON string representing the product state.
+     * @throws BusinessException with ErrorCode.MUSINSA_INVALID_RESPONSE if the expected JSON block cannot be found.
+     */
     private fun extractProductStateJson(html: String): String {
         val matchResult = stateRegex.find(html)
             ?: throw BusinessException(ErrorCode.MUSINSA_INVALID_RESPONSE)
         return matchResult.groupValues[1]
     }
 
+    /**
+     * Converts a possibly relative image path into an absolute URL.
+     *
+     * Returns an empty string for null or blank inputs. If `relativeUrl` already begins with
+     * "http" it is returned unchanged; otherwise `IMAGE_BASE_URL` is prepended.
+     *
+     * @param relativeUrl The image path or URL which may be null, blank, absolute, or relative.
+     * @return An absolute image URL, or an empty string if the input is null/blank.
+     */
     private fun toAbsoluteImageUrl(relativeUrl: String?): String {
         if (relativeUrl.isNullOrBlank()) return ""
         return if (relativeUrl.startsWith("http")) {
@@ -94,7 +137,15 @@ class MusinsaCrawler(
         }
     }
 
-    /** 옵션 API 호출 */
+    /**
+     * Fetches option data for a Musinsa product by its goods number.
+     *
+     * Calls Musinsa's options API and returns the mapped OptionApiResponse.
+     *
+     * @param goodsNo Musinsa product identifier (`goodsNo`) used to build the API URI.
+     * @return The deserialized OptionApiResponse from the API.
+     * @throws BusinessException if the API response body is missing or cannot be mapped.
+     */
     private fun fetchOptionData(goodsNo: Long): OptionApiResponse {
         val uri = "https://goods-detail.musinsa.com/api2/goods/$goodsNo/v2/options?goodsSaleType=SALE"
         return restClient.get()

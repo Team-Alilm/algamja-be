@@ -20,7 +20,18 @@ import org.team_alilm.product.repository.projection.ProductSliceProjection
 @Repository
 class ProductExposedRepository {
 
-    /** 복합키(store, storeNumber, first/second/thirdOption)로 단건 조회 */
+    /**
+             * Retrieves a single non-deleted product matching the composite key (store, storeNumber, firstOption, secondOption, thirdOption).
+             *
+             * Nullable option parameters are compared null-safely: a null value matches SQL IS NULL for that column.
+             *
+             * @param store The store enum value.
+             * @param storeNumber The store-specific product number.
+             * @param firstOption Nullable first option to match; null matches rows where `firstOption IS NULL`.
+             * @param secondOption Nullable second option to match; null matches rows where `secondOption IS NULL`.
+             * @param thirdOption Nullable third option to match; null matches rows where `thirdOption IS NULL`.
+             * @return A mapped ProductRow if a matching non-deleted product exists, or null otherwise.
+             */
     fun fetchByCompositeKey(
         store: Store,
         storeNumber: Long,
@@ -41,7 +52,16 @@ class ProductExposedRepository {
             .singleOrNull()
             ?.let(ProductRow::from)
 
-    /** 공통 WHERE 빌더 (목록/카운트에서 재사용) */
+    /**
+     * Builds the base SQL WHERE predicate for product list and count queries.
+     *
+     * The returned predicate always requires `isDelete = false`. If `param.keyword` is a
+     * non-empty string it adds a `LIKE` condition matching the keyword against `name` or `brand`.
+     * If `param.category` is a non-empty string it adds an equality condition on `firstCategory`.
+     *
+     * @param param Filtering and pagination parameters; only `keyword` and `category` are used.
+     * @return An Exposed `Op<Boolean>` representing the conjunction of applicable predicates.
+     */
     private fun buildBaseWhere(param: ProductListParam): Op<Boolean> {
         val table = ProductTable
         val like  = param.keyword?.trim()?.takeIf { it.isNotEmpty() }?.let { "%$it%" }
@@ -192,7 +212,12 @@ class ProductExposedRepository {
             }
             .map(ProductRow::from)
 
-    /** 단건 조회 */
+    /**
+             * Retrieves a non-deleted product by its ID.
+             *
+             * @param productId the product's database ID
+             * @return the matching ProductRow, or null if no non-deleted product exists with the given ID
+             */
     fun fetchProductById(productId: Long): ProductRow? =
         ProductTable
             .selectAll()
@@ -217,7 +242,16 @@ class ProductExposedRepository {
 //            it[ProductTable.thirdOption]    = crawledProduct.thirdOption
 //        }[ProductTable.id].value
 
-    /** 부분 수정 (반환: 영향 행 수) */
+    /**
+         * Partially updates a non-deleted product with values from a CrawledProduct.
+         *
+         * Updates the product identified by [existingProductId] only if it is not marked deleted
+         * (isDelete = false). Fields updated: name, brand, thumbnailUrl, price, firstCategory, secondCategory.
+         *
+         * @param existingProductId ID of the product to update.
+         * @param crawledProduct Source object providing the new field values.
+         * @return The number of rows affected (should be 0 or 1).
+         */
     fun updateProduct(
         existingProductId: Long,
         crawledProduct: CrawledProduct
@@ -231,6 +265,15 @@ class ProductExposedRepository {
             it[ProductTable.secondCategory]= crawledProduct.secondCategory
         }
 
-    private fun Column<String?>.eqNullable(value: String?): Op<Boolean> =
+    /**
+         * Compares a nullable string column to a nullable value, producing an Exposed boolean expression.
+         *
+         * If `value` is null the resulting predicate checks the column IS NULL; otherwise it checks column = `value`.
+         *
+         * @receiver The nullable string column to compare.
+         * @param value The nullable value to compare against.
+         * @return An `Op<Boolean>` predicate representing the comparison.
+         */
+        private fun Column<String?>.eqNullable(value: String?): Op<Boolean> =
         if (value == null) this.isNull() else (this eq value)
 }

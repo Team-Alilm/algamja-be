@@ -14,7 +14,15 @@ open class BaseLongIdTable(name: String) : LongIdTable(name) {
     val lastModifiedDate = long("last_modified_date")
 }
 
-/** 공통 insert: created/updated 밀리초 자동 세팅 */
+/**
+ * Inserts a new row in the table and automatically sets auditing fields.
+ *
+ * Sets `createdDate` and `lastModifiedDate` to the current epoch milliseconds and `isDelete` to `false`,
+ * then invokes [block] to populate additional columns for the insert.
+ *
+ * @param block Extension block applied to the generated [InsertStatement] to set other column values.
+ * @return The resulting [InsertStatement]<Number> from the insert operation.
+ */
 fun <T : BaseLongIdTable> T.insertAudited(
     block: T.(InsertStatement<Number>) -> Unit
 ): InsertStatement<Number> = insert {
