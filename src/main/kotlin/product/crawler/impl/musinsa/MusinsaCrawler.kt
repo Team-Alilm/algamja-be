@@ -10,6 +10,8 @@ import org.team_alilm.product.crawler.ProductCrawler
 import org.team_alilm.product.crawler.dto.CrawledProduct
 import org.team_alilm.product.crawler.impl.musinsa.dto.option.OptionApiResponse
 import org.team_alilm.product.crawler.impl.musinsa.dto.ProductState
+import java.net.IDN
+import java.net.URI
 
 @Component
 class MusinsaCrawler(
@@ -24,12 +26,43 @@ class MusinsaCrawler(
         pattern = """window\.__MSS__\.product\.state\s*=\s*(\{.*?});""",
         options = setOf(RegexOption.DOT_MATCHES_ALL)
     )
-
+    // ─────────────────────────────────────────────────────────────────────────────
+    // ✅ 강화된 도메인 검증 + 정규화
+    // ─────────────────────────────────────────────────────────────────────────────
     override fun supports(url: String): Boolean =
-        url.contains("musinsa.com", ignoreCase = true)
+        runCatching {
+            val u = URI(url.trim())
+            val scheme = u.scheme?.lowercase()
+            val host = normalizeHost(u.host) ?: return false
+            (scheme == "http" || scheme == "https") &&
+                    (host == "musinsa.com" || host.endsWith(".musinsa.com"))
+        }.getOrDefault(false)
 
     override fun normalize(url: String): String =
-        url.substringBefore("?") // 불필요한 쿼리 제거 (필요 시 로직 확장)
+        runCatching {
+            val u = URI(url.trim())
+            val scheme = (u.scheme ?: "https").lowercase()
+            val host = normalizeHost(u.host) ?: return url.substringBefore("?")
+            val path = u.rawPath.orEmpty()
+            if ((scheme == "http" || scheme == "https") &&
+                (host == "musinsa.com" || host.endsWith(".musinsa.com"))
+            ) {
+                // 쿼리/프래그먼트 제거, 표준 포트는 생략
+                val port = when (u.port) {
+                    -1, 80, 443 -> ""
+                    else -> ":${u.port}"   // 비표준 포트 허용하지 않으려면 supports에서 false 처리
+                }
+                "$scheme://$host$port$path"
+            } else url.substringBefore("?")
+        }.getOrElse { url.substringBefore("?") }
+
+    private fun normalizeHost(raw: String?): String? {
+        if (raw.isNullOrBlank()) return null
+        // 끝의 점 제거 + 소문자 + 퓨니코드 정규화
+        val trimmed = raw.trim().trimEnd('.').lowercase()
+        return IDN.toASCII(trimmed)
+    }
+
 
     override fun fetch(url: String): CrawledProduct {
         val normalized = normalize(url)
