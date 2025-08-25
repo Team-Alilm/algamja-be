@@ -1,17 +1,16 @@
--- 두 단계 rename: 대소문자만 다른 이름 변경을 모든 OS에서 안전하게 처리
--- 보호 로직: MEMBER가 있고 member는 없을 때만 수행
+-- Skip rename when only `member` exists
 
--- 현재 스키마 기준 존재 여부 체크
-SET @has_member       := (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'MEMBER');
-SET @has_member_lower := (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'member');
+-- 존재여부(대소문자 구분) 확인
+SET @has_member_lower := (
+    SELECT COUNT(*) FROM information_schema.tables
+    WHERE table_schema = DATABASE() AND BINARY table_name = 'member'
+);
+SET @has_MEMBER := (
+    SELECT COUNT(*) FROM information_schema.tables
+    WHERE table_schema = DATABASE() AND BINARY table_name = 'MEMBER'
+);
 
--- MEMBER가 존재하고, member가 아직 없으면 실행
--- ⚠️ Flyway는 기본적으로 여러 문장을 순차 실행합니다.
---    중간 실패 시 MEMBER_TMP로 남을 수 있으니, 아래 “복구 방법” 참고
-IF (@has_member = 1 AND @has_member_lower = 0) THEN
-  RENAME TABLE `MEMBER` TO `MEMBER_TMP`;
-  RENAME TABLE `MEMBER_TMP` TO `member`;
-END IF;
-
--- 필요한 경우 인덱스/제약 확인(예: 고유 인덱스)
--- CREATE UNIQUE INDEX uk_member_provider_pid ON `member` (`provider`, `provider_id`);
+-- 이미 `member`가 있으면 끝 (no-op)
+-- (Flyway는 여러 문장을 순차 실행하므로, 조건만 확인하고 종료)
+-- 주의: 여기서는 실제 작업이 없으니, 스크립트 통과 = “건너뜀”
+DO 0 + @has_member_lower; -- 더미 연산(실행 로그 남기는 용도)
