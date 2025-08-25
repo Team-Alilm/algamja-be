@@ -83,7 +83,7 @@ class SecurityConfig (
         val cfg = CorsConfiguration()
         cfg.setAllowedOrigins(
             mutableListOf<String?>(
-                "http://localhost:3000", "http://127.0.0.1:3000", "https://algamja.com"
+                "http://localhost:3000", "http://127.0.0.1:3000", "https://algamja.com", "http://localhost:5173"
             )
         )
         cfg.setAllowedMethods(mutableListOf<String?>("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"))
