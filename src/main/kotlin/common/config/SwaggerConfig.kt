@@ -27,6 +27,7 @@ class SwaggerConfig {
                 )
             )
             .addSecurityItem(SecurityRequirement().addList(scheme))
+            .servers(listOf(io.swagger.v3.oas.models.servers.Server().url("https://api.algamja.com")))
     }
 
     @Bean
