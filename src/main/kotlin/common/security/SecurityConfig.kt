@@ -29,7 +29,7 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .cors { it.configurationSource(corsConfigurationSource()) }
+            .cors { it.disable() }
             .csrf { it.disable() }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
@@ -68,7 +68,6 @@ class SecurityConfig(
             }
         return http.build()
     }
-
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
