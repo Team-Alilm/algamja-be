@@ -43,7 +43,7 @@ class SecurityConfig(
             .headers { headers ->
                 headers.frameOptions { fo -> fo.sameOrigin() } // H2 콘솔용 (로컬에서만 열리게 매칭은 아래 authorize에서 제한)
             }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) }
             .authorizeHttpRequests { auth ->
                 auth
                     // 정적/문서 최소 공개
