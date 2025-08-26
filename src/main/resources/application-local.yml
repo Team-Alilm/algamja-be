@@ -1,10 +1,10 @@
 spring:
 
   datasource:
-    url: ENC(ZDpqWge75lwCaJv1jaPNNkx3tAzKi294wP7G31nhJK8Jd0kJvPDvgVQ0R99RxuoYI5WHKzOQLBclY2MiGsYXcl8WEPX5hA8EjCd+5ClhynvgZUUX9U2NCLZSUq2Che2t)
+    url: jdbc:mysql://127.0.0.1:3306/appdb?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ENC(kuV4NDaVfXCAy3oZAFZvsw==)
-    password: ENC(eFBbprUYt6AEtXC9wqz5ebIg8oKK1bOr)
+    username: appuser
+    password: apppass
 
   data:
     redis:

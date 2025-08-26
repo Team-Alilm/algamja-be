@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 
 @Schema(description = "상품 URL 등록 요청")
-data class RegisterProductRequest(
+data class CrawlProductRequest(
 
     @field:NotBlank(message = "상품 URL은 필수입니다.")
     @field:Pattern(

@@ -4,12 +4,14 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.like
 import org.springframework.stereotype.Repository
 import org.team_alilm.basket.entity.BasketTable
 import org.team_alilm.common.enums.Sort.*
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
+import org.team_alilm.product.crawler.dto.CrawledProduct
 import org.team_alilm.product.entity.ProductRow
 import org.team_alilm.product.entity.ProductTable
 import org.team_alilm.product.repository.projection.ProductSliceProjection
@@ -175,4 +177,21 @@ class ProductExposedRepository {
             .where { (ProductTable.id eq productId) and (ProductTable.isDelete eq false) }
             .singleOrNull()
             ?.let(ProductRow::from)
+
+    /** 부분 수정 (반환: 영향 행 수) */
+    fun updateProduct(
+        existingProductId: Long,
+        crawledProduct: CrawledProduct
+    ): Int =
+        ProductTable.update({ (ProductTable.id eq existingProductId) and (ProductTable.isDelete eq false) }) {
+            it[ProductTable.name]          = crawledProduct.name
+            it[ProductTable.brand]         = crawledProduct.brand
+            it[ProductTable.thumbnailUrl]  = crawledProduct.thumbnailUrl
+            it[ProductTable.price]         = crawledProduct.price
+            it[ProductTable.firstCategory] = crawledProduct.firstCategory
+            it[ProductTable.secondCategory]= crawledProduct.secondCategory
+        }
+
+    private fun Column<String?>.eqNullable(value: String?): Op<Boolean> =
+        if (value == null) this.isNull() else (this eq value)
 }

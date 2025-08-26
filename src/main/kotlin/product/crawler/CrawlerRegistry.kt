@@ -15,7 +15,7 @@ class CrawlerRegistry(
     fun resolve(url: String): ProductCrawler {
         return crawlers.firstOrNull { it.supports(url) }
             ?: run {
-                log.error("지원하는 크롤러가 없습니다. URL: $url")
+                log.warn("지원하는 크롤러가 없습니다. URL: $url")
                 throw BusinessException(ErrorCode.CRAWLER_NOT_FOUND)
             }
     }

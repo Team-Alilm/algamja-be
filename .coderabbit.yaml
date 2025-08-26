@@ -60,3 +60,6 @@ conventions:
   test_naming: true
   package_naming: true
   logging_best_practices: true
+
+# 🔑 리뷰 언어 설정
+language: ko
