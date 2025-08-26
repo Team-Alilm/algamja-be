@@ -7,7 +7,8 @@ import org.team_alilm.common.enums.Sort
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
-import org.team_alilm.product.controller.v1.dto.request.RegisterProductRequest
+import org.team_alilm.product.controller.v1.dto.request.CrawlProductRequest
+import org.team_alilm.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductDetailResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductListResponse
@@ -143,8 +144,20 @@ class ProductService(
     }
 
     @Transactional
-    fun registerProduct(request: RegisterProductRequest) {
-        crawlerRegistry.resolve(url = request.productUrl)
+    fun crawlProduct(request: CrawlProductRequest) : CrawlProductResponse {
+        val productCrawler = crawlerRegistry.resolve(url = request.productUrl)
+        // 2. URL 정규화 (불필요한 파라미터, 리다이렉션 제거 등)
+        val normalizedUrl = productCrawler.normalize(request.productUrl)
+        // 3. 크롤링 실행 → 상품 정보 얻기
+        val crawledProduct = productCrawler.fetch(normalizedUrl)
+
+        return CrawlProductResponse(
+            name = crawledProduct.name,
+            thumbnailUrl = crawledProduct.thumbnailUrl,
+            firstOptions = crawledProduct.firstOptions,
+            secondOptions = crawledProduct.secondOptions,
+            thirdOptions = crawledProduct.thirdOptions
+        )
     }
 
     @Transactional

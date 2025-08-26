@@ -4,7 +4,6 @@ import common.response.ApiResponse
 import common.response.ApiResponse.Companion.success
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -13,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.product.controller.v1.docs.ProductDocs
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
-import org.team_alilm.product.controller.v1.dto.request.RegisterProductRequest
+import org.team_alilm.product.controller.v1.dto.request.CrawlProductRequest
+import org.team_alilm.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductDetailResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductListResponse
@@ -68,11 +68,9 @@ class ProductController(
     }
 
     @PostMapping
-    override fun registerProduct(
-        @RequestBody @Valid request: RegisterProductRequest
-    ): ResponseEntity<ApiResponse<Unit>> {
-        productService.registerProduct(request)
-
-        return ApiResponse.created(data = Unit)
+    override fun crawlProduct(
+        @RequestBody @Valid request: CrawlProductRequest
+    ): ApiResponse<CrawlProductResponse> {
+        return success(data = productService.crawlProduct(request))
     }
 }

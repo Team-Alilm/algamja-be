@@ -21,6 +21,7 @@ fun <T : BaseLongIdTable> T.insertAudited(
     val now = System.currentTimeMillis()
     it[createdDate] = now
     it[lastModifiedDate] = now
+    it[isDelete] = false
     this@insertAudited.block(it)
 }
 

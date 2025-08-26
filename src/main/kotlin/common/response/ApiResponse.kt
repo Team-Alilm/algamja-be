@@ -22,7 +22,7 @@ data class ApiResponse<T>(
             data: T,
             message: String = "요청이 성공적으로 처리되었습니다",
         ): ResponseEntity<ApiResponse<T>> {
-            val body = ApiResponse.success(data, message)
+            val body = success(data, message)
             return ResponseEntity.status(HttpStatus.CREATED).body(body)
         }
     }
