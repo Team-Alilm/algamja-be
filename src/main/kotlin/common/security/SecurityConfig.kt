@@ -24,37 +24,52 @@ class SecurityConfig(
     private val customSuccessHandler: CustomSuccessHandler,
     private val customFailureHandler: CustomFailureHandler,
     private val jwtUtil: JwtUtil,
-    private val userDetailsService: CustomUserDetailsService
+    private val userDetailsService: CustomUserDetailsService,
+    private val env: org.springframework.core.env.Environment
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        val isLocal = env.activeProfiles.any { it.equals("local", true) || it.equals("dev", true) }
+
         http
-            .cors { it.disable() }
-            .csrf { it.disable() }
+            .cors { it.configurationSource(corsConfigurationSource()) }
+            .csrf {
+                it.disable()
+                // (선택) 로컬에서만 H2 경로 CSRF 무시하고 싶다면:
+                // if (isLocal) it.ignoringRequestMatchers(AntPathRequestMatcher("/h2-console/**"))
+            }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
-            .headers { it.frameOptions { fo -> fo.sameOrigin() } }
+            .headers { headers ->
+                headers.frameOptions { fo -> fo.sameOrigin() } // H2 콘솔용 (로컬에서만 열리게 매칭은 아래 authorize에서 제한)
+            }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeHttpRequests {
-                it
-                    // 정적/문서/헬스 오픈
+            .authorizeHttpRequests { auth ->
+                auth
+                    // 정적/문서 최소 공개
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                    .requestMatchers(
-                        "/actuator/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/favicon.ico",
-                        "/h2-console/**"
-                    ).permitAll()
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/favicon.ico").permitAll()
 
-                    // CORS Preflight 안전판
+                    // CORS preflight
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                    // 🔓 Public GET API (enum 기반, 버전 프리픽스 `/api/v*/...`)
+                    // Actuator 최소 공개 (운영도 허용 가능)
+                    .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+
+                    // 로컬/개발에서만 H2 콘솔 오픈
+                    .apply {
+                        if (isLocal) {
+                            requestMatchers("/h2-console/**").permitAll()
+                        } else {
+                            // 운영에서는 actuator 나머지 보호 (원하면 롤 부여)
+                            requestMatchers("/actuator/**").hasRole("ACTUATOR")
+                        }
+                    }
+
+                    // 공개 GET API (도메인 API)
                     .requestMatchers(HttpMethod.GET, *PublicApiPaths.all().toTypedArray()).permitAll()
 
-                    // 나머지는 인증
+                    // 그 외 인증
                     .anyRequest().authenticated()
             }
             .addFilterBefore(
@@ -66,20 +81,17 @@ class SecurityConfig(
                     .successHandler(customSuccessHandler)
                     .failureHandler(customFailureHandler)
             }
+
         return http.build()
     }
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val c = CorsConfiguration().apply {
-            // 🔸 패턴 대신 정확한 오리진 나열
             allowedOrigins = listOf(
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-                "http://localhost:3000",
-                "http://127.0.0.1:3000",
-                "https://algamja.com",
-                "https://api.algamja.com"
+                "http://localhost:5173", "http://127.0.0.1:5173",
+                "http://localhost:3000", "http://127.0.0.1:3000",
+                "https://algamja.com", "https://api.algamja.com"
             )
             allowedMethods = listOf("GET","POST","PUT","PATCH","DELETE","OPTIONS","HEAD")
             allowedHeaders = listOf("*")
