@@ -27,6 +27,7 @@ class JwtFilter(
                 val authToken = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                 SecurityContextHolder.getContext().authentication = authToken
             }
+
         } catch (e: Exception) {
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             response.writer.write("Unauthorized: ${e.message}")

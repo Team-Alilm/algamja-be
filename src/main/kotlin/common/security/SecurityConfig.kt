@@ -69,12 +69,16 @@ class SecurityConfig(
         return http.build()
     }
 
+
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val c = CorsConfiguration().apply {
-            allowedOriginPatterns = listOf(
-                "http://localhost:*",
-                "http://127.0.0.1:*",
+            // 🔸 패턴 대신 정확한 오리진 나열
+            allowedOrigins = listOf(
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+                "http://localhost:3000",
+                "http://127.0.0.1:3000",
                 "https://algamja.com",
                 "https://api.algamja.com"
             )
