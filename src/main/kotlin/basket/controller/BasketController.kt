@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.basket.controller.docs.BasketDocs
 import org.team_alilm.basket.controller.dto.response.MyBasketProductListResponse
 import org.team_alilm.basket.service.BasketService
-import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.common.security.CustomMemberDetails
+import org.team_alilm.common.security.requireMemberId
 
 @RestController
-@RequestMapping("/api/v1/baskets")
+@RequestMapping("/api/v2/baskets")
 class BasketController(
 
     private val basketService: BasketService
@@ -27,7 +26,7 @@ class BasketController(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
     ): ApiResponse<MyBasketProductListResponse> {
         val response = basketService.getMyBasketProductList(
-            memberId = customMemberDetails.memberRow.id
+            memberId = customMemberDetails.requireMemberId()
         )
 
         return ApiResponse.success(response)
@@ -40,7 +39,7 @@ class BasketController(
         @PathVariable productId: Long
     ): ApiResponse<Unit> {
         basketService.copyBasket(
-            memberId = customMemberDetails.memberRow.id,
+            memberId = customMemberDetails.requireMemberId(),
             productId = productId
         )
         return ApiResponse.success(Unit)
@@ -52,7 +51,7 @@ class BasketController(
         @PathVariable basketId: Long
     ): ApiResponse<Unit> {
         basketService.deleteBasket(
-            memberId = customMemberDetails.memberRow.id,
+            memberId = customMemberDetails.requireMemberId(),
             basketId = basketId
         )
         return ApiResponse.success(Unit)

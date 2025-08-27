@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.fcm.repository.FcmTokenExposedRepository
 
 @Service
+@Transactional(readOnly = true)
 class FcmTokenService(
     private val fcmTokenExposedRepository: FcmTokenExposedRepository
 ) {

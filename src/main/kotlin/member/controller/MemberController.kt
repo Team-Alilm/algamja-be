@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.common.security.CustomMemberDetails
 import org.team_alilm.member.controller.docs.MemberDocs
 import org.team_alilm.member.controller.dto.request.UpdateMyInfoRequest
@@ -17,9 +15,8 @@ import org.team_alilm.member.controller.dto.response.MyInfoResponse
 import org.team_alilm.member.service.MemberService
 
 @RestController
-@RequestMapping("/api/v2/members")
+@RequestMapping("/api/v1/members")
 class MemberController(
-
     private val memberService: MemberService
 ) : MemberDocs {
 
@@ -27,12 +24,8 @@ class MemberController(
     override fun getMyInfo(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ): ApiResponse<MyInfoResponse> {
-        val myInfoResponse = MyInfoResponse(
-            email = customMemberDetails.memberRow.email,
-            nickname = customMemberDetails.memberRow.nickname
-        )
-
-        return ApiResponse.success(myInfoResponse)
+        val response = memberService.getMyInfo(customMemberDetails.memberRow.id)
+        return ApiResponse.success(response)
     }
 
     @PutMapping
@@ -41,11 +34,9 @@ class MemberController(
         @RequestBody @Valid request: UpdateMyInfoRequest
     ): ApiResponse<Unit> {
         memberService.updateMyInfo(
-            memberId = customMemberDetails.memberRow.id
-                ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR),
+            memberId = customMemberDetails.memberRow.id,
             request = request
         )
-
         return ApiResponse.success(Unit)
     }
 }
