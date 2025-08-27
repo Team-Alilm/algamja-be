@@ -21,7 +21,7 @@ class SwaggerConfig(
 
     @Bean
     fun openAPI(): OpenAPI {
-        val scheme = "bearerAuth"
+        val scheme = "JWT"
         return OpenAPI()
             .info(Info().title("Alim API").description("알감자 백엔드 API 문서").version("v1.0"))
             .components(
