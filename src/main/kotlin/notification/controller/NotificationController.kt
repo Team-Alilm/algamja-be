@@ -1,16 +1,14 @@
 package org.team_alilm.notification.controller
 
 import common.response.ApiResponse
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.common.security.CustomMemberDetails
+import org.team_alilm.common.security.requireMemberId
 import org.team_alilm.notification.controller.dto.response.RecentNotificationResponseList
 import org.team_alilm.notification.controller.dto.response.UnreadNotificationCountResponse
 import notification.controller.docs.NotificationDocs
@@ -28,9 +26,9 @@ class NotificationController(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ): ApiResponse<UnreadNotificationCountResponse> {
 
-        return ApiResponse.Companion.success(
+        return ApiResponse.success(
             data = notificationService.getUnreadNotificationCount(
-                memberId = customMemberDetails.memberRow.id ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
+                memberId = customMemberDetails.requireMemberId()
             )
         )
     }
@@ -40,10 +38,9 @@ class NotificationController(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ): ApiResponse<RecentNotificationResponseList> {
 
-        return ApiResponse.Companion.success(
+        return ApiResponse.success(
             data = notificationService.getRecentNotifications(
-                memberId = customMemberDetails.memberRow.id
-                    ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR),
+                memberId = customMemberDetails.requireMemberId()
             )
         )
     }
@@ -54,19 +51,19 @@ class NotificationController(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ): ApiResponse<Unit> {
 
-        return ApiResponse.Companion.success(
+        return ApiResponse.success(
             data = notificationService.readNotification(
                 notificationId = notificationId,
-                memberId = customMemberDetails.memberRow.id
+                memberId = customMemberDetails.requireMemberId()
             )
         )
     }
 
     @PutMapping("/read-all")
     override fun readAllNotifications(customMemberDetails: CustomMemberDetails): ApiResponse<Unit> {
-        return ApiResponse.Companion.success(
+        return ApiResponse.success(
             data = notificationService.readAllNotifications(
-                memberId = customMemberDetails.memberRow.id
+                memberId = customMemberDetails.requireMemberId()
             )
         )
     }
