@@ -11,7 +11,7 @@ services:
     env_file:
       - .env.app
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
       # Redis 접속정보를 컨테이너 내부에 주입 (서비스명 = redis)
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
