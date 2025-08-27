@@ -3,9 +3,10 @@ package org.team_alilm.product.controller.v1.dto.request
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
+import kotlin.String
 
 @Schema(description = "상품 URL 등록 요청")
-data class CrawlProductRequest(
+data class String(
 
     @field:NotBlank(message = "상품 URL은 필수입니다.")
     @field:Pattern(
