@@ -10,11 +10,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.Date
-import kotlin.text.get
 
 @Component
 class JwtUtil(
-    @Value($$"${spring.jwt.secretKey}")
+    @Value("\${spring.jwt.secretKey}")
     private val secret: String,
 ) {
 
