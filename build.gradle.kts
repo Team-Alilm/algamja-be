@@ -8,7 +8,7 @@ plugins {
     java
 }
 
-group = "com.skylabs"
+group = "com.algamja"
 version = "0.0.1"
 
 kotlin {
