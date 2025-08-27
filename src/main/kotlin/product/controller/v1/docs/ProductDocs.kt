@@ -69,7 +69,7 @@ interface ProductDocs {
     fun getRecentlyRestockedProducts(): common.response.ApiResponse<RecentlyRestockedProductListResponse>
 
     @Operation(
-        summary = "상품 등록",
+        summary = "상품 조회 (크롤링)",
         description = "새로운 상품을 등록합니다."
     )
     @ApiResponse(
