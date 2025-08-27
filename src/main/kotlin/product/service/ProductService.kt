@@ -7,7 +7,6 @@ import org.team_alilm.common.enums.Sort
 import org.team_alilm.common.exception.BusinessException
 import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
-import org.team_alilm.product.controller.v1.dto.request.CrawlProductRequest
 import org.team_alilm.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductCountResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductDetailResponse
@@ -64,7 +63,7 @@ class ProductService(
         val productIds = productRows.asSequence().map { it.id }.distinct().toList()
 
         // 3) 이미지 한번에 조회 → productId -> List<url>
-        val imagesByProductId: Map<Long, List<String>> =
+        val imagesByProductId: Map<Long, List<kotlin.String>> =
             productImageExposedRepository
                 .fetchProductImagesByProductIds(productIds)
                 .groupBy({ it.productId }, { it.imageUrl })
@@ -144,10 +143,10 @@ class ProductService(
     }
 
     @Transactional
-    fun crawlProduct(request: CrawlProductRequest) : CrawlProductResponse {
-        val productCrawler = crawlerRegistry.resolve(url = request.productUrl)
+    fun crawlProduct(productUrl: String) : CrawlProductResponse {
+        val productCrawler = crawlerRegistry.resolve(url = productUrl)
         // 2. URL 정규화 (불필요한 파라미터, 리다이렉션 제거 등)
-        val normalizedUrl = productCrawler.normalize(request.productUrl)
+        val normalizedUrl = productCrawler.normalize(productUrl)
         // 3. 크롤링 실행 → 상품 정보 얻기
         val crawledProduct = productCrawler.fetch(normalizedUrl)
 
