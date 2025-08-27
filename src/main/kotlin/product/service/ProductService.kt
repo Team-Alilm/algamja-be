@@ -152,11 +152,18 @@ class ProductService(
         val crawledProduct = productCrawler.fetch(normalizedUrl)
 
         return CrawlProductResponse(
-            name = crawledProduct.name,
-            thumbnailUrl = crawledProduct.thumbnailUrl,
-            firstOptions = crawledProduct.firstOptions,
-            secondOptions = crawledProduct.secondOptions,
-            thirdOptions = crawledProduct.thirdOptions
+            number = crawledProduct.storeNumber, // 상품 번호
+            name = crawledProduct.name, // 상품명
+            brand = crawledProduct.brand, // 브랜드
+            thumbnailUrl = crawledProduct.thumbnailUrl, // 썸네일
+            imageUrlList = crawledProduct.imageUrls, // 이미지 리스트
+            store = crawledProduct.store, // 스토어명
+            price = crawledProduct.price, // 가격
+            firstCategory = crawledProduct.firstCategory, // 1차 카테고리
+            secondCategory = crawledProduct.secondCategory, // 2차 카테고리
+            firstOptions = crawledProduct.firstOptions, // 1차 옵션
+            secondOptions = crawledProduct.secondOptions, // 2차 옵션
+            thirdOptions = crawledProduct.thirdOptions // 3차 옵션
         )
     }
 
