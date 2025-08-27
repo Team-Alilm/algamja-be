@@ -14,12 +14,27 @@ class MemberService(
     private val memberExposedRepository: MemberExposedRepository
 ) {
 
+    fun getMyInfo(memberId: Long): MyInfoResponse {
+        val member = memberExposedRepository.fetchById(memberId)
+            ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND)
+        
+        return MyInfoResponse(
+            id = member.id,
+            email = member.email,
+            nickname = member.nickname,
+            provider = member.provider.name
+        )
+    }
+
     @Transactional
     fun updateMyInfo(memberId: Long, request: UpdateMyInfoRequest) {
+        memberExposedRepository.fetchById(memberId)
+            ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND)
+            
         memberExposedRepository.updateMember(
-            memberId = memberId,
+            nickname = request.nickname,
             email = request.email,
-            nickname = request.nickname
+            memberId = memberId
         )
     }
 }

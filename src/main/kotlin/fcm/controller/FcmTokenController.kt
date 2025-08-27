@@ -25,10 +25,10 @@ class FcmTokenController(
     ) : ApiResponse<Unit> {
 
         fcmTokenService.registerFcmToken(
-            memberId = customMemberDetails.memberRow.id!!,
+            memberId = customMemberDetails.memberRow.id,
             fcmToken = request.fcmToken
         )
 
-        return ApiResponse.success(data = Unit)
+        return ApiResponse.success(Unit)
     }
 }

@@ -16,7 +16,7 @@ class CustomUserDetailsService(
 
     override fun loadUserByUsername(memberId: String): UserDetails {
         val member = memberExposedRepository.fetchById(memberId.toLong())
-            ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND_ERROR)
+            ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND)
 
         return CustomMemberDetails(memberRow = member)
     }
