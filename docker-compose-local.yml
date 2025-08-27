@@ -1,31 +1,24 @@
-version: "3.9"
+version: '3.8'
 
 services:
   mysql:
     image: mysql:8.0
-    container_name: local-mysql
-    # M1/M2 맥에서 이미지 자동 선택이 꼬일 때만 주석 해제
-    # platform: linux/amd64
-    restart: unless-stopped
-    command:
-      # 파일시스템 대소문자 이슈 있을 때 유용 (필요 없으면 지워도 됨)
-      - --lower_case_table_names=2
-      - --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: appdb
     ports:
       - "3306:3306"
-    environment:
-      # ⚠️ 로컬만 쓰는 값—요청대로 .env 없이 하드코딩
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=appdb
-      - MYSQL_USER=appuser
-      - MYSQL_PASSWORD=apppass
     volumes:
-      # 데이터 보존
-      - ./docker/db/data:/var/lib/mysql
-      # 초기 스키마/데이터 주입 (있으면 자동 실행)
-      - ./docker/db/init:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
+      - ./mysql/data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: ["redis-server", "--requirepass", "password123"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data

@@ -115,8 +115,8 @@ create table if not exists `basket` (
     constraint `fk_basket_product` foreign key (`product_id`) references `product`(`id`)
     );
 
-create index if not exists `idx_basket_member_active`
+create index `idx_basket_member_active`
     on `basket`(`member_id`, `is_delete`);
 
-create index if not exists `idx_basket_product_active`
+create index `idx_basket_product_active`
     on `basket`(`product_id`, `is_delete`);
