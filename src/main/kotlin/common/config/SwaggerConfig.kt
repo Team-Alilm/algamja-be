@@ -5,15 +5,19 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import io.swagger.v3.oas.models.servers.Server
 import org.springdoc.core.models.GroupedOpenApi
 import org.springdoc.core.properties.SwaggerUiConfigParameters
 import org.springframework.beans.factory.ObjectProvider
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class SwaggerConfig {
+class SwaggerConfig(
+    @Value("\${api.server-url:/}") private val serverUrl: String  // ← 환경별 주입
+) {
 
     @Bean
     fun openAPI(): OpenAPI {
@@ -23,26 +27,27 @@ class SwaggerConfig {
             .components(
                 Components().addSecuritySchemes(
                     scheme,
-                    SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT").name("Authorization")
+                    SecurityScheme().type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer").bearerFormat("JWT").name("Authorization")
                 )
             )
             .addSecurityItem(SecurityRequirement().addList(scheme))
-            .servers(listOf(io.swagger.v3.oas.models.servers.Server().url("https://api.algamja.com")))
+            .servers(listOf(Server().url(serverUrl)))  // ← 환경별 서버 반영
     }
 
     @Bean
     fun apiGroup(): GroupedOpenApi =
         GroupedOpenApi.builder()
             .group("api")
-            .pathsToMatch("/api/**")   // -> /v3/api-docs/api 가 생성됨
-            .build()                    //  [oai_citation:5‡OpenAPI 3 Library for spring-boot](https://springdoc.org/faq.html?utm_source=chatgpt.com)
+            .pathsToMatch("/api/**")
+            .build()
 
     @Bean
     fun swaggerUiParametersRunner(
         provider: ObjectProvider<SwaggerUiConfigParameters>
     ) = ApplicationRunner {
         provider.ifAvailable { params ->
-            params.setUrl("/v3/api-docs/api")  // 기본 로딩 스펙 지정
+            params.setUrl("/v3/api-docs/api")  // Swagger UI 기본 로딩 스펙
         }
     }
 }

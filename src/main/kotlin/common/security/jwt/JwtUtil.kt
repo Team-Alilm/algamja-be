@@ -14,7 +14,7 @@ import kotlin.text.get
 
 @Component
 class JwtUtil(
-    @Value("\${spring.jwt.secretKey}")
+    @Value($$"${spring.jwt.secretKey}")
     private val secret: String,
 ) {
 
