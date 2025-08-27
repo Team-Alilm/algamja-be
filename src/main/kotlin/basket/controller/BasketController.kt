@@ -12,7 +12,6 @@ import org.team_alilm.basket.controller.docs.BasketDocs
 import org.team_alilm.basket.controller.dto.response.MyBasketProductListResponse
 import org.team_alilm.basket.service.BasketService
 import org.team_alilm.common.security.CustomMemberDetails
-import org.team_alilm.common.security.requireMemberId
 
 @RestController
 @RequestMapping("/api/v2/baskets")
@@ -26,7 +25,7 @@ class BasketController(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails,
     ): ApiResponse<MyBasketProductListResponse> {
         val response = basketService.getMyBasketProductList(
-            memberId = customMemberDetails.requireMemberId()
+            memberId = customMemberDetails.memberRow.id
         )
 
         return ApiResponse.success(response)
@@ -39,7 +38,7 @@ class BasketController(
         @PathVariable productId: Long
     ): ApiResponse<Unit> {
         basketService.copyBasket(
-            memberId = customMemberDetails.requireMemberId(),
+            memberId = customMemberDetails.memberRow.id,
             productId = productId
         )
         return ApiResponse.success(Unit)
@@ -51,7 +50,7 @@ class BasketController(
         @PathVariable basketId: Long
     ): ApiResponse<Unit> {
         basketService.deleteBasket(
-            memberId = customMemberDetails.requireMemberId(),
+            memberId = customMemberDetails.memberRow.id,
             basketId = basketId
         )
         return ApiResponse.success(Unit)
