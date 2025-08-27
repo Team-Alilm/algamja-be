@@ -6,7 +6,7 @@ enum class Provider {
 
     companion object {
         fun from(provider: String): Provider {
-            return values().firstOrNull { it.name.equals(provider, ignoreCase = true) }
+            return entries.firstOrNull { it.name.equals(provider, ignoreCase = true) }
                 ?: throw IllegalArgumentException("Unknown provider: $provider")
         }
     }

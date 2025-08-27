@@ -70,7 +70,7 @@ class NotificationService(
         )
         if (updated == 0) {
             log.warn("readNotification failed: notificationId={}, memberId={}", notificationId, memberId)
-            throw BusinessException(ErrorCode.NOTIFICATION_NOT_FOUND_ERROR)
+            throw BusinessException(ErrorCode.NOTIFICATION_NOT_FOUND)
         }
     }
 

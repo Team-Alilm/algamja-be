@@ -38,3 +38,16 @@ out/
 
 ### json ###
 *.json
+
+### Application Configuration ###
+# Crawler module (민감한 정보 포함)
+crawler/src/main/resources/application-local.yml
+crawler/src/main/resources/application-prod.yml
+crawler/src/main/resources/application-dev.yml
+
+# Worker module (민감한 정보 포함)
+worker/src/main/resources/application-local.yml
+worker/src/main/resources/application-prod.yml
+worker/src/main/resources/application-dev.yml
+
+# 메인 애플리케이션은 JASYPT 암호화로 안전하므로 Git에 포함

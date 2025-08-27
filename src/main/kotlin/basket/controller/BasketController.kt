@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.basket.controller.docs.BasketDocs
 import org.team_alilm.basket.controller.dto.response.MyBasketProductListResponse
 import org.team_alilm.basket.service.BasketService
-import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.common.security.CustomMemberDetails
 
 @RestController
-@RequestMapping("/api/v1/baskets")
+@RequestMapping("/api/v2/baskets")
 class BasketController(
 
     private val basketService: BasketService
