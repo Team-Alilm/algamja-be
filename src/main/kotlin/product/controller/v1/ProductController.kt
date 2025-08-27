@@ -67,7 +67,7 @@ class ProductController(
         return success(data = response)
     }
 
-    @PostMapping("/crawl")
+    @GetMapping("/crawl")
     override fun crawlProduct(
         @RequestBody @Valid request: CrawlProductRequest
     ): ApiResponse<CrawlProductResponse> {
