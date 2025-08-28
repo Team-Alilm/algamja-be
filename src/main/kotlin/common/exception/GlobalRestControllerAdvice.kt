@@ -1,5 +1,6 @@
 package org.team_alilm.common.exception
 
+import common.exception.ErrorCode
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException

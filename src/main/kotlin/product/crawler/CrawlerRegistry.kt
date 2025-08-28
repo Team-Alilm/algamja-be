@@ -3,7 +3,7 @@ package org.team_alilm.product.crawler
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
+import common.exception.ErrorCode
 
 @Component
 class CrawlerRegistry(
