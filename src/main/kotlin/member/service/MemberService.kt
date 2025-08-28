@@ -19,7 +19,7 @@ class MemberService(
             ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND)
         
         return MyInfoResponse(
-            id = member.id,
+            id = member.id!!,
             email = member.email,
             nickname = member.nickname,
             provider = member.provider.name
