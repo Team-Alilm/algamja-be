@@ -25,7 +25,6 @@ services:
     container_name: redis
     command: >
       sh -c '
-        : "${REDIS_PASSWORD:=}";
         mkdir -p /usr/local/etc/redis &&
         {
           echo "appendonly yes";
@@ -35,10 +34,8 @@ services:
         } > /usr/local/etc/redis/redis.conf &&
         exec redis-server /usr/local/etc/redis/redis.conf
       '
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-}   # 컨테이너 env로 주입 (compose 치환은 기본값 허용)
     env_file:
-      - .env.app                              # (선택) 컨테이너 내부용 추가 env가 있다면
+      - .env.app         # 여기서 REDIS_PASSWORD 가져옴
     volumes:
       - /srv/redis/data:/data
     ports:

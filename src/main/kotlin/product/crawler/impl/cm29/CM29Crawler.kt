@@ -87,10 +87,14 @@ class CM29Crawler(
         val finalPrice = data.sellPrice
 
         val categories = data.frontCategoryInfo
-        val rawCategory = categories.firstOrNull()?.category1Name 
-            ?: categories.firstOrNull()?.category2Name
-            ?: categories.firstOrNull()?.category3Name
-        val firstCategory = CategoryMapper.mapCategory(rawCategory)
+        val allCategoryNames = categories.flatMap { category ->
+            listOfNotNull(
+                category.category1Name,
+                category.category2Name,
+                category.category3Name
+            )
+        }.joinToString(" ")
+        val firstCategory = CategoryMapper.mapCategory(allCategoryNames)
         val secondCategory = categories.firstOrNull()?.category2Name
 
         val options = data.optionItems?.list ?: emptyList()
