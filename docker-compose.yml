@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   app:
     image: ghcr.io/team-alilm/algamja-be/app:${IMAGE_TAG}
@@ -12,10 +10,8 @@ services:
       - .env.app
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      # Redis 접속정보를 컨테이너 내부에 주입 (서비스명 = redis)
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
-      # 비번 쓰는 경우 .env.app에 SPRING_DATA_REDIS_PASSWORD=... 넣어두기
     restart: always
     volumes:
       - /srv/app/logs:/var/log/algamja
@@ -28,9 +24,9 @@ services:
         mkdir -p /usr/local/etc/redis &&
         {
           echo "appendonly yes";
-          echo "requirepass $$REDIS_PASSWORD";
-          echo "bind 0.0.0.0";
-          echo "protected-mode yes";
+          if [ -n "$$REDIS_PASSWORD" ]; then echo "requirepass $$REDIS_PASSWORD"; fi
+          echo "bind 0.0.0.0";           # 외부접속 허용
+          echo "protected-mode yes";     # 보호모드 유지
         } > /usr/local/etc/redis/redis.conf &&
         exec redis-server /usr/local/etc/redis/redis.conf
       '
@@ -39,7 +35,7 @@ services:
     volumes:
       - /srv/redis/data:/data
     ports:
-      - "6379:6379"
+      - "6379:6379"   # 외부에서도 접근 필요 시
     restart: always
 
   nginx:
