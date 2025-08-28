@@ -8,6 +8,7 @@ import org.team_alilm.product.crawler.ProductCrawler
 import org.team_alilm.product.crawler.dto.CrawledProduct
 import org.team_alilm.product.crawler.impl.zigzag.dto.ZigzagApiResponse
 import org.team_alilm.product.crawler.impl.zigzag.dto.ZigzagGraphQLRequest
+import org.team_alilm.product.crawler.util.CategoryMapper
 import java.net.IDN
 import java.net.URI
 
@@ -98,7 +99,7 @@ class ZigzagCrawler(
         val finalPrice = discountPrice ?: maxPrice
 
         val categories = catalogProduct.managedCategoryList.sortedBy { it.depth }
-        val firstCategory = categories.find { it.depth == 1 }?.value ?: ""
+        val firstCategory = CategoryMapper.mapCategory(categories.find { it.depth == 1 }?.value)
         val secondCategory = categories.find { it.depth == 2 }?.value
 
         val firstOptions = catalogProduct.productOptionList.find { it.order == 0 }

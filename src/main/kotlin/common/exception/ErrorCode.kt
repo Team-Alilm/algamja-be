@@ -32,5 +32,8 @@ enum class ErrorCode(
     ZIGZAG_INVALID_RESPONSE(
         HttpStatus.BAD_REQUEST, "ZIGZAG_001", "지그재그 응답이 유효하지 않습니다."
     ),
+    CM29_INVALID_RESPONSE(
+        HttpStatus.BAD_REQUEST, "CM29_001", "29CM 응답이 유효하지 않습니다."
+    ),
 
 }
