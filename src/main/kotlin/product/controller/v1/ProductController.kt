@@ -7,6 +7,7 @@ import org.springdoc.core.annotations.ParameterObject
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.product.controller.v1.docs.ProductDocs
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
@@ -64,9 +65,9 @@ class ProductController(
         return success(data = response)
     }
 
-    @GetMapping("/crawl/{productUrl}")
+    @GetMapping("/crawl")
     override fun crawlProduct(
-        @PathVariable("productUrl") productUrl: String
+        @RequestParam("productUrl") productUrl: String
     ): ApiResponse<CrawlProductResponse> {
         return success(data = productService.crawlProduct(productUrl))
     }

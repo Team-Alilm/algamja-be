@@ -29,5 +29,8 @@ enum class ErrorCode(
     MUSINSA_INVALID_RESPONSE(
         HttpStatus.BAD_REQUEST, "MUSINSA_001", "무신사 응답이 유효하지 않습니다."
     ),
+    ZIGZAG_INVALID_RESPONSE(
+        HttpStatus.BAD_REQUEST, "ZIGZAG_001", "지그재그 응답이 유효하지 않습니다."
+    ),
 
 }
