@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.basket.repository.BasketExposedRepository
 import org.team_alilm.common.enums.Sort
 import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
+import common.exception.ErrorCode
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
 import org.team_alilm.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductCountResponse

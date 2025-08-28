@@ -1,4 +1,4 @@
-package org.team_alilm.common.exception
+package common.exception
 
 import org.springframework.http.HttpStatus
 
