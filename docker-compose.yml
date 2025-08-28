@@ -28,23 +28,18 @@ services:
         mkdir -p /usr/local/etc/redis &&
         {
           echo "appendonly yes";
-          if [ -n "$REDIS_PASSWORD" ]; then echo "requirepass $REDIS_PASSWORD"; fi
+          echo "requirepass $$REDIS_PASSWORD";
           echo "bind 0.0.0.0";
           echo "protected-mode yes";
         } > /usr/local/etc/redis/redis.conf &&
         exec redis-server /usr/local/etc/redis/redis.conf
       '
     env_file:
-      - .env.app         # 여기서 REDIS_PASSWORD 가져옴
+      - .env.app
     volumes:
       - /srv/redis/data:/data
     ports:
-      - "127.0.0.1:6379:6379"
-    healthcheck:
-      test: [ "CMD-SHELL", "if [ -n \"$REDIS_PASSWORD\" ]; then redis-cli -a \"$REDIS_PASSWORD\" ping; else redis-cli ping; fi" ]
-      interval: 10s
-      timeout: 3s
-      retries: 5
+      - "6379:6379"
     restart: always
 
   nginx:
