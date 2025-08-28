@@ -105,7 +105,7 @@ class MusinsaCrawler(
             imageUrls      = imageUrls,
             store          = "MUSINSA", // enum 변환은 호출부/서비스 단에서 해도 OK
             price          = price,
-            firstCategory  = CategoryMapper.mapCategory(state.category.categoryDepth1Name),
+            firstCategory  = CategoryMapper.mapCategory("${state.category.categoryDepth1Name} ${state.category.categoryDepth2Name}"),
             secondCategory = state.category.categoryDepth2Name,
             firstOptions   = firstOptions,
             secondOptions  = secondOptions,
