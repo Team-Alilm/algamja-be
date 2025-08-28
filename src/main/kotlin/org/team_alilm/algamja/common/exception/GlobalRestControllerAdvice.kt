@@ -1,6 +1,5 @@
 package org.team_alilm.algamja.common.exception
 
-import org.team_alilm.algamja.common.exception.ErrorCode
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException

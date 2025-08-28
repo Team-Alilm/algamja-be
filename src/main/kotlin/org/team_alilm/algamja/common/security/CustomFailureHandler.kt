@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class CustomFailureHandler(
-    @Value("\${app.base-url}") private val baseUrl: String
+    @Value($$"${app.base-url}") private val baseUrl: String
 ) : SimpleUrlAuthenticationFailureHandler() {
 
     override fun onAuthenticationFailure(

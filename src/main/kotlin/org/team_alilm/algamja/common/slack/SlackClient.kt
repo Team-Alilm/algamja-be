@@ -10,7 +10,7 @@ import org.team_alilm.algamja.common.exception.ErrorCode
 
 @Component
 class SlackClient(
-    @Value("\${webhook.slack.url}")
+    @Value($$"${webhook.slack.url}")
     private val SLACK_NOTICE_CH_WEBHOOK_URL: String,
 ) {
 

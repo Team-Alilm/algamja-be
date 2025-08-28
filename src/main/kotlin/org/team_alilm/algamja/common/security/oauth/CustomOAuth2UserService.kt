@@ -23,7 +23,7 @@ class CustomOAuth2UserService : DefaultOAuth2UserService() {
 
         val oAuth2Attributes = oAuth2User.attributes
 
-        val oAuth2Attribute = OAuth2Attribute.Companion.of(
+        val oAuth2Attribute = OAuth2Attribute.of(
             attributes = oAuth2Attributes,
             provider = registrationId,
             attributeKey = userNameAttributeName
