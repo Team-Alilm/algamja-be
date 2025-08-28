@@ -16,7 +16,6 @@ import org.team_alilm.algamja.common.security.jwt.JwtFilter
 import org.team_alilm.algamja.common.security.jwt.JwtUtil
 import org.team_alilm.algamja.common.security.oauth.CustomOAuth2UserService
 
-@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
