@@ -1,4 +1,4 @@
-package org.team_alilm.common.exception
+package common.exception
 
 import org.springframework.http.HttpStatus
 
@@ -34,6 +34,15 @@ enum class ErrorCode(
     ),
     CM29_INVALID_RESPONSE(
         HttpStatus.BAD_REQUEST, "CM29_001", "29CM 응답이 유효하지 않습니다."
+    ),
+    ABLY_INVALID_RESPONSE(
+        HttpStatus.BAD_REQUEST, "ABLY_001", "에이블리 응답이 유효하지 않습니다."
+    ),
+    CRAWLER_INVALID_RESPONSE(
+        HttpStatus.BAD_REQUEST, "CRAWLER_002", "크롤러 응답이 유효하지 않습니다."
+    ),
+    CRAWLER_INVALID_URL(
+        HttpStatus.BAD_REQUEST, "CRAWLER_003", "크롤러 URL이 유효하지 않습니다."
     ),
 
 }
