@@ -1,7 +1,7 @@
 package org.team_alilm.product.entity
 
 import org.team_alilm.common.entity.BaseLongIdTable
-import org.team_alilm.common.enums.Store
+import common.enums.Store
 import java.math.BigDecimal
 
 object ProductTable : BaseLongIdTable("product") {
