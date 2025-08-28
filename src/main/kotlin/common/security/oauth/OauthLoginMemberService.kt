@@ -15,7 +15,7 @@ class OauthLoginMemberService(
         // 이미 존재하는 회원인지 확인
         val existingMember = memberExposedRepository.fetchByProviderAndProviderId(provider, providerId)
         if (existingMember != null) {
-            return existingMember.id
+            return existingMember.id!!
         }
 
         // 신규 회원 저장

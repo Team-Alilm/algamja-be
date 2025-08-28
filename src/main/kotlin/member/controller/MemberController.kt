@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.team_alilm.common.security.CustomMemberDetails
+import org.team_alilm.common.security.requireMemberId
 import org.team_alilm.member.controller.docs.MemberDocs
 import org.team_alilm.member.controller.dto.request.UpdateMyInfoRequest
 import org.team_alilm.member.controller.dto.response.MyInfoResponse
@@ -24,7 +25,7 @@ class MemberController(
     override fun getMyInfo(
         @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ): ApiResponse<MyInfoResponse> {
-        val response = memberService.getMyInfo(customMemberDetails.memberRow.id)
+        val response = memberService.getMyInfo(customMemberDetails.requireMemberId())
         return ApiResponse.success(response)
     }
 
@@ -34,7 +35,7 @@ class MemberController(
         @RequestBody @Valid request: UpdateMyInfoRequest
     ): ApiResponse<Unit> {
         memberService.updateMyInfo(
-            memberId = customMemberDetails.memberRow.id,
+            memberId = customMemberDetails.requireMemberId(),
             request = request
         )
         return ApiResponse.success(Unit)

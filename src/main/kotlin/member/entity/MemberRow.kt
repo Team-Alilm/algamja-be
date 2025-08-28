@@ -4,7 +4,7 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.team_alilm.common.enums.Provider
 
 data class MemberRow(
-    val id: Long,
+    val id: Long?,
     val provider: Provider,
     val providerId: String,
     val email: String,

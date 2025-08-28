@@ -2,6 +2,8 @@ package org.team_alilm.common.security
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import org.team_alilm.common.exception.BusinessException
+import org.team_alilm.common.exception.ErrorCode
 import org.team_alilm.member.entity.MemberRow
 
 /**
@@ -40,4 +42,8 @@ class CustomMemberDetails(
     override fun isEnabled(): Boolean {
         return true
     }
+}
+
+fun CustomMemberDetails.requireMemberId(): Long {
+    return this.memberRow.id ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND)
 }
