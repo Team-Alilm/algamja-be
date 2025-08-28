@@ -13,6 +13,7 @@ jasypt-spring-boot = "3.0.5"
 slack-sdk = "1.42.0"
 mysql = "9.4.0"
 flyway = "10.16.0"   # ✅ 추가
+mockito-kotlin = "5.2.1"
 
 [libraries]
 springdoc-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
@@ -48,6 +49,9 @@ spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-star
 # ✅ Flyway 추가
 flyway-core  = { module = "org.flywaydb:flyway-core",  version.ref = "flyway" }
 flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
+
+# Testing
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }
 
 [plugins]
 kotlin-jvm     = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
