@@ -1,7 +1,7 @@
 package org.team_alilm.product.entity
 
 import org.jetbrains.exposed.sql.ResultRow
-import org.team_alilm.common.enums.Store
+import common.enums.Store
 import java.math.BigDecimal
 
 data class ProductRow(

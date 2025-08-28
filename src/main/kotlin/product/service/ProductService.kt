@@ -1,11 +1,12 @@
 package org.team_alilm.product.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.basket.repository.BasketExposedRepository
 import org.team_alilm.common.enums.Sort
 import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
+import common.exception.ErrorCode
 import org.team_alilm.product.controller.v1.dto.param.ProductListParam
 import org.team_alilm.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.product.controller.v1.dto.response.ProductCountResponse
@@ -28,6 +29,8 @@ class ProductService(
     private val productImageExposedRepository: ProductImageExposedRepository,
     private val crawlerRegistry: CrawlerRegistry
 ) {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     fun getProductDetail(productId: Long) : ProductDetailResponse {
         // 1) 상품 정보 조회
@@ -63,7 +66,7 @@ class ProductService(
         val productIds = productRows.asSequence().map { it.id }.distinct().toList()
 
         // 3) 이미지 한번에 조회 → productId -> List<url>
-        val imagesByProductId: Map<Long, List<kotlin.String>> =
+        val imagesByProductId: Map<Long, List<String>> =
             productImageExposedRepository
                 .fetchProductImagesByProductIds(productIds)
                 .groupBy({ it.productId }, { it.imageUrl })
@@ -144,26 +147,52 @@ class ProductService(
 
     @Transactional
     fun crawlProduct(productUrl: String) : CrawlProductResponse {
-        val productCrawler = crawlerRegistry.resolve(url = productUrl)
-        // 2. URL 정규화 (불필요한 파라미터, 리다이렉션 제거 등)
-        val normalizedUrl = productCrawler.normalize(productUrl)
-        // 3. 크롤링 실행 → 상품 정보 얻기
-        val crawledProduct = productCrawler.fetch(normalizedUrl)
-
-        return CrawlProductResponse(
-            number = crawledProduct.storeNumber, // 상품 번호
-            name = crawledProduct.name, // 상품명
-            brand = crawledProduct.brand, // 브랜드
-            thumbnailUrl = crawledProduct.thumbnailUrl, // 썸네일
-            imageUrlList = crawledProduct.imageUrls, // 이미지 리스트
-            store = crawledProduct.store, // 스토어명
-            price = crawledProduct.price, // 가격
-            firstCategory = crawledProduct.firstCategory, // 1차 카테고리
-            secondCategory = crawledProduct.secondCategory, // 2차 카테고리
-            firstOptions = crawledProduct.firstOptions, // 1차 옵션
-            secondOptions = crawledProduct.secondOptions, // 2차 옵션
-            thirdOptions = crawledProduct.thirdOptions // 3차 옵션
-        )
+        val startTime = System.currentTimeMillis()
+        log.info("Starting product crawling for URL: {}", productUrl)
+        
+        return try {
+            val productCrawler = crawlerRegistry.resolve(url = productUrl)
+            log.debug("Selected crawler: {} for URL: {}", productCrawler::class.simpleName, productUrl)
+            
+            // 2. URL 정규화 (불필요한 파라미터, 리다이렉션 제거 등)
+            val normalizedUrl = productCrawler.normalize(productUrl)
+            log.debug("URL normalized: {} -> {}", productUrl, normalizedUrl)
+            
+            // 3. 크롤링 실행 → 상품 정보 얻기
+            val crawledProduct = productCrawler.fetch(normalizedUrl)
+            
+            val response = CrawlProductResponse(
+                number = crawledProduct.storeNumber, // 상품 번호
+                name = crawledProduct.name, // 상품명
+                brand = crawledProduct.brand, // 브랜드
+                thumbnailUrl = crawledProduct.thumbnailUrl, // 썸네일
+                imageUrlList = crawledProduct.imageUrls, // 이미지 리스트
+                store = crawledProduct.store, // 스토어명
+                price = crawledProduct.price, // 가격
+                firstCategory = crawledProduct.firstCategory, // 1차 카테고리
+                secondCategory = crawledProduct.secondCategory, // 2차 카테고리
+                firstOptions = crawledProduct.firstOptions, // 1차 옵션
+                secondOptions = crawledProduct.secondOptions, // 2차 옵션
+                thirdOptions = crawledProduct.thirdOptions // 3차 옵션
+            )
+            
+            val duration = System.currentTimeMillis() - startTime
+            log.info("Successfully crawled product '{}' from {} in {}ms, categories: [{}, {}], options: [{}, {}, {}]",
+                    crawledProduct.name,
+                    crawledProduct.store,
+                    duration,
+                    crawledProduct.firstCategory,
+                    crawledProduct.secondCategory,
+                    crawledProduct.firstOptions.size,
+                    crawledProduct.secondOptions.size,
+                    crawledProduct.thirdOptions.size)
+            
+            response
+        } catch (e: Exception) {
+            val duration = System.currentTimeMillis() - startTime
+            log.error("Failed to crawl product from URL: {} after {}ms", productUrl, duration, e)
+            throw e
+        }
     }
 
     @Transactional

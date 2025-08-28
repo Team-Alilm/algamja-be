@@ -3,7 +3,7 @@ package org.team_alilm.product.crawler.impl.zigzag
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
+import common.exception.ErrorCode
 import org.team_alilm.product.crawler.ProductCrawler
 import org.team_alilm.product.crawler.dto.CrawledProduct
 import org.team_alilm.product.crawler.impl.zigzag.dto.ZigzagApiResponse
@@ -99,7 +99,7 @@ class ZigzagCrawler(
         val finalPrice = discountPrice ?: maxPrice
 
         val categories = catalogProduct.managedCategoryList.sortedBy { it.depth }
-        val allCategoryNames = categories.map { it.value }.joinToString(" ")
+        val allCategoryNames = categories.joinToString(" ") { it.value }
         val firstCategory = CategoryMapper.mapCategory(allCategoryNames)
         val secondCategory = categories.find { it.depth == 2 }?.value
 

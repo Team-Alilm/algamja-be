@@ -6,7 +6,7 @@ import org.team_alilm.basket.controller.dto.response.MyBasketProduct
 import org.team_alilm.basket.controller.dto.response.MyBasketProductListResponse
 import org.team_alilm.basket.repository.BasketExposedRepository
 import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
+import common.exception.ErrorCode
 import org.team_alilm.product.entity.ProductRow
 import org.team_alilm.product.repository.ProductExposedRepository
 import org.team_alilm.product.repository.projection.ProductWaitingCountProjection

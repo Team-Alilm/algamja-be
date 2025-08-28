@@ -3,7 +3,7 @@ package org.team_alilm.product.crawler.impl.cm29
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.team_alilm.common.exception.BusinessException
-import org.team_alilm.common.exception.ErrorCode
+import common.exception.ErrorCode
 import org.team_alilm.product.crawler.ProductCrawler
 import org.team_alilm.product.crawler.dto.CrawledProduct
 import org.team_alilm.product.crawler.impl.cm29.dto.CM29ApiResponse
