@@ -63,7 +63,7 @@ class ProductService(
         val productIds = productRows.asSequence().map { it.id }.distinct().toList()
 
         // 3) 이미지 한번에 조회 → productId -> List<url>
-        val imagesByProductId: Map<Long, List<kotlin.String>> =
+        val imagesByProductId: Map<Long, List<String>> =
             productImageExposedRepository
                 .fetchProductImagesByProductIds(productIds)
                 .groupBy({ it.productId }, { it.imageUrl })

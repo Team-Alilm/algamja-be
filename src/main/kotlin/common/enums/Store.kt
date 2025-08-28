@@ -1,4 +1,4 @@
-package org.team_alilm.common.enums
+package common.enums
 
 enum class Store(
     val url: String

@@ -99,7 +99,7 @@ class ZigzagCrawler(
         val finalPrice = discountPrice ?: maxPrice
 
         val categories = catalogProduct.managedCategoryList.sortedBy { it.depth }
-        val allCategoryNames = categories.map { it.value }.joinToString(" ")
+        val allCategoryNames = categories.joinToString(" ") { it.value }
         val firstCategory = CategoryMapper.mapCategory(allCategoryNames)
         val secondCategory = categories.find { it.depth == 2 }?.value
 
