@@ -79,7 +79,7 @@ class ZigzagCrawler(
                 .retrieve()
                 .body(ZigzagApiResponse::class.java)
                 ?: throw BusinessException(ErrorCode.ZIGZAG_INVALID_RESPONSE)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             throw BusinessException(ErrorCode.ZIGZAG_INVALID_RESPONSE)
         }
 

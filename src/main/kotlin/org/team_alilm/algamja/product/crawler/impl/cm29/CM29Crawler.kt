@@ -62,7 +62,7 @@ class CM29Crawler(
                 .retrieve()
                 .body(CM29ApiResponse::class.java)
                 ?: throw BusinessException(ErrorCode.CM29_INVALID_RESPONSE)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             throw BusinessException(ErrorCode.CM29_INVALID_RESPONSE)
         }
 
