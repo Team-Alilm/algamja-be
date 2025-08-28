@@ -10,6 +10,7 @@ import org.team_alilm.product.crawler.ProductCrawler
 import org.team_alilm.product.crawler.dto.CrawledProduct
 import org.team_alilm.product.crawler.impl.musinsa.dto.option.OptionApiResponse
 import org.team_alilm.product.crawler.impl.musinsa.dto.ProductState
+import org.team_alilm.product.crawler.util.CategoryMapper
 import java.net.IDN
 import java.net.URI
 
@@ -104,7 +105,7 @@ class MusinsaCrawler(
             imageUrls      = imageUrls,
             store          = "MUSINSA", // enum 변환은 호출부/서비스 단에서 해도 OK
             price          = price,
-            firstCategory  = state.category.categoryDepth1Name,
+            firstCategory  = CategoryMapper.mapCategory(state.category.categoryDepth1Name),
             secondCategory = state.category.categoryDepth2Name,
             firstOptions   = firstOptions,
             secondOptions  = secondOptions,

@@ -25,24 +25,24 @@ services:
     container_name: redis
     command: >
       sh -c '
+        : "${REDIS_PASSWORD:=}";
         mkdir -p /usr/local/etc/redis &&
         {
           echo "appendonly yes";
-          echo "requirepass ${REDIS_PASSWORD}";
-          echo "bind 0.0.0.0";           # 컨테이너 내부 바인딩
-          echo "protected-mode yes";     # 기본 보안 유지
+          if [ -n "$REDIS_PASSWORD" ]; then echo "requirepass $REDIS_PASSWORD"; fi
+          echo "bind 0.0.0.0";
+          echo "protected-mode yes";
         } > /usr/local/etc/redis/redis.conf &&
         exec redis-server /usr/local/etc/redis/redis.conf
       '
     environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}   # 컨테이너 env로 주입 (compose 치환은 기본값 허용)
     env_file:
-      - .env.app
+      - .env.app                              # (선택) 컨테이너 내부용 추가 env가 있다면
     volumes:
       - /srv/redis/data:/data
-    # expose: ["6379"]    # 제거
     ports:
-      - "127.0.0.1:6379:6379"   # 호스트 로컬만 개방 (외부 차단)
+      - "127.0.0.1:6379:6379"
     healthcheck:
       test: [ "CMD-SHELL", "if [ -n \"$REDIS_PASSWORD\" ]; then redis-cli -a \"$REDIS_PASSWORD\" ping; else redis-cli ping; fi" ]
       interval: 10s
