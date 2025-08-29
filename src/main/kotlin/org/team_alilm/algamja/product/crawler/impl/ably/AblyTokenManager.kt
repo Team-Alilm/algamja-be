@@ -54,7 +54,7 @@ class AblyTokenManager(
             
             val duration = System.currentTimeMillis() - startTime
             log.info("Successfully refreshed Ably token in {}ms, expires at: {}", duration, tokenExpiry)
-            log.debug("New token (first 10 chars): {}...", response.token.take(10))
+            log.debug("New token successfully obtained and cached")
             
             return cachedToken!!
         } catch (e: Exception) {

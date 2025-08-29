@@ -1,5 +1,6 @@
 package org.team_alilm.algamja.common.exception
 
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -10,9 +11,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class GlobalRestControllerAdvice {
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @ExceptionHandler(BusinessException::class)
     fun handleBusinessException(ex: BusinessException): ResponseEntity<ErrorResponse> {
         val code = ex.errorCode
+        
+        if (ex.cause != null) {
+            log.warn("Business exception occurred: {} - caused by: {}", ex.message, ex.cause?.message, ex.cause)
+        } else {
+            log.info("Business exception occurred: {}", ex.message)
+        }
+        
         return ResponseEntity
             .status(code.status)
             .body(ErrorResponse.of(code))
