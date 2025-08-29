@@ -30,7 +30,7 @@ class JwtUtil(
         return try {
             Jwts.parser().verifyWith(secretKey).build()
                 .parseSignedClaims(token).payload.expiration.after(Date())
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             log.info("Invalid JWT signature-SecurityException, 유효하지 않는 JWT 서명 입니다.")
             false
         } catch (e: ExpiredJwtException) {
@@ -39,13 +39,13 @@ class JwtUtil(
             log.info("Exp Time : ${ Jwts.parser().verifyWith(secretKey).build()
                 .parseSignedClaims(token).payload.expiration}")
             false
-        } catch (e: UnsupportedJwtException) {
+        } catch (_: UnsupportedJwtException) {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.")
             false
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.")
             false
-        } catch (e: MalformedJwtException) {
+        } catch (_: MalformedJwtException) {
             log.info("Invalid JWT signature-MalformedJwtException, 유효하지 않는 JWT 서명 입니다.")
             false
         } catch (e: Exception) {
