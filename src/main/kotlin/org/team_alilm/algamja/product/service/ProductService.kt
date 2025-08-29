@@ -192,7 +192,7 @@ class ProductService(
         } catch (e: Exception) {
             val duration = System.currentTimeMillis() - startTime
             log.error("Failed to crawl product from URL: {} after {}ms", productUrl, duration, e)
-            throw e
+            throw BusinessException(errorCode = ErrorCode.CRAWLER_INVALID_RESPONSE, cause = e)
         }
     }
 
@@ -232,7 +232,7 @@ class ProductService(
             response
         } catch (e: Exception) {
             log.error("Failed to fetch most delayed product for member: {}", memberId, e)
-            throw e
+            throw BusinessException(errorCode = ErrorCode.INTERNAL_ERROR, cause = e)
         }
     }
 }

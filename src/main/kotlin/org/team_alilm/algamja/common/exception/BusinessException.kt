@@ -2,4 +2,5 @@ package org.team_alilm.algamja.common.exception
 
 class BusinessException(
     val errorCode: ErrorCode,
-) : RuntimeException(errorCode.message)
+    cause: Throwable? = null
+) : RuntimeException(errorCode.message, cause)

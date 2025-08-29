@@ -1,5 +1,6 @@
 package org.team_alilm.algamja.product.crawler.impl.zigzag
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.team_alilm.algamja.common.exception.BusinessException
@@ -17,6 +18,7 @@ class ZigzagCrawler(
     private val restClient: RestClient,
 ) : ProductCrawler {
 
+    private val log = LoggerFactory.getLogger(javaClass)
     private val API_URL = "https://api.zigzag.kr/api/2/graphql/GetCatalogProductDetailPageOption"
     
     private val graphQLQuery = """
@@ -79,8 +81,9 @@ class ZigzagCrawler(
                 .retrieve()
                 .body(ZigzagApiResponse::class.java)
                 ?: throw BusinessException(ErrorCode.ZIGZAG_INVALID_RESPONSE)
-        } catch (_: Exception) {
-            throw BusinessException(ErrorCode.ZIGZAG_INVALID_RESPONSE)
+        } catch (e: Exception) {
+            log.error("Failed to fetch zigzag product data", e)
+            throw BusinessException(ErrorCode.ZIGZAG_INVALID_RESPONSE, cause = e)
         }
 
         val catalogProduct = response.data.pdpOptionInfo.catalogProduct

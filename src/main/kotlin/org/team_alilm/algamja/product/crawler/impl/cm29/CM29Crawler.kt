@@ -1,5 +1,6 @@
 package org.team_alilm.algamja.product.crawler.impl.cm29
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.team_alilm.algamja.common.exception.BusinessException
@@ -16,6 +17,7 @@ class CM29Crawler(
     private val restClient: RestClient,
 ) : ProductCrawler {
 
+    private val log = LoggerFactory.getLogger(javaClass)
     private val API_BASE_URL = "https://bff-api.29cm.co.kr/api/v5/product-detail"
     private val IMAGE_BASE_URL = "https://image.29cm.co.kr"
 
@@ -62,8 +64,9 @@ class CM29Crawler(
                 .retrieve()
                 .body(CM29ApiResponse::class.java)
                 ?: throw BusinessException(ErrorCode.CM29_INVALID_RESPONSE)
-        } catch (_: Exception) {
-            throw BusinessException(ErrorCode.CM29_INVALID_RESPONSE)
+        } catch (e: Exception) {
+            log.error("Failed to fetch CM29 product data", e)
+            throw BusinessException(ErrorCode.CM29_INVALID_RESPONSE, cause = e)
         }
 
         if (response.result != "SUCCESS" || response.data == null) {
