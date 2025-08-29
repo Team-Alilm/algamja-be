@@ -56,4 +56,19 @@ class ProductImageExposedRepository {
                 }
             }
     }
+
+    /** 단일 이미지 저장 */
+    fun save(productId: Long, imageUrl: String, imageOrder: Int = 0): ProductImageRow {
+        val insertedId = ProductImageTable.insertAudited { row ->
+            row[ProductImageTable.productId] = productId
+            row[ProductImageTable.imageUrl] = imageUrl
+            // imageOrder 컬럼이 있다면 사용
+        }
+        
+        return ProductImageTable
+            .selectAll()
+            .where { ProductImageTable.id eq insertedId }
+            .single()
+            .let(ProductImageRow::from)
+    }
 }

@@ -15,6 +15,8 @@ import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
 import org.team_alilm.algamja.product.entity.ProductRow
 import org.team_alilm.algamja.product.entity.ProductTable
 import org.team_alilm.algamja.product.repository.projection.ProductSliceProjection
+import org.team_alilm.algamja.common.enums.Store
+import java.math.BigDecimal
 
 @Repository
 class ProductExposedRepository {
@@ -177,6 +179,51 @@ class ProductExposedRepository {
             .where { (ProductTable.id eq productId) and (ProductTable.isDelete eq false) }
             .singleOrNull()
             ?.let(ProductRow::from)
+
+    /** 스토어 번호로 상품 조회 (중복 등록 방지용) */
+    fun fetchProductByStoreNumber(storeNumber: Long, store: Store): ProductRow? =
+        ProductTable
+            .selectAll()
+            .where { 
+                (ProductTable.storeNumber eq storeNumber) and
+                (ProductTable.store eq store) and 
+                (ProductTable.isDelete eq false) 
+            }
+            .singleOrNull()
+            ?.let(ProductRow::from)
+
+    /** 새 상품 등록 */
+    fun save(
+        name: String,
+        storeNumber: Long,
+        brand: String,
+        thumbnailUrl: String,
+        originalUrl: String,
+        store: Store,
+        price: BigDecimal,
+        firstCategory: String,
+        secondCategory: String?,
+        firstOptions: List<String>,
+        secondOptions: List<String>,
+        thirdOptions: List<String>
+    ): ProductRow {
+        val insertedId = ProductTable.insertAndGetId { row ->
+            row[ProductTable.storeNumber] = storeNumber
+            row[ProductTable.name] = name
+            row[ProductTable.brand] = brand
+            row[ProductTable.thumbnailUrl] = thumbnailUrl
+            row[ProductTable.store] = store
+            row[ProductTable.price] = price
+            row[ProductTable.firstCategory] = firstCategory
+            row[ProductTable.secondCategory] = secondCategory
+            row[ProductTable.firstOption] = firstOptions.joinToString(",").takeIf { it.isNotEmpty() }
+            row[ProductTable.secondOption] = secondOptions.joinToString(",").takeIf { it.isNotEmpty() }
+            row[ProductTable.thirdOption] = thirdOptions.joinToString(",").takeIf { it.isNotEmpty() }
+        }
+        
+        return fetchProductById(insertedId.value)
+            ?: throw IllegalStateException("Failed to retrieve saved product with ID: ${insertedId.value}")
+    }
 
     /** 부분 수정 (반환: 영향 행 수) */
     fun updateProduct(

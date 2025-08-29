@@ -1,5 +1,6 @@
 package org.team_alilm.algamja.product.crawler.dto
 
+import org.team_alilm.algamja.common.enums.Store
 import java.math.BigDecimal
 
 data class CrawledProduct(
@@ -8,7 +9,7 @@ data class CrawledProduct(
     val brand: String,
     val thumbnailUrl: String,
     val imageUrls: List<String>,
-    val store: String,          // 예: "MUSINSA"
+    val store: Store,          // 예: "MUSINSA"
     val price: BigDecimal,
     val firstCategory: String,
     val secondCategory: String?,
