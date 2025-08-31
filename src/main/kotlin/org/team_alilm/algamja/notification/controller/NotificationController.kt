@@ -60,7 +60,7 @@ class NotificationController(
     }
 
     @PutMapping("/read-all")
-    override fun readAllNotifications(customMemberDetails: CustomMemberDetails): ApiResponse<Unit> {
+    override fun readAllNotifications(@AuthenticationPrincipal customMemberDetails: CustomMemberDetails): ApiResponse<Unit> {
         return ApiResponse.success(
             data = notificationService.readAllNotifications(
                 memberId = customMemberDetails.requireMemberId()
