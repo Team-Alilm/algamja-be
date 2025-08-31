@@ -186,4 +186,18 @@ class BasketExposedRepository {
             .firstOrNull()
             ?.let(BasketRow::from)
     }
+
+    fun countActiveBasketsByMemberId(memberId: Long): Long {
+        val cnt = BasketTable.id.count()
+        return BasketTable
+            .select(cnt)
+            .where {
+                (BasketTable.memberId eq memberId) and
+                (BasketTable.isDelete eq false) and
+                (BasketTable.isHidden eq false)
+            }
+            .firstOrNull()
+            ?.get(cnt)
+            ?: 0L
+    }
 }

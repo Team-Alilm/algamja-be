@@ -6,23 +6,35 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class RecentNotificationResponse(
 
     @Schema(description = "알림 ID")
-    val id: Long,
+    val notificationId: Long,
 
     @Schema(description = "상품 ID")
     val productId: Long,
 
     @Schema(description = "상품명")
-    val productTitle: String,
+    val productName: String,
 
     @Schema(description = "상품 썸네일 URL")
     val productThumbnailUrl: String,
 
     @Schema(description = "브랜드명")
-    val brand: String,
+    val productBrand: String,
+
+    @Schema(description = "가격")
+    val productPrice: Int,
+
+    @Schema(description = "옵션 1")
+    val firstOption: String,
+
+    @Schema(description = "옵션 2")
+    val secondOption: String?,
+
+    @Schema(description = "옵션 3")
+    val thirdOption: String?,
 
     @Schema(description = "읽음 여부")
     val readYn: Boolean,
 
-    @Schema(description = "생성일 (yyyy-MM-dd HH:mm)")
+    @Schema(description = "생성일 (밀리초)", example = "1672531199000")
     val createdData: Long
 )

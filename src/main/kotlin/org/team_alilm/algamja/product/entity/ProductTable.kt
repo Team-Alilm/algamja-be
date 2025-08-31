@@ -18,7 +18,7 @@ object ProductTable : BaseLongIdTable("product") {
     // 원 단위 정수 가격 (precision=15, scale=0)
     val price = decimal("price", 15, 0)
 
-    val firstOption  = varchar("first_option", 120).nullable()
+    val firstOption  = varchar("first_option", 120)
     val secondOption = varchar("second_option", 120).nullable()
     val thirdOption  = varchar("third_option", 120).nullable()
 

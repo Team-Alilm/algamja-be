@@ -8,8 +8,10 @@ import org.team_alilm.algamja.common.enums.Sort
 import org.team_alilm.algamja.common.exception.BusinessException
 import org.team_alilm.algamja.common.exception.ErrorCode
 import org.team_alilm.algamja.product.controller.v1.dto.param.ProductListParam
+import org.team_alilm.algamja.product.controller.v1.dto.request.ProductRegisterRequest
 import org.team_alilm.algamja.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.ProductCountResponse
+import org.team_alilm.algamja.product.controller.v1.dto.response.ProductRegisterResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.DelayedProductResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.ProductDetailResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.ProductListResponse
@@ -147,17 +149,17 @@ class ProductService(
     }
 
     @Transactional
-    fun crawlProduct(productUrl: String) : CrawlProductResponse {
+    fun crawlProduct(url: String) : CrawlProductResponse {
         val startTime = System.currentTimeMillis()
-        log.info("Starting product crawling for URL: {}", productUrl)
+        log.info("Starting product crawling for URL: {}", url)
         
         return try {
-            val productCrawler = crawlerRegistry.resolve(url = productUrl)
-            log.debug("Selected crawler: {} for URL: {}", productCrawler::class.simpleName, productUrl)
+            val productCrawler = crawlerRegistry.resolve(url = url)
+            log.debug("Selected crawler: {} for URL: {}", productCrawler::class.simpleName, url)
             
             // 2. URL 정규화 (불필요한 파라미터, 리다이렉션 제거 등)
-            val normalizedUrl = productCrawler.normalize(productUrl)
-            log.debug("URL normalized: {} -> {}", productUrl, normalizedUrl)
+            val normalizedUrl = productCrawler.normalize(url)
+            log.debug("URL normalized: {} -> {}", url, normalizedUrl)
             
             // 3. 크롤링 실행 → 상품 정보 얻기
             val crawledProduct = productCrawler.fetch(normalizedUrl)
@@ -168,7 +170,7 @@ class ProductService(
                 brand = crawledProduct.brand, // 브랜드
                 thumbnailUrl = crawledProduct.thumbnailUrl, // 썸네일
                 imageUrlList = crawledProduct.imageUrls, // 이미지 리스트
-                store = crawledProduct.store, // 스토어명
+                store = crawledProduct.store.name, // 스토어명
                 price = crawledProduct.price, // 가격
                 firstCategory = crawledProduct.firstCategory, // 1차 카테고리
                 secondCategory = crawledProduct.secondCategory, // 2차 카테고리
@@ -191,7 +193,7 @@ class ProductService(
             response
         } catch (e: Exception) {
             val duration = System.currentTimeMillis() - startTime
-            log.error("Failed to crawl product from URL: {} after {}ms", productUrl, duration, e)
+            log.error("Failed to crawl product from URL: {} after {}ms", url, duration, e)
             throw BusinessException(errorCode = ErrorCode.CRAWLER_INVALID_RESPONSE, cause = e)
         }
     }
@@ -232,6 +234,53 @@ class ProductService(
             response
         } catch (e: Exception) {
             log.error("Failed to fetch most delayed product for member: {}", memberId, e)
+            throw BusinessException(errorCode = ErrorCode.INTERNAL_ERROR, cause = e)
+        }
+    }
+
+    @Transactional
+    fun registerProduct(request: ProductRegisterRequest): ProductRegisterResponse {
+        log.info("Registering product: {} from store: {}", request.name, request.store)
+        
+        return try {
+            val existingProduct = productExposedRepository.fetchProductByStoreNumber(
+                storeNumber = request.number,
+                store = request.store
+            )
+            if (existingProduct != null) {
+                throw BusinessException(ErrorCode.PRODUCT_ALREADY_EXISTS)
+            }
+            
+            val savedProduct = productExposedRepository.save(
+                name = request.name,
+                storeNumber = request.number,
+                brand = request.brand,
+                thumbnailUrl = request.thumbnailUrl,
+                originalUrl = "",
+                store = request.store,
+                price = request.price,
+                firstCategory = request.firstCategory,
+                secondCategory = request.secondCategory,
+                firstOption = request.firstOption,
+                secondOption = request.secondOption,
+                thirdOption = request.thirdOption
+            )
+            
+            request.imageUrlList.forEach { imageUrl ->
+                productImageExposedRepository.save(
+                    productId = savedProduct.id,
+                    imageUrl = imageUrl
+                )
+            }
+            
+            log.info("Successfully registered product: {} with ID: {}", savedProduct.name, savedProduct.id)
+            
+            ProductRegisterResponse(
+                productId = savedProduct.id,
+                productName = savedProduct.name
+            )
+        } catch (e: Exception) {
+            log.error("Failed to register product: {}", request.name, e)
             throw BusinessException(errorCode = ErrorCode.INTERNAL_ERROR, cause = e)
         }
     }

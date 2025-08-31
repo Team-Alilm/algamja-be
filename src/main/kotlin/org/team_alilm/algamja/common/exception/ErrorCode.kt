@@ -10,6 +10,8 @@ enum class ErrorCode(
 
     // Product 관련
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_001", "상품을 찾을 수 없습니다."),
+    PRODUCT_ALREADY_EXISTS(HttpStatus.CONFLICT, "PRODUCT_002", "이미 등록된 상품입니다."),
+    INVALID_STORE_NAME(HttpStatus.BAD_REQUEST, "PRODUCT_003", "유효하지 않은 스토어명입니다."),
     CRAWLER_NOT_FOUND(
         HttpStatus.NOT_FOUND, "CRAWLER_001", "지원하는 크롤러가 없습니다. URL을 확인해주세요."
     ),

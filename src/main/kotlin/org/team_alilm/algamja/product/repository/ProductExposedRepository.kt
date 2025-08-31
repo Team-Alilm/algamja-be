@@ -192,7 +192,7 @@ class ProductExposedRepository {
             .singleOrNull()
             ?.let(ProductRow::from)
 
-    /** 새 상품 등록 */
+    /** 새 상품 등록 (리스트 옵션) */
     fun save(
         name: String,
         storeNumber: Long,
@@ -216,9 +216,42 @@ class ProductExposedRepository {
             row[ProductTable.price] = price
             row[ProductTable.firstCategory] = firstCategory
             row[ProductTable.secondCategory] = secondCategory
-            row[ProductTable.firstOption] = firstOptions.joinToString(",").takeIf { it.isNotEmpty() }
+            row[ProductTable.firstOption] = firstOptions.joinToString(",").takeIf { it.isNotEmpty() } ?: ""
             row[ProductTable.secondOption] = secondOptions.joinToString(",").takeIf { it.isNotEmpty() }
             row[ProductTable.thirdOption] = thirdOptions.joinToString(",").takeIf { it.isNotEmpty() }
+        }
+        
+        return fetchProductById(insertedId.value)
+            ?: throw IllegalStateException("Failed to retrieve saved product with ID: ${insertedId.value}")
+    }
+
+    /** 새 상품 등록 (단일 옵션) */
+    fun save(
+        name: String,
+        storeNumber: Long,
+        brand: String,
+        thumbnailUrl: String,
+        originalUrl: String,
+        store: Store,
+        price: BigDecimal,
+        firstCategory: String,
+        secondCategory: String?,
+        firstOption: String,
+        secondOption: String?,
+        thirdOption: String?
+    ): ProductRow {
+        val insertedId = ProductTable.insertAndGetId { row ->
+            row[ProductTable.storeNumber] = storeNumber
+            row[ProductTable.name] = name
+            row[ProductTable.brand] = brand
+            row[ProductTable.thumbnailUrl] = thumbnailUrl
+            row[ProductTable.store] = store
+            row[ProductTable.price] = price
+            row[ProductTable.firstCategory] = firstCategory
+            row[ProductTable.secondCategory] = secondCategory
+            row[ProductTable.firstOption] = firstOption
+            row[ProductTable.secondOption] = secondOption
+            row[ProductTable.thirdOption] = thirdOption
         }
         
         return fetchProductById(insertedId.value)
@@ -238,7 +271,4 @@ class ProductExposedRepository {
             it[ProductTable.firstCategory] = crawledProduct.firstCategory
             it[ProductTable.secondCategory]= crawledProduct.secondCategory
         }
-
-    private fun Column<String?>.eqNullable(value: String?): Op<Boolean> =
-        if (value == null) this.isNull() else (this eq value)
 }

@@ -59,15 +59,22 @@ class ProductImageExposedRepository {
 
     /** 단일 이미지 저장 */
     fun save(productId: Long, imageUrl: String, imageOrder: Int = 0): ProductImageRow {
-        val insertedId = ProductImageTable.insertAudited { row ->
+        ProductImageTable.insertAudited { row ->
             row[ProductImageTable.productId] = productId
             row[ProductImageTable.imageUrl] = imageUrl
             // imageOrder 컬럼이 있다면 사용
         }
         
+        // 방금 삽입한 이미지를 조회 (productId와 imageUrl로 조회)
         return ProductImageTable
             .selectAll()
-            .where { ProductImageTable.id eq insertedId }
+            .where { 
+                (ProductImageTable.productId eq productId) and 
+                (ProductImageTable.imageUrl eq imageUrl) and
+                (ProductImageTable.isDelete eq false)
+            }
+            .orderBy(ProductImageTable.id to org.jetbrains.exposed.sql.SortOrder.DESC)
+            .limit(1)
             .single()
             .let(ProductImageRow::from)
     }

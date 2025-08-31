@@ -13,6 +13,7 @@ import org.team_alilm.algamja.common.security.requireMemberId
 import org.team_alilm.algamja.member.controller.docs.MemberDocs
 import org.team_alilm.algamja.member.controller.dto.request.UpdateMyInfoRequest
 import org.team_alilm.algamja.member.controller.dto.response.MyInfoResponse
+import org.team_alilm.algamja.member.controller.dto.response.UserStatisticsResponse
 import org.team_alilm.algamja.member.service.MemberService
 
 @RestController
@@ -39,5 +40,13 @@ class MemberController(
             request = request
         )
         return ApiResponse.success(Unit)
+    }
+
+    @GetMapping("/statistics")
+    override fun getMyStatistics(
+        @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
+    ): ApiResponse<UserStatisticsResponse> {
+        val response = memberService.getMyStatistics(customMemberDetails.requireMemberId())
+        return ApiResponse.success(response)
     }
 }

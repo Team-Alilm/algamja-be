@@ -10,6 +10,7 @@ import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
 import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyApiResponse
 import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyOptionsResponse
 import org.team_alilm.algamja.product.crawler.util.CategoryMapper
+import org.team_alilm.algamja.common.enums.Store
 import java.math.BigDecimal
 import java.net.URI
 import java.util.regex.Pattern
@@ -106,7 +107,7 @@ class AblyCrawler(
             brand = goods.market?.name ?: "Unknown",
             thumbnailUrl = thumbnailUrl,
             imageUrls = imageUrls,
-            store = "ABLY",
+            store = Store.ABLY,
             price = BigDecimal.valueOf(goods.priceInfo?.thumbnailPrice ?: 0),
             firstCategory = CategoryMapper.mapCategory(categoryName),
             secondCategory = categoryName,

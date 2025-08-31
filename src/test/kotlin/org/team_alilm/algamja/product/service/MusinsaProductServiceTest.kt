@@ -57,14 +57,40 @@ class MusinsaProductServiceTest {
             whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
             whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
             whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
-            whenever(productExposedRepository.save(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(savedProduct)
+            whenever(productExposedRepository.save(
+                name = any(),
+                storeNumber = any(),
+                brand = any(), 
+                thumbnailUrl = any(),
+                originalUrl = any(),
+                store = any(),
+                price = any(),
+                firstCategory = any(),
+                secondCategory = any(),
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
+            )).thenReturn(savedProduct)
 
             // When
             val result = musinsaProductService.fetchAndRegisterRandomProducts(count)
 
             // Then
             assertTrue(result >= 0)
-            verify(productExposedRepository, atLeastOnce()).save(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+            verify(productExposedRepository, atLeastOnce()).save(
+                name = any(),
+                storeNumber = any(),
+                brand = any(), 
+                thumbnailUrl = any(),
+                originalUrl = any(),
+                store = any(),
+                price = any(),
+                firstCategory = any(),
+                secondCategory = any(),
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
+            )
         }
 
         @Test
@@ -84,7 +110,20 @@ class MusinsaProductServiceTest {
             val result = musinsaProductService.fetchAndRegisterRandomProducts(count)
 
             // Then
-            verify(productExposedRepository, never()).save(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+            verify(productExposedRepository, never()).save(
+                name = any(),
+                storeNumber = any(),
+                brand = any(), 
+                thumbnailUrl = any(),
+                originalUrl = any(),
+                store = any(),
+                price = any(),
+                firstCategory = any(),
+                secondCategory = any(),
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
+            )
         }
 
         @Test
@@ -100,7 +139,20 @@ class MusinsaProductServiceTest {
 
             // Then
             assertEquals(0, result)
-            verify(productExposedRepository, never()).save(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+            verify(productExposedRepository, never()).save(
+                name = any(),
+                storeNumber = any(),
+                brand = any(), 
+                thumbnailUrl = any(),
+                originalUrl = any(),
+                store = any(),
+                price = any(),
+                firstCategory = any(),
+                secondCategory = any(),
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
+            )
         }
 
         @Test
@@ -115,7 +167,20 @@ class MusinsaProductServiceTest {
             whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
             whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
             whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
-            whenever(productExposedRepository.save(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+            whenever(productExposedRepository.save(
+                name = any(),
+                storeNumber = any(),
+                brand = any(), 
+                thumbnailUrl = any(),
+                originalUrl = any(),
+                store = any(),
+                price = any(),
+                firstCategory = any(),
+                secondCategory = any(),
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
+            ))
                 .thenThrow(RuntimeException("DB Error"))
                 .thenReturn(savedProduct)
 
@@ -141,30 +206,51 @@ class MusinsaProductServiceTest {
             val originalUrl = "https://www.musinsa.com/app/goods/1234567"
             
             whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
-            whenever(productExposedRepository.save(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(savedProduct)
-            whenever(productImageExposedRepository.save(any(), any(), any())).thenReturn(savedImage)
+            whenever(productExposedRepository.save(
+                name = any(),
+                storeNumber = any(),
+                brand = any(), 
+                thumbnailUrl = any(),
+                originalUrl = any(),
+                store = any(),
+                price = any(),
+                firstCategory = any(),
+                secondCategory = any(),
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
+            )).thenReturn(savedProduct)
+            whenever(productImageExposedRepository.save(
+                productId = any(),
+                imageUrl = any(),
+                imageOrder = any()
+            )).thenReturn(savedImage)
 
             // When
             musinsaProductService.fetchAndRegisterRandomProducts(1)
 
             // Then
             verify(productExposedRepository).save(
-                eq(crawledProduct.name),
-                eq(crawledProduct.storeNumber),
-                eq(crawledProduct.brand),
-                eq(crawledProduct.thumbnailUrl),
-                eq(originalUrl),
-                eq(crawledProduct.store),
-                eq(crawledProduct.price),
-                eq(crawledProduct.firstCategory ?: "기타"),
-                eq(crawledProduct.secondCategory),
-                eq(crawledProduct.firstOptions),
-                eq(crawledProduct.secondOptions),
-                eq(crawledProduct.thirdOptions)
+                name = eq(crawledProduct.name),
+                storeNumber = eq(crawledProduct.storeNumber),
+                brand = eq(crawledProduct.brand),
+                thumbnailUrl = eq(crawledProduct.thumbnailUrl),
+                originalUrl = eq(originalUrl),
+                store = eq(crawledProduct.store),
+                price = eq(crawledProduct.price),
+                firstCategory = eq(crawledProduct.firstCategory ?: "기타"),
+                secondCategory = eq(crawledProduct.secondCategory),
+                firstOptions = eq(crawledProduct.firstOptions),
+                secondOptions = eq(crawledProduct.secondOptions),
+                thirdOptions = eq(crawledProduct.thirdOptions)
             )
             
             // 이미지 개수만큼 save가 호출되어야 함
-            verify(productImageExposedRepository, times(crawledProduct.imageUrls.size)).save(any(), any(), any())
+            verify(productImageExposedRepository, times(crawledProduct.imageUrls.size)).save(
+                productId = any(),
+                imageUrl = any(),
+                imageOrder = any()
+            )
         }
 
         @Test
@@ -175,7 +261,20 @@ class MusinsaProductServiceTest {
             val originalUrl = "https://www.musinsa.com/app/goods/1234567"
             
             whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
-            whenever(productExposedRepository.save(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+            whenever(productExposedRepository.save(
+                name = any(),
+                storeNumber = any(),
+                brand = any(), 
+                thumbnailUrl = any(),
+                originalUrl = any(),
+                store = any(),
+                price = any(),
+                firstCategory = any(),
+                secondCategory = any(),
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
+            ))
                 .thenThrow(RuntimeException("Database error"))
 
             // When & Then
@@ -223,8 +322,8 @@ class MusinsaProductServiceTest {
 
     private fun createMockCrawledProduct(): CrawledProduct {
         return CrawledProduct(
+            storeNumber = 1234567L,
             name = "테스트 상품",
-            storeNumber = "1234567",
             brand = "테스트 브랜드",
             thumbnailUrl = "https://example.com/thumbnail.jpg",
             imageUrls = listOf(
