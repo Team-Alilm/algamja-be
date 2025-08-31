@@ -8,6 +8,7 @@ import org.team_alilm.algamja.common.response.ApiResponse as CommonApiResponse
 import org.team_alilm.algamja.common.security.CustomMemberDetails
 import org.team_alilm.algamja.member.controller.dto.request.UpdateMyInfoRequest
 import org.team_alilm.algamja.member.controller.dto.response.MyInfoResponse
+import org.team_alilm.algamja.member.controller.dto.response.UserStatisticsResponse
 
 @Tag(name = "Member", description = "회원 관련 API")
 interface MemberDocs {
@@ -36,4 +37,16 @@ interface MemberDocs {
         @Parameter(hidden = true) customMemberDetails: CustomMemberDetails,
         request: UpdateMyInfoRequest
     ): CommonApiResponse<Unit>
+
+    @Operation(
+        summary = "내 통계 조회",
+        description = "인증된 사용자의 등록 상품 수와 받은 알림 수를 조회합니다."
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "정상 응답"
+    )
+    fun getMyStatistics(
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
+    ): CommonApiResponse<UserStatisticsResponse>
 }

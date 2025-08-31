@@ -56,7 +56,7 @@ class NotificationExposedRepository {
             it[readYn] = true
         }
 
-    /** 추가: 회원의 ‘읽지 않은’ 알림 전체 읽음 처리 (영향 행 수 반환) */
+    /** 추가: 회원의 '읽지 않은' 알림 전체 읽음 처리 (영향 행 수 반환) */
     fun markAllUnreadReadByMemberId(memberId: Long): Int =
         NotificationTable.updateAudited(
             where = {
@@ -67,4 +67,17 @@ class NotificationExposedRepository {
         ) {
             it[readYn] = true
         }
+
+    fun countNotificationsByMemberId(memberId: Long): Long {
+        val cnt = NotificationTable.id.count()
+        return NotificationTable
+            .select(cnt)
+            .where {
+                (NotificationTable.memberId eq memberId) and
+                (NotificationTable.isDelete eq false)
+            }
+            .firstOrNull()
+            ?.get(cnt)
+            ?: 0L
+    }
 }

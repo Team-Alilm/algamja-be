@@ -48,11 +48,15 @@ class NotificationService(
                 return@mapNotNull null
             }
             RecentNotificationResponse(
-                id = n.id,
+                notificationId = n.id,
                 productId = n.productId,
-                productTitle = p.name,
+                productName = p.name,
                 productThumbnailUrl = p.thumbnailUrl,
-                brand = p.brand,
+                productBrand = p.brand,
+                productPrice = p.price.toInt(),
+                firstOption = p.firstOption,
+                secondOption = p.secondOption,
+                thirdOption = p.thirdOption,
                 readYn = n.readYn,
                 createdData = n.createdDate
             )

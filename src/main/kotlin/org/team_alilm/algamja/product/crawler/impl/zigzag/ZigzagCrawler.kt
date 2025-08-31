@@ -10,6 +10,7 @@ import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
 import org.team_alilm.algamja.product.crawler.impl.zigzag.dto.ZigzagApiResponse
 import org.team_alilm.algamja.product.crawler.impl.zigzag.dto.ZigzagGraphQLRequest
 import org.team_alilm.algamja.product.crawler.util.CategoryMapper
+import org.team_alilm.algamja.common.enums.Store
 import java.net.IDN
 import java.net.URI
 
@@ -119,7 +120,7 @@ class ZigzagCrawler(
             brand = catalogProduct.shopName.takeIf { it.isNotBlank() } ?: "브랜드 없음",
             thumbnailUrl = thumbnailUrl,
             imageUrls = imageUrls,
-            store = "ZIGZAG",
+            store = Store.ZIGZAG,
             price = finalPrice.toBigDecimal(),
             firstCategory = firstCategory,
             secondCategory = secondCategory,

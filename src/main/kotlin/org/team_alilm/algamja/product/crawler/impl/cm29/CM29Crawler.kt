@@ -9,6 +9,7 @@ import org.team_alilm.algamja.product.crawler.ProductCrawler
 import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
 import org.team_alilm.algamja.product.crawler.impl.cm29.dto.CM29ApiResponse
 import org.team_alilm.algamja.product.crawler.util.CategoryMapper
+import org.team_alilm.algamja.common.enums.Store
 import java.net.IDN
 import java.net.URI
 
@@ -111,7 +112,7 @@ class CM29Crawler(
             brand = brandName,
             thumbnailUrl = thumbnailUrl,
             imageUrls = imageUrls,
-            store = "29CM",
+            store = Store.CM29,
             price = finalPrice.toBigDecimal(),
             firstCategory = firstCategory,
             secondCategory = secondCategory,
