@@ -65,10 +65,8 @@ create table if not exists `notification` (
 
                                               product_id          bigint not null,
                                               member_id           bigint not null,
-                                              read_yn             boolean not null default false,
+                                              read_yn             boolean not null default false
 
-                                              constraint `fk_notification_member`  foreign key (`member_id`)  references `member`(`id`),
-    constraint `fk_notification_product` foreign key (`product_id`) references `product`(`id`)
     );
 
 
@@ -85,8 +83,7 @@ create table if not exists `fcm_token` (
     member_id           bigint       not null,
     is_active           boolean      not null default true,
 
-    constraint `uk_fcm_token_token` unique (`token`),
-    constraint `fk_fcm_member`      foreign key (`member_id`) references `member`(`id`)
+    constraint `uk_fcm_token_token` unique (`token`)
     );
 
 
@@ -109,10 +106,8 @@ create table if not exists `basket` (
 
                                         constraint `uk_basket_member_product` unique (`member_id`, `product_id`),
     constraint `ck_basket_notification_date_required`
-    check (is_notification = false or notification_date is not null),
+    check (is_notification = false or notification_date is not null)
 
-    constraint `fk_basket_member`  foreign key (`member_id`)  references `member`(`id`),
-    constraint `fk_basket_product` foreign key (`product_id`) references `product`(`id`)
     );
 
 create index `idx_basket_member_active`
@@ -135,8 +130,7 @@ create table if not exists `product_image` (
     product_id           bigint not null,
     image_order          int not null default 0,
 
-    constraint `ux_product_image_url` unique (`image_url`),
-    constraint `fk_product_image_product` foreign key (`product_id`) references `product`(`id`)
+    constraint `ux_product_image_url` unique (`image_url`)
     );
 
 create index `idx_product_image_product_id`
