@@ -120,3 +120,27 @@ create index `idx_basket_member_active`
 
 create index `idx_basket_product_active`
     on `basket`(`product_id`, `is_delete`);
+
+
+/* =========================================================
+   PRODUCT_IMAGE
+   ========================================================= */
+create table if not exists `product_image` (
+                                               id                   bigint auto_increment primary key,
+                                               is_delete            boolean not null default false,
+                                               created_date         bigint not null,
+                                               last_modified_date   bigint not null,
+
+                                               image_url            varchar(512) not null,
+    product_id           bigint not null,
+    image_order          int not null default 0,
+
+    constraint `ux_product_image_url` unique (`image_url`),
+    constraint `fk_product_image_product` foreign key (`product_id`) references `product`(`id`)
+    );
+
+create index `idx_product_image_product_id`
+    on `product_image`(`product_id`);
+
+create index `idx_product_image_product_id_order`
+    on `product_image`(`product_id`, `image_order`);
