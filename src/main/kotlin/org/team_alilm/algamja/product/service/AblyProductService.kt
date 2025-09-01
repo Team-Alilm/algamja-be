@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 @Service
 @Transactional
-class MusinsaProductService(
+class AblyProductService(
     private val restClient: RestClient,
     private val crawlerRegistry: CrawlerRegistry,
     private val productExposedRepository: ProductExposedRepository,
@@ -24,11 +24,11 @@ class MusinsaProductService(
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun fetchAndRegisterRandomProducts(count: Int = 100): Int {
-        log.info("Starting to fetch and register {} random Musinsa products", count)
+        log.info("Starting to fetch and register {} random Ably products", count)
         
         try {
-            val productUrls = fetchRandomMusinsaProductUrls(count)
-            log.info("Found {} Musinsa product URLs", productUrls.size)
+            val productUrls = fetchRandomAblyProductUrls(count)
+            log.info("Found {} Ably product URLs", productUrls.size)
             
             var successCount = 0
             var failCount = 0
@@ -54,36 +54,36 @@ class MusinsaProductService(
             return successCount
             
         } catch (e: Exception) {
-            log.error("Failed to fetch and register Musinsa products", e)
+            log.error("Failed to fetch and register Ably products", e)
             throw BusinessException(ErrorCode.INTERNAL_ERROR, cause = e)
         }
     }
 
-    private fun fetchRandomMusinsaProductUrls(count: Int): List<String> {
+    private fun fetchRandomAblyProductUrls(count: Int): List<String> {
         val productUrls = mutableListOf<String>()
         
         try {
             // 1차: 랭킹 페이지에서 인기 상품들 가져오기
             val rankingUrls = fetchProductUrlsFromRanking(count)
             productUrls.addAll(rankingUrls)
-            log.info("Fetched {} products from ranking pages", rankingUrls.size)
+            log.info("Fetched {} products from Ably ranking pages", rankingUrls.size)
             
             // 2차: 부족하면 인기 카테고리에서 추가로 가져오기
             if (productUrls.size < count) {
                 val remaining = count - productUrls.size
                 val categoryUrls = fetchProductUrlsFromCategories(remaining)
                 productUrls.addAll(categoryUrls)
-                log.info("Fetched {} additional products from categories", categoryUrls.size)
+                log.info("Fetched {} additional products from Ably categories", categoryUrls.size)
             }
             
             // 랜덤하게 섞고 요청된 개수만큼 선택
             return productUrls.shuffled().take(count)
             
         } catch (e: Exception) {
-            log.error("Failed to fetch product URLs from ranking/categories", e)
+            log.error("Failed to fetch product URLs from Ably ranking/categories", e)
             
             // 최종 대안: 랜덤 상품 ID 생성으로 URL 만들기
-            log.info("Falling back to random product ID generation")
+            log.info("Falling back to random product ID generation for Ably")
             return generateRandomProductUrls(count)
         }
     }
@@ -91,23 +91,24 @@ class MusinsaProductService(
     private fun fetchProductUrlsFromRanking(count: Int): List<String> {
         val productUrls = mutableListOf<String>()
         
-        // 무신사 랭킹 페이지들
+        // 에이블리 랭킹 페이지들
         val rankingPages = listOf(
-            "https://www.musinsa.com/ranking/best", // 베스트 상품
-            "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=001", // 상의 베스트
-            "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=002", // 아우터 베스트
-            "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=003", // 바지 베스트
-            "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=020", // 신발 베스트
-            "https://www.musinsa.com/ranking/weekly" // 주간 랭킹
+            "https://a-bly.com/goods/best", // 베스트 상품
+            "https://a-bly.com/goods/best?category_no=24", // 상의
+            "https://a-bly.com/goods/best?category_no=25", // 아우터
+            "https://a-bly.com/goods/best?category_no=26", // 원피스
+            "https://a-bly.com/goods/best?category_no=27", // 하의
+            "https://a-bly.com/goods/best?category_no=28", // 신발
+            "https://a-bly.com/goods/weekly_best" // 주간 베스트
         )
         
         rankingPages.forEach { rankingUrl ->
             try {
                 val urls = fetchProductUrlsFromPage(rankingUrl, count / rankingPages.size + 10)
                 productUrls.addAll(urls)
-                log.debug("Extracted {} URLs from ranking page: {}", urls.size, rankingUrl)
+                log.debug("Extracted {} URLs from Ably ranking page: {}", urls.size, rankingUrl)
             } catch (e: Exception) {
-                log.warn("Failed to fetch from ranking page {}: {}", rankingUrl, e.message)
+                log.warn("Failed to fetch from Ably ranking page {}: {}", rankingUrl, e.message)
             }
         }
         
@@ -117,17 +118,17 @@ class MusinsaProductService(
     private fun fetchProductUrlsFromCategories(count: Int): List<String> {
         val productUrls = mutableListOf<String>()
         
-        // 무신사 인기 카테고리들
+        // 에이블리 인기 카테고리들
         val categories = listOf(
-            "001006", // 상의 > 맨투맨/스웨트셔츠
-            "001005", // 상의 > 니트/스웨터
-            "001001", // 상의 > 티셔츠
-            "002002", // 아우터 > 코트
-            "002001", // 아우터 > 자켓
-            "003002", // 바지 > 데님 팬츠
-            "003009", // 바지 > 트레이닝/조거 팬츠
-            "020001", // 스니커즈 > 로우탑
-            "020003", // 스니커즈 > 하이탑
+            "24", // 상의
+            "25", // 아우터
+            "26", // 원피스
+            "27", // 하의
+            "28", // 신발
+            "29", // 가방
+            "30", // 악세서리
+            "31", // 속옷
+            "32"  // 수영복
         )
         
         categories.forEach { categoryId ->
@@ -142,29 +143,29 @@ class MusinsaProductService(
         val productUrls = mutableListOf<String>()
         
         try {
-            log.debug("Fetching products from page URL: {}", pageUrl)
+            log.debug("Fetching products from Ably page URL: {}", pageUrl)
             
             val response = restClient.get()
                 .uri(pageUrl)
                 .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
                 .retrieve()
                 .body(String::class.java)
-                ?: throw BusinessException(ErrorCode.MUSINSA_INVALID_RESPONSE)
+                ?: throw BusinessException(ErrorCode.ABLY_INVALID_RESPONSE)
             
-            // HTML에서 상품 URL 패턴 추출: href="/app/goods/[숫자]"
-            val productUrlPattern = Regex("""href=['"]/app/goods/(\d+)['"]""")
+            // HTML에서 상품 URL 패턴 추출: href="/goods/[숫자]"
+            val productUrlPattern = Regex("""href=['"]/goods/(\d+)['"]""")
             val matches = productUrlPattern.findAll(response)
             
             matches.take(limit).forEach { match ->
                 val goodsId = match.groupValues[1]
-                val productUrl = "https://www.musinsa.com/app/goods/$goodsId"
+                val productUrl = "https://a-bly.com/goods/$goodsId"
                 productUrls.add(productUrl)
             }
             
-            log.debug("Extracted {} product URLs from page", productUrls.size)
+            log.debug("Extracted {} product URLs from Ably page", productUrls.size)
             
         } catch (e: Exception) {
-            log.warn("Failed to fetch products from page {}: {}", pageUrl, e.message)
+            log.warn("Failed to fetch products from Ably page {}: {}", pageUrl, e.message)
         }
         
         return productUrls
@@ -172,15 +173,15 @@ class MusinsaProductService(
 
     private fun fetchProductUrlsFromCategory(categoryId: String, limit: Int): List<String> {
         try {
-            // 무신사 카테고리 페이지 URL 생성 (인기순 정렬)
-            val page = Random.nextInt(1, 6) // 1-5 페이지 중 랜덤 선택
-            val categoryUrl = "https://www.musinsa.com/categories/item/$categoryId?d_cat_cd=$categoryId&brand=&list_kind=small&sort=sale&sub_sort=&page=$page&display_cnt=90"
+            // 에이블리 카테고리 페이지 URL 생성 (인기순 정렬)
+            val page = Random.nextInt(1, 11) // 1-10 페이지 중 랜덤 선택
+            val categoryUrl = "https://a-bly.com/goods/list?category_no=$categoryId&sort=hit&page=$page"
             
-            log.debug("Fetching products from category URL: {}", categoryUrl)
+            log.debug("Fetching products from Ably category URL: {}", categoryUrl)
             return fetchProductUrlsFromPage(categoryUrl, limit)
             
         } catch (e: Exception) {
-            log.warn("Failed to fetch products from category {}: {}", categoryId, e.message)
+            log.warn("Failed to fetch products from Ably category {}: {}", categoryId, e.message)
             return emptyList()
         }
     }
@@ -189,18 +190,18 @@ class MusinsaProductService(
         val productUrls = mutableListOf<String>()
         val usedIds = mutableSetOf<Int>()
         
-        // 무신사 상품 ID 범위 (대략적인 범위)
-        val minId = 1000000
-        val maxId = 4000000
+        // 에이블리 상품 ID 범위 (대략적인 범위)
+        val minId = 100000
+        val maxId = 1000000
         
         while (productUrls.size < count && usedIds.size < count * 2) {
             val randomId = Random.nextInt(minId, maxId)
             if (usedIds.add(randomId)) {
-                productUrls.add("https://www.musinsa.com/app/goods/$randomId")
+                productUrls.add("https://a-bly.com/goods/$randomId")
             }
         }
         
-        log.debug("Generated {} random product URLs", productUrls.size)
+        log.debug("Generated {} random Ably product URLs", productUrls.size)
         return productUrls
     }
 
@@ -253,10 +254,10 @@ class MusinsaProductService(
                 )
             }
             
-            log.debug("Successfully registered product: {} (ID: {})", crawledProduct.name, savedProduct.id)
+            log.debug("Successfully registered Ably product: {} (ID: {})", crawledProduct.name, savedProduct.id)
             
         } catch (e: Exception) {
-            log.error("Failed to register product: {}", crawledProduct.name, e)
+            log.error("Failed to register Ably product: {}", crawledProduct.name, e)
             throw BusinessException(ErrorCode.INTERNAL_ERROR, cause = e)
         }
     }

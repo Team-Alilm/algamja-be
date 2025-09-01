@@ -13,11 +13,11 @@ class MusinsaProductScheduler(
     private val log = LoggerFactory.getLogger(javaClass)
 
     /**
-     * 매 정각에 무신사에서 무작위로 100개 상품을 등록하는 스케줄 작업
-     * Cron: 0 0 * * * * (초 분 시 일 월 요일)
-     * - 0초 0분 매시간 실행
+     * 매 정각 + 10분에 무신사에서 무작위로 100개 상품을 등록하는 스케줄 작업
+     * Cron: 0 10 * * * * (초 분 시 일 월 요일)
+     * - 0초 10분 매시간 실행
      */
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 10 * * * *")
     fun registerRandomMusinsaProducts() {
         val startTime = System.currentTimeMillis()
         log.info("========== Musinsa Product Registration Scheduled Task Started ==========")
