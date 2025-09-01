@@ -243,13 +243,13 @@ class ProductExposedRepository {
         return savedProduct ?: throw IllegalStateException("Failed to save any product combinations")
     }
     
-    /** 가격 업데이트용 상품 무작위 조회 */
-    fun fetchRandomProductsForPriceUpdate(count: Int): List<ProductRow> {
+    /** 가격 업데이트용 상품 배치 조회 (페이징) */
+    fun fetchProductsForPriceUpdateBatch(batchSize: Int, offset: Int): List<ProductRow> {
         return ProductTable
             .selectAll()
             .where { ProductTable.isDelete eq false }
-            .orderBy(Random())
-            .limit(count)
+            .orderBy(ProductTable.id)
+            .limit(batchSize, offset.toLong())
             .map(ProductRow::from)
     }
     
