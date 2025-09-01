@@ -10,9 +10,7 @@ create table if not exists `product_image` (
     image_url            varchar(512) not null,
     product_id           bigint not null,
     
-    constraint `ux_product_image_url` unique (`image_url`)
+    constraint `ux_product_image_url` unique (`image_url`),
+    index `idx_product_image_product_id` (`product_id`),
+    index `idx_product_image_product_id_id` (`product_id`, `id`)
 );
-
--- 조회/정렬 최적화 인덱스
-create index `idx_product_image_product_id` on `product_image` (`product_id`);
-create index `idx_product_image_product_id_id` on `product_image` (`product_id`, `id`);
