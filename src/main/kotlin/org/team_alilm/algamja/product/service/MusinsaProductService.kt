@@ -485,41 +485,16 @@ class MusinsaProductService(
             // 상품 URL 생성 (크롤링용)
             val productUrl = "https://www.musinsa.com/app/goods/$storeNumber"
             
-            // 먼저 크롤링 시도 (더 상세한 정보를 얻기 위해)
+            // 크롤링 시도 (상세한 정보를 얻기 위해)
             val crawledProduct = crawlProductFromUrl(productUrl)
             if (crawledProduct != null) {
                 registerProduct(crawledProduct, productUrl)
                 return true
             }
             
-            // 크롤링 실패 시 API 데이터로 직접 저장
-            val price = (item.info?.finalPrice ?: 0).toBigDecimal()
-            val savedProduct = productExposedRepository.save(
-                name = item.info?.productName ?: "Unknown Product",
-                storeNumber = storeNumber,
-                brand = item.info?.brandName ?: "Unknown Brand",
-                thumbnailUrl = item.image?.url ?: "",
-                originalUrl = productUrl,
-                store = Store.MUSINSA,
-                price = price,
-                firstCategory = "기타",
-                secondCategory = null,
-                firstOptions = emptyList(),
-                secondOptions = emptyList(),
-                thirdOptions = emptyList()
-            )
-            
-            // 이미지 등록
-            item.image?.url?.let { imageUrl ->
-                productImageExposedRepository.save(
-                    productId = savedProduct.id,
-                    imageUrl = imageUrl,
-                    imageOrder = 0
-                )
-            }
-            
-            log.debug("Successfully registered product from module: {} (ID: {})", item.info?.productName, savedProduct.id)
-            return true
+            // 크롤링 실패 시 로그만 남기고 건너뛰기
+            log.debug("Failed to crawl product, skipping: {} ({})", item.info?.productName, storeNumber)
+            return false
             
         } catch (e: Exception) {
             log.error("Failed to register product from module item: {}", item.info?.productName, e)
