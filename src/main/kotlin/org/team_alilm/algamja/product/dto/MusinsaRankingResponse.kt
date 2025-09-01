@@ -12,7 +12,57 @@ data class MusinsaRankingResponse(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaRankingData(
     @JsonProperty("list")
-    val list: List<MusinsaRankingItem> = emptyList()
+    val list: List<MusinsaRankingItem> = emptyList(),
+    @JsonProperty("modules")
+    val modules: List<MusinsaModule> = emptyList()
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class MusinsaModule(
+    @JsonProperty("type")
+    val type: String? = null,
+    @JsonProperty("items")
+    val items: List<MusinsaProductItem> = emptyList(),
+    @JsonProperty("multiColumn")
+    val multiColumn: MusinsaMultiColumn? = null
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class MusinsaMultiColumn(
+    @JsonProperty("list")
+    val list: List<MusinsaProductItem> = emptyList()
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class MusinsaProductItem(
+    @JsonProperty("id")
+    val id: String? = null,
+    @JsonProperty("type")
+    val type: String? = null,
+    @JsonProperty("info")
+    val info: MusinsaProductInfo? = null,
+    @JsonProperty("image")
+    val image: MusinsaProductImage? = null
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class MusinsaProductInfo(
+    @JsonProperty("brandName")
+    val brandName: String? = null,
+    @JsonProperty("productName")
+    val productName: String? = null,
+    @JsonProperty("finalPrice")
+    val finalPrice: Int? = null,
+    @JsonProperty("discountRatio")
+    val discountRatio: Int? = null
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class MusinsaProductImage(
+    @JsonProperty("url")
+    val url: String? = null,
+    @JsonProperty("rank")
+    val rank: Int? = null
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
