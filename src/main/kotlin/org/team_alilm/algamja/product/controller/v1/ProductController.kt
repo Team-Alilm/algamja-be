@@ -75,9 +75,9 @@ class ProductController(
 
     @GetMapping("/crawl")
     override fun crawlProduct(
-        @RequestParam("productUrl") url: String
+        @RequestParam("productUrl") productUrl: String
     ): ApiResponse<CrawlProductResponse> {
-        return success(data = productService.crawlProduct(url))
+        return success(data = productService.crawlProduct(productUrl))
     }
 
     @GetMapping("/delayed/me")
