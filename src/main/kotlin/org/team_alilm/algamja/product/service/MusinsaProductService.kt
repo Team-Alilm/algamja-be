@@ -13,7 +13,6 @@ import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
 import org.team_alilm.algamja.product.dto.MusinsaRankingResponse
 import org.team_alilm.algamja.product.repository.ProductExposedRepository
 import org.team_alilm.algamja.product.image.repository.ProductImageExposedRepository
-import java.math.BigDecimal
 import kotlin.random.Random
 
 @Service
@@ -96,13 +95,13 @@ class MusinsaProductService(
     private fun fetchProductUrlsFromRanking(count: Int): List<String> {
         val productUrls = mutableListOf<String>()
         
-        // 무신사 랭킹 API 엔드포인트들 (다양한 카테고리)
+        // 무신사 랭킹 API 엔드포인트들 (다양한 카테고리) - sections 엔드포인트 사용
         val rankingApis = listOf(
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=000&ageBand=AGE_BAND_ALL", // 전체
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=001&ageBand=AGE_BAND_ALL", // 상의
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=002&ageBand=AGE_BAND_ALL", // 아우터
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=003&ageBand=AGE_BAND_ALL", // 바지
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=020&ageBand=AGE_BAND_ALL"  // 신발
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=000&contentsId=", // 전체
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=001&contentsId=", // 상의
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=002&contentsId=", // 아우터
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=003&contentsId=", // 바지
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=103&contentsId="  // 신발
         )
         
         rankingApis.forEach { apiUrl ->
@@ -112,29 +111,6 @@ class MusinsaProductService(
                 log.debug("Extracted {} URLs from ranking API", urls.size)
             } catch (e: Exception) {
                 log.warn("Failed to fetch from ranking API: {}", e.message)
-            }
-        }
-        
-        // API 호출이 실패한 경우 기존 HTML 크롤링 방식으로 fallback
-        if (productUrls.isEmpty()) {
-            log.info("Ranking API failed, falling back to HTML crawling")
-            val rankingPages = listOf(
-                "https://www.musinsa.com/ranking/best",
-                "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=001",
-                "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=002",
-                "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=003",
-                "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=020",
-                "https://www.musinsa.com/ranking/weekly"
-            )
-            
-            rankingPages.forEach { rankingUrl ->
-                try {
-                    val urls = fetchProductUrlsFromPage(rankingUrl, count / rankingPages.size + 10)
-                    productUrls.addAll(urls)
-                    log.debug("Extracted {} URLs from ranking page: {}", urls.size, rankingUrl)
-                } catch (e: Exception) {
-                    log.warn("Failed to fetch from ranking page {}: {}", rankingUrl, e.message)
-                }
             }
         }
         
@@ -159,14 +135,30 @@ class MusinsaProductService(
             // JSON 파싱
             val rankingResponse = objectMapper.readValue(response, MusinsaRankingResponse::class.java)
             
-            rankingResponse.data?.list?.take(limit)?.forEach { rankingItem ->
-                rankingItem.item?.let { item ->
-                    // itemNo 또는 itemId를 사용하여 상품 URL 생성
-                    val goodsId = item.itemNo ?: item.itemId
-                    if (!goodsId.isNullOrBlank()) {
-                        val productUrl = "https://www.musinsa.com/app/goods/$goodsId"
-                        productUrls.add(productUrl)
-                        log.debug("Found product from ranking: {} - {}", item.itemName, goodsId)
+            // 새로운 API 구조: modules에서 MULTICOLUMN 타입의 아이템들 추출
+            rankingResponse.data?.modules?.forEach { module ->
+                if (module.type == "MULTICOLUMN") {
+                    module.items.take(limit).forEach { productItem ->
+                        productItem.id?.let { productId ->
+                            val productUrl = "https://www.musinsa.com/app/goods/$productId"
+                            productUrls.add(productUrl)
+                            log.debug("Found product from ranking: {} - {}", 
+                                productItem.info?.productName, productId)
+                        }
+                    }
+                }
+            }
+            
+            // 이전 API 구조도 지원 (fallback)
+            if (productUrls.isEmpty()) {
+                rankingResponse.data?.list?.take(limit)?.forEach { rankingItem ->
+                    rankingItem.item?.let { item ->
+                        val goodsId = item.itemNo ?: item.itemId
+                        if (!goodsId.isNullOrBlank()) {
+                            val productUrl = "https://www.musinsa.com/app/goods/$goodsId"
+                            productUrls.add(productUrl)
+                            log.debug("Found product from ranking (legacy): {} - {}", item.itemName, goodsId)
+                        }
                     }
                 }
             }
@@ -350,11 +342,11 @@ class MusinsaProductService(
     
     private fun fetchAndRegisterProductsFromRankingApi(count: Int): Int {
         val rankingApis = listOf(
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=000&ageBand=AGE_BAND_ALL",
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=001&ageBand=AGE_BAND_ALL",
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=002&ageBand=AGE_BAND_ALL",
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=003&ageBand=AGE_BAND_ALL",
-            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=020&ageBand=AGE_BAND_ALL"
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=000&contentsId=",
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=001&contentsId=",
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=002&contentsId=",
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=003&contentsId=",
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking/sections/200?storeCode=musinsa&categoryCode=103&contentsId="
         )
         
         var totalRegistered = 0
@@ -375,12 +367,27 @@ class MusinsaProductService(
                 
                 val rankingResponse = objectMapper.readValue(response, MusinsaRankingResponse::class.java)
                 
-                rankingResponse.data?.list?.take(maxPerApi)?.forEach { rankingItem ->
-                    if (totalRegistered >= count) return@forEach
-                    
-                    rankingItem.item?.let { item ->
-                        val registered = registerProductFromRankingItem(item)
-                        if (registered) totalRegistered++
+                // 새로운 API 구조 처리
+                rankingResponse.data?.modules?.forEach { module ->
+                    if (module.type == "MULTICOLUMN") {
+                        module.items.take(maxPerApi).forEach { productItem ->
+                            if (totalRegistered >= count) return@forEach
+                            
+                            val registered = registerProductFromModuleItem(productItem)
+                            if (registered) totalRegistered++
+                        }
+                    }
+                }
+                
+                // 이전 API 구조도 지원 (fallback)
+                if (totalRegistered == 0) {
+                    rankingResponse.data?.list?.take(maxPerApi)?.forEach { rankingItem ->
+                        if (totalRegistered >= count) return@forEach
+                        
+                        rankingItem.item?.let { item ->
+                            val registered = registerProductFromRankingItem(item)
+                            if (registered) totalRegistered++
+                        }
                     }
                 }
                 
@@ -456,6 +463,66 @@ class MusinsaProductService(
             
         } catch (e: Exception) {
             log.error("Failed to register product from ranking item: {}", item.itemName, e)
+            return false
+        }
+    }
+    
+    private fun registerProductFromModuleItem(item: org.team_alilm.algamja.product.dto.MusinsaProductItem): Boolean {
+        try {
+            val storeNumber = item.id?.toLongOrNull() ?: return false
+            
+            // 이미 존재하는 상품인지 확인
+            val existingProduct = productExposedRepository.fetchProductByStoreNumber(
+                storeNumber = storeNumber,
+                store = Store.MUSINSA
+            )
+            
+            if (existingProduct != null) {
+                log.debug("Product already exists: {}", storeNumber)
+                return false
+            }
+            
+            // 상품 URL 생성 (크롤링용)
+            val productUrl = "https://www.musinsa.com/app/goods/$storeNumber"
+            
+            // 먼저 크롤링 시도 (더 상세한 정보를 얻기 위해)
+            val crawledProduct = crawlProductFromUrl(productUrl)
+            if (crawledProduct != null) {
+                registerProduct(crawledProduct, productUrl)
+                return true
+            }
+            
+            // 크롤링 실패 시 API 데이터로 직접 저장
+            val price = (item.info?.finalPrice ?: 0).toBigDecimal()
+            val savedProduct = productExposedRepository.save(
+                name = item.info?.productName ?: "Unknown Product",
+                storeNumber = storeNumber,
+                brand = item.info?.brandName ?: "Unknown Brand",
+                thumbnailUrl = item.image?.url ?: "",
+                originalUrl = productUrl,
+                store = Store.MUSINSA,
+                price = price,
+                firstCategory = "기타",
+                secondCategory = null,
+                firstOptions = emptyList(),
+                secondOptions = emptyList(),
+                thirdOptions = emptyList()
+            )
+            
+            // 이미지 등록
+            item.image?.url?.let { imageUrl ->
+                productImageExposedRepository.save(
+                    productId = savedProduct.id,
+                    imageUrl = imageUrl,
+                    imageOrder = 0
+                )
+            }
+            
+            log.debug("Successfully registered product from module: {} (ID: {})", item.info?.productName, savedProduct.id)
+            return true
+            
+        } catch (e: Exception) {
+            log.error("Failed to register product from module item: {}", item.info?.productName, e)
             return false
         }
     }
