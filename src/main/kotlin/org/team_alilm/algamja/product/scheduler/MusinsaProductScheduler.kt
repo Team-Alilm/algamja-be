@@ -18,7 +18,7 @@ class MusinsaProductScheduler(
      * - 0초 0분 매시간 실행
      * - 랭킹 API를 우선 사용하고, 실패 시 크롤링으로 fallback
      */
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     fun registerRankingMusinsaProducts() {
         val startTime = System.currentTimeMillis()
         log.info("========== Musinsa Ranking Product Registration Scheduled Task Started ==========")
