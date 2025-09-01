@@ -217,9 +217,9 @@ class ProductExposedRepository {
             row[ProductTable.price] = price
             row[ProductTable.firstCategory] = firstCategory
             row[ProductTable.secondCategory] = secondCategory
-            row[ProductTable.firstOption] = firstOptions.joinToString(",").takeIf { it.isNotEmpty() } ?: ""
-            row[ProductTable.secondOption] = secondOptions.joinToString(",").takeIf { it.isNotEmpty() }
-            row[ProductTable.thirdOption] = thirdOptions.joinToString(",").takeIf { it.isNotEmpty() }
+            row[ProductTable.firstOption] = firstOptions.joinToString(",").takeIf { it.isNotEmpty() }?.take(120) ?: ""
+            row[ProductTable.secondOption] = secondOptions.joinToString(",").takeIf { it.isNotEmpty() }?.take(120)
+            row[ProductTable.thirdOption] = thirdOptions.joinToString(",").takeIf { it.isNotEmpty() }?.take(120)
             row[ProductTable.createdDate] = now
             row[ProductTable.lastModifiedDate] = now
             row[ProductTable.isDelete] = false
@@ -254,9 +254,9 @@ class ProductExposedRepository {
             row[ProductTable.price] = price
             row[ProductTable.firstCategory] = firstCategory
             row[ProductTable.secondCategory] = secondCategory
-            row[ProductTable.firstOption] = firstOption
-            row[ProductTable.secondOption] = secondOption
-            row[ProductTable.thirdOption] = thirdOption
+            row[ProductTable.firstOption] = firstOption?.take(120) ?: ""
+            row[ProductTable.secondOption] = secondOption?.take(120)
+            row[ProductTable.thirdOption] = thirdOption?.take(120)
             row[ProductTable.createdDate] = now
             row[ProductTable.lastModifiedDate] = now
             row[ProductTable.isDelete] = false
