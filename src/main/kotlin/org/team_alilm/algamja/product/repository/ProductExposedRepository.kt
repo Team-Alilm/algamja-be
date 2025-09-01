@@ -192,7 +192,7 @@ class ProductExposedRepository {
             .singleOrNull()
             ?.let(ProductRow::from)
 
-    /** 새 상품 등록 (리스트 옵션) */
+    /** 새 상품 등록 (리스트 옵션) - 모든 옵션 조합 생성 */
     fun save(
         name: String,
         storeNumber: Long,
@@ -208,25 +208,60 @@ class ProductExposedRepository {
         thirdOptions: List<String>
     ): ProductRow {
         val now = System.currentTimeMillis()
-        val insertedId = ProductTable.insertAndGetId { row ->
-            row[ProductTable.storeNumber] = storeNumber
-            row[ProductTable.name] = name
-            row[ProductTable.brand] = brand
-            row[ProductTable.thumbnailUrl] = thumbnailUrl
-            row[ProductTable.store] = store
-            row[ProductTable.price] = price
-            row[ProductTable.firstCategory] = firstCategory
-            row[ProductTable.secondCategory] = secondCategory
-            row[ProductTable.firstOption] = firstOptions.joinToString(",").takeIf { it.isNotEmpty() }?.take(120) ?: ""
-            row[ProductTable.secondOption] = secondOptions.joinToString(",").takeIf { it.isNotEmpty() }?.take(120)
-            row[ProductTable.thirdOption] = thirdOptions.joinToString(",").takeIf { it.isNotEmpty() }?.take(120)
-            row[ProductTable.createdDate] = now
-            row[ProductTable.lastModifiedDate] = now
-            row[ProductTable.isDelete] = false
+        
+        // 옵션 조합 생성
+        val optionCombinations = generateOptionCombinations(firstOptions, secondOptions, thirdOptions)
+        
+        var savedProduct: ProductRow? = null
+        
+        // 각 옵션 조합마다 상품 레코드 생성
+        optionCombinations.forEach { (first, second, third) ->
+            val insertedId = ProductTable.insertAndGetId { row ->
+                row[ProductTable.storeNumber] = storeNumber
+                row[ProductTable.name] = name
+                row[ProductTable.brand] = brand
+                row[ProductTable.thumbnailUrl] = thumbnailUrl
+                row[ProductTable.store] = store
+                row[ProductTable.price] = price
+                row[ProductTable.firstCategory] = firstCategory
+                row[ProductTable.secondCategory] = secondCategory
+                row[ProductTable.firstOption] = first?.take(120) ?: ""
+                row[ProductTable.secondOption] = second?.take(120)
+                row[ProductTable.thirdOption] = third?.take(120)
+                row[ProductTable.createdDate] = now
+                row[ProductTable.lastModifiedDate] = now
+                row[ProductTable.isDelete] = false
+            }
+            
+            // 첫 번째 조합의 상품을 반환용으로 저장
+            if (savedProduct == null) {
+                savedProduct = fetchProductById(insertedId.value)
+            }
         }
         
-        return fetchProductById(insertedId.value)
-            ?: throw IllegalStateException("Failed to retrieve saved product with ID: ${insertedId.value}")
+        return savedProduct ?: throw IllegalStateException("Failed to save any product combinations")
+    }
+    
+    /** 옵션 조합 생성 헬퍼 함수 */
+    private fun generateOptionCombinations(
+        firstOptions: List<String>,
+        secondOptions: List<String>,
+        thirdOptions: List<String>
+    ): List<Triple<String?, String?, String?>> {
+        val first = if (firstOptions.isEmpty()) listOf(null) else firstOptions.map { it }
+        val second = if (secondOptions.isEmpty()) listOf(null) else secondOptions.map { it }
+        val third = if (thirdOptions.isEmpty()) listOf(null) else thirdOptions.map { it }
+        
+        val combinations = mutableListOf<Triple<String?, String?, String?>>()
+        for (f in first) {
+            for (s in second) {
+                for (t in third) {
+                    combinations.add(Triple(f, s, t))
+                }
+            }
+        }
+        
+        return combinations
     }
 
     /** 새 상품 등록 (단일 옵션) */
