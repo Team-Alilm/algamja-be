@@ -207,6 +207,7 @@ class ProductExposedRepository {
         secondOptions: List<String>,
         thirdOptions: List<String>
     ): ProductRow {
+        val now = System.currentTimeMillis()
         val insertedId = ProductTable.insertAndGetId { row ->
             row[ProductTable.storeNumber] = storeNumber
             row[ProductTable.name] = name
@@ -219,6 +220,9 @@ class ProductExposedRepository {
             row[ProductTable.firstOption] = firstOptions.joinToString(",").takeIf { it.isNotEmpty() } ?: ""
             row[ProductTable.secondOption] = secondOptions.joinToString(",").takeIf { it.isNotEmpty() }
             row[ProductTable.thirdOption] = thirdOptions.joinToString(",").takeIf { it.isNotEmpty() }
+            row[ProductTable.createdDate] = now
+            row[ProductTable.lastModifiedDate] = now
+            row[ProductTable.isDelete] = false
         }
         
         return fetchProductById(insertedId.value)
@@ -240,6 +244,7 @@ class ProductExposedRepository {
         secondOption: String?,
         thirdOption: String?
     ): ProductRow {
+        val now = System.currentTimeMillis()
         val insertedId = ProductTable.insertAndGetId { row ->
             row[ProductTable.storeNumber] = storeNumber
             row[ProductTable.name] = name
@@ -252,6 +257,9 @@ class ProductExposedRepository {
             row[ProductTable.firstOption] = firstOption
             row[ProductTable.secondOption] = secondOption
             row[ProductTable.thirdOption] = thirdOption
+            row[ProductTable.createdDate] = now
+            row[ProductTable.lastModifiedDate] = now
+            row[ProductTable.isDelete] = false
         }
         
         return fetchProductById(insertedId.value)
