@@ -30,11 +30,13 @@ class MusinsaProductServiceTest {
     @BeforeEach
     fun setUp() {
         reset(restClient, crawlerRegistry, productExposedRepository, productImageExposedRepository, productCrawler)
+        val objectMapper = com.fasterxml.jackson.databind.ObjectMapper()
         musinsaProductService = MusinsaProductService(
             restClient,
             crawlerRegistry,
             productExposedRepository,
-            productImageExposedRepository
+            productImageExposedRepository,
+            objectMapper
         )
     }
 
@@ -68,9 +70,9 @@ class MusinsaProductServiceTest {
                 price = any(),
                 firstCategory = any(),
                 secondCategory = any(),
-                firstOption = any(),
-                secondOption = any(),
-                thirdOption = any()
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
             )
         }
 
@@ -98,9 +100,9 @@ class MusinsaProductServiceTest {
                 price = any(),
                 firstCategory = any(),
                 secondCategory = any(),
-                firstOption = any(),
-                secondOption = any(),
-                thirdOption = any()
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
             )
         }
 
@@ -127,9 +129,9 @@ class MusinsaProductServiceTest {
                 price = any(),
                 firstCategory = any(),
                 secondCategory = any(),
-                firstOption = any(),
-                secondOption = any(),
-                thirdOption = any()
+                firstOptions = any(),
+                secondOptions = any(),
+                thirdOptions = any()
             )
         }
 
@@ -180,9 +182,9 @@ class MusinsaProductServiceTest {
                 price = eq(crawledProduct.price),
                 firstCategory = eq(crawledProduct.firstCategory),
                 secondCategory = eq(crawledProduct.secondCategory),
-                firstOption = eq("S,M,L"), // List를 콤마로 구분된 문자열로 변환
-                secondOption = eq("블랙,화이트"),
-                thirdOption = eq(null) // 빈 리스트는 null
+                firstOptions = eq(crawledProduct.firstOptions),
+                secondOptions = eq(crawledProduct.secondOptions),
+                thirdOptions = eq(crawledProduct.thirdOptions)
             )
             
             // 이미지 개수만큼 save가 호출되어야 함
@@ -221,9 +223,9 @@ class MusinsaProductServiceTest {
                 price = any(),
                 firstCategory = any(),
                 secondCategory = any(),
-                firstOption = eq("기본"),
-                secondOption = isNull(),
-                thirdOption = isNull()
+                firstOptions = eq(emptyList()),
+                secondOptions = eq(emptyList()),
+                thirdOptions = eq(emptyList())
             )
         }
     }
@@ -277,9 +279,9 @@ class MusinsaProductServiceTest {
             price = any(),
             firstCategory = any(),
             secondCategory = any(),
-            firstOption = any(),
-            secondOption = any(),
-            thirdOption = any()
+            firstOptions = any(),
+            secondOptions = any(),
+            thirdOptions = any()
         )).thenReturn(savedProduct)
         whenever(productImageExposedRepository.save(
             productId = any(),
@@ -318,9 +320,9 @@ class MusinsaProductServiceTest {
             price = any(),
             firstCategory = any(),
             secondCategory = any(),
-            firstOption = any(),
-            secondOption = any(),
-            thirdOption = any()
+            firstOptions = any(),
+            secondOptions = any(),
+            thirdOptions = any()
         ))
             .thenThrow(RuntimeException("DB Error"))
             .thenReturn(savedProduct)
@@ -345,9 +347,9 @@ class MusinsaProductServiceTest {
             price = any(),
             firstCategory = any(),
             secondCategory = any(),
-            firstOption = any(),
-            secondOption = any(),
-            thirdOption = any()
+            firstOptions = any(),
+            secondOptions = any(),
+            thirdOptions = any()
         )).thenReturn(savedProduct)
         whenever(productImageExposedRepository.save(
             productId = any(),

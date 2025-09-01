@@ -1,15 +1,19 @@
 package org.team_alilm.algamja.product.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
+import org.team_alilm.algamja.common.enums.Store
 import org.team_alilm.algamja.common.exception.BusinessException
 import org.team_alilm.algamja.common.exception.ErrorCode
 import org.team_alilm.algamja.product.crawler.CrawlerRegistry
 import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
+import org.team_alilm.algamja.product.dto.MusinsaRankingResponse
 import org.team_alilm.algamja.product.repository.ProductExposedRepository
 import org.team_alilm.algamja.product.image.repository.ProductImageExposedRepository
+import java.math.BigDecimal
 import kotlin.random.Random
 
 @Service
@@ -18,7 +22,8 @@ class MusinsaProductService(
     private val restClient: RestClient,
     private val crawlerRegistry: CrawlerRegistry,
     private val productExposedRepository: ProductExposedRepository,
-    private val productImageExposedRepository: ProductImageExposedRepository
+    private val productImageExposedRepository: ProductImageExposedRepository,
+    private val objectMapper: ObjectMapper
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -91,27 +96,88 @@ class MusinsaProductService(
     private fun fetchProductUrlsFromRanking(count: Int): List<String> {
         val productUrls = mutableListOf<String>()
         
-        // 무신사 랭킹 페이지들
-        val rankingPages = listOf(
-            "https://www.musinsa.com/ranking/best", // 베스트 상품
-            "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=001", // 상의 베스트
-            "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=002", // 아우터 베스트
-            "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=003", // 바지 베스트
-            "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=020", // 신발 베스트
-            "https://www.musinsa.com/ranking/weekly" // 주간 랭킹
+        // 무신사 랭킹 API 엔드포인트들 (다양한 카테고리)
+        val rankingApis = listOf(
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=000&ageBand=AGE_BAND_ALL", // 전체
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=001&ageBand=AGE_BAND_ALL", // 상의
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=002&ageBand=AGE_BAND_ALL", // 아우터
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=003&ageBand=AGE_BAND_ALL", // 바지
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=020&ageBand=AGE_BAND_ALL"  // 신발
         )
         
-        rankingPages.forEach { rankingUrl ->
+        rankingApis.forEach { apiUrl ->
             try {
-                val urls = fetchProductUrlsFromPage(rankingUrl, count / rankingPages.size + 10)
+                val urls = fetchProductUrlsFromRankingApi(apiUrl, count / rankingApis.size + 10)
                 productUrls.addAll(urls)
-                log.debug("Extracted {} URLs from ranking page: {}", urls.size, rankingUrl)
+                log.debug("Extracted {} URLs from ranking API", urls.size)
             } catch (e: Exception) {
-                log.warn("Failed to fetch from ranking page {}: {}", rankingUrl, e.message)
+                log.warn("Failed to fetch from ranking API: {}", e.message)
+            }
+        }
+        
+        // API 호출이 실패한 경우 기존 HTML 크롤링 방식으로 fallback
+        if (productUrls.isEmpty()) {
+            log.info("Ranking API failed, falling back to HTML crawling")
+            val rankingPages = listOf(
+                "https://www.musinsa.com/ranking/best",
+                "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=001",
+                "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=002",
+                "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=003",
+                "https://www.musinsa.com/ranking/best?age=ALL&d_cat_cd=020",
+                "https://www.musinsa.com/ranking/weekly"
+            )
+            
+            rankingPages.forEach { rankingUrl ->
+                try {
+                    val urls = fetchProductUrlsFromPage(rankingUrl, count / rankingPages.size + 10)
+                    productUrls.addAll(urls)
+                    log.debug("Extracted {} URLs from ranking page: {}", urls.size, rankingUrl)
+                } catch (e: Exception) {
+                    log.warn("Failed to fetch from ranking page {}: {}", rankingUrl, e.message)
+                }
             }
         }
         
         return productUrls.distinct()
+    }
+    
+    private fun fetchProductUrlsFromRankingApi(apiUrl: String, limit: Int): List<String> {
+        val productUrls = mutableListOf<String>()
+        
+        try {
+            log.debug("Fetching products from ranking API: {}", apiUrl)
+            
+            val response = restClient.get()
+                .uri(apiUrl)
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                .header("Accept", "application/json")
+                .header("Referer", "https://www.musinsa.com/")
+                .retrieve()
+                .body(String::class.java)
+                ?: throw BusinessException(ErrorCode.MUSINSA_INVALID_RESPONSE)
+            
+            // JSON 파싱
+            val rankingResponse = objectMapper.readValue(response, MusinsaRankingResponse::class.java)
+            
+            rankingResponse.data?.list?.take(limit)?.forEach { rankingItem ->
+                rankingItem.item?.let { item ->
+                    // itemNo 또는 itemId를 사용하여 상품 URL 생성
+                    val goodsId = item.itemNo ?: item.itemId
+                    if (!goodsId.isNullOrBlank()) {
+                        val productUrl = "https://www.musinsa.com/app/goods/$goodsId"
+                        productUrls.add(productUrl)
+                        log.debug("Found product from ranking: {} - {}", item.itemName, goodsId)
+                    }
+                }
+            }
+            
+            log.info("Successfully fetched {} products from ranking API", productUrls.size)
+            
+        } catch (e: Exception) {
+            log.error("Failed to fetch products from ranking API: {}", e.message)
+        }
+        
+        return productUrls
     }
 
     private fun fetchProductUrlsFromCategories(count: Int): List<String> {
@@ -258,6 +324,139 @@ class MusinsaProductService(
         } catch (e: Exception) {
             log.error("Failed to register product: {}", crawledProduct.name, e)
             throw BusinessException(ErrorCode.INTERNAL_ERROR, cause = e)
+        }
+    }
+    
+    fun fetchAndRegisterRankingProducts(count: Int = 100): Int {
+        log.info("Starting to fetch and register {} products from Musinsa ranking API", count)
+        
+        try {
+            val registeredCount = fetchAndRegisterProductsFromRankingApi(count)
+            
+            // 랭킹 API로 충분한 상품을 얻지 못한 경우 기존 방식으로 보충
+            if (registeredCount < count / 2) {
+                log.info("Ranking API returned insufficient products ({}), falling back to crawling", registeredCount)
+                val additionalCount = fetchAndRegisterRandomProducts(count - registeredCount)
+                return registeredCount + additionalCount
+            }
+            
+            return registeredCount
+            
+        } catch (e: Exception) {
+            log.error("Failed to fetch products from ranking API, falling back to crawling", e)
+            return fetchAndRegisterRandomProducts(count)
+        }
+    }
+    
+    private fun fetchAndRegisterProductsFromRankingApi(count: Int): Int {
+        val rankingApis = listOf(
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=000&ageBand=AGE_BAND_ALL",
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=001&ageBand=AGE_BAND_ALL",
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=002&ageBand=AGE_BAND_ALL",
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=003&ageBand=AGE_BAND_ALL",
+            "https://api.musinsa.com/api2/hm/web/v5/pans/ranking?storeCode=musinsa&sectionId=200&gf=A&contentsId=&categoryCode=020&ageBand=AGE_BAND_ALL"
+        )
+        
+        var totalRegistered = 0
+        val maxPerApi = (count / rankingApis.size) + 10
+        
+        rankingApis.forEach { apiUrl ->
+            if (totalRegistered >= count) return totalRegistered
+            
+            try {
+                val response = restClient.get()
+                    .uri(apiUrl)
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                    .header("Accept", "application/json")
+                    .header("Referer", "https://www.musinsa.com/")
+                    .retrieve()
+                    .body(String::class.java)
+                    ?: return@forEach
+                
+                val rankingResponse = objectMapper.readValue(response, MusinsaRankingResponse::class.java)
+                
+                rankingResponse.data?.list?.take(maxPerApi)?.forEach { rankingItem ->
+                    if (totalRegistered >= count) return@forEach
+                    
+                    rankingItem.item?.let { item ->
+                        val registered = registerProductFromRankingItem(item)
+                        if (registered) totalRegistered++
+                    }
+                }
+                
+            } catch (e: Exception) {
+                log.warn("Failed to fetch from ranking API: {}", e.message)
+            }
+        }
+        
+        log.info("Registered {} products from ranking API", totalRegistered)
+        return totalRegistered
+    }
+    
+    private fun registerProductFromRankingItem(item: org.team_alilm.algamja.product.dto.MusinsaItem): Boolean {
+        try {
+            val storeNumberStr = item.itemNo ?: item.itemId ?: return false
+            val storeNumber = storeNumberStr.toLongOrNull() ?: return false
+            
+            // 이미 존재하는 상품인지 확인
+            val existingProduct = productExposedRepository.fetchProductByStoreNumber(
+                storeNumber = storeNumber,
+                store = Store.MUSINSA
+            )
+            
+            if (existingProduct != null) {
+                log.debug("Product already exists: {}", storeNumber)
+                return false
+            }
+            
+            // 상품 URL 생성 (크롤링용)
+            val productUrl = "https://www.musinsa.com/app/goods/$storeNumber"
+            
+            // 먼저 크롤링 시도 (더 상세한 정보를 얻기 위해)
+            val crawledProduct = crawlProductFromUrl(productUrl)
+            if (crawledProduct != null) {
+                registerProduct(crawledProduct, productUrl)
+                return true
+            }
+            
+            // 크롤링 실패 시 API 데이터로 직접 저장
+            val price = (item.salePrice ?: item.price ?: 0).toBigDecimal()
+            val savedProduct = productExposedRepository.save(
+                name = item.itemName ?: "Unknown Product",
+                storeNumber = storeNumber,
+                brand = item.brandName ?: "Unknown Brand",
+                thumbnailUrl = item.imageUrl ?: "",
+                originalUrl = productUrl,
+                store = Store.MUSINSA,
+                price = price,
+                firstCategory = item.category ?: "기타",
+                secondCategory = null,
+                firstOptions = emptyList(),
+                secondOptions = emptyList(),
+                thirdOptions = emptyList()
+            )
+            
+            // 이미지 등록
+            item.imageList?.forEachIndexed { index, imageUrl ->
+                productImageExposedRepository.save(
+                    productId = savedProduct.id,
+                    imageUrl = imageUrl,
+                    imageOrder = index
+                )
+            } ?: item.imageUrl?.let { imageUrl ->
+                productImageExposedRepository.save(
+                    productId = savedProduct.id,
+                    imageUrl = imageUrl,
+                    imageOrder = 0
+                )
+            }
+            
+            log.debug("Successfully registered product from ranking: {} (ID: {})", item.itemName, savedProduct.id)
+            return true
+            
+        } catch (e: Exception) {
+            log.error("Failed to register product from ranking item: {}", item.itemName, e)
+            return false
         }
     }
 }

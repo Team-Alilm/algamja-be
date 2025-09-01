@@ -271,4 +271,11 @@ class ProductExposedRepository {
             it[ProductTable.firstCategory] = crawledProduct.firstCategory
             it[ProductTable.secondCategory]= crawledProduct.secondCategory
         }
+    
+    /** 모든 활성 상품 조회 (스케줄러용) */
+    fun fetchAllActiveProducts(): List<ProductRow> =
+        ProductTable
+            .selectAll()
+            .where { ProductTable.isDelete eq false }
+            .map(ProductRow::from)
 }

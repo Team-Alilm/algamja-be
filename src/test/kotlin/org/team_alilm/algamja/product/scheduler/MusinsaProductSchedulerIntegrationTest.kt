@@ -36,29 +36,29 @@ class MusinsaProductSchedulerIntegrationTest {
         @DisplayName("스케줄러 메서드를 수동으로 실행할 수 있다")
         fun `should be able to execute scheduler method manually`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRandomProducts(100)).thenReturn(50)
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100)).thenReturn(50)
 
             // When
-            musinsaProductScheduler.registerRandomMusinsaProducts()
+            musinsaProductScheduler.registerRankingMusinsaProducts()
 
             // Then
-            verify(musinsaProductService, times(1)).fetchAndRegisterRandomProducts(100)
+            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
         }
 
         @Test
         @DisplayName("여러 번 수동 실행해도 정상 작동한다")
         fun `should work correctly on multiple manual executions`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRandomProducts(100))
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
                 .thenReturn(30, 45, 60)
 
             // When
             repeat(3) {
-                musinsaProductScheduler.registerRandomMusinsaProducts()
+                musinsaProductScheduler.registerRankingMusinsaProducts()
             }
 
             // Then
-            verify(musinsaProductService, times(3)).fetchAndRegisterRandomProducts(100)
+            verify(musinsaProductService, times(3)).fetchAndRegisterRankingProducts(100)
         }
     }
 
@@ -70,32 +70,32 @@ class MusinsaProductSchedulerIntegrationTest {
         @DisplayName("서비스에서 예외 발생시 스케줄러가 안전하게 처리한다")
         fun `should handle service exceptions gracefully`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRandomProducts(100))
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
                 .thenThrow(RuntimeException("Service exception"))
 
             // When & Then
             assertDoesNotThrow {
-                musinsaProductScheduler.registerRandomMusinsaProducts()
+                musinsaProductScheduler.registerRankingMusinsaProducts()
             }
 
-            verify(musinsaProductService, times(1)).fetchAndRegisterRandomProducts(100)
+            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
         }
 
         @Test
         @DisplayName("예외 발생 후에도 다음 실행이 정상적으로 동작한다")
         fun `should continue working after exception`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRandomProducts(100))
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
                 .thenThrow(RuntimeException("First call fails"))
                 .thenReturn(25)
 
             // When & Then
             assertDoesNotThrow {
-                musinsaProductScheduler.registerRandomMusinsaProducts()
-                musinsaProductScheduler.registerRandomMusinsaProducts()
+                musinsaProductScheduler.registerRankingMusinsaProducts()
+                musinsaProductScheduler.registerRankingMusinsaProducts()
             }
 
-            verify(musinsaProductService, times(2)).fetchAndRegisterRandomProducts(100)
+            verify(musinsaProductService, times(2)).fetchAndRegisterRankingProducts(100)
         }
     }
 
@@ -121,29 +121,29 @@ class MusinsaProductSchedulerIntegrationTest {
         fun `should log return value on successful registration`() {
             // Given
             val expectedCount = 75
-            whenever(musinsaProductService.fetchAndRegisterRandomProducts(100))
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
                 .thenReturn(expectedCount)
 
             // When
-            musinsaProductScheduler.registerRandomMusinsaProducts()
+            musinsaProductScheduler.registerRankingMusinsaProducts()
 
             // Then
-            verify(musinsaProductService, times(1)).fetchAndRegisterRandomProducts(100)
+            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
         }
 
         @Test
         @DisplayName("0개 상품 등록시에도 정상 처리한다")
         fun `should handle zero products registration normally`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRandomProducts(100))
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
                 .thenReturn(0)
 
             // When & Then
             assertDoesNotThrow {
-                musinsaProductScheduler.registerRandomMusinsaProducts()
+                musinsaProductScheduler.registerRankingMusinsaProducts()
             }
 
-            verify(musinsaProductService, times(1)).fetchAndRegisterRandomProducts(100)
+            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
         }
     }
 }
