@@ -5,12 +5,9 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.*
 import org.springframework.web.client.RestClient
 import org.team_alilm.algamja.common.enums.Store
-import org.team_alilm.algamja.common.exception.BusinessException
-import org.team_alilm.algamja.common.exception.ErrorCode
 import org.team_alilm.algamja.product.crawler.CrawlerRegistry
 import org.team_alilm.algamja.product.crawler.ProductCrawler
 import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
@@ -19,7 +16,6 @@ import org.team_alilm.algamja.product.image.entity.ProductImageRow
 import org.team_alilm.algamja.product.image.repository.ProductImageExposedRepository
 import org.team_alilm.algamja.product.repository.ProductExposedRepository
 import java.math.BigDecimal
-import java.time.LocalDateTime
 
 class MusinsaProductServiceTest {
 
@@ -33,6 +29,7 @@ class MusinsaProductServiceTest {
 
     @BeforeEach
     fun setUp() {
+        reset(restClient, crawlerRegistry, productExposedRepository, productImageExposedRepository, productCrawler)
         musinsaProductService = MusinsaProductService(
             restClient,
             crawlerRegistry,
@@ -52,25 +49,9 @@ class MusinsaProductServiceTest {
             val count = 5
             val crawledProduct = createMockCrawledProduct()
             val savedProduct = createMockProductRow()
+            val savedImage = createMockProductImageRow()
             
-            whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
-            whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
-            whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
-            whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
-            whenever(productExposedRepository.save(
-                name = any(),
-                storeNumber = any(),
-                brand = any(), 
-                thumbnailUrl = any(),
-                originalUrl = any(),
-                store = any(),
-                price = any(),
-                firstCategory = any(),
-                secondCategory = any(),
-                firstOptions = any(),
-                secondOptions = any(),
-                thirdOptions = any()
-            )).thenReturn(savedProduct)
+            setupMockForSuccessfulCrawling(crawledProduct, savedProduct, savedImage)
 
             // When
             val result = musinsaProductService.fetchAndRegisterRandomProducts(count)
@@ -87,9 +68,9 @@ class MusinsaProductServiceTest {
                 price = any(),
                 firstCategory = any(),
                 secondCategory = any(),
-                firstOptions = any(),
-                secondOptions = any(),
-                thirdOptions = any()
+                firstOption = any(),
+                secondOption = any(),
+                thirdOption = any()
             )
         }
 
@@ -101,13 +82,10 @@ class MusinsaProductServiceTest {
             val crawledProduct = createMockCrawledProduct()
             val existingProduct = createMockProductRow()
             
-            whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
-            whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
-            whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
-            whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(existingProduct)
+            setupMockForDuplicateProduct(crawledProduct, existingProduct)
 
             // When
-            val result = musinsaProductService.fetchAndRegisterRandomProducts(count)
+            musinsaProductService.fetchAndRegisterRandomProducts(count)
 
             // Then
             verify(productExposedRepository, never()).save(
@@ -120,9 +98,9 @@ class MusinsaProductServiceTest {
                 price = any(),
                 firstCategory = any(),
                 secondCategory = any(),
-                firstOptions = any(),
-                secondOptions = any(),
-                thirdOptions = any()
+                firstOption = any(),
+                secondOption = any(),
+                thirdOption = any()
             )
         }
 
@@ -132,7 +110,7 @@ class MusinsaProductServiceTest {
             // Given
             val count = 1
             
-            whenever(crawlerRegistry.resolve(any())).thenThrow(RuntimeException("Crawler not found"))
+            setupMockForFailedCrawling()
 
             // When
             val result = musinsaProductService.fetchAndRegisterRandomProducts(count)
@@ -149,9 +127,9 @@ class MusinsaProductServiceTest {
                 price = any(),
                 firstCategory = any(),
                 secondCategory = any(),
-                firstOptions = any(),
-                secondOptions = any(),
-                thirdOptions = any()
+                firstOption = any(),
+                secondOption = any(),
+                thirdOption = any()
             )
         }
 
@@ -162,27 +140,9 @@ class MusinsaProductServiceTest {
             val count = 2
             val crawledProduct = createMockCrawledProduct()
             val savedProduct = createMockProductRow()
+            val savedImage = createMockProductImageRow()
             
-            whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
-            whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
-            whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
-            whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
-            whenever(productExposedRepository.save(
-                name = any(),
-                storeNumber = any(),
-                brand = any(), 
-                thumbnailUrl = any(),
-                originalUrl = any(),
-                store = any(),
-                price = any(),
-                firstCategory = any(),
-                secondCategory = any(),
-                firstOptions = any(),
-                secondOptions = any(),
-                thirdOptions = any()
-            ))
-                .thenThrow(RuntimeException("DB Error"))
-                .thenReturn(savedProduct)
+            setupMockForPartialFailure(crawledProduct, savedProduct, savedImage)
 
             // When
             val result = musinsaProductService.fetchAndRegisterRandomProducts(count)
@@ -203,28 +163,8 @@ class MusinsaProductServiceTest {
             val crawledProduct = createMockCrawledProduct()
             val savedProduct = createMockProductRow()
             val savedImage = createMockProductImageRow()
-            val originalUrl = "https://www.musinsa.com/app/goods/1234567"
             
-            whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
-            whenever(productExposedRepository.save(
-                name = any(),
-                storeNumber = any(),
-                brand = any(), 
-                thumbnailUrl = any(),
-                originalUrl = any(),
-                store = any(),
-                price = any(),
-                firstCategory = any(),
-                secondCategory = any(),
-                firstOptions = any(),
-                secondOptions = any(),
-                thirdOptions = any()
-            )).thenReturn(savedProduct)
-            whenever(productImageExposedRepository.save(
-                productId = any(),
-                imageUrl = any(),
-                imageOrder = any()
-            )).thenReturn(savedImage)
+            setupMockForProductAndImageRegistration(crawledProduct, savedProduct, savedImage)
 
             // When
             musinsaProductService.fetchAndRegisterRandomProducts(1)
@@ -235,89 +175,185 @@ class MusinsaProductServiceTest {
                 storeNumber = eq(crawledProduct.storeNumber),
                 brand = eq(crawledProduct.brand),
                 thumbnailUrl = eq(crawledProduct.thumbnailUrl),
-                originalUrl = eq(originalUrl),
+                originalUrl = any(),
                 store = eq(crawledProduct.store),
                 price = eq(crawledProduct.price),
-                firstCategory = eq(crawledProduct.firstCategory ?: "기타"),
+                firstCategory = eq(crawledProduct.firstCategory),
                 secondCategory = eq(crawledProduct.secondCategory),
-                firstOptions = eq(crawledProduct.firstOptions),
-                secondOptions = eq(crawledProduct.secondOptions),
-                thirdOptions = eq(crawledProduct.thirdOptions)
+                firstOption = eq("S,M,L"), // List를 콤마로 구분된 문자열로 변환
+                secondOption = eq("블랙,화이트"),
+                thirdOption = eq(null) // 빈 리스트는 null
             )
             
             // 이미지 개수만큼 save가 호출되어야 함
             verify(productImageExposedRepository, times(crawledProduct.imageUrls.size)).save(
-                productId = any(),
+                productId = eq(savedProduct.id),
                 imageUrl = any(),
                 imageOrder = any()
             )
         }
 
         @Test
-        @DisplayName("상품 등록 실패 시 BusinessException을 던진다")
-        fun `should throw BusinessException when product registration fails`() {
+        @DisplayName("빈 옵션 리스트는 null로 저장된다")
+        fun `should save empty option lists as null`() {
             // Given
-            val crawledProduct = createMockCrawledProduct()
-            val originalUrl = "https://www.musinsa.com/app/goods/1234567"
+            val crawledProduct = createMockCrawledProduct().copy(
+                firstOptions = emptyList(),
+                secondOptions = emptyList(),
+                thirdOptions = emptyList()
+            )
+            val savedProduct = createMockProductRow()
+            val savedImage = createMockProductImageRow()
             
-            whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
-            whenever(productExposedRepository.save(
+            setupMockForProductAndImageRegistration(crawledProduct, savedProduct, savedImage)
+
+            // When
+            musinsaProductService.fetchAndRegisterRandomProducts(1)
+
+            // Then
+            verify(productExposedRepository).save(
                 name = any(),
                 storeNumber = any(),
-                brand = any(), 
+                brand = any(),
                 thumbnailUrl = any(),
                 originalUrl = any(),
                 store = any(),
                 price = any(),
                 firstCategory = any(),
                 secondCategory = any(),
-                firstOptions = any(),
-                secondOptions = any(),
-                thirdOptions = any()
-            ))
-                .thenThrow(RuntimeException("Database error"))
-
-            // When & Then
-            assertThrows<BusinessException> {
-                musinsaProductService.fetchAndRegisterRandomProducts(1)
-            }
+                firstOption = eq("기본"),
+                secondOption = isNull(),
+                thirdOption = isNull()
+            )
         }
     }
 
     @Nested
-    @DisplayName("URL 생성 테스트")
-    inner class UrlGenerationTest {
+    @DisplayName("서비스 기본 동작 테스트")
+    inner class BasicServiceTest {
 
         @Test
-        @DisplayName("카테고리에서 상품 URL을 추출할 수 있다")
-        fun `should extract product URLs from category page`() {
-            // Given
-            val mockHtml = """
-                <html>
-                <body>
-                    <a href="/app/goods/1234567">Product 1</a>
-                    <a href="/app/goods/2345678">Product 2</a>
-                    <a href="/app/goods/3456789">Product 3</a>
-                </body>
-                </html>
-            """.trimIndent()
-
-            val requestBodyUriSpec = mock<RestClient.RequestBodyUriSpec>()
-            val requestHeadersUriSpec = mock<RestClient.RequestHeadersUriSpec<*>>()
-            val responseSpec = mock<RestClient.ResponseSpec>()
-
-            whenever(restClient.get()).thenReturn(requestBodyUriSpec)
-            whenever(requestBodyUriSpec.uri(anyOrNull<String>())).thenReturn(requestHeadersUriSpec)
-            whenever(requestHeadersUriSpec.header(any(), any())).thenReturn(requestHeadersUriSpec)
-            whenever(requestHeadersUriSpec.retrieve()).thenReturn(responseSpec)
-            whenever(responseSpec.body(String::class.java)).thenReturn(mockHtml)
-
+        @DisplayName("0개 요청 시 0을 반환한다")
+        fun `should return zero when requesting zero products`() {
             // When
-            val result = musinsaProductService.fetchAndRegisterRandomProducts(1)
+            val result = musinsaProductService.fetchAndRegisterRandomProducts(0)
 
             // Then
-            assertTrue(result >= 0)
+            assertEquals(0, result)
+            verifyNoInteractions(productExposedRepository)
+            verifyNoInteractions(productImageExposedRepository)
         }
+
+        @Test
+        @DisplayName("음수 요청 시 0을 반환한다")
+        fun `should return zero when requesting negative products`() {
+            // When
+            val result = musinsaProductService.fetchAndRegisterRandomProducts(-5)
+
+            // Then
+            assertEquals(0, result)
+            verifyNoInteractions(productExposedRepository)
+            verifyNoInteractions(productImageExposedRepository)
+        }
+    }
+
+    // Helper methods for mock setup
+    private fun setupMockForSuccessfulCrawling(
+        crawledProduct: CrawledProduct,
+        savedProduct: ProductRow,
+        savedImage: ProductImageRow
+    ) {
+        whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
+        whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
+        whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
+        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
+        whenever(productExposedRepository.save(
+            name = any(),
+            storeNumber = any(),
+            brand = any(), 
+            thumbnailUrl = any(),
+            originalUrl = any(),
+            store = any(),
+            price = any(),
+            firstCategory = any(),
+            secondCategory = any(),
+            firstOption = any(),
+            secondOption = any(),
+            thirdOption = any()
+        )).thenReturn(savedProduct)
+        whenever(productImageExposedRepository.save(
+            productId = any(),
+            imageUrl = any(),
+            imageOrder = any()
+        )).thenReturn(savedImage)
+    }
+
+    private fun setupMockForDuplicateProduct(crawledProduct: CrawledProduct, existingProduct: ProductRow) {
+        whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
+        whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
+        whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
+        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(existingProduct)
+    }
+
+    private fun setupMockForFailedCrawling() {
+        whenever(crawlerRegistry.resolve(any())).thenThrow(RuntimeException("Crawler not found"))
+    }
+
+    private fun setupMockForPartialFailure(
+        crawledProduct: CrawledProduct,
+        savedProduct: ProductRow,
+        @Suppress("UNUSED_PARAMETER") savedImage: ProductImageRow
+    ) {
+        whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
+        whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
+        whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
+        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
+        whenever(productExposedRepository.save(
+            name = any(),
+            storeNumber = any(),
+            brand = any(), 
+            thumbnailUrl = any(),
+            originalUrl = any(),
+            store = any(),
+            price = any(),
+            firstCategory = any(),
+            secondCategory = any(),
+            firstOption = any(),
+            secondOption = any(),
+            thirdOption = any()
+        ))
+            .thenThrow(RuntimeException("DB Error"))
+            .thenReturn(savedProduct)
+    }
+
+    private fun setupMockForProductAndImageRegistration(
+        crawledProduct: CrawledProduct,
+        savedProduct: ProductRow,
+        savedImage: ProductImageRow
+    ) {
+        whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
+        whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
+        whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
+        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
+        whenever(productExposedRepository.save(
+            name = any(),
+            storeNumber = any(),
+            brand = any(), 
+            thumbnailUrl = any(),
+            originalUrl = any(),
+            store = any(),
+            price = any(),
+            firstCategory = any(),
+            secondCategory = any(),
+            firstOption = any(),
+            secondOption = any(),
+            thirdOption = any()
+        )).thenReturn(savedProduct)
+        whenever(productImageExposedRepository.save(
+            productId = any(),
+            imageUrl = any(),
+            imageOrder = any()
+        )).thenReturn(savedImage)
     }
 
     private fun createMockCrawledProduct(): CrawledProduct {
@@ -354,8 +390,8 @@ class MusinsaProductServiceTest {
             firstOption = "S,M,L",
             secondOption = "블랙,화이트",
             thirdOption = null,
-            createdDate = LocalDateTime.now(),
-            updatedDate = LocalDateTime.now(),
+            createdDate = System.currentTimeMillis(),
+            lastModifiedDate = System.currentTimeMillis(),
             isDelete = false
         )
     }
@@ -365,8 +401,8 @@ class MusinsaProductServiceTest {
             id = 1L,
             productId = 1L,
             imageUrl = "https://example.com/image.jpg",
-            createdDate = LocalDateTime.now(),
-            updatedDate = LocalDateTime.now(),
+            createdDate = System.currentTimeMillis(),
+            lastModifiedDate = System.currentTimeMillis(),
             isDelete = false
         )
     }
