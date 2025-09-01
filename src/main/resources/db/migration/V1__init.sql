@@ -46,10 +46,6 @@ create table if not exists `product` (
     );
 
 alter table `product`
-    add constraint `uk_store_store_number`
-        unique (`store`, `store_number`);
-
-alter table `product`
     add constraint `uk_product_options`
         unique (`store`, `store_number`, `first_option`, `second_option`, `third_option`);
 
@@ -138,3 +134,30 @@ create index `idx_product_image_product_id`
 
 create index `idx_product_image_product_id_order`
     on `product_image`(`product_id`, `image_order`);
+
+
+/* =========================================================
+   PRICE_HISTORY
+   ========================================================= */
+create table if not exists `price_history` (
+                                                id                   bigint auto_increment primary key,
+                                                is_delete            boolean not null default false,
+                                                created_date         bigint not null,
+                                                last_modified_date   bigint not null,
+
+                                                product_id           bigint not null,
+    old_price            decimal(15,0),
+    new_price            decimal(15,0) not null,
+    change_type          varchar(10) not null,  -- 'INCREASE', 'DECREASE', 'SAME'
+    
+    constraint `chk_price_history_non_negative` check (new_price >= 0 and (old_price is null or old_price >= 0))
+    );
+
+create index `idx_price_history_product_id`
+    on `price_history`(`product_id`);
+
+create index `idx_price_history_created_date`
+    on `price_history`(`created_date`);
+
+create index `idx_price_history_product_created`
+    on `price_history`(`product_id`, `created_date`);
