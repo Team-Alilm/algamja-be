@@ -2,14 +2,13 @@ package org.team_alilm.algamja.product.repository
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import kotlin.random.Random
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.like
 import org.springframework.stereotype.Repository
 import org.team_alilm.algamja.basket.entity.BasketTable
+import org.team_alilm.algamja.common.entity.updateAudited
 import org.team_alilm.algamja.common.enums.Sort.*
 import org.team_alilm.algamja.product.controller.v1.dto.param.ProductListParam
 import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
@@ -249,7 +248,8 @@ class ProductExposedRepository {
             .selectAll()
             .where { ProductTable.isDelete eq false }
             .orderBy(ProductTable.id)
-            .limit(batchSize, offset.toLong())
+            .limit(batchSize)
+            .offset(offset.toLong())
             .map(ProductRow::from)
     }
     
