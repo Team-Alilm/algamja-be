@@ -18,6 +18,7 @@ spring:
 
   flyway:
     enabled: true
+    baseline-on-migrate: true
 
   security:
     oauth2:
