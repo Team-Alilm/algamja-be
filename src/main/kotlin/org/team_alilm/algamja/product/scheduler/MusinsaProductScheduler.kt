@@ -13,26 +13,28 @@ class MusinsaProductScheduler(
     private val log = LoggerFactory.getLogger(javaClass)
 
     /**
-     * 매 정각 + 10분에 무신사에서 무작위로 100개 상품을 등록하는 스케줄 작업
-     * Cron: 0 10 * * * * (초 분 시 일 월 요일)
-     * - 0초 10분 매시간 실행
+     * 매 정각 + 0분에 무신사 랭킹 API에서 100개 상품을 등록하는 스케줄 작업
+     * Cron: 0 0 * * * * (초 분 시 일 월 요일)
+     * - 0초 0분 매시간 실행
+     * - 랭킹 API를 우선 사용하고, 실패 시 크롤링으로 fallback
      */
-    @Scheduled(cron = "0 10 * * * *")
-    fun registerRandomMusinsaProducts() {
+    @Scheduled(cron = "0 0 * * * *")
+    fun registerRankingMusinsaProducts() {
         val startTime = System.currentTimeMillis()
-        log.info("========== Musinsa Product Registration Scheduled Task Started ==========")
+        log.info("========== Musinsa Ranking Product Registration Scheduled Task Started ==========")
         
         try {
-            val registeredCount = musinsaProductService.fetchAndRegisterRandomProducts(100)
+            // 랭킹 API를 우선적으로 사용
+            val registeredCount = musinsaProductService.fetchAndRegisterRankingProducts(100)
             val duration = System.currentTimeMillis() - startTime
             
-            log.info("========== Musinsa Product Registration Completed ==========")
+            log.info("========== Musinsa Ranking Product Registration Completed ==========")
             log.info("Registered products: {}", registeredCount)
             log.info("Execution time: {}ms", duration)
             
         } catch (e: Exception) {
             val duration = System.currentTimeMillis() - startTime
-            log.error("========== Musinsa Product Registration Failed ==========")
+            log.error("========== Musinsa Ranking Product Registration Failed ==========")
             log.error("Execution time: {}ms", duration)
             log.error("Error details:", e)
         }

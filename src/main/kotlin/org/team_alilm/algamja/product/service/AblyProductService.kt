@@ -225,7 +225,7 @@ class AblyProductService(
             )
             
             if (existingProduct != null) {
-                log.debug("Product already exists: {}", crawledProduct.storeNumber)
+                log.debug("Ably product already exists: {}", crawledProduct.storeNumber)
                 return
             }
             
