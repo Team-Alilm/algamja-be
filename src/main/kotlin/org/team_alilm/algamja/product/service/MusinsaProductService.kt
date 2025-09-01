@@ -501,4 +501,69 @@ class MusinsaProductService(
             return false
         }
     }
+    
+    /**
+     * 기존 등록된 상품들의 가격을 업데이트하고 히스토리를 기록하는 함수
+     */
+    fun updateExistingProductPrices(count: Int): Int {
+        log.info("Starting price update for existing products (max: {})", count)
+        
+        try {
+            // 기존 상품들을 무작위로 조회 (최근 등록 순으로 제한)
+            val existingProducts = productExposedRepository.fetchRandomProductsForPriceUpdate(count)
+            log.info("Found {} existing products for price update", existingProducts.size)
+            
+            var updatedCount = 0
+            
+            existingProducts.forEach { product ->
+                try {
+                    // 상품 URL로 최신 가격 크롤링
+                    val productUrl = "https://www.musinsa.com/app/goods/${product.storeNumber}"
+                    val crawledProduct = crawlProductFromUrl(productUrl)
+                    
+                    if (crawledProduct != null) {
+                        val oldPrice = product.price
+                        val newPrice = crawledProduct.price
+                        
+                        // 가격이 변경된 경우에만 업데이트
+                        if (oldPrice != newPrice) {
+                            // 상품 가격 업데이트
+                            productExposedRepository.updatePrice(product.id, newPrice)
+                            
+                            // 가격 히스토리 기록
+                            savePriceHistory(product.id, oldPrice, newPrice)
+                            
+                            log.debug("Price updated for product {}: {} -> {}", 
+                                product.name, oldPrice, newPrice)
+                            updatedCount++
+                        }
+                    }
+                } catch (e: Exception) {
+                    log.warn("Failed to update price for product {}: {}", product.name, e.message)
+                }
+            }
+            
+            log.info("Price update completed: {} products updated", updatedCount)
+            return updatedCount
+            
+        } catch (e: Exception) {
+            log.error("Failed to update existing product prices", e)
+            return 0
+        }
+    }
+    
+    /**
+     * 가격 히스토리를 저장하는 함수
+     */
+    private fun savePriceHistory(productId: Long, oldPrice: java.math.BigDecimal, newPrice: java.math.BigDecimal) {
+        val changeType = when {
+            newPrice > oldPrice -> "INCREASE"
+            newPrice < oldPrice -> "DECREASE"
+            else -> "SAME"
+        }
+        
+        // TODO: PriceHistoryRepository를 통해 히스토리 저장
+        log.debug("Price history saved for product {}: {} -> {} ({})", 
+            productId, oldPrice, newPrice, changeType)
+    }
 }

@@ -2,6 +2,7 @@ package org.team_alilm.algamja.product.repository
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import kotlin.random.Random
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
@@ -240,6 +241,24 @@ class ProductExposedRepository {
         }
         
         return savedProduct ?: throw IllegalStateException("Failed to save any product combinations")
+    }
+    
+    /** 가격 업데이트용 상품 무작위 조회 */
+    fun fetchRandomProductsForPriceUpdate(count: Int): List<ProductRow> {
+        return ProductTable
+            .selectAll()
+            .where { ProductTable.isDelete eq false }
+            .orderBy(Random())
+            .limit(count)
+            .map(ProductRow::from)
+    }
+    
+    /** 상품 가격 업데이트 */
+    fun updatePrice(productId: Long, newPrice: java.math.BigDecimal): Int {
+        return ProductTable
+            .updateAudited({ ProductTable.id eq productId }) { row ->
+                row[ProductTable.price] = newPrice
+            }
     }
     
     /** 옵션 조합 생성 헬퍼 함수 */
