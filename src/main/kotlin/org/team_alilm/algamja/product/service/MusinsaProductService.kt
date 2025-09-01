@@ -503,51 +503,75 @@ class MusinsaProductService(
     }
     
     /**
-     * 기존 등록된 상품들의 가격을 업데이트하고 히스토리를 기록하는 함수
+     * 모든 등록된 상품의 가격을 배치로 업데이트하고 히스토리를 기록하는 함수
+     * 메모리 사용량을 줄이기 위해 배치 단위로 처리
      */
-    fun updateExistingProductPrices(count: Int): Int {
-        log.info("Starting price update for existing products (max: {})", count)
+    fun updateAllProductPrices(): Int {
+        log.info("Starting price update for all existing products")
         
         try {
-            // 기존 상품들을 무작위로 조회 (최근 등록 순으로 제한)
-            val existingProducts = productExposedRepository.fetchRandomProductsForPriceUpdate(count)
-            log.info("Found {} existing products for price update", existingProducts.size)
+            val batchSize = 50 // 배치 크기 (저사양 서버 고려)
+            var offset = 0
+            var totalUpdatedCount = 0
             
-            var updatedCount = 0
-            
-            existingProducts.forEach { product ->
-                try {
-                    // 상품 URL로 최신 가격 크롤링
-                    val productUrl = "https://www.musinsa.com/app/goods/${product.storeNumber}"
-                    val crawledProduct = crawlProductFromUrl(productUrl)
-                    
-                    if (crawledProduct != null) {
-                        val oldPrice = product.price
-                        val newPrice = crawledProduct.price
-                        
-                        // 가격이 변경된 경우에만 업데이트
-                        if (oldPrice != newPrice) {
-                            // 상품 가격 업데이트
-                            productExposedRepository.updatePrice(product.id, newPrice)
-                            
-                            // 가격 히스토리 기록
-                            savePriceHistory(product.id, oldPrice, newPrice)
-                            
-                            log.debug("Price updated for product {}: {} -> {}", 
-                                product.name, oldPrice, newPrice)
-                            updatedCount++
-                        }
-                    }
-                } catch (e: Exception) {
-                    log.warn("Failed to update price for product {}: {}", product.name, e.message)
+            while (true) {
+                // 배치 단위로 상품 조회
+                val productBatch = productExposedRepository.fetchProductsForPriceUpdateBatch(batchSize, offset)
+                
+                if (productBatch.isEmpty()) {
+                    break // 더 이상 처리할 상품이 없음
                 }
+                
+                log.info("Processing batch: {} products (offset: {})", productBatch.size, offset)
+                
+                var batchUpdatedCount = 0
+                
+                productBatch.forEach { product ->
+                    try {
+                        // 상품 URL로 최신 가격 크롤링
+                        val productUrl = "https://www.musinsa.com/app/goods/${product.storeNumber}"
+                        val crawledProduct = crawlProductFromUrl(productUrl)
+                        
+                        if (crawledProduct != null) {
+                            val oldPrice = product.price
+                            val newPrice = crawledProduct.price
+                            
+                            // 가격이 변경된 경우에만 업데이트
+                            if (oldPrice != newPrice) {
+                                // 상품 가격 업데이트
+                                productExposedRepository.updatePrice(product.id, newPrice)
+                                
+                                // 가격 히스토리 기록
+                                savePriceHistory(product.id, oldPrice, newPrice)
+                                
+                                log.debug("Price updated for product {}: {} -> {}", 
+                                    product.name, oldPrice, newPrice)
+                                batchUpdatedCount++
+                            }
+                        }
+                        
+                        // CPU 부하 방지를 위한 짧은 대기
+                        Thread.sleep(100)
+                        
+                    } catch (e: Exception) {
+                        log.warn("Failed to update price for product {}: {}", product.name, e.message)
+                    }
+                }
+                
+                totalUpdatedCount += batchUpdatedCount
+                offset += batchSize
+                
+                log.info("Batch completed: {} products updated in this batch", batchUpdatedCount)
+                
+                // 배치 간 짧은 휴식 (서버 부하 방지)
+                Thread.sleep(500)
             }
             
-            log.info("Price update completed: {} products updated", updatedCount)
-            return updatedCount
+            log.info("All products price update completed: {} products updated", totalUpdatedCount)
+            return totalUpdatedCount
             
         } catch (e: Exception) {
-            log.error("Failed to update existing product prices", e)
+            log.error("Failed to update all product prices", e)
             return 0
         }
     }

@@ -41,25 +41,26 @@ class MusinsaProductScheduler(
     }
     
     /**
-     * 하루 2회(오전 9시, 오후 6시) 기존 상품들의 가격을 업데이트하는 스케줄 작업
+     * 하루 2회(오전 9시, 오후 6시) 모든 등록된 상품의 가격을 업데이트하는 스케줄 작업
      * Cron: 0 0 9,18 * * * (초 분 시 일 월 요일)
      * - 오전 9시, 오후 6시 실행 (1일 2회)
-     * - 기존 등록된 상품들의 가격 정보 업데이트 및 히스토리 저장
+     * - 모든 등록된 상품의 가격 정보 업데이트 및 히스토리 저장
+     * - 배치 처리로 메모리 사용량 최적화
      */
     @Scheduled(cron = "0 0 9,18 * * *")
     fun updateProductPrices() {
         val startTime = System.currentTimeMillis()
-        log.info("========== Musinsa Product Price Update Scheduled Task Started ==========")
+        log.info("========== Musinsa All Products Price Update Scheduled Task Started ==========")
         
         try {
-            // 기존 등록된 상품들의 가격 업데이트 (최대 200개)
-            val updatedCount = musinsaProductService.updateExistingProductPrices(200)
+            // 모든 등록된 상품의 가격 업데이트 (배치 처리)
+            val updatedCount = musinsaProductService.updateAllProductPrices()
             val duration = System.currentTimeMillis() - startTime
             
-            log.info("========== Musinsa Product Price Update Completed: $updatedCount products updated in ${duration}ms ==========")
+            log.info("========== Musinsa All Products Price Update Completed: $updatedCount products updated in ${duration}ms ==========")
         } catch (e: Exception) {
             val duration = System.currentTimeMillis() - startTime
-            log.error("========== Musinsa Product Price Update Failed in ${duration}ms ==========", e)
+            log.error("========== Musinsa All Products Price Update Failed in ${duration}ms ==========", e)
         }
     }
 }
