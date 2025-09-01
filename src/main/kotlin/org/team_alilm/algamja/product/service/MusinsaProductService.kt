@@ -111,7 +111,7 @@ class MusinsaProductService(
                 ?: throw BusinessException(ErrorCode.MUSINSA_INVALID_RESPONSE)
             
             // HTML에서 상품 URL 패턴 추출: href="/app/goods/[숫자]"
-            val productUrlPattern = Regex("""href=['"]/app/goods/(\d+)['""]""")
+            val productUrlPattern = Regex("""href=['"]/app/goods/(\d+)['"]""")
             val matches = productUrlPattern.findAll(response)
             
             matches.take(limit).forEach { match ->
@@ -181,7 +181,7 @@ class MusinsaProductService(
                 originalUrl = originalUrl,
                 store = crawledProduct.store,
                 price = crawledProduct.price,
-                firstCategory = crawledProduct.firstCategory ?: "기타",
+                firstCategory = crawledProduct.firstCategory,
                 secondCategory = crawledProduct.secondCategory,
                 firstOptions = crawledProduct.firstOptions,
                 secondOptions = crawledProduct.secondOptions,
