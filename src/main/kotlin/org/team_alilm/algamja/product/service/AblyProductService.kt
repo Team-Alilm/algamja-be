@@ -588,15 +588,29 @@ class AblyProductService(
         var successCount = 0
         var failCount = 0
         
-        uniqueSnos.forEachIndexed { index, sno ->
+        // 1단계: 중복 체크로 크롤링할 상품만 필터링
+        val newProducts = uniqueSnos.filter { sno ->
+            val exists = isProductExists(sno)
+            if (exists) {
+                log.info("Ably TODAY product already exists, skipping: sno={}", sno)
+                successCount++ // 이미 존재하는 상품은 성공으로 카운트
+            }
+            !exists
+        }
+        
+        log.info("Filtered {} existing products, {} new products to crawl", 
+            uniqueSnos.size - newProducts.size, newProducts.size)
+        
+        // 2단계: 새로운 상품만 크롤링
+        newProducts.forEachIndexed { index, sno ->
             try {
                 // Rate limiting: 너무 빠른 요청 방지 (첫 번째 요청 제외)
                 if (index > 0) {
                     Thread.sleep(500) // 0.5초 지연
                 }
                 
-                // 크롤링 및 등록 (이미 중복 체크가 포함됨)
-                if (crawlAndRegisterProduct(sno)) {
+                // 크롤링 및 등록 (중복 체크 제거됨)
+                if (crawlAndRegisterProductWithoutDuplicateCheck(sno)) {
                     successCount++
                 } else {
                     failCount++
@@ -622,7 +636,7 @@ class AblyProductService(
     }
     
     /**
-     * 상품 크롤링 및 등록
+     * 상품 크롤링 및 등록 (중복 체크 포함)
      */
     private fun crawlAndRegisterProduct(sno: Long): Boolean {
         // 먼저 중복 체크
@@ -631,6 +645,13 @@ class AblyProductService(
             return true  // 이미 존재하므로 성공으로 처리
         }
         
+        return crawlAndRegisterProductWithoutDuplicateCheck(sno)
+    }
+    
+    /**
+     * 상품 크롤링 및 등록 (중복 체크 없음 - 이미 필터링된 상품용)
+     */
+    private fun crawlAndRegisterProductWithoutDuplicateCheck(sno: Long): Boolean {
         val productUrl = "https://a-bly.com/goods/$sno"
         
         // 토큰 상태 디버깅
