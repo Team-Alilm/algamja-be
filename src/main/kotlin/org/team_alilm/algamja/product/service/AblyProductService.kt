@@ -445,7 +445,17 @@ class AblyProductService(
             return result.first
             
         } catch (e: Exception) {
-            log.error("Failed to fetch products from Ably TODAY API, falling back to ranking", e)
+            when {
+                e.message?.contains("429") == true || e.message?.contains("Too Many Requests") == true -> {
+                    log.warn("Ably API rate limit exceeded, falling back to ranking API")
+                }
+                e.message?.contains("Failed to refresh Ably token") == true -> {
+                    log.error("Token refresh failed completely, falling back to ranking API: {}", e.message)
+                }
+                else -> {
+                    log.error("Failed to fetch products from Ably TODAY API, falling back to ranking", e)
+                }
+            }
             return fetchAndRegisterRankingProducts(count)
         }
     }
