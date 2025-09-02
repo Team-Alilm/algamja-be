@@ -340,4 +340,18 @@ class ProductExposedRepository {
             .selectAll()
             .where { ProductTable.isDelete eq false }
             .map(ProductRow::from)
+    
+    /** 에이블리 상품 가격 업데이트용 배치 조회 */
+    fun fetchAblyProductsForPriceUpdateBatch(batchSize: Int, offset: Int): List<ProductRow> {
+        return ProductTable
+            .selectAll()
+            .where { 
+                (ProductTable.store eq Store.ABLY) and 
+                (ProductTable.isDelete eq false) 
+            }
+            .orderBy(ProductTable.id)
+            .limit(batchSize)
+            .offset(offset.toLong())
+            .map(ProductRow::from)
+    }
 }
