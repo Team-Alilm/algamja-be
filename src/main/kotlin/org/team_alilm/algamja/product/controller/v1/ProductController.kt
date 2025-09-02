@@ -90,9 +90,10 @@ class ProductController(
 
     @PostMapping
     override fun registerProduct(
-        @RequestBody @Valid request: ProductRegisterRequest
+        @RequestBody @Valid request: ProductRegisterRequest,
+        @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
     ): ApiResponse<ProductRegisterResponse> {
-        val response = productService.registerProduct(request)
+        val response = productService.registerProduct(request, customMemberDetails.requireMemberId())
         return success(data = response)
     }
 }

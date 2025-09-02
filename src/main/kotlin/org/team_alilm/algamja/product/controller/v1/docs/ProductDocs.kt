@@ -97,11 +97,14 @@ interface ProductDocs {
 
     @Operation(
         summary = "상품 등록",
-        description = "크롤링된 상품 정보를 받아서 새로운 상품을 등록합니다."
+        description = "크롤링된 상품 정보를 받아서 새로운 상품을 등록하고 장바구니에 추가합니다."
     )
     @ApiResponse(
         responseCode = "200",
         description = "상품이 성공적으로 등록되었습니다."
     )
-    fun registerProduct(request: ProductRegisterRequest): CommonApiResponse<ProductRegisterResponse>
+    fun registerProduct(
+        request: ProductRegisterRequest,
+        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
+    ): CommonApiResponse<ProductRegisterResponse>
 }
