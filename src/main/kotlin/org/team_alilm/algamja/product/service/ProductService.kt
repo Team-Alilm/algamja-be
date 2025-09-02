@@ -239,18 +239,21 @@ class ProductService(
     }
 
     @Transactional
-    fun registerProduct(request: ProductRegisterRequest): ProductRegisterResponse {
-        log.info("Registering product: {} from store: {}", request.name, request.store)
+    fun registerProduct(request: ProductRegisterRequest, memberId: Long): ProductRegisterResponse {
+        log.info("Registering product: {} from store: {} for member: {}", request.name, request.store, memberId)
         
-        return try {
-            val existingProduct = productExposedRepository.fetchProductByStoreNumber(
-                storeNumber = request.number,
-                store = request.store
-            )
-            if (existingProduct != null) {
-                throw BusinessException(ErrorCode.PRODUCT_ALREADY_EXISTS)
-            }
-            
+        // 1. 기존 상품이 있는지 확인
+        val existingProduct = productExposedRepository.fetchProductByStoreNumber(
+            storeNumber = request.number,
+            store = request.store
+        )
+        
+        val productId = if (existingProduct != null) {
+            log.info("Product already exists with ID: {}", existingProduct.id)
+            // 이미 상품이 존재하면 장바구니에만 추가
+            existingProduct.id
+        } else {
+            // 새로운 상품 등록
             val savedProduct = productExposedRepository.save(
                 name = request.name,
                 storeNumber = request.number,
@@ -266,6 +269,7 @@ class ProductService(
                 thirdOption = request.thirdOption
             )
             
+            // 상품 이미지 저장
             request.imageUrlList.forEach { imageUrl ->
                 productImageExposedRepository.save(
                     productId = savedProduct.id,
@@ -273,15 +277,36 @@ class ProductService(
                 )
             }
             
-            log.info("Successfully registered product: {} with ID: {}", savedProduct.name, savedProduct.id)
-            
-            ProductRegisterResponse(
-                productId = savedProduct.id,
-                productName = savedProduct.name
-            )
-        } catch (e: Exception) {
-            log.error("Failed to register product: {}", request.name, e)
-            throw BusinessException(errorCode = ErrorCode.INTERNAL_ERROR, cause = e)
+            log.info("Successfully registered new product: {} with ID: {}", savedProduct.name, savedProduct.id)
+            savedProduct.id
         }
+        
+        // 2. 장바구니 중복 체크
+        val existingBasket = basketExposedRepository.fetchBasketByMemberIdAndProductId(
+            memberId = memberId,
+            productId = productId
+        )
+        
+        if (existingBasket != null) {
+            log.warn("Product already in basket for member: {} and product: {}", memberId, productId)
+            throw BusinessException(ErrorCode.BASKET_ALREADY_EXISTS)
+        }
+        
+        // 3. 장바구니에 추가
+        val basketId = basketExposedRepository.createBasket(
+            memberId = memberId,
+            productId = productId
+        )
+        
+        log.info("Successfully added product {} to basket with ID: {} for member: {}", productId, basketId, memberId)
+        
+        // 상품 정보 조회하여 응답 생성
+        val product = existingProduct ?: productExposedRepository.fetchProductById(productId)
+            ?: throw BusinessException(ErrorCode.PRODUCT_NOT_FOUND)
+        
+        return ProductRegisterResponse(
+            productId = product.id,
+            productName = product.name
+        )
     }
 }
