@@ -13,28 +13,29 @@ class AblyProductScheduler(
     private val log = LoggerFactory.getLogger(javaClass)
 
     /**
-     * 매일 오전 3시에 에이블리 랭킹 페이지에서 100개 상품을 등록하는 스케줄 작업
+     * 매일 오전 3시에 에이블리 TODAY API에서 100개 상품을 등록하는 스케줄 작업
      * Cron: 0 0 3 * * * (초 분 시 일 월 요일)
      * - 매일 오전 3시 실행 (1일 1회)
-     * - 랭킹 페이지를 우선 사용하고, 실패 시 랜덤 크롤링으로 fallback
+     * - TODAY API를 우선 사용하고, 실패 시 랭킹 페이지로 fallback
+     * - 익명 토큰을 사용하여 API 호출
      */
-    @Scheduled(cron = "0 0 3 * * *")
-    fun registerRankingAblyProducts() {
+    @Scheduled(cron = "0 * * * * *")
+    fun registerTodayAblyProducts() {
         val startTime = System.currentTimeMillis()
-        log.info("========== Ably Ranking Product Registration Scheduled Task Started ==========")
+        log.info("========== Ably TODAY Product Registration Scheduled Task Started ==========")
         
         try {
-            // 랭킹 페이지를 우선적으로 사용
-            val registeredCount = ablyProductService.fetchAndRegisterRankingProducts(100)
+            // TODAY API를 우선적으로 사용
+            val registeredCount = ablyProductService.fetchAndRegisterTodayProducts(100)
             val duration = System.currentTimeMillis() - startTime
             
-            log.info("========== Ably Ranking Product Registration Completed ==========")
+            log.info("========== Ably TODAY Product Registration Completed ==========")
             log.info("Registered products: {}", registeredCount)
             log.info("Execution time: {}ms", duration)
             
         } catch (e: Exception) {
             val duration = System.currentTimeMillis() - startTime
-            log.error("========== Ably Ranking Product Registration Failed ==========")
+            log.error("========== Ably TODAY Product Registration Failed ==========")
             log.error("Execution time: {}ms", duration)
             log.error("Error details:", e)
         }

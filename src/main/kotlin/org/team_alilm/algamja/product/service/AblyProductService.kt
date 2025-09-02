@@ -1,5 +1,6 @@
 package org.team_alilm.algamja.product.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -8,6 +9,8 @@ import org.team_alilm.algamja.common.exception.BusinessException
 import org.team_alilm.algamja.common.exception.ErrorCode
 import org.team_alilm.algamja.product.crawler.CrawlerRegistry
 import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
+import org.team_alilm.algamja.product.crawler.impl.ably.AblyTokenManager
+import org.team_alilm.algamja.product.dto.AblyTodayResponse
 import org.team_alilm.algamja.product.repository.ProductExposedRepository
 import org.team_alilm.algamja.product.image.repository.ProductImageExposedRepository
 import kotlin.random.Random
@@ -18,7 +21,9 @@ class AblyProductService(
     private val restClient: RestClient,
     private val crawlerRegistry: CrawlerRegistry,
     private val productExposedRepository: ProductExposedRepository,
-    private val productImageExposedRepository: ProductImageExposedRepository
+    private val productImageExposedRepository: ProductImageExposedRepository,
+    private val ablyTokenManager: AblyTokenManager,
+    private val objectMapper: ObjectMapper
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -245,13 +250,21 @@ class AblyProductService(
                 thirdOptions = crawledProduct.thirdOptions
             )
             
-            // 상품 이미지 등록
+            // 상품 이미지 등록 (중복 체크)
+            var newImageCount = 0
             crawledProduct.imageUrls.forEachIndexed { index, imageUrl ->
-                productImageExposedRepository.save(
+                val savedImage = productImageExposedRepository.saveIfNotExists(
                     productId = savedProduct.id,
                     imageUrl = imageUrl,
                     imageOrder = index
                 )
+                if (savedImage != null) {
+                    newImageCount++
+                }
+            }
+            
+            if (newImageCount > 0) {
+                log.debug("Added {} new images for product: {}", newImageCount, crawledProduct.name)
             }
             
             log.debug("Successfully registered Ably product: {} (ID: {})", crawledProduct.name, savedProduct.id)
@@ -293,14 +306,15 @@ class AblyProductService(
                             store = crawledProduct.store
                         )
                         
-                        if (existingProduct == null) {
-                            registerProduct(crawledProduct, url)
-                            successCount++
-                            log.debug("Successfully registered Ably ranking product from URL: {}", url)
-                        } else {
+                        if (existingProduct != null) {
                             log.info("Ably ranking product already exists, skipping: {} (storeNumber: {})", 
                                 crawledProduct.name, crawledProduct.storeNumber)
+                            return@forEach  // 다음 상품으로 넘어감
                         }
+                        
+                        registerProduct(crawledProduct, url)
+                        successCount++
+                        log.debug("Successfully registered Ably ranking product from URL: {}", url)
                     } else {
                         failCount++
                         log.warn("Failed to crawl Ably ranking product from URL: {}", url)
@@ -387,6 +401,241 @@ class AblyProductService(
         } catch (e: Exception) {
             log.error("Failed to update all Ably product prices", e)
             return 0
+        }
+    }
+    
+    /**
+     * 에이블리 TODAY API에서 상품을 가져와 등록하는 메서드
+     * https://api.a-bly.com/api/v2/screens/TODAY/
+     * 익명 토큰을 사용하여 API 호출
+     * nextToken을 활용한 페이지네이션으로 최대 100개까지 상품 수집
+     */
+    fun fetchAndRegisterTodayProducts(count: Int = 100): Int {
+        log.info("Starting to fetch and register {} products from Ably TODAY API", count)
+        
+        try {
+            // 1. 익명 토큰 획득
+            val token = ablyTokenManager.getToken()
+            
+            // 2. TODAY API에서 상품 SNO 수집
+            val allProductSnos = fetchTodayProductSnos(token, count)
+            
+            if (allProductSnos.isEmpty()) {
+                log.warn("No products found from Ably TODAY API, falling back to ranking")
+                return fetchAndRegisterRankingProducts(count)
+            }
+            
+            // 3. 중복 제거 및 제한
+            val uniqueSnos = allProductSnos.distinct().take(count)
+            log.info("Processing {} unique products (limit: {})", uniqueSnos.size, count)
+            
+            // 4. 각 상품 처리
+            val result = processTodayProducts(uniqueSnos)
+            
+            log.info("Ably TODAY product registration completed. Success: {}, Failed: {}", 
+                result.first, result.second)
+            
+            // 부족한 경우 추가로 랭킹에서 가져오기
+            if (result.first < count / 2) {
+                log.info("Only {} products registered from TODAY API, fetching additional from ranking", result.first)
+                val additionalCount = fetchAndRegisterRankingProducts(count - result.first)
+                return result.first + additionalCount
+            }
+            
+            return result.first
+            
+        } catch (e: Exception) {
+            log.error("Failed to fetch products from Ably TODAY API, falling back to ranking", e)
+            return fetchAndRegisterRankingProducts(count)
+        }
+    }
+    
+    /**
+     * TODAY API에서 상품 SNO 목록을 수집하는 메서드
+     */
+    private fun fetchTodayProductSnos(token: String, count: Int): List<Long> {
+        val allProductSnos = mutableListOf<Long>()
+        var nextToken: String? = null
+        var pageCount = 0
+        val maxPages = 5 // 최대 5페이지까지만 조회 (경험적으로 첫 페이지 이후엔 상품이 거의 없음)
+        var consecutiveEmptyPages = 0
+        
+        while (allProductSnos.size < count && pageCount < maxPages) {
+            val apiUrl = buildTodayApiUrl(nextToken)
+            log.info("Fetching TODAY API page {}: {}", pageCount + 1, apiUrl)
+            
+            val response = fetchTodayApiResponse(apiUrl, token) ?: break
+            val todayResponse = objectMapper.readValue(response, AblyTodayResponse::class.java)
+            
+            val pageProductSnos = extractProductSnosFromResponse(todayResponse)
+            
+            if (pageProductSnos.isEmpty()) {
+                consecutiveEmptyPages++
+                log.info("No products found on page {}, consecutive empty pages: {}", pageCount + 1, consecutiveEmptyPages)
+                
+                // 연속 3페이지 빈 페이지면 조기 종료 (최적화)
+                if (consecutiveEmptyPages >= 3) {
+                    log.info("3 consecutive empty pages found, stopping pagination early")
+                    break
+                }
+            } else {
+                consecutiveEmptyPages = 0 // 상품을 찾으면 카운터 리셋
+                allProductSnos.addAll(pageProductSnos)
+                log.info("Found {} products on page {}, total: {}", 
+                    pageProductSnos.size, pageCount + 1, allProductSnos.size)
+            }
+            
+            // nextToken 확인 및 로깅
+            nextToken = todayResponse.nextToken
+            if (nextToken != null) {
+                log.info("Next token received: {}", nextToken)
+            } else {
+                log.info("No next token - this is the last page")
+                break
+            }
+            
+            pageCount++
+            
+            // 이미 충분한 상품을 수집했으면 중단
+            if (allProductSnos.size >= count) {
+                log.info("Collected enough products ({}), stopping pagination", allProductSnos.size)
+                break
+            }
+        }
+        
+        log.info("Found total {} products from Ably TODAY API across {} pages", 
+            allProductSnos.size, if (pageCount == 0 && allProductSnos.isNotEmpty()) 1 else pageCount)
+        
+        return allProductSnos
+    }
+    
+    /**
+     * TODAY API URL 생성
+     */
+    private fun buildTodayApiUrl(nextToken: String?): String {
+        return if (nextToken == null) {
+            "https://api.a-bly.com/api/v2/screens/TODAY/"
+        } else {
+            "https://api.a-bly.com/api/v2/screens/TODAY/?next_token=$nextToken"
+        }
+    }
+    
+    /**
+     * TODAY API 호출
+     */
+    private fun fetchTodayApiResponse(apiUrl: String, token: String): String? {
+        try {
+            val response = restClient.get()
+                .uri(apiUrl)
+                .header("x-anonymous-token", token)
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                .header("Accept", "application/json")
+                .retrieve()
+                .body(String::class.java)
+            
+            return response
+        } catch (e: Exception) {
+            log.error("Failed to fetch from Ably TODAY API: {}", apiUrl, e)
+            return null
+        }
+    }
+    
+    /**
+     * API 응답에서 상품 SNO 추출
+     */
+    private fun extractProductSnosFromResponse(response: AblyTodayResponse): List<Long> {
+        val productSnos = mutableListOf<Long>()
+        
+        response.components?.forEach { component ->
+            val itemListType = component.type?.itemList
+            log.debug("Component type: {}", itemListType)
+            
+            // 상품이 포함될 수 있는 모든 컴포넌트 타입 처리
+            if (itemListType != null && (
+                itemListType.contains("GOODS_LIST") || 
+                itemListType.contains("GOODS") ||
+                itemListType.contains("PRODUCT") ||
+                itemListType.contains("ITEM") ||
+                itemListType.contains("CARD_LIST") ||  // TWO_COL_CARD_LIST, THREE_COL_CARD_LIST 등
+                itemListType.contains("LIST")  // 기타 리스트 형태
+            )) {
+                var componentProductCount = 0
+                component.entity?.itemList?.forEach { wrapper ->
+                    // 첫 번째 구조: wrapper.item
+                    wrapper.item?.sno?.let { 
+                        productSnos.add(it)
+                        componentProductCount++
+                    }
+                    
+                    // 두 번째 구조: wrapper.itemEntity.item (nextToken 사용 시)
+                    wrapper.itemEntity?.item?.sno?.let {
+                        productSnos.add(it)
+                        componentProductCount++
+                    }
+                }
+                log.debug("Component '{}': found {} products", itemListType, componentProductCount)
+            }
+        }
+        
+        return productSnos
+    }
+    
+    /**
+     * TODAY 상품들을 처리하는 메서드
+     * @return Pair<successCount, failCount>
+     */
+    private fun processTodayProducts(uniqueSnos: List<Long>): Pair<Int, Int> {
+        var successCount = 0
+        var failCount = 0
+        
+        uniqueSnos.forEach { sno ->
+            try {
+                // 먼저 중복 체크
+                if (isProductExists(sno)) {
+                    log.info("Ably TODAY product already exists, skipping: sno={}", sno)
+                    return@forEach  // 다음 상품으로 넘어감
+                }
+                
+                // 크롤링 및 등록
+                if (crawlAndRegisterProduct(sno)) {
+                    successCount++
+                } else {
+                    failCount++
+                }
+            } catch (e: Exception) {
+                failCount++
+                log.error("Error processing Ably TODAY product sno={}: {}", sno, e.message)
+            }
+        }
+        
+        return Pair(successCount, failCount)
+    }
+    
+    /**
+     * 상품 존재 여부 확인
+     */
+    private fun isProductExists(sno: Long): Boolean {
+        val existingProduct = productExposedRepository.fetchProductByStoreNumber(
+            storeNumber = sno,
+            store = org.team_alilm.algamja.common.enums.Store.ABLY
+        )
+        return existingProduct != null
+    }
+    
+    /**
+     * 상품 크롤링 및 등록
+     */
+    private fun crawlAndRegisterProduct(sno: Long): Boolean {
+        val productUrl = "https://a-bly.com/goods/$sno"
+        val crawledProduct = crawlProductFromUrl(productUrl)
+        
+        return if (crawledProduct != null) {
+            registerProduct(crawledProduct, productUrl)
+            log.debug("Successfully registered Ably TODAY product: sno={}", sno)
+            true
+        } else {
+            log.warn("Failed to crawl Ably TODAY product: sno={}", sno)
+            false
         }
     }
 }

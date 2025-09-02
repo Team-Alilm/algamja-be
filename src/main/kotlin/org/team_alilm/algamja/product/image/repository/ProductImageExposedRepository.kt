@@ -78,4 +78,49 @@ class ProductImageExposedRepository {
             .single()
             .let(ProductImageRow::from)
     }
+    
+    /** 이미지 존재 여부 확인 */
+    fun existsByProductIdAndImageUrl(productId: Long, imageUrl: String): Boolean {
+        return ProductImageTable
+            .selectAll()
+            .where { 
+                (ProductImageTable.productId eq productId) and 
+                (ProductImageTable.imageUrl eq imageUrl) and
+                (ProductImageTable.isDelete eq false)
+            }
+            .count() > 0
+    }
+    
+    /** 단일 이미지 저장 (중복 체크 포함) */
+    fun saveIfNotExists(productId: Long, imageUrl: String, imageOrder: Int = 0): ProductImageRow? {
+        return try {
+            // 동일 상품에 같은 이미지가 이미 존재하는지 확인
+            val existing = ProductImageTable
+                .selectAll()
+                .where { 
+                    (ProductImageTable.productId eq productId) and
+                    (ProductImageTable.imageUrl eq imageUrl) and
+                    (ProductImageTable.isDelete eq false)
+                }
+                .firstOrNull()
+            
+            if (existing != null) {
+                // 이미 이 상품에 등록된 이미지
+                return null
+            }
+            
+            // 존재하지 않으면 저장
+            save(productId, imageUrl, imageOrder)
+        } catch (e: org.jetbrains.exposed.exceptions.ExposedSQLException) {
+            // Duplicate entry 에러는 무시 (동시성 문제로 다른 스레드에서 이미 삽입한 경우)
+            if (e.cause?.message?.contains("Duplicate entry") == true) {
+                null
+            } else {
+                throw e
+            }
+        } catch (e: Exception) {
+            // 기타 예외는 재발생
+            throw e
+        }
+    }
 }

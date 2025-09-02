@@ -302,13 +302,21 @@ class MusinsaProductService(
                 thirdOptions = crawledProduct.thirdOptions
             )
             
-            // 상품 이미지 등록
+            // 상품 이미지 등록 (중복 체크)
+            var newImageCount = 0
             crawledProduct.imageUrls.forEachIndexed { index, imageUrl ->
-                productImageExposedRepository.save(
+                val savedImage = productImageExposedRepository.saveIfNotExists(
                     productId = savedProduct.id,
                     imageUrl = imageUrl,
                     imageOrder = index
                 )
+                if (savedImage != null) {
+                    newImageCount++
+                }
+            }
+            
+            if (newImageCount > 0) {
+                log.debug("Added {} new images for product: {}", newImageCount, crawledProduct.name)
             }
             
             log.debug("Successfully registered product: {} (ID: {})", crawledProduct.name, savedProduct.id)
@@ -443,19 +451,30 @@ class MusinsaProductService(
                 thirdOptions = emptyList()
             )
             
-            // 이미지 등록
+            // 이미지 등록 (중복 체크)
+            var newImageCount = 0
             item.imageList?.forEachIndexed { index, imageUrl ->
-                productImageExposedRepository.save(
+                val savedImage = productImageExposedRepository.saveIfNotExists(
                     productId = savedProduct.id,
                     imageUrl = imageUrl,
                     imageOrder = index
                 )
+                if (savedImage != null) {
+                    newImageCount++
+                }
             } ?: item.imageUrl?.let { imageUrl ->
-                productImageExposedRepository.save(
+                val savedImage = productImageExposedRepository.saveIfNotExists(
                     productId = savedProduct.id,
                     imageUrl = imageUrl,
                     imageOrder = 0
                 )
+                if (savedImage != null) {
+                    newImageCount++
+                }
+            }
+            
+            if (newImageCount > 0) {
+                log.debug("Added {} new images for ranking product: {}", newImageCount, item.itemName)
             }
             
             log.debug("Successfully registered product from ranking: {} (ID: {})", item.itemName, savedProduct.id)
