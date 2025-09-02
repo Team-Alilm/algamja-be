@@ -225,7 +225,7 @@ class AblyProductService(
             )
             
             if (existingProduct != null) {
-                log.debug("Ably product already exists: {}", crawledProduct.storeNumber)
+                log.info("Ably product already exists, skipping: {} (storeNumber: {})", crawledProduct.name, crawledProduct.storeNumber)
                 return
             }
             
@@ -259,6 +259,134 @@ class AblyProductService(
         } catch (e: Exception) {
             log.error("Failed to register Ably product: {}", crawledProduct.name, e)
             throw BusinessException(ErrorCode.INTERNAL_ERROR, cause = e)
+        }
+    }
+    
+    /**
+     * 에이블리 랭킹 페이지에서 상품을 가져와 등록하는 메서드
+     * 랭킹 페이지를 우선적으로 사용하고, 실패 시 기존 방식으로 fallback
+     */
+    fun fetchAndRegisterRankingProducts(count: Int = 100): Int {
+        log.info("Starting to fetch and register {} products from Ably ranking pages", count)
+        
+        try {
+            // 랭킹 페이지에서 우선적으로 상품 URL 가져오기
+            val rankingUrls = fetchProductUrlsFromRanking(count)
+            
+            if (rankingUrls.isEmpty()) {
+                log.warn("No products found from Ably ranking pages, falling back to random products")
+                return fetchAndRegisterRandomProducts(count)
+            }
+            
+            log.info("Found {} products from Ably ranking pages", rankingUrls.size)
+            
+            var successCount = 0
+            var failCount = 0
+            
+            rankingUrls.forEach { url ->
+                try {
+                    val crawledProduct = crawlProductFromUrl(url)
+                    if (crawledProduct != null) {
+                        // 이미 존재하는 상품인지 확인
+                        val existingProduct = productExposedRepository.fetchProductByStoreNumber(
+                            storeNumber = crawledProduct.storeNumber,
+                            store = crawledProduct.store
+                        )
+                        
+                        if (existingProduct == null) {
+                            registerProduct(crawledProduct, url)
+                            successCount++
+                            log.debug("Successfully registered Ably ranking product from URL: {}", url)
+                        } else {
+                            log.info("Ably ranking product already exists, skipping: {} (storeNumber: {})", 
+                                crawledProduct.name, crawledProduct.storeNumber)
+                        }
+                    } else {
+                        failCount++
+                        log.warn("Failed to crawl Ably ranking product from URL: {}", url)
+                    }
+                } catch (e: Exception) {
+                    failCount++
+                    log.error("Error processing Ably ranking product URL: {}", url, e)
+                }
+            }
+            
+            // 부족한 경우 추가로 가져오기
+            if (successCount < count / 2) {
+                log.info("Only {} products registered from ranking, fetching additional products", successCount)
+                val additionalCount = fetchAndRegisterRandomProducts(count - successCount)
+                return successCount + additionalCount
+            }
+            
+            log.info("Ably ranking product registration completed. Success: {}, Failed: {}", successCount, failCount)
+            return successCount
+            
+        } catch (e: Exception) {
+            log.error("Failed to fetch products from Ably ranking pages, falling back to random", e)
+            return fetchAndRegisterRandomProducts(count)
+        }
+    }
+    
+    /**
+     * 모든 등록된 에이블리 상품의 가격을 업데이트하는 메서드
+     */
+    fun updateAllProductPrices(): Int {
+        log.info("Starting price update for all existing Ably products")
+        
+        try {
+            val batchSize = 50
+            var offset = 0
+            var totalUpdatedCount = 0
+            
+            while (true) {
+                // 배치 단위로 에이블리 상품 조회
+                val productBatch = productExposedRepository.fetchAblyProductsForPriceUpdateBatch(batchSize, offset)
+                
+                if (productBatch.isEmpty()) {
+                    break
+                }
+                
+                log.info("Processing Ably batch: {} products (offset: {})", productBatch.size, offset)
+                
+                var batchUpdatedCount = 0
+                
+                productBatch.forEach { product ->
+                    try {
+                        val productUrl = "https://a-bly.com/goods/${product.storeNumber}"
+                        val crawledProduct = crawlProductFromUrl(productUrl)
+                        
+                        if (crawledProduct != null) {
+                            val oldPrice = product.price
+                            val newPrice = crawledProduct.price
+                            
+                            if (oldPrice != newPrice) {
+                                productExposedRepository.updatePrice(product.id, newPrice)
+                                log.debug("Price updated for Ably product {}: {} -> {}", 
+                                    product.name, oldPrice, newPrice)
+                                batchUpdatedCount++
+                            }
+                        }
+                        
+                        Thread.sleep(100) // CPU 부하 방지
+                        
+                    } catch (e: Exception) {
+                        log.warn("Failed to update price for Ably product {}: {}", product.name, e.message)
+                    }
+                }
+                
+                totalUpdatedCount += batchUpdatedCount
+                offset += batchSize
+                
+                log.info("Ably batch completed: {} products updated", batchUpdatedCount)
+                Thread.sleep(500) // 배치 간 휴식
+            }
+            
+            log.info("All Ably products price update completed: {} products updated", totalUpdatedCount)
+            return totalUpdatedCount
+            
+        } catch (e: Exception) {
+            log.error("Failed to update all Ably product prices", e)
+            return 0
         }
     }
 }

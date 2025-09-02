@@ -18,7 +18,7 @@ class MusinsaProductScheduler(
      * - 매일 오전 6시 실행 (1일 1회)
      * - 랭킹 API를 우선 사용하고, 실패 시 크롤링으로 fallback
      */
-    @Scheduled(cron = "0 0 6 * * *")
+    @Scheduled(cron = "0 0 2 * * *")
     fun registerRankingMusinsaProducts() {
         val startTime = System.currentTimeMillis()
         log.info("========== Musinsa Ranking Product Registration Scheduled Task Started ==========")
@@ -47,7 +47,7 @@ class MusinsaProductScheduler(
      * - 모든 등록된 상품의 가격 정보 업데이트 및 히스토리 저장
      * - 배치 처리로 메모리 사용량 최적화
      */
-    @Scheduled(cron = "0 0 9,18 * * *")
+    @Scheduled(cron = "0 * * * * *")
     fun updateProductPrices() {
         val startTime = System.currentTimeMillis()
         log.info("========== Musinsa All Products Price Update Scheduled Task Started ==========")

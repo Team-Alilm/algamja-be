@@ -282,7 +282,7 @@ class MusinsaProductService(
             )
             
             if (existingProduct != null) {
-                log.debug("Product already exists: {}", crawledProduct.storeNumber)
+                log.info("Product already exists, skipping registration: {} (storeNumber: {})", crawledProduct.name, crawledProduct.storeNumber)
                 return
             }
             
@@ -412,7 +412,7 @@ class MusinsaProductService(
             )
             
             if (existingProduct != null) {
-                log.debug("Product already exists: {}", storeNumber)
+                log.info("Product already exists, skipping: {} (storeNumber: {})", item.itemName, storeNumber)
                 return false
             }
             
@@ -478,7 +478,7 @@ class MusinsaProductService(
             )
             
             if (existingProduct != null) {
-                log.debug("Product already exists: {}", storeNumber)
+                log.info("Product already exists, skipping: {} (storeNumber: {})", item.info?.productName, storeNumber)
                 return false
             }
             
