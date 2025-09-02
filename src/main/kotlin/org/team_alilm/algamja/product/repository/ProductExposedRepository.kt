@@ -354,4 +354,45 @@ class ProductExposedRepository {
             .offset(offset.toLong())
             .map(ProductRow::from)
     }
+    
+    /** 상품 구매 가능 여부 업데이트 */
+    fun updateProductAvailability(
+        productId: Long, 
+        isAvailable: Boolean, 
+        lastCheckedAt: Long
+    ): Int {
+        return ProductTable
+            .updateAudited({ ProductTable.id eq productId }) { row ->
+                row[ProductTable.isAvailable] = isAvailable
+                row[ProductTable.lastCheckedAt] = lastCheckedAt
+            }
+    }
+    
+    /** 가용성 확인이 필요한 상품들 배치 조회 */
+    fun fetchProductsForAvailabilityCheck(
+        batchSize: Int, 
+        offset: Int,
+        store: Store? = null,
+        checkIntervalMs: Long = 3600000L // 1시간
+    ): List<ProductRow> {
+        val currentTime = System.currentTimeMillis()
+        val checkThreshold = currentTime - checkIntervalMs
+        
+        return ProductTable
+            .selectAll()
+            .where { 
+                val baseCondition = (ProductTable.isDelete eq false) and 
+                    ((ProductTable.lastCheckedAt.isNull()) or (ProductTable.lastCheckedAt less checkThreshold))
+                
+                if (store != null) {
+                    baseCondition and (ProductTable.store eq store)
+                } else {
+                    baseCondition
+                }
+            }
+            .orderBy(ProductTable.lastCheckedAt to SortOrder.ASC_NULLS_FIRST, ProductTable.id to SortOrder.ASC)
+            .limit(count = batchSize)
+            .offset(offset.toLong())
+            .map(ProductRow::from)
+    }
 }
