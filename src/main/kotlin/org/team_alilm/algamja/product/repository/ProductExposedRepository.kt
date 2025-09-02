@@ -248,7 +248,7 @@ class ProductExposedRepository {
             .selectAll()
             .where { ProductTable.isDelete eq false }
             .orderBy(ProductTable.id)
-            .limit(batchSize)
+            .limit(count = batchSize)
             .offset(offset.toLong())
             .map(ProductRow::from)
     }
