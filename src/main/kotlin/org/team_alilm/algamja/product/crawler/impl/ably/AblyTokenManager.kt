@@ -55,6 +55,9 @@ class AblyTokenManager(
                 .uri("https://api.a-bly.com/api/v2/anonymous/token/")
                 .header("baggage", "ably-server=main")
                 .header("x-isr-token-cache", "cache-repopulate:main")
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+                .header("Accept", "application/json")
+                .header("Referer", "https://a-bly.com/")
                 .retrieve()
                 .body(TokenResponse::class.java)
                 ?: throw RuntimeException("Failed to get token response")
@@ -64,7 +67,7 @@ class AblyTokenManager(
             
             val duration = System.currentTimeMillis() - startTime
             log.info("Successfully refreshed Ably token in {}ms, expires at: {}", duration, tokenExpiry)
-            log.debug("New token successfully obtained and cached")
+            log.info("New token obtained (first 20 chars): {}...", cachedToken!!.take(20))
             
             return cachedToken!!
         } catch (e: Exception) {

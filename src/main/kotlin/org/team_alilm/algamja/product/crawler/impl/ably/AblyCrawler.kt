@@ -81,10 +81,34 @@ class AblyCrawler(
         } catch (e: Exception) {
             when {
                 e.message?.contains("403") == true -> {
-                    log.error("Authentication failed (403 Forbidden) for goodsId: {}. Token may be expired or IP blocked. Error: {}", goodsId, e.message)
+                    log.warn("Authentication failed (403 Forbidden) for goodsId: {}. Trying token refresh and retry...", goodsId)
+                    
+                    // 토큰 강제 갱신 후 재시도
+                    return try {
+                        val newToken = tokenManager.forceRefreshToken()
+                        log.info("Token refreshed for goodsId: {}, retrying with new token", goodsId)
+                        Thread.sleep(1000) // 1초 대기 후 재시도
+                        
+                        val retryResponse = restClient.get()
+                            .uri(apiUrl)
+                            .header("x-anonymous-token", newToken)
+                            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+                            .retrieve()
+                            .body(AblyApiResponse::class.java)
+                            
+                        log.info("Successfully retried after token refresh for goodsId: {}", goodsId)
+                        retryResponse ?: throw BusinessException(ErrorCode.CRAWLER_INVALID_RESPONSE)
+                        
+                    } catch (retryException: Exception) {
+                        log.error("Failed even after token refresh for goodsId: {}. Error: {}", goodsId, retryException.message)
+                        throw BusinessException(ErrorCode.CRAWLER_INVALID_RESPONSE)
+                    }
                 }
                 e.message?.contains("429") == true -> {
                     log.warn("Rate limit exceeded (429) for goodsId: {}. Will retry later: {}", goodsId, e.message)
+                }
+                e.message?.contains("503") == true || e.message?.contains("502") == true -> {
+                    log.warn("Server temporarily unavailable for goodsId: {}. Error: {}", goodsId, e.message)
                 }
                 else -> {
                     log.error("Failed to fetch basic product info for goodsId: {}", goodsId, e)

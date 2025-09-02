@@ -435,9 +435,9 @@ class AblyProductService(
             log.info("Ably TODAY product registration completed. Success: {}, Failed: {}", 
                 result.first, result.second)
             
-            // 부족한 경우 추가로 랭킹에서 가져오기
-            if (result.first < count / 2) {
-                log.info("Only {} products registered from TODAY API, fetching additional from ranking", result.first)
+            // 부족한 경우 또는 403 에러가 많이 발생한 경우 랭킹에서 가져오기
+            if (result.first < count / 3) { // 임계값을 더 낮게 조정 (1/2 -> 1/3)
+                log.warn("Too few products registered from TODAY API ({}), likely due to authentication issues. Fetching from ranking instead.", result.first)
                 val additionalCount = fetchAndRegisterRankingProducts(count - result.first)
                 return result.first + additionalCount
             }
