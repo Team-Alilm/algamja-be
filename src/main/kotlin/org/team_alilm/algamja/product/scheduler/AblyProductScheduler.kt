@@ -13,12 +13,12 @@ class AblyProductScheduler(
     private val log = LoggerFactory.getLogger(javaClass)
 
     /**
-     * 매일 오전 7시에 에이블리 랭킹 페이지에서 100개 상품을 등록하는 스케줄 작업
-     * Cron: 0 0 7 * * * (초 분 시 일 월 요일)
-     * - 매일 오전 7시 실행 (1일 1회)
+     * 매일 오전 3시에 에이블리 랭킹 페이지에서 100개 상품을 등록하는 스케줄 작업
+     * Cron: 0 0 3 * * * (초 분 시 일 월 요일)
+     * - 매일 오전 3시 실행 (1일 1회)
      * - 랭킹 페이지를 우선 사용하고, 실패 시 랜덤 크롤링으로 fallback
      */
-    @Scheduled(cron = "0 0 7 * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     fun registerRankingAblyProducts() {
         val startTime = System.currentTimeMillis()
         log.info("========== Ably Ranking Product Registration Scheduled Task Started ==========")
@@ -41,13 +41,13 @@ class AblyProductScheduler(
     }
     
     /**
-     * 하루 2회(오전 10시, 오후 7시) 모든 등록된 에이블리 상품의 가격을 업데이트하는 스케줄 작업
-     * Cron: 0 0 10,19 * * * (초 분 시 일 월 요일)
-     * - 오전 10시, 오후 7시 실행 (1일 2회)
+     * 매일 오전 4시에 모든 등록된 에이블리 상품의 가격을 업데이트하는 스케줄 작업
+     * Cron: 0 0 4 * * * (초 분 시 일 월 요일)
+     * - 매일 오전 4시 실행 (1일 1회)
      * - 모든 등록된 에이블리 상품의 가격 정보 업데이트
      * - 배치 처리로 메모리 사용량 최적화
      */
-    @Scheduled(cron = "0 0 10,19 * * *")
+    @Scheduled(cron = "0 0 4 * * *")
     fun updateProductPrices() {
         val startTime = System.currentTimeMillis()
         log.info("========== Ably All Products Price Update Scheduled Task Started ==========")
