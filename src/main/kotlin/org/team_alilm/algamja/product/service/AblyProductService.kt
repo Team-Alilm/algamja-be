@@ -13,6 +13,7 @@ import org.team_alilm.algamja.product.crawler.impl.ably.AblyTokenManager
 import org.team_alilm.algamja.product.dto.AblyTodayResponse
 import org.team_alilm.algamja.product.repository.ProductExposedRepository
 import org.team_alilm.algamja.product.image.repository.ProductImageExposedRepository
+import java.math.BigDecimal
 import kotlin.random.Random
 
 @Service
@@ -234,7 +235,7 @@ class AblyProductService(
                 return
             }
             
-            // 상품 등록
+            // 상품 등록 (구매 가능 여부는 기본값 false, 스케줄러에서 별도 확인)
             val savedProduct = productExposedRepository.save(
                 name = crawledProduct.name,
                 storeNumber = crawledProduct.storeNumber,
@@ -677,6 +678,94 @@ class AblyProductService(
         } else {
             log.warn("Failed to crawl Ably TODAY product: sno={}", sno)
             false
+        }
+    }
+    
+    /**
+     * 크롤링된 상품 정보로부터 구매 가능 여부 판단
+     */
+    private fun determineAvailability(crawledProduct: CrawledProduct?): Boolean {
+        return when {
+            crawledProduct == null -> false
+            crawledProduct.name.contains("품절") || 
+            crawledProduct.name.contains("soldout", ignoreCase = true) -> false
+            crawledProduct.price <= BigDecimal.ZERO -> false
+            else -> true
+        }
+    }
+
+    /**
+     * 상품 구매 가능 여부 확인 및 업데이트
+     */
+    fun checkAndUpdateProductAvailability(productId: Long): Boolean {
+        try {
+            val product = productExposedRepository.fetchProductById(productId)
+            if (product == null) {
+                log.warn("Product not found for availability check: productId={}", productId)
+                return false
+            }
+            
+            val productUrl = "https://a-bly.com/goods/${product.storeNumber}"
+            val crawledProduct = crawlProductFromUrl(productUrl)
+            val isAvailable = determineAvailability(crawledProduct)
+            
+            // 상품 구매 가능 여부 업데이트
+            productExposedRepository.updateProductAvailability(
+                productId = productId,
+                isAvailable = isAvailable,
+                lastCheckedAt = System.currentTimeMillis()
+            )
+            
+            log.info("Updated product availability: productId={}, available={}", 
+                productId, isAvailable)
+            
+            return isAvailable
+            
+        } catch (e: Exception) {
+            log.error("Failed to check product availability: productId={}", productId, e)
+            return false
+        }
+    }
+    
+    /**
+     * 오래된 상품들의 구매 가능 여부를 일괄 확인
+     */
+    fun batchCheckProductAvailability(olderThanHours: Long = 24, batchSize: Int = 50): Int {
+        val checkIntervalMs = olderThanHours * 60 * 60 * 1000
+        
+        try {
+            val productsToCheck = productExposedRepository.fetchProductsForAvailabilityCheck(
+                batchSize = batchSize, 
+                offset = 0,
+                store = null,
+                checkIntervalMs = checkIntervalMs
+            )
+            
+            log.info("Starting batch availability check for {} products older than {} hours", 
+                productsToCheck.size, olderThanHours)
+            
+            var updatedCount = 0
+            var errorCount = 0
+            
+            productsToCheck.forEach { product ->
+                try {
+                    // Rate limiting
+                    Thread.sleep(1000) // 1초 간격으로 확인
+                    
+                    val isAvailable = checkAndUpdateProductAvailability(product.id!!)
+                    updatedCount++
+                } catch (e: Exception) {
+                    errorCount++
+                    log.error("Error checking availability for product: productId={}", product.id, e)
+                }
+            }
+            
+            log.info("Batch availability check completed. Updated: {}, Errors: {}", updatedCount, errorCount)
+            return updatedCount
+            
+        } catch (e: Exception) {
+            log.error("Failed to execute batch availability check", e)
+            return 0
         }
     }
 }
