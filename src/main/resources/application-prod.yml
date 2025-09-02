@@ -93,7 +93,7 @@ server:
       min-spare: 10
 
 app:
-  base-url: http://localhost:3000
+  base-url: https://algamja.com
 
 logging:
   level:
