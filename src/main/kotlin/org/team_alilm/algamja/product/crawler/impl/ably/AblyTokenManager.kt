@@ -26,6 +26,16 @@ class AblyTokenManager(
         return refreshToken()
     }
     
+    /**
+     * 403 에러 등으로 토큰이 유효하지 않을 때 강제 갱신
+     */
+    fun forceRefreshToken(): String {
+        log.info("Force refreshing Ably token due to authentication error")
+        cachedToken = null
+        tokenExpiry = null
+        return refreshToken()
+    }
+    
     private fun isTokenValid(): Boolean {
         val isValid = cachedToken != null && 
                tokenExpiry != null && 

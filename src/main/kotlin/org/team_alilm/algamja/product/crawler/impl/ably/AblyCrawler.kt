@@ -74,12 +74,22 @@ class AblyCrawler(
             restClient.get()
                 .uri(apiUrl)
                 .header("x-anonymous-token", token)
-                .header("User-Agent", "Mozilla/5.0 (compatible; AlilmBot/1.0)")
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
                 .retrieve()
                 .body(AblyApiResponse::class.java)
                 ?: throw BusinessException(ErrorCode.CRAWLER_INVALID_RESPONSE)
         } catch (e: Exception) {
-            log.error("Failed to fetch basic product info for goodsId: {}", goodsId, e)
+            when {
+                e.message?.contains("403") == true -> {
+                    log.error("Authentication failed (403 Forbidden) for goodsId: {}. Token may be expired or IP blocked. Error: {}", goodsId, e.message)
+                }
+                e.message?.contains("429") == true -> {
+                    log.warn("Rate limit exceeded (429) for goodsId: {}. Will retry later: {}", goodsId, e.message)
+                }
+                else -> {
+                    log.error("Failed to fetch basic product info for goodsId: {}", goodsId, e)
+                }
+            }
             throw BusinessException(ErrorCode.CRAWLER_INVALID_RESPONSE)
         }
         
@@ -143,7 +153,7 @@ class AblyCrawler(
             val response = restClient.get()
                 .uri(optionsUrl)
                 .header("x-anonymous-token", token)
-                .header("User-Agent", "Mozilla/5.0 (compatible; AlilmBot/1.0)")
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
                 .retrieve()
                 .body(AblyOptionsResponse::class.java)
             

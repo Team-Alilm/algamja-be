@@ -588,15 +588,14 @@ class AblyProductService(
         var successCount = 0
         var failCount = 0
         
-        uniqueSnos.forEach { sno ->
+        uniqueSnos.forEachIndexed { index, sno ->
             try {
-                // 먼저 중복 체크
-                if (isProductExists(sno)) {
-                    log.info("Ably TODAY product already exists, skipping: sno={}", sno)
-                    return@forEach  // 다음 상품으로 넘어감
+                // Rate limiting: 너무 빠른 요청 방지 (첫 번째 요청 제외)
+                if (index > 0) {
+                    Thread.sleep(500) // 0.5초 지연
                 }
                 
-                // 크롤링 및 등록
+                // 크롤링 및 등록 (이미 중복 체크가 포함됨)
                 if (crawlAndRegisterProduct(sno)) {
                     successCount++
                 } else {
@@ -626,7 +625,18 @@ class AblyProductService(
      * 상품 크롤링 및 등록
      */
     private fun crawlAndRegisterProduct(sno: Long): Boolean {
+        // 먼저 중복 체크
+        if (isProductExists(sno)) {
+            log.info("Ably TODAY product already exists, skipping: sno={}", sno)
+            return true  // 이미 존재하므로 성공으로 처리
+        }
+        
         val productUrl = "https://a-bly.com/goods/$sno"
+        
+        // 토큰 상태 디버깅
+        val token = ablyTokenManager.getToken()
+        log.debug("Using token for crawling sno={}: {}...", sno, token.take(20))
+        
         val crawledProduct = crawlProductFromUrl(productUrl)
         
         return if (crawledProduct != null) {
