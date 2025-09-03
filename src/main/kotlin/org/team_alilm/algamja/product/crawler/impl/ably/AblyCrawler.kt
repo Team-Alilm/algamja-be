@@ -11,6 +11,7 @@ import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyApiResponse
 import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyOptionsResponse
 import org.team_alilm.algamja.product.crawler.util.CategoryMapper
 import org.team_alilm.algamja.common.enums.Store
+import org.team_alilm.algamja.common.enums.ProductCategory
 import java.math.BigDecimal
 import java.net.URI
 import java.util.regex.Pattern
@@ -90,6 +91,11 @@ class AblyCrawler(
         val optionsData = fetchOptionsData(goodsId, token)
         val firstOptions = optionsData?.optionComponents?.map { extractOptionName(it.name) } ?: emptyList()
         
+        // 한국어 카테고리를 영어로 변환
+        val koreanCategory = CategoryMapper.mapCategory(categoryName)
+        val englishFirstCategory = ProductCategory.mapKoreanToEnglish(koreanCategory) ?: "OTHERS"
+        val englishSecondCategory = ProductCategory.mapKoreanToEnglish(categoryName)
+        
         val crawledProduct = CrawledProduct(
             storeNumber = goods.sno,
             name = goods.name,
@@ -98,8 +104,8 @@ class AblyCrawler(
             imageUrls = imageUrls,
             store = Store.ABLY,
             price = BigDecimal.valueOf(goods.priceInfo?.thumbnailPrice ?: 0),
-            firstCategory = CategoryMapper.mapCategory(categoryName),
-            secondCategory = categoryName,
+            firstCategory = englishFirstCategory,
+            secondCategory = englishSecondCategory,
             firstOptions = firstOptions,
             secondOptions = emptyList(),
             thirdOptions = emptyList()

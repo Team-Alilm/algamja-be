@@ -11,6 +11,7 @@ import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
 import org.team_alilm.algamja.product.crawler.impl.musinsa.dto.option.OptionApiResponse
 import org.team_alilm.algamja.product.crawler.impl.musinsa.dto.ProductState
 import org.team_alilm.algamja.product.crawler.util.CategoryMapper
+import org.team_alilm.algamja.common.enums.ProductCategory
 import java.net.IDN
 import java.net.URI
 
@@ -97,6 +98,11 @@ class MusinsaCrawler(
         val secondOptions = basic.getOrNull(1)?.optionValues?.map { it.name } ?: emptyList()
         val thirdOptions  = basic.getOrNull(2)?.optionValues?.map { it.name } ?: emptyList()
 
+        // 한국어 카테고리를 영어로 변환
+        val koreanCategory = CategoryMapper.mapCategory("${state.category.categoryDepth1Name} ${state.category.categoryDepth2Name}")
+        val englishFirstCategory = ProductCategory.mapKoreanToEnglish(koreanCategory) ?: "OTHERS"
+        val englishSecondCategory = ProductCategory.mapKoreanToEnglish(state.category.categoryDepth2Name)
+        
         return CrawledProduct(
             storeNumber    = state.goodsNo,
             name           = state.goodsNm,
@@ -105,8 +111,8 @@ class MusinsaCrawler(
             imageUrls      = imageUrls,
             store          = org.team_alilm.algamja.common.enums.Store.MUSINSA,
             price          = price,
-            firstCategory  = CategoryMapper.mapCategory("${state.category.categoryDepth1Name} ${state.category.categoryDepth2Name}"),
-            secondCategory = state.category.categoryDepth2Name,
+            firstCategory  = englishFirstCategory,
+            secondCategory = englishSecondCategory,
             firstOptions   = firstOptions,
             secondOptions  = secondOptions,
             thirdOptions   = thirdOptions
