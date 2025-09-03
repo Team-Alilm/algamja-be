@@ -26,4 +26,17 @@ class FcmTokenExposedRepository {
             it[isDelete] = false
         }
     }
+
+    fun fetchLatestTokenByMemberId(memberId: Long): FcmTokenRow? =
+        FcmTokenTable
+            .selectAll()
+            .where { 
+                (FcmTokenTable.memberId eq memberId) and 
+                (FcmTokenTable.isActive eq true) and 
+                (FcmTokenTable.isDelete eq false) 
+            }
+            .orderBy(FcmTokenTable.createdDate to org.jetbrains.exposed.sql.SortOrder.DESC)
+            .limit(1)
+            .firstOrNull()
+            ?.let(FcmTokenRow::from)
 }

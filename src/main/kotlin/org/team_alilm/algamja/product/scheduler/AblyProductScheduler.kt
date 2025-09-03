@@ -19,14 +19,14 @@ class AblyProductScheduler(
      * - TODAY API를 우선 사용하고, 실패 시 랭킹 페이지로 fallback
      * - 익명 토큰을 사용하여 API 호출
      */
-    @Scheduled(cron = "0 0 3 * * *")
+    @Scheduled(cron = "0 0 3 * * *") // 매일 오전 3시 실행
     fun registerTodayAblyProducts() {
         val startTime = System.currentTimeMillis()
         log.info("========== Ably TODAY Product Registration Scheduled Task Started ==========")
         
         try {
             // TODAY API를 우선적으로 사용
-            val registeredCount = ablyProductService.fetchAndRegisterTodayProducts(100)
+            val registeredCount = ablyProductService.fetchAndRegisterTodayProducts(30)
             val duration = System.currentTimeMillis() - startTime
             
             log.info("========== Ably TODAY Product Registration Completed ==========")

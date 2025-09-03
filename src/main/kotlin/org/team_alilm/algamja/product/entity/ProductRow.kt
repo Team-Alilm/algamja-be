@@ -14,6 +14,8 @@ data class ProductRow(
     val firstCategory: String,
     val secondCategory: String?,
     val price: BigDecimal,
+    val isAvailable: Boolean = false,
+    val lastCheckedAt: Long? = null,
     val firstOption: String,
     val secondOption: String?,
     val thirdOption: String?,

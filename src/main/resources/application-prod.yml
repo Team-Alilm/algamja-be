@@ -61,11 +61,21 @@ spring:
     secretKey: ENC(xorjoiJeOmHgf/KnMkve2p5bqLOXkT61EN4/7KjLj+n8MUO83PX8DGwdJg640uxAA9LNtAw13as=)
 
   mail:
-    username: ENC(koD2J28i6xwgA1KbFpuccdvYlzyeNmsnPf2nU4eLdHQ=)
-    password: ENC(0qgNE0XPTb2fIWOPO5yyPO1/G2lLSoONenAFRHUL9xnW9lYrB41eBvC4tNlFiXQYHsbv0C3TVgk=)
-    host: smtp.example.com
+    username: ENC(Un6kMlz7KgcKF/5VNA3QaOhbWGyEEpxWakkgs4pCxpY=)
+    password: ENC(pk5bOpJBJUcImQg0uUyQonNMvHB/V2OOKHDzGOsQnxU=)
+    host: smtp.gmail.com
     port: 587
     protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 jasypt:
   encryptor:

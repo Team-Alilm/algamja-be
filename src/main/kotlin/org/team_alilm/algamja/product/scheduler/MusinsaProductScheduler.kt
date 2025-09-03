@@ -25,7 +25,7 @@ class MusinsaProductScheduler(
         
         try {
             // 랭킹 API를 우선적으로 사용
-            val registeredCount = musinsaProductService.fetchAndRegisterRankingProducts(100)
+            val registeredCount = musinsaProductService.fetchAndRegisterRankingProducts(30)
             val duration = System.currentTimeMillis() - startTime
             
             log.info("========== Musinsa Ranking Product Registration Completed ==========")

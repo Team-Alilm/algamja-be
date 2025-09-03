@@ -39,6 +39,12 @@ out/
 ### json ###
 *.json
 
+### Security - Environment Variables ###
+.env
+.env.*
+**/.env
+**/.env.*
+
 ### Application Configuration ###
 # Crawler module (민감한 정보 포함)
 crawler/src/main/resources/application-local.yml

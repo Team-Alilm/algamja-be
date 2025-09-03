@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestClient
+import org.team_alilm.algamja.common.enums.Store.*
 import org.team_alilm.algamja.common.exception.BusinessException
 import org.team_alilm.algamja.common.exception.ErrorCode
 import org.team_alilm.algamja.product.crawler.CrawlerRegistry
@@ -13,7 +14,6 @@ import org.team_alilm.algamja.product.crawler.impl.ably.AblyTokenManager
 import org.team_alilm.algamja.product.dto.AblyTodayResponse
 import org.team_alilm.algamja.product.repository.ProductExposedRepository
 import org.team_alilm.algamja.product.image.repository.ProductImageExposedRepository
-import java.math.BigDecimal
 import kotlin.random.Random
 
 @Service
@@ -599,9 +599,12 @@ class AblyProductService(
         var successCount = 0
         var failCount = 0
         
+        log.info("DEBUG: Processing {} unique SNOs: {}", uniqueSnos.size, uniqueSnos.take(10))
+        
         // 1단계: 중복 체크로 크롤링할 상품만 필터링
         val newProducts = uniqueSnos.filter { sno ->
             val exists = isProductExists(sno)
+            log.info("DEBUG: Checking sno={}, exists={}", sno, exists)
             if (exists) {
                 log.info("Ably TODAY product already exists, skipping: sno={}", sno)
                 successCount++ // 이미 존재하는 상품은 성공으로 카운트
@@ -613,13 +616,8 @@ class AblyProductService(
             uniqueSnos.size - newProducts.size, newProducts.size)
         
         // 2단계: 새로운 상품만 크롤링
-        newProducts.forEachIndexed { index, sno ->
+        newProducts.forEachIndexed { _, sno ->
             try {
-                // Rate limiting: 너무 빠른 요청 방지 (첫 번째 요청 제외)
-                if (index > 0) {
-                    Thread.sleep(500) // 0.5초 지연
-                }
-                
                 // 크롤링 및 등록 (중복 체크 제거됨)
                 if (crawlAndRegisterProductWithoutDuplicateCheck(sno)) {
                     successCount++
@@ -641,22 +639,9 @@ class AblyProductService(
     private fun isProductExists(sno: Long): Boolean {
         val existingProduct = productExposedRepository.fetchProductByStoreNumber(
             storeNumber = sno,
-            store = org.team_alilm.algamja.common.enums.Store.ABLY
+            store = ABLY
         )
         return existingProduct != null
-    }
-    
-    /**
-     * 상품 크롤링 및 등록 (중복 체크 포함)
-     */
-    private fun crawlAndRegisterProduct(sno: Long): Boolean {
-        // 먼저 중복 체크
-        if (isProductExists(sno)) {
-            log.info("Ably TODAY product already exists, skipping: sno={}", sno)
-            return true  // 이미 존재하므로 성공으로 처리
-        }
-        
-        return crawlAndRegisterProductWithoutDuplicateCheck(sno)
     }
     
     /**
@@ -678,94 +663,6 @@ class AblyProductService(
         } else {
             log.warn("Failed to crawl Ably TODAY product: sno={}", sno)
             false
-        }
-    }
-    
-    /**
-     * 크롤링된 상품 정보로부터 구매 가능 여부 판단
-     */
-    private fun determineAvailability(crawledProduct: CrawledProduct?): Boolean {
-        return when {
-            crawledProduct == null -> false
-            crawledProduct.name.contains("품절") || 
-            crawledProduct.name.contains("soldout", ignoreCase = true) -> false
-            crawledProduct.price <= BigDecimal.ZERO -> false
-            else -> true
-        }
-    }
-
-    /**
-     * 상품 구매 가능 여부 확인 및 업데이트
-     */
-    fun checkAndUpdateProductAvailability(productId: Long): Boolean {
-        try {
-            val product = productExposedRepository.fetchProductById(productId)
-            if (product == null) {
-                log.warn("Product not found for availability check: productId={}", productId)
-                return false
-            }
-            
-            val productUrl = "https://a-bly.com/goods/${product.storeNumber}"
-            val crawledProduct = crawlProductFromUrl(productUrl)
-            val isAvailable = determineAvailability(crawledProduct)
-            
-            // 상품 구매 가능 여부 업데이트
-            productExposedRepository.updateProductAvailability(
-                productId = productId,
-                isAvailable = isAvailable,
-                lastCheckedAt = System.currentTimeMillis()
-            )
-            
-            log.info("Updated product availability: productId={}, available={}", 
-                productId, isAvailable)
-            
-            return isAvailable
-            
-        } catch (e: Exception) {
-            log.error("Failed to check product availability: productId={}", productId, e)
-            return false
-        }
-    }
-    
-    /**
-     * 오래된 상품들의 구매 가능 여부를 일괄 확인
-     */
-    fun batchCheckProductAvailability(olderThanHours: Long = 24, batchSize: Int = 50): Int {
-        val checkIntervalMs = olderThanHours * 60 * 60 * 1000
-        
-        try {
-            val productsToCheck = productExposedRepository.fetchProductsForAvailabilityCheck(
-                batchSize = batchSize, 
-                offset = 0,
-                store = null,
-                checkIntervalMs = checkIntervalMs
-            )
-            
-            log.info("Starting batch availability check for {} products older than {} hours", 
-                productsToCheck.size, olderThanHours)
-            
-            var updatedCount = 0
-            var errorCount = 0
-            
-            productsToCheck.forEach { product ->
-                try {
-                    // Rate limiting
-                    Thread.sleep(1000) // 1초 간격으로 확인
-                    
-                    val isAvailable = checkAndUpdateProductAvailability(product.id!!)
-                    updatedCount++
-                } catch (e: Exception) {
-                    errorCount++
-                    log.error("Error checking availability for product: productId={}", product.id, e)
-                }
-            }
-            
-            log.info("Batch availability check completed. Updated: {}, Errors: {}", updatedCount, errorCount)
-            return updatedCount
-            
-        } catch (e: Exception) {
-            log.error("Failed to execute batch availability check", e)
-            return 0
         }
     }
 }

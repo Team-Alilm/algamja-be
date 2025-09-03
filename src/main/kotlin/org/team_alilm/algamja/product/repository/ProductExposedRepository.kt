@@ -21,6 +21,24 @@ import java.math.BigDecimal
 @Repository
 class ProductExposedRepository {
 
+    fun markProductAsPurchased(productId: Long) {
+        ProductTable.updateAudited(
+            where = { ProductTable.id eq productId }
+        ) {
+            it[isAvailable] = false
+            it[lastCheckedAt] = System.currentTimeMillis()
+        }
+    }
+    
+    fun updateProductAvailability(productId: Long, available: Boolean) {
+        ProductTable.updateAudited(
+            where = { ProductTable.id eq productId }
+        ) {
+            it[isAvailable] = available
+            it[lastCheckedAt] = System.currentTimeMillis()
+        }
+    }
+
     /** 공통 WHERE 빌더 (목록/카운트에서 재사용) */
     private fun buildBaseWhere(param: ProductListParam): Op<Boolean> {
         val table = ProductTable
@@ -195,7 +213,7 @@ class ProductExposedRepository {
             .singleOrNull()
             ?.let(ProductRow::from)
 
-    /** 새 상품 등록 (리스트 옵션) - 모든 옵션 조합 생성 */
+    /** 새 상품 등록 (리스트 옵션) - 스토어별 옵션 처리 */
     fun save(
         name: String,
         storeNumber: Long,
@@ -212,8 +230,12 @@ class ProductExposedRepository {
     ): ProductRow {
         val now = System.currentTimeMillis()
         
-        // 옵션 조합 생성
-        val optionCombinations = generateOptionCombinations(firstOptions, secondOptions, thirdOptions)
+        // 스토어별 옵션 처리 전략 결정
+        val optionCombinations = when (store) {
+            Store.ABLY -> generateAblyOptionCombinations(firstOptions, secondOptions, thirdOptions)
+            Store.MUSINSA -> generateMusinsaOptionCombinations(firstOptions, secondOptions, thirdOptions)
+            else -> generateDefaultOptionCombinations(firstOptions, secondOptions, thirdOptions)
+        }
         
         var savedProduct: ProductRow? = null
         
@@ -264,15 +286,46 @@ class ProductExposedRepository {
             }
     }
     
-    /** 옵션 조합 생성 헬퍼 함수 */
-    private fun generateOptionCombinations(
+    /** 에이블리용 옵션 조합 생성 - 각 옵션을 개별 레코드로 저장 */
+    private fun generateAblyOptionCombinations(
         firstOptions: List<String>,
         secondOptions: List<String>,
         thirdOptions: List<String>
     ): List<Triple<String?, String?, String?>> {
-        val first = if (firstOptions.isEmpty()) listOf(null) else firstOptions.map { it }
-        val second = if (secondOptions.isEmpty()) listOf(null) else secondOptions.map { it }
-        val third = if (thirdOptions.isEmpty()) listOf(null) else thirdOptions.map { it }
+        val combinations = mutableListOf<Triple<String?, String?, String?>>()
+        
+        // 옵션이 하나도 없는 경우 - 기본 상품 하나 생성
+        if (firstOptions.isEmpty() && secondOptions.isEmpty() && thirdOptions.isEmpty()) {
+            combinations.add(Triple(null, null, null))
+            return combinations
+        }
+        
+        // 첫 번째 옵션이 있는 경우
+        val actualFirstOptions = if (firstOptions.isNotEmpty()) firstOptions else listOf(null)
+        val actualSecondOptions = if (secondOptions.isNotEmpty()) secondOptions else listOf(null)  
+        val actualThirdOptions = if (thirdOptions.isNotEmpty()) thirdOptions else listOf(null)
+        
+        // 모든 옵션 조합 생성 (Cartesian Product)
+        actualFirstOptions.forEach { first ->
+            actualSecondOptions.forEach { second ->
+                actualThirdOptions.forEach { third ->
+                    combinations.add(Triple(first, second, third))
+                }
+            }
+        }
+        
+        return combinations
+    }
+    
+    /** 무신사용 옵션 조합 생성 - 전체 조합 생성 */
+    private fun generateMusinsaOptionCombinations(
+        firstOptions: List<String>,
+        secondOptions: List<String>,
+        thirdOptions: List<String>
+    ): List<Triple<String?, String?, String?>> {
+        val first = if (firstOptions.isEmpty()) listOf(null) else firstOptions
+        val second = if (secondOptions.isEmpty()) listOf(null) else secondOptions
+        val third = if (thirdOptions.isEmpty()) listOf(null) else thirdOptions
         
         val combinations = mutableListOf<Triple<String?, String?, String?>>()
         for (f in first) {
@@ -284,6 +337,15 @@ class ProductExposedRepository {
         }
         
         return combinations
+    }
+    
+    /** 기본 옵션 조합 생성 - 전체 조합 생성 */
+    private fun generateDefaultOptionCombinations(
+        firstOptions: List<String>,
+        secondOptions: List<String>,
+        thirdOptions: List<String>
+    ): List<Triple<String?, String?, String?>> {
+        return generateMusinsaOptionCombinations(firstOptions, secondOptions, thirdOptions)
     }
 
     /** 새 상품 등록 (단일 옵션) */
@@ -311,7 +373,7 @@ class ProductExposedRepository {
             row[ProductTable.price] = price
             row[ProductTable.firstCategory] = firstCategory
             row[ProductTable.secondCategory] = secondCategory
-            row[ProductTable.firstOption] = firstOption?.take(120) ?: ""
+            row[ProductTable.firstOption] = firstOption.take(120)
             row[ProductTable.secondOption] = secondOption?.take(120)
             row[ProductTable.thirdOption] = thirdOption?.take(120)
             row[ProductTable.createdDate] = now

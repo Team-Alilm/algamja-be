@@ -48,4 +48,11 @@ enum class ErrorCode(
         HttpStatus.BAD_REQUEST, "CRAWLER_003", "크롤러 URL이 유효하지 않습니다."
     ),
 
+    FCM_SEND_FAILED(
+        HttpStatus.INTERNAL_SERVER_ERROR, "FCM_002", "FCM 메시지 전송에 실패했습니다."
+    ),
+    STOCK_CHECK_FAILED(
+        HttpStatus.INTERNAL_SERVER_ERROR, "SCHEDULER_001", "재고 확인 작업에 실패했습니다."
+    ),
+
 }

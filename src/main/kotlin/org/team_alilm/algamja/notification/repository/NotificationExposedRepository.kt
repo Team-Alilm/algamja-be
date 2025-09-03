@@ -5,6 +5,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.selectAll
 import org.springframework.stereotype.Repository
+import org.team_alilm.algamja.common.entity.insertAudited
 import org.team_alilm.algamja.common.entity.updateAudited
 import org.team_alilm.algamja.notification.entity.NotificationRow
 import org.team_alilm.algamja.notification.entity.NotificationTable
@@ -79,5 +80,18 @@ class NotificationExposedRepository {
             .firstOrNull()
             ?.get(cnt)
             ?: 0L
+    }
+
+    fun createNotification(
+        memberId: Long,
+        productId: Long
+    ): Long {
+        val stmt = NotificationTable.insertAudited {
+            it[this.memberId] = memberId
+            it[this.productId] = productId
+            it[this.readYn] = false
+            it[this.isDelete] = false
+        }
+        return stmt[NotificationTable.id].value
     }
 }

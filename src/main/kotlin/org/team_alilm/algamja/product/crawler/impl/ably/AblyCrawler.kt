@@ -9,6 +9,7 @@ import org.team_alilm.algamja.product.crawler.ProductCrawler
 import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
 import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyApiResponse
 import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyOptionsResponse
+import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyOptionComponent
 import org.team_alilm.algamja.product.crawler.util.CategoryMapper
 import org.team_alilm.algamja.common.enums.Store
 import org.team_alilm.algamja.common.enums.ProductCategory
@@ -87,9 +88,9 @@ class AblyCrawler(
         log.debug("Product details: images={}, category='{}', price={}", 
                  imageUrls.size, categoryName, goods.priceInfo?.thumbnailPrice)
         
-        // Fetch options
+        // Fetch options using optimized recursive approach
         val optionsData = fetchOptionsData(goodsId, token)
-        val firstOptions = optionsData?.optionComponents?.map { extractOptionName(it.name) } ?: emptyList()
+        val (firstOptions, secondOptions, thirdOptions) = extractAllOptionsRecursively(goodsId, token, optionsData)
         
         // 한국어 카테고리를 영어로 변환
         val koreanCategory = CategoryMapper.mapCategory(categoryName)
@@ -107,13 +108,21 @@ class AblyCrawler(
             firstCategory = englishFirstCategory,
             secondCategory = englishSecondCategory,
             firstOptions = firstOptions,
-            secondOptions = emptyList(),
-            thirdOptions = emptyList()
+            secondOptions = secondOptions,
+            thirdOptions = thirdOptions
         )
         
         val duration = System.currentTimeMillis() - startTime
-        log.info("Successfully crawled Ably product goodsId: {} in {}ms, options: {}", 
-                goodsId, duration, firstOptions.size)
+        val totalCombinations = when {
+            firstOptions.isEmpty() -> 0
+            secondOptions.isEmpty() && thirdOptions.isEmpty() -> firstOptions.size
+            secondOptions.isEmpty() -> firstOptions.size * thirdOptions.size
+            thirdOptions.isEmpty() -> firstOptions.size * secondOptions.size
+            else -> firstOptions.size * secondOptions.size * thirdOptions.size
+        }
+        
+        log.info("Successfully crawled Ably product goodsId: {} in {}ms, options: {}/{}/{} (total combinations: {})", 
+                goodsId, duration, firstOptions.size, secondOptions.size, thirdOptions.size, totalCombinations)
         
         return crawledProduct
     }
@@ -129,7 +138,7 @@ class AblyCrawler(
             throw BusinessException(ErrorCode.CRAWLER_INVALID_URL)
         }
     }
-    
+
     private fun fetchOptionsData(goodsId: Long, token: String): AblyOptionsResponse? {
         return try {
             val optionsUrl = "https://api.a-bly.com/api/v2/goods/$goodsId/options/?depth=1"
@@ -156,6 +165,97 @@ class AblyCrawler(
         val extracted = fullName.substringAfterLast('_').takeIf { it.isNotBlank() } ?: fullName
         log.trace("Option name extraction: '{}' -> '{}'", fullName, extracted)
         return extracted
+    }
+    
+    /**
+     * 재귀적으로 모든 레벨의 옵션을 추출하여 개별 리스트로 반환
+     * @param goodsId 상품 ID
+     * @param token 인증 토큰
+     * @param optionsData 첫 번째 레벨 옵션 데이터
+     * @return Triple<firstOptions, secondOptions, thirdOptions>
+     */
+    private fun extractAllOptionsRecursively(goodsId: Long, token: String, optionsData: AblyOptionsResponse?): Triple<List<String>, List<String>, List<String>> {
+        if (optionsData?.optionComponents == null) {
+            log.debug("No option components found, returning empty options")
+            return Triple(emptyList(), emptyList(), emptyList())
+        }
+        
+        val firstOptions = mutableSetOf<String>()
+        val secondOptions = mutableSetOf<String>()
+        val thirdOptions = mutableSetOf<String>()
+        
+        // Process each first-level option component
+        optionsData.optionComponents.forEach { component ->
+            processFirstLevelOption(goodsId, token, component, firstOptions, secondOptions, thirdOptions)
+        }
+        
+        log.debug("Recursively extracted options - first: {}, second: {}, third: {}", 
+                 firstOptions.size, secondOptions.size, thirdOptions.size)
+        
+        return Triple(firstOptions.toList(), secondOptions.toList(), thirdOptions.toList())
+    }
+    
+    private fun processFirstLevelOption(
+        goodsId: Long, 
+        token: String, 
+        component: AblyOptionComponent, 
+        firstOptions: MutableSet<String>,
+        secondOptions: MutableSet<String>,
+        thirdOptions: MutableSet<String>
+    ) {
+        val optionName = extractOptionName(component.name)
+        firstOptions.add(optionName)
+        
+        if (component.isFinalDepth != false) return
+        
+        val nestedOptions = fetchNestedOptionsQuick(goodsId, token, component.goodsOptionSno, 2) ?: return
+        nestedOptions.optionComponents?.forEach { nestedComponent ->
+            processSecondLevelOption(goodsId, token, nestedComponent, secondOptions, thirdOptions)
+        }
+    }
+    
+    private fun processSecondLevelOption(
+        goodsId: Long,
+        token: String,
+        nestedComponent: AblyOptionComponent,
+        secondOptions: MutableSet<String>,
+        thirdOptions: MutableSet<String>
+    ) {
+        val nestedOptionName = extractOptionName(nestedComponent.name)
+        
+        when (nestedComponent.depth) {
+            2 -> secondOptions.add(nestedOptionName)
+            3 -> thirdOptions.add(nestedOptionName)
+            else -> secondOptions.add(nestedOptionName)
+        }
+        
+        if (!nestedComponent.isFinalDepth) {
+            val thirdLevelOptions = fetchNestedOptionsQuick(goodsId, token, nestedComponent.goodsOptionSno, 3) ?: return
+            thirdLevelOptions.optionComponents?.forEach { thirdComponent ->
+                val thirdOptionName = extractOptionName(thirdComponent.name)
+                thirdOptions.add(thirdOptionName)
+            }
+        }
+    }
+    
+    /**
+     * 특정 옵션이 선택된 상태에서 하위 옵션들을 빠르게 가져옴 (타임아웃 적용)
+     */
+    private fun fetchNestedOptionsQuick(goodsId: Long, token: String, selectedOptionSno: Long, depth: Int = 1): AblyOptionsResponse? {
+        return try {
+            val nestedOptionsUrl = "https://api.a-bly.com/api/v2/goods/$goodsId/options/?depth=$depth&selected_option_sno=$selectedOptionSno"
+            
+            val response = restClient.get()
+                .uri(nestedOptionsUrl)
+                .header("x-anonymous-token", token)
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+                .retrieve()
+                .body(AblyOptionsResponse::class.java)
+            
+            response
+        } catch (e: Exception) {
+            null
+        }
     }
     
     /**

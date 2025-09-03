@@ -200,4 +200,28 @@ class BasketExposedRepository {
             ?.get(cnt)
             ?: 0L
     }
+
+    fun fetchBasketsToCheckStock(): List<BasketRow> {
+        return BasketTable
+            .selectAll()
+            .where {
+                (BasketTable.isNotification eq false) and
+                (BasketTable.isDelete eq false) and
+                (BasketTable.isHidden eq false)
+            }
+            .map(BasketRow::from)
+    }
+
+    fun updateBasketNotification(
+        basketId: Long,
+        isNotification: Boolean,
+        notificationDate: Long?
+    ) {
+        BasketTable.updateAudited(
+            where = { BasketTable.id eq basketId }
+        ) {
+            it[this.isNotification] = isNotification
+            it[this.notificationDate] = notificationDate
+        }
+    }
 }

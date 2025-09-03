@@ -26,6 +26,7 @@ class MailConfig(
         mailSender.port = this.port
         mailSender.username = this.username
         mailSender.password = this.password
+        mailSender.defaultEncoding = "UTF-8"
 
         mailSender.javaMailProperties = getMailProperties()
 
@@ -36,6 +37,13 @@ class MailConfig(
         val props = Properties()
         props["mail.smtp.auth"] = "true"
         props["mail.smtp.starttls.enable"] = "true"
+        props["mail.smtp.starttls.required"] = "true"
+        props["mail.smtp.connectiontimeout"] = "5000"
+        props["mail.smtp.timeout"] = "5000"
+        props["mail.smtp.writetimeout"] = "5000"
+        props["mail.debug"] = "false"
+        props["mail.smtp.ssl.trust"] = "smtp.gmail.com"
+        props["mail.smtp.ssl.protocols"] = "TLSv1.2"
         return props
     }
 }
