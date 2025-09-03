@@ -24,13 +24,16 @@ class ProductExposedRepository {
     /** 공통 WHERE 빌더 (목록/카운트에서 재사용) */
     private fun buildBaseWhere(param: ProductListParam): Op<Boolean> {
         val table = ProductTable
-        val like  = param.keyword?.trim()?.takeIf { it.isNotEmpty() }?.let { "%$it%" }
-        val cat   = param.category?.trim()?.takeIf { it.isNotEmpty() }
+        val like = param.keyword?.trim()?.takeIf { it.isNotEmpty() }?.let { "%$it%" }
+        val categoryKey = param.category?.trim()?.takeIf { it.isNotEmpty() }
 
         return listOfNotNull(
             table.isDelete eq false,
             like?.let { (table.name like it) or (table.brand like it) },
-            cat?.let { table.firstCategory eq it }
+            // 이제 카테고리가 영어로 저장되므로 직접 비교
+            categoryKey?.let { 
+                (table.firstCategory eq it) or (table.secondCategory eq it)
+            }
         ).fold(initial = Op.TRUE as Op<Boolean>) { acc, op -> acc and op }
     }
 

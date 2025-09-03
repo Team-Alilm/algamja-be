@@ -90,7 +90,8 @@ class SecurityConfig(
             allowedOrigins = listOf(
                 "http://localhost:5173", "http://127.0.0.1:5173",
                 "http://localhost:3000", "http://127.0.0.1:3000",
-                "https://algamja.com", "https://api.algamja.com"
+                "https://algamja.com", "https://api.algamja.com",
+                "https://www.algamja.com"
             )
             allowedMethods = listOf("GET","POST","PUT","PATCH","DELETE","OPTIONS","HEAD")
             allowedHeaders = listOf("*")
