@@ -43,7 +43,7 @@ class AblyProductService(
                 try {
                     val crawledProduct = crawlProductFromUrl(url)
                     if (crawledProduct != null) {
-                        registerProduct(crawledProduct, url)
+                        registerProduct(crawledProduct)
                         successCount++
                         log.debug("Successfully registered product from URL: {}", url)
                     } else {
@@ -222,7 +222,7 @@ class AblyProductService(
         }
     }
 
-    private fun registerProduct(crawledProduct: CrawledProduct, originalUrl: String) {
+    private fun registerProduct(crawledProduct: CrawledProduct) {
         try {
             // 이미 존재하는 상품인지 확인 (storeNumber 기준)
             val existingProduct = productExposedRepository.fetchProductByStoreNumber(
@@ -241,7 +241,6 @@ class AblyProductService(
                 storeNumber = crawledProduct.storeNumber,
                 brand = crawledProduct.brand,
                 thumbnailUrl = crawledProduct.thumbnailUrl,
-                originalUrl = originalUrl,
                 store = crawledProduct.store,
                 price = crawledProduct.price,
                 firstCategory = crawledProduct.firstCategory,
@@ -253,11 +252,10 @@ class AblyProductService(
             
             // 상품 이미지 등록 (중복 체크)
             var newImageCount = 0
-            crawledProduct.imageUrls.forEachIndexed { index, imageUrl ->
+            crawledProduct.imageUrls.forEachIndexed { _, imageUrl ->
                 val savedImage = productImageExposedRepository.saveIfNotExists(
                     productId = savedProduct.id,
-                    imageUrl = imageUrl,
-                    imageOrder = index
+                    imageUrl = imageUrl
                 )
                 if (savedImage != null) {
                     newImageCount++
@@ -313,7 +311,7 @@ class AblyProductService(
                             return@forEach  // 다음 상품으로 넘어감
                         }
                         
-                        registerProduct(crawledProduct, url)
+                        registerProduct(crawledProduct)
                         successCount++
                         log.debug("Successfully registered Ably ranking product from URL: {}", url)
                     } else {
@@ -657,7 +655,7 @@ class AblyProductService(
         val crawledProduct = crawlProductFromUrl(productUrl)
         
         return if (crawledProduct != null) {
-            registerProduct(crawledProduct, productUrl)
+            registerProduct(crawledProduct)
             log.debug("Successfully registered Ably TODAY product: sno={}", sno)
             true
         } else {

@@ -100,9 +100,18 @@ class ProductService(
             )
         }
 
+        // 6) 마지막 상품 정보 추출 (무한 스크롤용)
+        val lastProduct = responses.lastOrNull()
+        val lastProductId = lastProduct?.id
+        val lastPrice = lastProduct?.price?.toInt()
+        val lastWaitingCount = lastProduct?.waitingCount
+
         return ProductListResponse(
             productList = responses,
-            hasNext = slice.hasNext
+            hasNext = slice.hasNext,
+            lastProductId = lastProductId,
+            lastPrice = lastPrice,
+            lastWaitingCount = lastWaitingCount
         )
     }
 
@@ -259,7 +268,6 @@ class ProductService(
                 storeNumber = request.number,
                 brand = request.brand,
                 thumbnailUrl = request.thumbnailUrl,
-                originalUrl = "",
                 store = request.store,
                 price = request.price,
                 firstCategory = request.firstCategory,

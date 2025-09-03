@@ -11,7 +11,6 @@ import org.team_alilm.algamja.basket.entity.BasketTable
 import org.team_alilm.algamja.common.entity.updateAudited
 import org.team_alilm.algamja.common.enums.Sort.*
 import org.team_alilm.algamja.product.controller.v1.dto.param.ProductListParam
-import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
 import org.team_alilm.algamja.product.entity.ProductRow
 import org.team_alilm.algamja.product.entity.ProductTable
 import org.team_alilm.algamja.product.repository.projection.ProductSliceProjection
@@ -123,10 +122,19 @@ class ProductExposedRepository {
         val waitingCol = basketAgg[waitingCountExpr]
         val aggPidCol  = basketAgg[BasketTable.productId]
 
+        // 커서 처리: 마지막 대기자수와 상품 ID로 페이징
+        val cursorCondition = if (param.lastWaitingCount != null && param.lastProductId != null) {
+            val lastWaitingCount = param.lastWaitingCount
+            (waitingCol less lastWaitingCount) or 
+            ((waitingCol eq lastWaitingCount) and (table.id less param.lastProductId))
+        } else null
+
+        val finalWhere = cursorCondition?.let { baseWhere and it } ?: baseWhere
+
         val rows = table
             .join(basketAgg, JoinType.LEFT, additionalConstraint = { table.id eq aggPidCol })
             .selectAll()
-            .where { baseWhere }
+            .where { finalWhere }
             .orderBy(waitingCol to SortOrder.DESC, table.id to SortOrder.DESC)
             .limit(pageSize + 1)
             .toList()
@@ -219,7 +227,6 @@ class ProductExposedRepository {
         storeNumber: Long,
         brand: String,
         thumbnailUrl: String,
-        originalUrl: String,
         store: Store,
         price: BigDecimal,
         firstCategory: String,
@@ -279,7 +286,7 @@ class ProductExposedRepository {
     }
     
     /** 상품 가격 업데이트 */
-    fun updatePrice(productId: Long, newPrice: java.math.BigDecimal): Int {
+    fun updatePrice(productId: Long, newPrice: BigDecimal): Int {
         return ProductTable
             .updateAudited({ ProductTable.id eq productId }) { row ->
                 row[ProductTable.price] = newPrice
@@ -301,9 +308,9 @@ class ProductExposedRepository {
         }
         
         // 첫 번째 옵션이 있는 경우
-        val actualFirstOptions = if (firstOptions.isNotEmpty()) firstOptions else listOf(null)
-        val actualSecondOptions = if (secondOptions.isNotEmpty()) secondOptions else listOf(null)  
-        val actualThirdOptions = if (thirdOptions.isNotEmpty()) thirdOptions else listOf(null)
+        val actualFirstOptions = firstOptions.ifEmpty { listOf(null) }
+        val actualSecondOptions = secondOptions.ifEmpty { listOf(null) }
+        val actualThirdOptions = thirdOptions.ifEmpty { listOf(null) }
         
         // 모든 옵션 조합 생성 (Cartesian Product)
         actualFirstOptions.forEach { first ->
@@ -323,9 +330,9 @@ class ProductExposedRepository {
         secondOptions: List<String>,
         thirdOptions: List<String>
     ): List<Triple<String?, String?, String?>> {
-        val first = if (firstOptions.isEmpty()) listOf(null) else firstOptions
-        val second = if (secondOptions.isEmpty()) listOf(null) else secondOptions
-        val third = if (thirdOptions.isEmpty()) listOf(null) else thirdOptions
+        val first = firstOptions.ifEmpty { listOf(null) }
+        val second = secondOptions.ifEmpty { listOf(null) }
+        val third = thirdOptions.ifEmpty { listOf(null) }
         
         val combinations = mutableListOf<Triple<String?, String?, String?>>()
         for (f in first) {
@@ -354,7 +361,6 @@ class ProductExposedRepository {
         storeNumber: Long,
         brand: String,
         thumbnailUrl: String,
-        originalUrl: String,
         store: Store,
         price: BigDecimal,
         firstCategory: String,
@@ -385,20 +391,6 @@ class ProductExposedRepository {
             ?: throw IllegalStateException("Failed to retrieve saved product with ID: ${insertedId.value}")
     }
 
-    /** 부분 수정 (반환: 영향 행 수) */
-    fun updateProduct(
-        existingProductId: Long,
-        crawledProduct: CrawledProduct
-    ): Int =
-        ProductTable.update({ (ProductTable.id eq existingProductId) and (ProductTable.isDelete eq false) }) {
-            it[ProductTable.name]          = crawledProduct.name
-            it[ProductTable.brand]         = crawledProduct.brand
-            it[ProductTable.thumbnailUrl]  = crawledProduct.thumbnailUrl
-            it[ProductTable.price]         = crawledProduct.price
-            it[ProductTable.firstCategory] = crawledProduct.firstCategory
-            it[ProductTable.secondCategory]= crawledProduct.secondCategory
-        }
-    
     /** 모든 활성 상품 조회 (스케줄러용) */
     fun fetchAllActiveProducts(): List<ProductRow> =
         ProductTable
@@ -416,47 +408,6 @@ class ProductExposedRepository {
             }
             .orderBy(ProductTable.id)
             .limit(batchSize)
-            .offset(offset.toLong())
-            .map(ProductRow::from)
-    }
-    
-    /** 상품 구매 가능 여부 업데이트 */
-    fun updateProductAvailability(
-        productId: Long, 
-        isAvailable: Boolean, 
-        lastCheckedAt: Long
-    ): Int {
-        return ProductTable
-            .updateAudited({ ProductTable.id eq productId }) { row ->
-                row[ProductTable.isAvailable] = isAvailable
-                row[ProductTable.lastCheckedAt] = lastCheckedAt
-            }
-    }
-    
-    /** 가용성 확인이 필요한 상품들 배치 조회 */
-    fun fetchProductsForAvailabilityCheck(
-        batchSize: Int, 
-        offset: Int,
-        store: Store? = null,
-        checkIntervalMs: Long = 3600000L // 1시간
-    ): List<ProductRow> {
-        val currentTime = System.currentTimeMillis()
-        val checkThreshold = currentTime - checkIntervalMs
-        
-        return ProductTable
-            .selectAll()
-            .where { 
-                val baseCondition = (ProductTable.isDelete eq false) and 
-                    ((ProductTable.lastCheckedAt.isNull()) or (ProductTable.lastCheckedAt less checkThreshold))
-                
-                if (store != null) {
-                    baseCondition and (ProductTable.store eq store)
-                } else {
-                    baseCondition
-                }
-            }
-            .orderBy(ProductTable.lastCheckedAt to SortOrder.ASC_NULLS_FIRST, ProductTable.id to SortOrder.ASC)
-            .limit(count = batchSize)
             .offset(offset.toLong())
             .map(ProductRow::from)
     }

@@ -41,7 +41,7 @@ class MusinsaProductService(
                 try {
                     val crawledProduct = crawlProductFromUrl(url)
                     if (crawledProduct != null) {
-                        registerProduct(crawledProduct, url)
+                        registerProduct(crawledProduct)
                         successCount++
                         log.debug("Successfully registered product from URL: {}", url)
                     } else {
@@ -273,7 +273,7 @@ class MusinsaProductService(
         }
     }
 
-    private fun registerProduct(crawledProduct: CrawledProduct, originalUrl: String) {
+    private fun registerProduct(crawledProduct: CrawledProduct) {
         try {
             // 이미 존재하는 상품인지 확인 (storeNumber 기준)
             val existingProduct = productExposedRepository.fetchProductByStoreNumber(
@@ -292,7 +292,6 @@ class MusinsaProductService(
                 storeNumber = crawledProduct.storeNumber,
                 brand = crawledProduct.brand,
                 thumbnailUrl = crawledProduct.thumbnailUrl,
-                originalUrl = originalUrl,
                 store = crawledProduct.store,
                 price = crawledProduct.price,
                 firstCategory = crawledProduct.firstCategory,
@@ -304,11 +303,10 @@ class MusinsaProductService(
             
             // 상품 이미지 등록 (중복 체크)
             var newImageCount = 0
-            crawledProduct.imageUrls.forEachIndexed { index, imageUrl ->
+            crawledProduct.imageUrls.forEachIndexed { _, imageUrl ->
                 val savedImage = productImageExposedRepository.saveIfNotExists(
                     productId = savedProduct.id,
                     imageUrl = imageUrl,
-                    imageOrder = index
                 )
                 if (savedImage != null) {
                     newImageCount++
@@ -430,7 +428,7 @@ class MusinsaProductService(
             // 먼저 크롤링 시도 (더 상세한 정보를 얻기 위해)
             val crawledProduct = crawlProductFromUrl(productUrl)
             if (crawledProduct != null) {
-                registerProduct(crawledProduct, productUrl)
+                registerProduct(crawledProduct)
                 return true
             }
             
@@ -441,7 +439,6 @@ class MusinsaProductService(
                 storeNumber = storeNumber,
                 brand = item.brandName ?: "Unknown Brand",
                 thumbnailUrl = item.imageUrl ?: "",
-                originalUrl = productUrl,
                 store = Store.MUSINSA,
                 price = price,
                 firstCategory = item.category ?: "기타",
@@ -453,11 +450,10 @@ class MusinsaProductService(
             
             // 이미지 등록 (중복 체크)
             var newImageCount = 0
-            item.imageList?.forEachIndexed { index, imageUrl ->
+            item.imageList?.forEachIndexed { _, imageUrl ->
                 val savedImage = productImageExposedRepository.saveIfNotExists(
                     productId = savedProduct.id,
-                    imageUrl = imageUrl,
-                    imageOrder = index
+                    imageUrl = imageUrl
                 )
                 if (savedImage != null) {
                     newImageCount++
@@ -465,8 +461,7 @@ class MusinsaProductService(
             } ?: item.imageUrl?.let { imageUrl ->
                 val savedImage = productImageExposedRepository.saveIfNotExists(
                     productId = savedProduct.id,
-                    imageUrl = imageUrl,
-                    imageOrder = 0
+                    imageUrl = imageUrl
                 )
                 if (savedImage != null) {
                     newImageCount++
@@ -507,7 +502,7 @@ class MusinsaProductService(
             // 크롤링 시도 (상세한 정보를 얻기 위해)
             val crawledProduct = crawlProductFromUrl(productUrl)
             if (crawledProduct != null) {
-                registerProduct(crawledProduct, productUrl)
+                registerProduct(crawledProduct)
                 return true
             }
             
