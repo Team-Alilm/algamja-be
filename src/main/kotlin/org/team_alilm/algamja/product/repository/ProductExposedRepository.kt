@@ -11,6 +11,7 @@ import org.team_alilm.algamja.basket.entity.BasketTable
 import org.team_alilm.algamja.common.entity.updateAudited
 import org.team_alilm.algamja.common.enums.Sort.*
 import org.team_alilm.algamja.product.controller.v1.dto.param.ProductListParam
+import org.team_alilm.algamja.product.controller.v1.dto.param.ProductCountParam
 import org.team_alilm.algamja.product.entity.ProductRow
 import org.team_alilm.algamja.product.entity.ProductTable
 import org.team_alilm.algamja.product.repository.projection.ProductSliceProjection
@@ -148,9 +149,32 @@ class ProductExposedRepository {
         )
     }
 
-    /** 같은 필터로 ‘총 개수’ 조회 (무한스크롤용 별도 API에서 사용 권장) */
+    /** 같은 필터로 '총 개수' 조회 */
     fun countProducts(param: ProductListParam): Long {
         val predicate = buildBaseWhere(param)
+        val cnt = ProductTable.id.count()
+        return ProductTable
+            .select(cnt)
+            .where { predicate }
+            .firstOrNull()
+            ?.get(cnt)
+            ?: 0L
+    }
+
+    /** 검색 조건에 따른 '총 개수' 조회 (정렬 불필요) */
+    fun countProducts(param: ProductCountParam): Long {
+        val table = ProductTable
+        val like = param.keyword?.trim()?.takeIf { it.isNotEmpty() }?.let { "%$it%" }
+        val categoryKey = param.category?.trim()?.takeIf { it.isNotEmpty() }
+        
+        val predicate = listOfNotNull(
+            table.isDelete eq false,
+            like?.let { (table.name like it) or (table.brand like it) },
+            categoryKey?.let { 
+                (table.firstCategory eq it) or (table.secondCategory eq it)
+            }
+        ).fold(initial = Op.TRUE as Op<Boolean>) { acc, op -> acc and op }
+        
         val cnt = ProductTable.id.count()
         return ProductTable
             .select(cnt)

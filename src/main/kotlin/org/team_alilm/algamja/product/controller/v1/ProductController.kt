@@ -16,10 +16,10 @@ import org.team_alilm.algamja.common.security.CustomMemberDetails
 import org.team_alilm.algamja.common.security.requireMemberId
 import org.team_alilm.algamja.product.controller.v1.docs.ProductDocs
 import org.team_alilm.algamja.product.controller.v1.dto.param.ProductListParam
+import org.team_alilm.algamja.product.controller.v1.dto.param.ProductCountParam
 import org.team_alilm.algamja.product.controller.v1.dto.request.ProductRegisterRequest
 import org.team_alilm.algamja.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.ProductRegisterResponse
-import org.team_alilm.algamja.product.controller.v1.dto.response.DelayedProductResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.ProductCountResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.ProductDetailResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.ProductListResponse
@@ -44,7 +44,7 @@ class ProductController(
 
     @GetMapping("/count")
     override fun getProductCount(
-        @ParameterObject @Valid param : ProductListParam
+        @ParameterObject @Valid param : ProductCountParam
     ): ApiResponse<ProductCountResponse> {
         return success(
             data = productService.getProductCount(param)
@@ -80,13 +80,13 @@ class ProductController(
         return success(data = productService.crawlProduct(productUrl))
     }
 
-    @GetMapping("/delayed/me")
-    override fun getMostDelayedProductByMember(
-        @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
-    ): ApiResponse<DelayedProductResponse?> {
-        val response = productService.getMostDelayedProductByMember(customMemberDetails.requireMemberId())
-        return success(data = response)
-    }
+//    @GetMapping("/delayed/me")
+//    override fun getMostDelayedProductByMember(
+//        @AuthenticationPrincipal customMemberDetails: CustomMemberDetails
+//    ): ApiResponse<DelayedProductResponse?> {
+//        val response = productService.getMostDelayedProductByMember(customMemberDetails.requireMemberId())
+//        return success(data = response)
+//    }
 
     @PostMapping
     override fun registerProduct(

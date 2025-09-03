@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.team_alilm.algamja.common.response.ApiResponse as CommonApiResponse
 import org.team_alilm.algamja.common.security.CustomMemberDetails
 import org.team_alilm.algamja.product.controller.v1.dto.param.ProductListParam
+import org.team_alilm.algamja.product.controller.v1.dto.param.ProductCountParam
 import org.team_alilm.algamja.product.controller.v1.dto.request.ProductRegisterRequest
 import org.team_alilm.algamja.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.DelayedProductResponse
@@ -22,14 +23,14 @@ interface ProductDocs {
 
     @Operation(
         summary = "상품 총 개수 조회",
-        description = "등록된 모든 상품의 총 개수를 반환합니다."
+        description = "검색 조건에 맞는 상품의 총 개수를 반환합니다."
     )
     @ApiResponse(
         responseCode = "200",
         description = "정상 응답"
     )
     fun getProductCount(
-        param : ProductListParam
+        param : ProductCountParam
     ): CommonApiResponse<ProductCountResponse>
 
     @Operation(
@@ -83,17 +84,17 @@ interface ProductDocs {
     )
     fun crawlProduct(productUrl: String): CommonApiResponse<CrawlProductResponse>
 
-    @Operation(
-        summary = "재입고 지연 상품 조회",
-        description = "회원의 장바구니에서 재입고가 가장 오래 지연된 상품을 조회합니다."
-    )
-    @ApiResponse(
-        responseCode = "200",
-        description = "정상 응답"
-    )
-    fun getMostDelayedProductByMember(
-        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
-    ): CommonApiResponse<DelayedProductResponse?>
+//    @Operation(
+//        summary = "재입고 지연 상품 조회",
+//        description = "회원의 장바구니에서 재입고가 가장 오래 지연된 상품을 조회합니다."
+//    )
+//    @ApiResponse(
+//        responseCode = "200",
+//        description = "정상 응답"
+//    )
+//    fun getMostDelayedProductByMember(
+//        @Parameter(hidden = true) customMemberDetails: CustomMemberDetails
+//    ): CommonApiResponse<DelayedProductResponse?>
 
     @Operation(
         summary = "상품 등록",

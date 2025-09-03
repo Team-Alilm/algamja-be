@@ -8,6 +8,7 @@ import org.team_alilm.algamja.common.enums.Sort
 import org.team_alilm.algamja.common.exception.BusinessException
 import org.team_alilm.algamja.common.exception.ErrorCode
 import org.team_alilm.algamja.product.controller.v1.dto.param.ProductListParam
+import org.team_alilm.algamja.product.controller.v1.dto.param.ProductCountParam
 import org.team_alilm.algamja.product.controller.v1.dto.request.ProductRegisterRequest
 import org.team_alilm.algamja.product.controller.v1.dto.response.CrawlProductResponse
 import org.team_alilm.algamja.product.controller.v1.dto.response.ProductCountResponse
@@ -208,7 +209,7 @@ class ProductService(
     }
 
     @Transactional
-    fun getProductCount(param: ProductListParam): ProductCountResponse {
+    fun getProductCount(param: ProductCountParam): ProductCountResponse {
         val count = productExposedRepository.countProducts(param)
         return ProductCountResponse(productCount = count)
     }
