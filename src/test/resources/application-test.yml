@@ -16,7 +16,7 @@ spring:
     enabled: false
 
   jwt:
-    secretKey: test-secret-key-for-testing-purposes-only
+    secretKey: dGVzdC1zZWNyZXQta2V5LWZvci10ZXN0aW5nLXB1cnBvc2VzLW9ubHktdGhhdC1pcy1sb25nLWVub3VnaC1mb3ItaG1hYy1zaGEtMjU2
 
   mail:
     username: test@example.com
@@ -38,7 +38,9 @@ management:
 
 springdoc:
   swagger-ui:
-    disable-swagger-default-url: true
+    enabled: false
+  api-docs:
+    enabled: false
 
 server:
   port: 0

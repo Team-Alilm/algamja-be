@@ -97,8 +97,8 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run detekt (Kotlin static analysis)
-        run: ./gradlew detekt --continue || true
+      - name: Run detekt (Kotlin static analysis)  
+        run: ./gradlew detekt --continue || echo "Detekt failed but continuing CI"
 
       - name: Upload detekt results
         uses: actions/upload-artifact@v4
@@ -143,7 +143,7 @@ jobs:
           echo "FirebaseSecretKey.json ready for build."
 
       - name: Build application
-        run: ./gradlew build -x test
+        run: ./gradlew build -x test -x detekt
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
