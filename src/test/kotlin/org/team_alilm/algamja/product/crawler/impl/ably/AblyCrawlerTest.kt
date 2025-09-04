@@ -22,12 +22,11 @@ import java.math.BigDecimal
 class AblyCrawlerTest {
 
     private val mockRestClient = mock<RestClient>()
-    private val mockTokenManager = mock<AblyTokenManager>()
     private val mockRequestHeadersUriSpec = mock<RestClient.RequestHeadersUriSpec<*>>()
     private val mockRequestHeadersSpec = mock<RestClient.RequestHeadersSpec<*>>()
     private val mockResponseSpec = mock<RestClient.ResponseSpec>()
     
-    private val crawler = AblyCrawler(mockRestClient, mockTokenManager)
+    private val crawler = AblyCrawler(mockRestClient)
 
     @Test
     fun `should support ably URLs`() {
@@ -99,7 +98,7 @@ class AblyCrawlerTest {
             optionComponents = listOf(mockOptionComponent)
         )
 
-        whenever(mockTokenManager.getToken()).thenReturn(testToken)
+        // Token is now hardcoded, no need to mock
         whenever(mockRestClient.get()).thenReturn(mockRequestHeadersUriSpec)
         whenever(mockRequestHeadersUriSpec.uri(any<String>())).thenReturn(mockRequestHeadersSpec)
         whenever(mockRequestHeadersSpec.header(any<String>(), any<String>())).thenReturn(mockRequestHeadersSpec)
@@ -132,7 +131,7 @@ class AblyCrawlerTest {
         val testToken = "test-token"
         val mockResponse = AblyApiResponse(goods = null)
 
-        whenever(mockTokenManager.getToken()).thenReturn(testToken)
+        // Token is now hardcoded, no need to mock
         whenever(mockRestClient.get()).thenReturn(mockRequestHeadersUriSpec)
         whenever(mockRequestHeadersUriSpec.uri(any<String>())).thenReturn(mockRequestHeadersSpec)
         whenever(mockRequestHeadersSpec.header(any<String>(), any<String>())).thenReturn(mockRequestHeadersSpec)

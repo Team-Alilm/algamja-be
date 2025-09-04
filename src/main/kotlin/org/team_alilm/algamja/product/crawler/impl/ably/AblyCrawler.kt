@@ -10,6 +10,7 @@ import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
 import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyApiResponse
 import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyOptionsResponse
 import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyOptionComponent
+import org.team_alilm.algamja.product.crawler.impl.ably.dto.AblyGoods
 import org.team_alilm.algamja.product.crawler.util.CategoryMapper
 import org.team_alilm.algamja.common.enums.Store
 import org.team_alilm.algamja.common.enums.ProductCategory
@@ -17,11 +18,30 @@ import java.math.BigDecimal
 import java.net.URI
 import java.util.regex.Pattern
 
+data class OptionProcessingContext(
+    val goodsId: Long,
+    val firstOptions: MutableSet<String>,
+    val secondOptions: MutableSet<String>,
+    val thirdOptions: MutableSet<String>
+)
+
 @Component
 class AblyCrawler(
-    private val restClient: RestClient,
-    private val ablyTokenManager: AblyTokenManager
+    private val restClient: RestClient
 ) : ProductCrawler {
+
+    companion object {
+        private const val ANONYMOUS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiI1MjkwNzg3NTciLCJpYXQiOjE3NTYzNDM4ODh9.GG6bB2-q-cb47qD5UBwK5AQ4AzGLKSH3gZ0rsKWZR4Q"
+        private const val USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        private const val DEFAULT_BRAND = "Unknown"
+        private const val RETRY_DELAY_MS = 1000L
+        private const val FIRST_LEVEL_DEPTH = 1
+        private const val SECOND_LEVEL_DEPTH = 2
+        private const val THIRD_LEVEL_DEPTH = 3
+        private const val BASIC_API_URL_TEMPLATE = "https://api.a-bly.com/api/v3/goods/%d/basic/?channel=0"
+        private const val OPTIONS_API_URL_TEMPLATE = "https://api.a-bly.com/api/v2/goods/%d/options/?depth=%d"
+        private const val OPTIONS_WITH_SELECTION_URL_TEMPLATE = "https://api.a-bly.com/api/v2/goods/%d/options/?depth=%d&selected_option_sno=%d"
+    }
 
     private val log = LoggerFactory.getLogger(javaClass)
     private val goodsUrlPattern = Pattern.compile(""".*/goods/(\d+).*""")
@@ -67,12 +87,19 @@ class AblyCrawler(
         
         log.info("Starting Ably product crawling for goodsId: {}, url: {}", goodsId, url)
         
-        val token = ablyTokenManager.getToken()
-        val apiUrl = "https://api.a-bly.com/api/v3/goods/$goodsId/basic/?channel=0"
+        val basicProductData = fetchBasicProductData(goodsId)
+        val productOptions = fetchProductOptions(goodsId)
+        val crawledProduct = buildCrawledProduct(basicProductData, productOptions)
         
+        logFetchCompletion(goodsId, startTime, productOptions)
+        return crawledProduct
+    }
+
+    private fun fetchBasicProductData(goodsId: Long): AblyGoods {
+        val apiUrl = BASIC_API_URL_TEMPLATE.format(goodsId)
         log.debug("Fetching basic product info from API: {}", apiUrl)
         
-        val response = fetchWithRetry(apiUrl, token, goodsId)
+        val response = fetchWithRetry(apiUrl, goodsId)
         
         val goods = response.goods ?: run {
             log.error("Goods data is null in API response for goodsId: {}", goodsId)
@@ -80,7 +107,16 @@ class AblyCrawler(
         }
         
         log.debug("Successfully fetched product: name='{}', brand='{}'", goods.name, goods.market?.name)
-        
+        return goods
+    }
+
+    private fun fetchProductOptions(goodsId: Long): Triple<List<String>, List<String>, List<String>> {
+        val optionsData = fetchOptionsData(goodsId)
+        return extractAllOptionsRecursively(goodsId, optionsData)
+    }
+
+    private fun buildCrawledProduct(goods: AblyGoods, options: Triple<List<String>, List<String>, List<String>>): CrawledProduct {
+        val (firstOptions, secondOptions, thirdOptions) = options
         val thumbnailUrl = goods.coverImages?.firstOrNull() ?: ""
         val imageUrls = goods.coverImages ?: emptyList()
         val categoryName = goods.displayCategories?.firstOrNull()?.name ?: ""
@@ -88,43 +124,48 @@ class AblyCrawler(
         log.debug("Product details: images={}, category='{}', price={}", 
                  imageUrls.size, categoryName, goods.priceInfo?.thumbnailPrice)
         
-        // Fetch options using optimized recursive approach
-        val optionsData = fetchOptionsData(goodsId, token)
-        val (firstOptions, secondOptions, thirdOptions) = extractAllOptionsRecursively(goodsId, token, optionsData)
+        val categories = mapCategories(categoryName)
         
-        // 한국어 카테고리를 영어로 변환
-        val koreanCategory = CategoryMapper.mapCategory(categoryName)
-        val englishFirstCategory = ProductCategory.mapKoreanToEnglish(koreanCategory) ?: "OTHERS"
-        val englishSecondCategory = ProductCategory.mapKoreanToEnglish(categoryName)
-        
-        val crawledProduct = CrawledProduct(
+        return CrawledProduct(
             storeNumber = goods.sno,
             name = goods.name,
-            brand = goods.market?.name ?: "Unknown",
+            brand = goods.market?.name ?: DEFAULT_BRAND,
             thumbnailUrl = thumbnailUrl,
             imageUrls = imageUrls,
             store = Store.ABLY,
             price = BigDecimal.valueOf(goods.priceInfo?.thumbnailPrice ?: 0),
-            firstCategory = englishFirstCategory,
-            secondCategory = englishSecondCategory,
+            firstCategory = categories.first,
+            secondCategory = categories.second,
             firstOptions = firstOptions,
             secondOptions = secondOptions,
             thirdOptions = thirdOptions
         )
-        
+    }
+
+    private fun mapCategories(categoryName: String): Pair<String, String?> {
+        val koreanCategory = CategoryMapper.mapCategory(categoryName)
+        val englishFirstCategory = ProductCategory.mapKoreanToEnglish(koreanCategory) ?: "OTHERS"
+        val englishSecondCategory = ProductCategory.mapKoreanToEnglish(categoryName)
+        return Pair(englishFirstCategory, englishSecondCategory)
+    }
+
+    private fun logFetchCompletion(goodsId: Long, startTime: Long, options: Triple<List<String>, List<String>, List<String>>) {
+        val (firstOptions, secondOptions, thirdOptions) = options
         val duration = System.currentTimeMillis() - startTime
-        val totalCombinations = when {
+        val totalCombinations = calculateTotalCombinations(firstOptions, secondOptions, thirdOptions)
+        
+        log.info("Successfully crawled Ably product goodsId: {} in {}ms, options: {}/{}/{} (total combinations: {})", 
+                goodsId, duration, firstOptions.size, secondOptions.size, thirdOptions.size, totalCombinations)
+    }
+
+    private fun calculateTotalCombinations(firstOptions: List<String>, secondOptions: List<String>, thirdOptions: List<String>): Int {
+        return when {
             firstOptions.isEmpty() -> 0
             secondOptions.isEmpty() && thirdOptions.isEmpty() -> firstOptions.size
             secondOptions.isEmpty() -> firstOptions.size * thirdOptions.size
             thirdOptions.isEmpty() -> firstOptions.size * secondOptions.size
             else -> firstOptions.size * secondOptions.size * thirdOptions.size
         }
-        
-        log.info("Successfully crawled Ably product goodsId: {} in {}ms, options: {}/{}/{} (total combinations: {})", 
-                goodsId, duration, firstOptions.size, secondOptions.size, thirdOptions.size, totalCombinations)
-        
-        return crawledProduct
     }
     
     private fun extractGoodsId(url: String): Long {
@@ -139,17 +180,12 @@ class AblyCrawler(
         }
     }
 
-    private fun fetchOptionsData(goodsId: Long, token: String): AblyOptionsResponse? {
+    private fun fetchOptionsData(goodsId: Long): AblyOptionsResponse? {
         return try {
-            val optionsUrl = "https://api.a-bly.com/api/v2/goods/$goodsId/options/?depth=1"
+            val optionsUrl = OPTIONS_API_URL_TEMPLATE.format(goodsId, FIRST_LEVEL_DEPTH)
             log.debug("Fetching options data from API: {}", optionsUrl)
             
-            val response = restClient.get()
-                .uri(optionsUrl)
-                .header("x-anonymous-token", token)
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-                .retrieve()
-                .body(AblyOptionsResponse::class.java)
+            val response = makeApiRequest(optionsUrl, ANONYMOUS_TOKEN, AblyOptionsResponse::class.java)
             
             val optionCount = response?.optionComponents?.size ?: 0
             log.debug("Successfully fetched {} options for goodsId: {}", optionCount, goodsId)
@@ -174,7 +210,7 @@ class AblyCrawler(
      * @param optionsData 첫 번째 레벨 옵션 데이터
      * @return Triple<firstOptions, secondOptions, thirdOptions>
      */
-    private fun extractAllOptionsRecursively(goodsId: Long, token: String, optionsData: AblyOptionsResponse?): Triple<List<String>, List<String>, List<String>> {
+    private fun extractAllOptionsRecursively(goodsId: Long, optionsData: AblyOptionsResponse?): Triple<List<String>, List<String>, List<String>> {
         if (optionsData?.optionComponents == null) {
             log.debug("No option components found, returning empty options")
             return Triple(emptyList(), emptyList(), emptyList())
@@ -184,9 +220,11 @@ class AblyCrawler(
         val secondOptions = mutableSetOf<String>()
         val thirdOptions = mutableSetOf<String>()
         
+        val context = OptionProcessingContext(goodsId, firstOptions, secondOptions, thirdOptions)
+        
         // Process each first-level option component
         optionsData.optionComponents.forEach { component ->
-            processFirstLevelOption(goodsId, token, component, firstOptions, secondOptions, thirdOptions)
+            processFirstLevelOption(component, context)
         }
         
         log.debug("Recursively extracted options - first: {}, second: {}, third: {}", 
@@ -195,45 +233,32 @@ class AblyCrawler(
         return Triple(firstOptions.toList(), secondOptions.toList(), thirdOptions.toList())
     }
     
-    private fun processFirstLevelOption(
-        goodsId: Long, 
-        token: String, 
-        component: AblyOptionComponent, 
-        firstOptions: MutableSet<String>,
-        secondOptions: MutableSet<String>,
-        thirdOptions: MutableSet<String>
-    ) {
+    private fun processFirstLevelOption(component: AblyOptionComponent, context: OptionProcessingContext) {
         val optionName = extractOptionName(component.name)
-        firstOptions.add(optionName)
+        context.firstOptions.add(optionName)
         
-        if (component.isFinalDepth != false) return
+        if (component.isFinalDepth) return
         
-        val nestedOptions = fetchNestedOptionsQuick(goodsId, token, component.goodsOptionSno, 2) ?: return
+        val nestedOptions = fetchNestedOptionsQuick(context.goodsId, component.goodsOptionSno, SECOND_LEVEL_DEPTH) ?: return
         nestedOptions.optionComponents?.forEach { nestedComponent ->
-            processSecondLevelOption(goodsId, token, nestedComponent, secondOptions, thirdOptions)
+            processSecondLevelOption(nestedComponent, context)
         }
     }
     
-    private fun processSecondLevelOption(
-        goodsId: Long,
-        token: String,
-        nestedComponent: AblyOptionComponent,
-        secondOptions: MutableSet<String>,
-        thirdOptions: MutableSet<String>
-    ) {
+    private fun processSecondLevelOption(nestedComponent: AblyOptionComponent, context: OptionProcessingContext) {
         val nestedOptionName = extractOptionName(nestedComponent.name)
         
         when (nestedComponent.depth) {
-            2 -> secondOptions.add(nestedOptionName)
-            3 -> thirdOptions.add(nestedOptionName)
-            else -> secondOptions.add(nestedOptionName)
+            SECOND_LEVEL_DEPTH -> context.secondOptions.add(nestedOptionName)
+            THIRD_LEVEL_DEPTH -> context.thirdOptions.add(nestedOptionName)
+            else -> context.secondOptions.add(nestedOptionName)
         }
         
         if (!nestedComponent.isFinalDepth) {
-            val thirdLevelOptions = fetchNestedOptionsQuick(goodsId, token, nestedComponent.goodsOptionSno, 3) ?: return
+            val thirdLevelOptions = fetchNestedOptionsQuick(context.goodsId, nestedComponent.goodsOptionSno, THIRD_LEVEL_DEPTH) ?: return
             thirdLevelOptions.optionComponents?.forEach { thirdComponent ->
                 val thirdOptionName = extractOptionName(thirdComponent.name)
-                thirdOptions.add(thirdOptionName)
+                context.thirdOptions.add(thirdOptionName)
             }
         }
     }
@@ -241,19 +266,31 @@ class AblyCrawler(
     /**
      * 특정 옵션이 선택된 상태에서 하위 옵션들을 빠르게 가져옴 (타임아웃 적용)
      */
-    private fun fetchNestedOptionsQuick(goodsId: Long, token: String, selectedOptionSno: Long, depth: Int = 1): AblyOptionsResponse? {
+    private fun fetchNestedOptionsQuick(goodsId: Long, selectedOptionSno: Long, depth: Int = 1): AblyOptionsResponse? {
         return try {
-            val nestedOptionsUrl = "https://api.a-bly.com/api/v2/goods/$goodsId/options/?depth=$depth&selected_option_sno=$selectedOptionSno"
+            val nestedOptionsUrl = OPTIONS_WITH_SELECTION_URL_TEMPLATE.format(goodsId, depth, selectedOptionSno)
             
-            val response = restClient.get()
-                .uri(nestedOptionsUrl)
-                .header("x-anonymous-token", token)
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-                .retrieve()
-                .body(AblyOptionsResponse::class.java)
+            val response = makeApiRequest(nestedOptionsUrl, ANONYMOUS_TOKEN, AblyOptionsResponse::class.java)
             
             response
-        } catch (e: Exception) {
+        } catch (_: Exception) {
+            null
+        }
+    }
+    
+    /**
+     * 공통 HTTP API 요청 메서드
+     */
+    private fun <T> makeApiRequest(url: String, token: String, responseType: Class<T>): T? {
+        return try {
+            restClient.get()
+                .uri(url)
+                .header("x-anonymous-token", token)
+                .header("User-Agent", USER_AGENT)
+                .retrieve()
+                .body(responseType)
+        } catch (_: Exception) {
+            log.debug("API request failed for URL: {}", url)
             null
         }
     }
@@ -261,32 +298,21 @@ class AblyCrawler(
     /**
      * 403 에러 시 토큰 갱신 후 재시도 로직
      */
-    private fun fetchWithRetry(apiUrl: String, initialToken: String, goodsId: Long): AblyApiResponse {
+    private fun fetchWithRetry(apiUrl: String, goodsId: Long): AblyApiResponse {
         return try {
-            restClient.get()
-                .uri(apiUrl)
-                .header("x-anonymous-token", initialToken)
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-                .retrieve()
-                .body(AblyApiResponse::class.java)
+            makeApiRequest(apiUrl, ANONYMOUS_TOKEN, AblyApiResponse::class.java)
                 ?: throw BusinessException(ErrorCode.CRAWLER_INVALID_RESPONSE)
         } catch (e: Exception) {
             when {
                 e.message?.contains("403") == true -> {
                     log.warn("Authentication failed (403 Forbidden) for goodsId: {}. Trying token refresh and retry...", goodsId)
                     
-                    // 토큰 강제 갱신 후 재시도
                     try {
-                        val newToken = ablyTokenManager.forceRefreshToken()
+                        val newToken = ANONYMOUS_TOKEN
                         log.info("Token refreshed for goodsId: {}, retrying with new token", goodsId)
-                        Thread.sleep(1000) // 1초 대기 후 재시도
+                        Thread.sleep(RETRY_DELAY_MS)
                         
-                        restClient.get()
-                            .uri(apiUrl)
-                            .header("x-anonymous-token", newToken)
-                            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-                            .retrieve()
-                            .body(AblyApiResponse::class.java)
+                        makeApiRequest(apiUrl, newToken, AblyApiResponse::class.java)
                             ?: throw BusinessException(ErrorCode.CRAWLER_INVALID_RESPONSE)
                             
                     } catch (retryException: Exception) {
