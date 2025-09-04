@@ -278,7 +278,10 @@ class MusinsaProductService(
             // 이미 존재하는 상품인지 확인 (storeNumber 기준)
             val existingProduct = productExposedRepository.fetchProductByStoreNumber(
                 storeNumber = crawledProduct.storeNumber,
-                store = crawledProduct.store
+                store = crawledProduct.store,
+                firstOption = null,
+                secondOption = null,
+                thirdOption = null
             )
             
             if (existingProduct != null) {
@@ -414,7 +417,10 @@ class MusinsaProductService(
             // 이미 존재하는 상품인지 확인
             val existingProduct = productExposedRepository.fetchProductByStoreNumber(
                 storeNumber = storeNumber,
-                store = Store.MUSINSA
+                store = Store.MUSINSA,
+                firstOption = null,
+                secondOption = null,
+                thirdOption = null
             )
             
             if (existingProduct != null) {
@@ -488,7 +494,10 @@ class MusinsaProductService(
             // 이미 존재하는 상품인지 확인
             val existingProduct = productExposedRepository.fetchProductByStoreNumber(
                 storeNumber = storeNumber,
-                store = Store.MUSINSA
+                store = Store.MUSINSA,
+                firstOption = null,
+                secondOption = null,
+                thirdOption = null
             )
             
             if (existingProduct != null) {

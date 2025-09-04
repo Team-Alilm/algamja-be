@@ -207,7 +207,7 @@ class MusinsaProductServiceTest {
         whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
         whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
         whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
-        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
+        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any(), any(), any(), any())).thenReturn(null)
         whenever(productExposedRepository.save(
             name = any(),
             storeNumber = any(),
@@ -234,7 +234,7 @@ class MusinsaProductServiceTest {
         whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
         whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
         whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
-        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(existingProduct)
+        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any(), any(), any(), any())).thenReturn(existingProduct)
     }
 
     private fun setupMockForFailedCrawling() {
@@ -252,7 +252,7 @@ class MusinsaProductServiceTest {
         whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
         whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
         whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
-        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
+        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any(), any(), any(), any())).thenReturn(null)
         whenever(productExposedRepository.save(
             name = any(),
             storeNumber = any(),
@@ -281,7 +281,7 @@ class MusinsaProductServiceTest {
         whenever(crawlerRegistry.resolve(any())).thenReturn(productCrawler)
         whenever(productCrawler.normalize(any())).thenReturn("normalized_url")
         whenever(productCrawler.fetch(any())).thenReturn(crawledProduct)
-        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any())).thenReturn(null)
+        whenever(productExposedRepository.fetchProductByStoreNumber(any(), any(), any(), any(), any())).thenReturn(null)
         whenever(productExposedRepository.save(
             name = any(),
             storeNumber = any(),
