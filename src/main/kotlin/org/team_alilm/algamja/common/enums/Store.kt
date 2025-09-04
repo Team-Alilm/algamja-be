@@ -6,6 +6,5 @@ enum class Store(
 
     MUSINSA("https://www.musinsa.com"),
     ZIGZAG("https://www.zigzag.kr"),
-    CM29("https://www.29cm.co.kr"),
-    ABLY("https://www.a-bly.com");
+    CM29("https://www.29cm.co.kr");
 }

@@ -3,6 +3,7 @@ package org.team_alilm.algamja.basket.controller.dto.response
 import io.swagger.v3.oas.annotations.media.Schema
 import org.team_alilm.algamja.basket.entity.BasketRow
 import org.team_alilm.algamja.product.entity.ProductRow
+import org.team_alilm.algamja.common.enums.ProductCategory
 
 data class MyBasketProduct(
 
@@ -71,7 +72,7 @@ data class MyBasketProduct(
                 price = productRow.price.toLong(),
                 notification = basketRow.isNotification,
                 notificationDate = basketRow.notificationDate,
-                firstCategory = productRow.firstCategory,
+                firstCategory = ProductCategory.mapEnglishToKorean(productRow.firstCategory) ?: productRow.firstCategory,
                 firstOption = productRow.firstOption,
                 secondOption = productRow.secondOption,
                 thirdOption = productRow.thirdOption,
