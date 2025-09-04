@@ -10,7 +10,6 @@ import org.team_alilm.algamja.common.exception.BusinessException
 import org.team_alilm.algamja.common.exception.ErrorCode
 import org.team_alilm.algamja.product.crawler.CrawlerRegistry
 import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
-import org.team_alilm.algamja.product.crawler.impl.ably.AblyTokenManager
 import org.team_alilm.algamja.product.dto.AblyTodayResponse
 import org.team_alilm.algamja.product.repository.ProductExposedRepository
 import org.team_alilm.algamja.product.image.repository.ProductImageExposedRepository
@@ -23,9 +22,12 @@ class AblyProductService(
     private val crawlerRegistry: CrawlerRegistry,
     private val productExposedRepository: ProductExposedRepository,
     private val productImageExposedRepository: ProductImageExposedRepository,
-    private val ablyTokenManager: AblyTokenManager,
     private val objectMapper: ObjectMapper
 ) {
+
+    companion object {
+        private const val ANONYMOUS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiI1MjkwNzg3NTciLCJpYXQiOjE3NTYzNDM4ODh9.GG6bB2-q-cb47qD5UBwK5AQ4AzGLKSH3gZ0rsKWZR4Q"
+    }
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -414,7 +416,7 @@ class AblyProductService(
         
         try {
             // 1. 익명 토큰 획득
-            val token = ablyTokenManager.getToken()
+            val token = ANONYMOUS_TOKEN
             
             // 2. TODAY API에서 상품 SNO 수집
             val allProductSnos = fetchTodayProductSnos(token, count)
@@ -649,7 +651,7 @@ class AblyProductService(
         val productUrl = "https://a-bly.com/goods/$sno"
         
         // 토큰 상태 디버깅
-        val token = ablyTokenManager.getToken()
+        val token = ANONYMOUS_TOKEN
         log.debug("Using token for crawling sno={}: {}...", sno, token.take(20))
         
         val crawledProduct = crawlProductFromUrl(productUrl)

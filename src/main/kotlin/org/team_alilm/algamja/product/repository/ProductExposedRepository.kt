@@ -123,11 +123,17 @@ class ProductExposedRepository {
         val waitingCol = basketAgg[waitingCountExpr]
         val aggPidCol  = basketAgg[BasketTable.productId]
 
-        // 커서 처리: 마지막 대기자수와 상품 ID로 페이징
+        // 커서 처리: 마지막 대기자수와 상품 ID로 페이징 (NULL 처리 포함)
         val cursorCondition = if (param.lastWaitingCount != null && param.lastProductId != null) {
             val lastWaitingCount = param.lastWaitingCount
-            (waitingCol less lastWaitingCount) or 
-            ((waitingCol eq lastWaitingCount) and (table.id less param.lastProductId))
+            if (lastWaitingCount > 0) {
+                // 대기자수가 0보다 크면 NULL인 경우(대기자 0명)도 포함
+                (waitingCol less lastWaitingCount) or 
+                ((waitingCol eq lastWaitingCount) and (table.id less param.lastProductId))
+            } else {
+                // 대기자수가 0이면 ID로만 비교
+                table.id less param.lastProductId
+            }
         } else null
 
         val finalWhere = cursorCondition?.let { baseWhere and it } ?: baseWhere
