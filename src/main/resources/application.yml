@@ -1,0 +1,60 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  
+  application:
+    name: algamja
+    
+  # 공통 Jackson 설정
+  jackson:
+    default-property-inclusion: NON_NULL
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    property-naming-strategy: SNAKE_CASE
+    
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      force: true
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript
+  
+# 공통 관리 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+    os:
+      enabled: true
+      
+# 로깅 설정은 logback-spring.xml에서 통합 관리
+# - 프로파일별 다른 설정 (local: 컬러 콘솔, prod: 파일+압축)
+# - 비동기 로깅으로 성능 최적화
+# - 자동 로그 롤링 및 압축
+    
+# 애플리케이션 메타정보 (management.info에서 사용)
+info:
+  app:
+    name: "알감자 (Algamja)"
+    version: "@project.version@"
+    description: "상품 재입고 알림 서비스"
+    encoding: "@project.build.sourceEncoding@"
+    java:
+      version: "@java.version@"

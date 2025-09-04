@@ -1,20 +1,42 @@
+# ===================================
+# PRODUCTION 환경 설정
+# ===================================
+
 api:
   server-url: https://api.algamja.com
 
 spring:
+  # 프로덕션 데이터베이스 설정
   datasource:
     url: ENC(ZDpqWge75lwCaJv1jaPNNkx3tAzKi294wP7G31nhJK8Jd0kJvPDvgVQ0R99RxuoYI5WHKzOQLBclY2MiGsYXcl8WEPX5hA8EjCd+5ClhynvgZUUX9U2NCLZSUq2Che2t)
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ENC(kuV4NDaVfXCAy3oZAFZvsw==)
     password: ENC(eFBbprUYt6AEtXC9wqz5ebIg8oKK1bOr)
-
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+      connection-test-query: SELECT 1
+      
+  # 프로덕션 Redis 설정  
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:}
-      timeout: 1000ms
+      timeout: 3000ms
       database: 0
+      lettuce:
+        pool:
+          max-active: 16
+          max-wait: -1ms
+          max-idle: 8
+          min-idle: 4
+        shutdown-timeout: 100ms
 
   flyway:
     enabled: true

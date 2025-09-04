@@ -35,7 +35,7 @@ class BasketStockCheckScheduler(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     fun checkBasketProductAvailability() {
         val startTime = System.currentTimeMillis()
         log.info("========== Basket Product Stock Check Started ==========")

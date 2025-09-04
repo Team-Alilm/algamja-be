@@ -1,15 +1,12 @@
 package org.team_alilm.algamja.product.dto
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaRankingResponse(
     @JsonProperty("data")
     val data: MusinsaRankingData? = null
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaRankingData(
     @JsonProperty("list")
     val list: List<MusinsaRankingItem> = emptyList(),
@@ -17,7 +14,6 @@ data class MusinsaRankingData(
     val modules: List<MusinsaModule> = emptyList()
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaModule(
     @JsonProperty("type")
     val type: String? = null,
@@ -27,13 +23,11 @@ data class MusinsaModule(
     val multiColumn: MusinsaMultiColumn? = null
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaMultiColumn(
     @JsonProperty("list")
     val list: List<MusinsaProductItem> = emptyList()
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaProductItem(
     @JsonProperty("id")
     val id: String? = null,
@@ -45,7 +39,6 @@ data class MusinsaProductItem(
     val image: MusinsaProductImage? = null
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaProductInfo(
     @JsonProperty("brandName")
     val brandName: String? = null,
@@ -57,7 +50,6 @@ data class MusinsaProductInfo(
     val discountRatio: Int? = null
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaProductImage(
     @JsonProperty("url")
     val url: String? = null,
@@ -65,7 +57,6 @@ data class MusinsaProductImage(
     val rank: Int? = null
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaRankingItem(
     @JsonProperty("item")
     val item: MusinsaItem? = null,
@@ -73,7 +64,6 @@ data class MusinsaRankingItem(
     val ranking: Int? = null
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class MusinsaItem(
     @JsonProperty("item_no")
     val itemNo: String? = null,

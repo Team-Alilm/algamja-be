@@ -29,8 +29,11 @@
             </encoder>
         </appender>
 
-        <!-- 패키지별 레벨(필요 시 조절) -->
-        <logger name="org.team_alilm" level="INFO"/>
+        <!-- 패키지별 레벨(개발 환경) -->
+        <logger name="org.team_alilm" level="DEBUG"/>
+        <logger name="org.jetbrains.exposed.sql.addLogger" level="DEBUG"/>  <!-- Exposed SQL 로깅 -->
+        <logger name="org.springframework.security" level="DEBUG"/>
+        <logger name="org.springframework.web" level="DEBUG"/>
 
         <!-- 루트 로거: 콘솔만 -->
         <root level="INFO">
@@ -67,8 +70,10 @@
             <appender-ref ref="FILE"/>
         </appender>
 
-        <!-- 패키지별 레벨(필요 시 조절) -->
+        <!-- 패키지별 레벨(프로덕션 환경 - 보안 고려) -->
         <logger name="org.team_algamja" level="INFO"/>
+        <logger name="org.jetbrains.exposed.sql.addLogger" level="WARN"/>  <!-- 프로덕션에서는 SQL 로깅 최소화 -->
+        <logger name="org.springframework.security" level="WARN"/>
 
         <!-- 루트 로거: 파일만 -->
         <root level="INFO">

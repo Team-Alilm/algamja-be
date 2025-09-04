@@ -51,7 +51,6 @@ class ProductExposedRepositoryTest {
                 storeNumber = storeNumber,
                 brand = "테스트 브랜드",
                 thumbnailUrl = "https://example.com/thumbnail.jpg",
-                originalUrl = "https://www.musinsa.com/app/goods/1234567",
                 store = store,
                 price = BigDecimal("50000"),
                 firstCategory = "상의",
@@ -83,7 +82,7 @@ class ProductExposedRepositoryTest {
             val storeNumber = 1234568L
             val brand = "테스트 브랜드"
             val thumbnailUrl = "https://example.com/thumbnail.jpg"
-            val originalUrl = "https://www.musinsa.com/app/goods/1234568"
+            // val originalUrl = "https://www.musinsa.com/app/goods/1234568"
             val store = Store.MUSINSA
             val price = BigDecimal("50000")
             val firstCategory = "상의"
@@ -98,7 +97,6 @@ class ProductExposedRepositoryTest {
                 storeNumber = storeNumber,
                 brand = brand,
                 thumbnailUrl = thumbnailUrl,
-                originalUrl = originalUrl,
                 store = store,
                 price = price,
                 firstCategory = firstCategory,
@@ -130,7 +128,7 @@ class ProductExposedRepositoryTest {
             val storeNumber = 2345678L
             val brand = "브랜드"
             val thumbnailUrl = "https://example.com/thumbnail.jpg"
-            val originalUrl = "https://www.musinsa.com/app/goods/2345678"
+            // val originalUrl = "https://www.musinsa.com/app/goods/2345678"
             val store = Store.MUSINSA
             val price = BigDecimal("30000")
             val firstCategory = "기타"
@@ -145,7 +143,6 @@ class ProductExposedRepositoryTest {
                 storeNumber = storeNumber,
                 brand = brand,
                 thumbnailUrl = thumbnailUrl,
-                originalUrl = originalUrl,
                 store = store,
                 price = price,
                 firstCategory = firstCategory,
@@ -171,7 +168,7 @@ class ProductExposedRepositoryTest {
             val storeNumber = 3456789L
             val brand = "브랜드"
             val thumbnailUrl = "https://example.com/thumbnail.jpg"
-            val originalUrl = "https://www.musinsa.com/app/goods/3456789"
+            // val originalUrl = "https://www.musinsa.com/app/goods/3456789"
             val store = Store.MUSINSA
             val price = BigDecimal("80000")
             val firstCategory = "신발"
@@ -186,7 +183,6 @@ class ProductExposedRepositoryTest {
                 storeNumber = storeNumber,
                 brand = brand,
                 thumbnailUrl = thumbnailUrl,
-                originalUrl = originalUrl,
                 store = store,
                 price = price,
                 firstCategory = firstCategory,
@@ -216,7 +212,7 @@ class ProductExposedRepositoryTest {
             val storeNumber = 4567890L
             val brand = "브랜드"
             val thumbnailUrl = "https://example.com/thumbnail.jpg"
-            val originalUrl = "https://www.musinsa.com/app/goods/4567890"
+            // val originalUrl = "https://www.musinsa.com/app/goods/4567890"
             val store = Store.MUSINSA
             val price = BigDecimal("40000")
             val firstCategory = "상의"
@@ -232,7 +228,6 @@ class ProductExposedRepositoryTest {
                 storeNumber = storeNumber,
                 brand = brand,
                 thumbnailUrl = thumbnailUrl,
-                originalUrl = originalUrl,
                 store = store,
                 price = price,
                 firstCategory = firstCategory,
@@ -250,8 +245,7 @@ class ProductExposedRepositoryTest {
                     storeNumber = storeNumber,
                     brand = brand,
                     thumbnailUrl = thumbnailUrl,
-                    originalUrl = originalUrl,
-                    store = store,
+                        store = store,
                     price = price,
                     firstCategory = firstCategory,
                     secondCategory = secondCategory,

@@ -57,13 +57,15 @@ class BasketServiceTest {
             name = "장바구니 상품",
             brand = "테스트 브랜드",
             thumbnailUrl = "https://example.com/basket-item.jpg",
-            store = Store.ABLY,
+            store = Store.MUSINSA,
             firstCategory = "의류",
             secondCategory = "상의",
             price = BigDecimal("15000"),
             firstOption = "화이트",
             secondOption = "L",
             thirdOption = "",
+            isAvailable = false,
+            lastCheckedAt = null,
             isDelete = false,
             createdDate = System.currentTimeMillis(),
             lastModifiedDate = System.currentTimeMillis()
@@ -86,7 +88,7 @@ class BasketServiceTest {
         assertEquals(productId, basketProduct.productId)
         assertEquals("장바구니 상품", basketProduct.name)
         assertEquals("테스트 브랜드", basketProduct.brand)
-        assertEquals("ABLY", basketProduct.store)
+        assertEquals("무신사", basketProduct.store)
         assertEquals(15000L, basketProduct.price)
         assertEquals(3L, basketProduct.waitingCount)
         assertEquals(false, basketProduct.notification)
