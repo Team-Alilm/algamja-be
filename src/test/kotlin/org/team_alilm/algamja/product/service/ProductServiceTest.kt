@@ -67,7 +67,7 @@ class ProductServiceTest {
         assertEquals(productId, result.id)
         assertEquals("테스트 상품", result.name)
         assertEquals("테스트 브랜드", result.brand)
-        assertEquals("무신사", result.store)
+        assertEquals("MUSINSA", result.store)
         assertEquals(10000L, result.price)
         assertEquals(5L, result.waitingCount)
     }
@@ -134,7 +134,7 @@ class ProductServiceTest {
         assertEquals(productId, result!!.productId)
         assertEquals("오래 기다린 상품", result.name)
         assertEquals("테스트 브랜드", result.brand)
-        assertEquals("무신사", result.store)
+        assertEquals("MUSINSA", result.store)
         assertEquals(7L, result.waitingDays)
         assertEquals(basketCreatedTime, result.addedDate)
     }
