@@ -160,6 +160,12 @@ jobs:
             # 새로운 이미지 태그 설정 (latest 사용)
             echo "IMAGE_TAG=latest" > .env
 
+            # 환경 확인 (디버깅용)
+            echo "🔧 Current environment:"
+            echo "  - Image: ghcr.io/team-alilm/algamja-be:latest"
+            echo "  - Directory: $(pwd)"
+            ls -la .env* || true
+            
             # GHCR 로그인 (재시도 로직)
             for i in 1 2 3; do
               docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && break
@@ -174,6 +180,18 @@ jobs:
 
             # 컨테이너 상태 확인
             docker compose ps
+            
+            # 애플리케이션이 완전히 시작될 때까지 대기 (Spring Boot 시작 시간 고려)
+            echo "⏳ Waiting for application to start (30 seconds)..."
+            sleep 30
+            
+            # 컨테이너 로그 확인 (디버깅용)
+            echo "📋 App container logs:"
+            docker logs app --tail 50 || true
+            
+            # 컨테이너 상태 재확인
+            echo "🔍 Container status:"
+            docker compose ps
 
             # 이전 이미지 정리 (디스크 공간 확보)
             docker system prune -af --volumes || true
@@ -187,8 +205,8 @@ jobs:
           script: |
             set -e
             echo "🏥 Starting health check for ${{ env.HEALTH_URL }}"
-            echo "⏳ Initial warm-up (15 seconds)..."
-            sleep 15
+            echo "⏳ Initial warm-up (45 seconds for Spring Boot startup)..."
+            sleep 45
 
             # 최대 2분 동안 health check 시도
             for i in $(seq 1 24); do
@@ -207,6 +225,12 @@ jobs:
             done
 
             echo "💥 Health check failed after 2 minutes"
+            echo "📊 Checking container and network status:"
+            docker compose ps
+            docker compose logs app --tail 100 || true
+            docker compose logs nginx --tail 50 || true
+            netstat -tlpn | grep -E ':80|:443|:8080' || true
+            curl -I http://localhost:8080/actuator/health || true
             exit 1
 
       - name: Rollback on deployment failure
