@@ -2,6 +2,7 @@ package org.team_alilm.algamja.common.util
 
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig
+import org.slf4j.LoggerFactory
 
 /**
  * Jasypt 암호화 유틸리티
@@ -22,16 +23,18 @@ import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig
  */
 object JasyptEncryptUtil {
     
+    private val logger = LoggerFactory.getLogger(JasyptEncryptUtil::class.java)
+    
     fun main(args: Array<String>) {
         val password = System.getenv("JASYPT_PASSWORD") 
             ?: throw IllegalStateException("JASYPT_PASSWORD environment variable is required")
         val algorithm = System.getenv("JASYPT_ALGORITHM") ?: "PBEWithMD5AndDES"
         
         if (args.isEmpty()) {
-            println("Usage: JasyptEncryptUtil <text-to-encrypt>")
-            println("Environment variables required:")
-            println("  JASYPT_PASSWORD: Encryption password")
-            println("  JASYPT_ALGORITHM: Encryption algorithm (optional, default: PBEWithMD5AndDES)")
+            logger.info("Usage: JasyptEncryptUtil <text-to-encrypt>")
+            logger.info("Environment variables required:")
+            logger.info("  JASYPT_PASSWORD: Encryption password")
+            logger.info("  JASYPT_ALGORITHM: Encryption algorithm (optional, default: PBEWithMD5AndDES)")
             return
         }
         
@@ -41,13 +44,13 @@ object JasyptEncryptUtil {
         val encrypted = encryptor.encrypt(textToEncrypt)
         val decrypted = encryptor.decrypt(encrypted)
         
-        println("========================================")
-        println("Original: $textToEncrypt")
-        println("Encrypted: ENC($encrypted)")
-        println("Decrypted: $decrypted")
-        println("========================================")
-        println("\nAdd to application.yml:")
-        println("  your.property: ENC($encrypted)")
+        logger.info("========================================")
+        logger.info("Original: $textToEncrypt")
+        logger.info("Encrypted: ENC($encrypted)")
+        logger.info("Decrypted: $decrypted")
+        logger.info("========================================")
+        logger.info("\nAdd to application.yml:")
+        logger.info("  your.property: ENC($encrypted)")
     }
     
     private fun createEncryptor(password: String, algorithm: String): PooledPBEStringEncryptor {

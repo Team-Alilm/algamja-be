@@ -1,11 +1,14 @@
 package org.team_alilm.algamja.email.service
 
 import jakarta.mail.internet.MimeMessage
+import jakarta.mail.MessagingException
 import org.slf4j.LoggerFactory
+import org.springframework.mail.MailException
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import org.team_alilm.algamja.product.entity.ProductRow
+import java.io.UnsupportedEncodingException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -31,7 +34,13 @@ class EmailService(
             
             mailSender.send(message)
             log.info("Email sent successfully to: {}", email)
-        } catch (e: Exception) {
+        } catch (e: MessagingException) {
+            log.error("Failed to create or configure email message for: {}", email, e)
+            throw e
+        } catch (e: UnsupportedEncodingException) {
+            log.error("Encoding issue while sending email to: {}", email, e)
+            throw e
+        } catch (e: MailException) {
             log.error("Failed to send email to: {}", email, e)
             throw e
         }
