@@ -1,0 +1,99 @@
+# Detekt 정적 분석 설정
+build:
+  maxIssues: 0 # CI/CD에서 실패하지 않도록 일단 경고만
+
+config:
+  validation: true
+  warningsAsErrors: false
+  checkExhaustiveness: false
+
+processors:
+  active: true
+
+console-reports:
+  active: true
+
+output-reports:
+  active: true
+
+comments:
+  active: true
+  CommentOverPrivateFunction:
+    active: false
+  CommentOverPrivateProperty:
+    active: false
+  UndocumentedPublicClass:
+    active: false
+  UndocumentedPublicFunction:
+    active: false
+
+complexity:
+  active: true
+  ComplexCondition:
+    threshold: 4
+  ComplexInterface:
+    threshold: 10
+  ComplexMethod:
+    threshold: 15
+  LongParameterList:
+    functionThreshold: 6
+    constructorThreshold: 7
+  NestedBlockDepth:
+    threshold: 4
+
+coroutines:
+  active: true
+
+empty-blocks:
+  active: true
+
+exceptions:
+  active: true
+  ExceptionRaisedInUnexpectedLocation:
+    methodNames: 
+      - 'toString'
+      - 'hashCode'
+      - 'equals'
+      - 'finalize'
+
+formatting:
+  active: true
+  android: false
+  autoCorrect: true
+
+naming:
+  active: true
+  ClassNaming:
+    classPattern: '[A-Z][a-zA-Z0-9]*'
+  EnumNaming:
+    enumEntryPattern: '[A-Z][_a-zA-Z0-9]*'
+  FunctionNaming:
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+  PackageNaming:
+    packagePattern: '[a-z]+(\.[a-z][a-zA-Z0-9]*)*'
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][_A-Z0-9]*'
+    propertyPattern: '[A-Za-z][_A-Za-z0-9]*'
+  VariableNaming:
+    variablePattern: '[a-z][a-zA-Z0-9]*'
+
+performance:
+  active: true
+
+potential-bugs:
+  active: true
+
+style:
+  active: true
+  MaxLineLength:
+    maxLineLength: 120
+  MagicNumber:
+    active: false # Spring Boot에서는 포트, 상수 등이 많아서 비활성화
+  ReturnCount:
+    max: 3
+    excludedFunctions: 
+      - 'equals'
+  ThrowsCount:
+    max: 2
+  UnusedImports:
+    active: true

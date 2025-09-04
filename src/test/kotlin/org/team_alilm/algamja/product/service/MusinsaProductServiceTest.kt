@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.mockito.kotlin.*
+import org.mockito.kotlin.anyOrNull
 import org.springframework.web.client.RestClient
 import org.team_alilm.algamja.common.enums.Store
 import org.team_alilm.algamja.product.crawler.CrawlerRegistry
@@ -65,7 +66,6 @@ class MusinsaProductServiceTest {
                 storeNumber = any(),
                 brand = any(), 
                 thumbnailUrl = any(),
-                originalUrl = any(),
                 store = any(),
                 price = any(),
                 firstCategory = any(),
@@ -95,7 +95,6 @@ class MusinsaProductServiceTest {
                 storeNumber = any(),
                 brand = any(), 
                 thumbnailUrl = any(),
-                originalUrl = any(),
                 store = any(),
                 price = any(),
                 firstCategory = any(),
@@ -124,7 +123,6 @@ class MusinsaProductServiceTest {
                 storeNumber = any(),
                 brand = any(), 
                 thumbnailUrl = any(),
-                originalUrl = any(),
                 store = any(),
                 price = any(),
                 firstCategory = any(),
@@ -177,7 +175,6 @@ class MusinsaProductServiceTest {
                 storeNumber = eq(crawledProduct.storeNumber),
                 brand = eq(crawledProduct.brand),
                 thumbnailUrl = eq(crawledProduct.thumbnailUrl),
-                originalUrl = any(),
                 store = eq(crawledProduct.store),
                 price = eq(crawledProduct.price),
                 firstCategory = eq(crawledProduct.firstCategory),
@@ -191,7 +188,6 @@ class MusinsaProductServiceTest {
             verify(productImageExposedRepository, times(crawledProduct.imageUrls.size)).save(
                 productId = eq(savedProduct.id),
                 imageUrl = any(),
-                imageOrder = any()
             )
         }
 
@@ -218,7 +214,6 @@ class MusinsaProductServiceTest {
                 storeNumber = any(),
                 brand = any(),
                 thumbnailUrl = any(),
-                originalUrl = any(),
                 store = any(),
                 price = any(),
                 firstCategory = any(),
@@ -274,7 +269,6 @@ class MusinsaProductServiceTest {
             storeNumber = any(),
             brand = any(), 
             thumbnailUrl = any(),
-            originalUrl = any(),
             store = any(),
             price = any(),
             firstCategory = any(),
@@ -286,7 +280,6 @@ class MusinsaProductServiceTest {
         whenever(productImageExposedRepository.save(
             productId = any(),
             imageUrl = any(),
-            imageOrder = any()
         )).thenReturn(savedImage)
     }
 
@@ -315,7 +308,6 @@ class MusinsaProductServiceTest {
             storeNumber = any(),
             brand = any(), 
             thumbnailUrl = any(),
-            originalUrl = any(),
             store = any(),
             price = any(),
             firstCategory = any(),
@@ -342,7 +334,6 @@ class MusinsaProductServiceTest {
             storeNumber = any(),
             brand = any(), 
             thumbnailUrl = any(),
-            originalUrl = any(),
             store = any(),
             price = any(),
             firstCategory = any(),
@@ -354,7 +345,6 @@ class MusinsaProductServiceTest {
         whenever(productImageExposedRepository.save(
             productId = any(),
             imageUrl = any(),
-            imageOrder = any()
         )).thenReturn(savedImage)
     }
 
@@ -392,6 +382,8 @@ class MusinsaProductServiceTest {
             firstOption = "S,M,L",
             secondOption = "블랙,화이트",
             thirdOption = null,
+            isAvailable = false,
+            lastCheckedAt = null,
             createdDate = System.currentTimeMillis(),
             lastModifiedDate = System.currentTimeMillis(),
             isDelete = false

@@ -1,0 +1,103 @@
+name: CD - Staging Deployment
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    types: [ closed ]
+    branches: [ "develop" ]
+
+# 스테이징 배포는 더 관대하게 (테스트 실패해도 배포 가능)
+concurrency:
+  group: deployment-staging
+  cancel-in-progress: true
+
+jobs:
+  # 스테이징은 빌드만 확인하고 배포
+  build-and-deploy-staging:
+    name: Build & Deploy to Staging
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    environment:
+      name: staging
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create FirebaseSecretKey.json
+        run: |
+          set -e
+          mkdir -p src/main/resources/firebase
+          echo "${{ secrets.FIREBASE_KEY_B64 }}" | base64 --decode > src/main/resources/firebase/FirebaseSecretKey.json
+          grep -q '"type": "service_account"' src/main/resources/firebase/FirebaseSecretKey.json
+          echo "FirebaseSecretKey.json ready for staging build."
+
+      - name: Build verification (테스트 제외)
+        run: ./gradlew build -x test
+
+      - name: Set up Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=staging-
+            type=raw,value=staging,enable={{is_default_branch}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+          driver: docker-container
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+      # 스테이징 서버 배포 (필요시 별도 서버 설정)
+      - name: Deploy to Staging (Optional)
+        run: |
+          echo "🚀 Staging deployment would happen here"
+          echo "📦 Built image: ${{ steps.meta.outputs.tags }}"
+          echo "💡 Configure staging server secrets if needed"

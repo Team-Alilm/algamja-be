@@ -10,6 +10,7 @@ import org.team_alilm.algamja.common.enums.Sort
 import org.team_alilm.algamja.common.enums.Store
 import org.team_alilm.algamja.common.exception.BusinessException
 import org.team_alilm.algamja.product.controller.v1.dto.param.ProductListParam
+import org.team_alilm.algamja.product.controller.v1.dto.param.ProductCountParam
 import org.team_alilm.algamja.product.crawler.CrawlerRegistry
 import org.team_alilm.algamja.product.entity.ProductRow
 import org.team_alilm.algamja.product.image.repository.ProductImageExposedRepository
@@ -40,13 +41,15 @@ class ProductServiceTest {
             name = "테스트 상품",
             brand = "테스트 브랜드",
             thumbnailUrl = "https://example.com/image.jpg",
-            store = Store.ABLY,
+            store = Store.MUSINSA,
             firstCategory = "의류",
             secondCategory = "상의",
             price = BigDecimal("10000"),
             firstOption = "블랙",
             secondOption = "L",
             thirdOption = "",
+            isAvailable = false,
+            lastCheckedAt = null,
             isDelete = false,
             createdDate = System.currentTimeMillis(),
             lastModifiedDate = System.currentTimeMillis()
@@ -64,7 +67,7 @@ class ProductServiceTest {
         assertEquals(productId, result.id)
         assertEquals("테스트 상품", result.name)
         assertEquals("테스트 브랜드", result.brand)
-        assertEquals("ABLY", result.store)
+        assertEquals("무신사", result.store)
         assertEquals(10000L, result.price)
         assertEquals(5L, result.waitingCount)
     }
@@ -106,13 +109,15 @@ class ProductServiceTest {
             name = "오래 기다린 상품",
             brand = "테스트 브랜드",
             thumbnailUrl = "https://example.com/delayed.jpg",
-            store = Store.ABLY,
+            store = Store.MUSINSA,
             firstCategory = "의류",
             secondCategory = "바지",
             price = BigDecimal("25000"),
             firstOption = "네이비",
             secondOption = "M",
             thirdOption = "",
+            isAvailable = false,
+            lastCheckedAt = null,
             isDelete = false,
             createdDate = System.currentTimeMillis(),
             lastModifiedDate = System.currentTimeMillis()
@@ -129,7 +134,7 @@ class ProductServiceTest {
         assertEquals(productId, result!!.productId)
         assertEquals("오래 기다린 상품", result.name)
         assertEquals("테스트 브랜드", result.brand)
-        assertEquals("ABLY", result.store)
+        assertEquals("무신사", result.store)
         assertEquals(7L, result.waitingDays)
         assertEquals(basketCreatedTime, result.addedDate)
     }
@@ -178,14 +183,9 @@ class ProductServiceTest {
     @Test
     fun `should return product count successfully`() {
         // Given
-        val param = ProductListParam(
+        val param = ProductCountParam(
             keyword = null,
-            size = 10,
-            category = null,
-            sort = Sort.CREATED_DATE_DESC,
-            lastProductId = null,
-            lastWaitingCount = null,
-            lastPrice = null
+            category = null
         )
         val expectedCount = 42L
 

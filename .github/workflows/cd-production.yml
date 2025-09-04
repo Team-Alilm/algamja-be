@@ -1,0 +1,239 @@
+name: CD - Production Deployment
+
+on:
+  # main 브랜치에 push되거나 main으로 PR이 merge될 때만 배포
+  push:
+    branches: [ "main" ]
+  pull_request:
+    types: [ closed ]
+    branches: [ "main" ]
+
+# 배포는 순차적으로 진행
+concurrency:
+  group: deployment-production
+  cancel-in-progress: false
+
+jobs:
+  # 배포 전 필수 검증 - 테스트가 반드시 통과해야 함
+  pre-deployment-validation:
+    name: Pre-deployment Validation
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create FirebaseSecretKey.json (for tests)
+        run: |
+          set -e
+          mkdir -p src/main/resources/firebase
+          echo "${{ secrets.FIREBASE_KEY_B64 }}" | base64 --decode > src/main/resources/firebase/FirebaseSecretKey.json
+          grep -q '"type": "service_account"' src/main/resources/firebase/FirebaseSecretKey.json
+          echo "FirebaseSecretKey.json ready for validation tests."
+
+      - name: Run critical tests (must pass for deployment)
+        run: ./gradlew test --parallel
+
+      - name: Build verification
+        run: ./gradlew build -x test
+
+  # Docker 이미지 빌드 및 푸시
+  build-and-push:
+    name: Build & Push Docker Image
+    needs: pre-deployment-validation
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create FirebaseSecretKey.json (for JAR resources)
+        run: |
+          set -e
+          mkdir -p src/main/resources/firebase
+          echo "${{ secrets.FIREBASE_KEY_B64 }}" | base64 --decode > src/main/resources/firebase/FirebaseSecretKey.json
+          grep -q '"type": "service_account"' src/main/resources/firebase/FirebaseSecretKey.json
+          echo "FirebaseSecretKey.json ready for Docker build."
+
+      - name: Set up Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+          driver: docker-container
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+  # EC2 배포
+  deploy-to-ec2:
+    name: Deploy to EC2
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+      url: https://api.algamja.com
+
+    env:
+      HEALTH_URL: https://api.algamja.com/actuator/health
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy compose & nginx to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml,nginx/**"
+          target: "${{ secrets.EC2_APP_DIR }}"
+
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd "${{ secrets.EC2_APP_DIR }}"
+            
+            # 현재 실행 중인 컨테이너 정보 백업 (롤백용)
+            docker compose ps --format json > .previous-state.json || echo "[]" > .previous-state.json
+            
+            # 새로운 이미지 태그 설정
+            echo "IMAGE_TAG=${{ github.sha }}" > .env
+
+            # GHCR 로그인 (재시도 로직)
+            for i in 1 2 3; do
+              docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && break
+              echo "Docker login retry $i"; sleep 2
+            done
+
+            # 새 이미지 pull
+            docker compose pull
+
+            # 무중단 배포 (새 컨테이너 시작)
+            docker compose up -d --no-deps --remove-orphans
+
+            # 컨테이너 상태 확인
+            docker compose ps
+
+            # 이전 이미지 정리 (디스크 공간 확보)
+            docker system prune -af --volumes || true
+
+      - name: Health check
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            echo "🏥 Starting health check for ${{ env.HEALTH_URL }}"
+            echo "⏳ Initial warm-up (15 seconds)..."
+            sleep 15
+
+            # 최대 2분 동안 health check 시도
+            for i in $(seq 1 24); do
+              echo "🔍 Health check attempt $i/24..."
+              
+              response=$(curl -sk -w "HTTPSTATUS:%{http_code}" "${{ env.HEALTH_URL }}" || echo "HTTPSTATUS:000")
+              http_code=$(echo $response | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+              
+              if [ "$http_code" = "200" ]; then
+                echo "✅ Health check passed! Application is healthy."
+                exit 0
+              fi
+              
+              echo "❌ Health check failed with HTTP $http_code"
+              sleep 5
+            done
+
+            echo "💥 Health check failed after 2 minutes"
+            exit 1
+
+      - name: Rollback on deployment failure
+        if: failure()
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd "${{ secrets.EC2_APP_DIR }}"
+            echo "🔄 Rolling back to previous version..."
+            
+            # latest 태그로 롤백
+            echo "IMAGE_TAG=latest" > .env
+            
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} || true
+            docker compose pull
+            docker compose up -d --no-deps --remove-orphans
+            docker compose ps
+            
+            echo "🔄 Rollback completed"
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "🎉 Deployment to production successful!"
+          echo "🌐 Application URL: https://api.algamja.com"
+          echo "📊 Health URL: ${{ env.HEALTH_URL }}"
