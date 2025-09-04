@@ -6,9 +6,6 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.openqa.selenium.support.ui.ExpectedConditions
-import org.openqa.selenium.devtools.DevTools
-import org.openqa.selenium.devtools.v120.network.Network
-import org.openqa.selenium.devtools.v120.network.model.Headers
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.team_alilm.algamja.common.exception.BusinessException
@@ -173,36 +170,24 @@ class AblySeleniumCrawler : ProductCrawler {
     
     private fun setupCloudflareBypass(driver: WebDriver) {
         try {
+            // 자바스크립트를 통한 navigator 속성 숨기기
             if (driver is ChromeDriver) {
-                val devTools: DevTools = driver.devTools
-                devTools.createSession()
+                driver.executeScript("""
+                    Object.defineProperty(navigator, 'webdriver', {
+                        get: () => undefined
+                    });
+                """)
                 
-                // 네트워크 헤더 설정
-                val headers = mapOf(
-                    "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-                    "Accept-Language" to "ko-KR,ko;q=0.9,en;q=0.8",
-                    "Accept-Encoding" to "gzip, deflate, br",
-                    "Connection" to "keep-alive",
-                    "Upgrade-Insecure-Requests" to "1",
-                    "Sec-Fetch-Dest" to "document",
-                    "Sec-Fetch-Mode" to "navigate", 
-                    "Sec-Fetch-Site" to "none",
-                    "Sec-Fetch-User" to "?1",
-                    "Cache-Control" to "max-age=0"
-                )
+                driver.executeScript("""
+                    Object.defineProperty(navigator, 'plugins', {
+                        get: () => [1, 2, 3, 4, 5]
+                    });
+                """)
                 
-                devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()))
-                devTools.send(Network.setUserAgentOverride(
-                    REAL_USER_AGENTS[Random.nextInt(REAL_USER_AGENTS.size)],
-                    Optional.of("ko-KR,ko;q=0.9,en;q=0.8"),
-                    Optional.empty(),
-                    Optional.empty()
-                ))
-                
-                log.debug("DevTools configured for Cloudflare bypass")
+                log.debug("JavaScript-based Cloudflare bypass configured")
             }
         } catch (e: Exception) {
-            log.warn("Failed to setup DevTools for Cloudflare bypass: {}", e.message)
+            log.warn("Failed to setup Cloudflare bypass: {}", e.message)
         }
     }
     
@@ -228,7 +213,7 @@ class AblySeleniumCrawler : ProductCrawler {
         }
         
         log.warn("Failed to extract product name, using page title")
-        return driver.title.substringBefore(" - ").trim().takeIf { it.isNotEmpty() } ?: "Unknown Product"
+        return driver.title?.substringBefore(" - ")?.trim()?.takeIf { it.isNotEmpty() } ?: "Unknown Product"
     }
     
     private fun extractBrand(driver: WebDriver): String {

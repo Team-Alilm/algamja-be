@@ -59,6 +59,11 @@ dependencies {
     implementation(libs.spring.boot.starter.mail)
     implementation(libs.slack.api.client)
     implementation(libs.spring.boot.starter.validation)
+    
+    // Selenium WebDriver
+    implementation("org.seleniumhq.selenium:selenium-java:4.15.0")
+    implementation("org.seleniumhq.selenium:selenium-chrome-driver:4.15.0")
+    implementation("org.seleniumhq.selenium:selenium-support:4.15.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

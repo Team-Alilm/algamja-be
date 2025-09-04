@@ -18,7 +18,7 @@ import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
  */
 @Component
 @Order(1) // AblyCrawler보다 우선순위를 높게 설정
-@ConditionalOnProperty(name = "crawler.ably.fallback-to-selenium", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = ["crawler.ably.fallback-to-selenium"], havingValue = "true", matchIfMissing = false)
 class AblyHybridCrawler(
     private val ablyCrawler: AblyCrawler,
     private val ablySeleniumCrawler: AblySeleniumCrawler
