@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.team_alilm.algamja.basket.repository.BasketExposedRepository
 import org.team_alilm.algamja.common.enums.Sort
+import org.team_alilm.algamja.common.enums.ProductCategory
 import org.team_alilm.algamja.common.exception.BusinessException
 import org.team_alilm.algamja.common.exception.ErrorCode
 import org.team_alilm.algamja.product.controller.v1.dto.param.ProductListParam
@@ -92,8 +93,8 @@ class ProductService(
                 thumbnailUrl = imagesByProductId[row.id]?.firstOrNull() ?: row.thumbnailUrl,
                 store = row.store.name,
                 price = row.price.toLong(),
-                firstCategory = row.firstCategory,
-                secondCategory = row.secondCategory,
+                firstCategory = ProductCategory.mapEnglishToKorean(row.firstCategory) ?: row.firstCategory,
+                secondCategory = ProductCategory.mapEnglishToKorean(row.secondCategory) ?: row.secondCategory,
                 firstOption = row.firstOption,
                 secondOption = row.secondOption,
                 thirdOption = row.thirdOption,

@@ -37,5 +37,13 @@ enum class ProductCategory(val englishKey: String, val koreanNames: List<String>
         fun fromEnglishKey(key: String?): ProductCategory? {
             return values().find { it.englishKey == key }
         }
+        
+        /**
+         * 영어 키를 대표 한국어명으로 변환
+         */
+        fun mapEnglishToKorean(englishKey: String?): String? {
+            if (englishKey.isNullOrBlank()) return null
+            return fromEnglishKey(englishKey)?.koreanNames?.firstOrNull()
+        }
     }
 }

@@ -17,7 +17,6 @@ class ProductStockCheckService(
     fun checkProductAvailability(product: ProductRow): Boolean {
         return when (product.store) {
             Store.MUSINSA -> checkMusinsaAvailability(product)
-            Store.ABLY -> checkAblyAvailability(product)
             Store.ZIGZAG -> checkZigzagAvailability(product)
             Store.CM29 -> checkCm29Availability(product)
         }
@@ -104,11 +103,6 @@ class ProductStockCheckService(
         return false
     }
 
-    private fun checkAblyAvailability(product: ProductRow): Boolean {
-        // TODO: Ably API 구현
-        log.debug("Ably stock check not implemented yet for product: ${product.storeNumber}")
-        return false
-    }
 
     private fun checkZigzagAvailability(product: ProductRow): Boolean {
         // TODO: Zigzag API 구현

@@ -269,7 +269,6 @@ class ProductExposedRepository {
         
         // 스토어별 옵션 처리 전략 결정
         val optionCombinations = when (store) {
-            Store.ABLY -> generateAblyOptionCombinations(firstOptions, secondOptions, thirdOptions)
             Store.MUSINSA -> generateMusinsaOptionCombinations(firstOptions, secondOptions, thirdOptions)
             else -> generateDefaultOptionCombinations(firstOptions, secondOptions, thirdOptions)
         }
@@ -321,37 +320,6 @@ class ProductExposedRepository {
             .updateAudited({ ProductTable.id eq productId }) { row ->
                 row[ProductTable.price] = newPrice
             }
-    }
-    
-    /** 에이블리용 옵션 조합 생성 - 각 옵션을 개별 레코드로 저장 */
-    private fun generateAblyOptionCombinations(
-        firstOptions: List<String>,
-        secondOptions: List<String>,
-        thirdOptions: List<String>
-    ): List<Triple<String?, String?, String?>> {
-        val combinations = mutableListOf<Triple<String?, String?, String?>>()
-        
-        // 옵션이 하나도 없는 경우 - 기본 상품 하나 생성
-        if (firstOptions.isEmpty() && secondOptions.isEmpty() && thirdOptions.isEmpty()) {
-            combinations.add(Triple(null, null, null))
-            return combinations
-        }
-        
-        // 첫 번째 옵션이 있는 경우
-        val actualFirstOptions = firstOptions.ifEmpty { listOf(null) }
-        val actualSecondOptions = secondOptions.ifEmpty { listOf(null) }
-        val actualThirdOptions = thirdOptions.ifEmpty { listOf(null) }
-        
-        // 모든 옵션 조합 생성 (Cartesian Product)
-        actualFirstOptions.forEach { first ->
-            actualSecondOptions.forEach { second ->
-                actualThirdOptions.forEach { third ->
-                    combinations.add(Triple(first, second, third))
-                }
-            }
-        }
-        
-        return combinations
     }
     
     /** 무신사용 옵션 조합 생성 - 전체 조합 생성 */
@@ -428,17 +396,4 @@ class ProductExposedRepository {
             .where { ProductTable.isDelete eq false }
             .map(ProductRow::from)
     
-    /** 에이블리 상품 가격 업데이트용 배치 조회 */
-    fun fetchAblyProductsForPriceUpdateBatch(batchSize: Int, offset: Int): List<ProductRow> {
-        return ProductTable
-            .selectAll()
-            .where { 
-                (ProductTable.store eq Store.ABLY) and 
-                (ProductTable.isDelete eq false) 
-            }
-            .orderBy(ProductTable.id)
-            .limit(batchSize)
-            .offset(offset.toLong())
-            .map(ProductRow::from)
-    }
 }
