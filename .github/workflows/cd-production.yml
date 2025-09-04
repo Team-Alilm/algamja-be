@@ -157,8 +157,8 @@ jobs:
             # 현재 실행 중인 컨테이너 정보 백업 (롤백용)
             docker compose ps --format json > .previous-state.json || echo "[]" > .previous-state.json
             
-            # 새로운 이미지 태그 설정
-            echo "IMAGE_TAG=${{ github.sha }}" > .env
+            # 새로운 이미지 태그 설정 (latest 사용)
+            echo "IMAGE_TAG=latest" > .env
 
             # GHCR 로그인 (재시도 로직)
             for i in 1 2 3; do
