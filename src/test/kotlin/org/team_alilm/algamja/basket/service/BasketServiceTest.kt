@@ -88,7 +88,7 @@ class BasketServiceTest {
         assertEquals(productId, basketProduct.productId)
         assertEquals("장바구니 상품", basketProduct.name)
         assertEquals("테스트 브랜드", basketProduct.brand)
-        assertEquals("무신사", basketProduct.store)
+        assertEquals("MUSINSA", basketProduct.store)
         assertEquals(15000L, basketProduct.price)
         assertEquals(3L, basketProduct.waitingCount)
         assertEquals(false, basketProduct.notification)
