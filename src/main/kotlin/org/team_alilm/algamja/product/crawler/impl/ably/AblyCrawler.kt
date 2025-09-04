@@ -32,9 +32,18 @@ class AblyCrawler(
 
     companion object {
         private const val ANONYMOUS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbm9ueW1vdXNfaWQiOiI1MjkwNzg3NTciLCJpYXQiOjE3NTYzNDM4ODh9.GG6bB2-q-cb47qD5UBwK5AQ4AzGLKSH3gZ0rsKWZR4Q"
-        private const val USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        
+        // 다양한 User-Agent 풀로 순환 사용
+        private val USER_AGENTS = listOf(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
+        
         private const val DEFAULT_BRAND = "Unknown"
-        private const val RETRY_DELAY_MS = 1000L
+        private const val RETRY_DELAY_MS = 2000L
+        private const val MAX_RETRY_COUNT = 3
         private const val FIRST_LEVEL_DEPTH = 1
         private const val SECOND_LEVEL_DEPTH = 2
         private const val THIRD_LEVEL_DEPTH = 3
@@ -279,18 +288,42 @@ class AblyCrawler(
     }
     
     /**
-     * 공통 HTTP API 요청 메서드
+     * 공통 HTTP API 요청 메서드 - Cloudflare 우회를 위한 향상된 헤더 설정
      */
-    private fun <T> makeApiRequest(url: String, token: String, responseType: Class<T>): T? {
+    private fun <T> makeApiRequest(url: String, token: String, responseType: Class<T>, retryCount: Int = 0): T? {
         return try {
-            restClient.get()
+            val userAgent = USER_AGENTS[retryCount % USER_AGENTS.size]
+            val response = restClient.get()
                 .uri(url)
                 .header("x-anonymous-token", token)
-                .header("User-Agent", USER_AGENT)
+                .header("User-Agent", userAgent)
+                .header("Accept", "application/json, text/plain, */*")
+                .header("Accept-Language", "ko-KR,ko;q=0.9,en;q=0.8")
+                .header("Accept-Encoding", "gzip, deflate, br")
+                .header("Connection", "keep-alive")
+                .header("Sec-Fetch-Dest", "empty")
+                .header("Sec-Fetch-Mode", "cors")
+                .header("Sec-Fetch-Site", "same-site")
+                .header("Sec-Ch-Ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"")
+                .header("Sec-Ch-Ua-Mobile", "?0")
+                .header("Sec-Ch-Ua-Platform", "\"Linux\"")
+                .header("Cache-Control", "no-cache")
+                .header("Pragma", "no-cache")
+                .header("Origin", "https://m.a-bly.com")
+                .header("Referer", "https://m.a-bly.com/")
                 .retrieve()
                 .body(responseType)
-        } catch (_: Exception) {
-            log.debug("API request failed for URL: {}", url)
+            
+            log.debug("API request successful with User-Agent: {}", userAgent)
+            response
+        } catch (e: Exception) {
+            if (retryCount < MAX_RETRY_COUNT - 1) {
+                log.warn("API request failed (attempt {}), retrying with different User-Agent: {}", retryCount + 1, e.message)
+                Thread.sleep(RETRY_DELAY_MS + (retryCount * 1000L))
+                return makeApiRequest(url, token, responseType, retryCount + 1)
+            }
+            
+            log.debug("API request failed after {} attempts for URL: {}", MAX_RETRY_COUNT, url)
             null
         }
     }
