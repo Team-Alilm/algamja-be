@@ -1,6 +1,7 @@
 package org.team_alilm.algamja.product.crawler.impl.ably
 
 import org.slf4j.LoggerFactory
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.team_alilm.algamja.common.exception.BusinessException
@@ -25,7 +26,8 @@ data class OptionProcessingContext(
     val thirdOptions: MutableSet<String>
 )
 
-@Component
+@Component("ablyCrawler")
+@Order(10) // HybridCrawler보다 낮은 우선순위
 class AblyCrawler(
     private val restClient: RestClient
 ) : ProductCrawler {

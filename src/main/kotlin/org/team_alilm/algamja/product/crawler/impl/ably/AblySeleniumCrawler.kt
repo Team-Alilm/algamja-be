@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.slf4j.LoggerFactory
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.team_alilm.algamja.common.exception.BusinessException
 import org.team_alilm.algamja.common.exception.ErrorCode
@@ -21,7 +22,8 @@ import java.time.Duration
 import java.util.regex.Pattern
 import kotlin.random.Random
 
-@Component
+@Component("ablySeleniumCrawler")
+@Order(20) // 가장 낮은 우선순위
 class AblySeleniumCrawler : ProductCrawler {
 
     companion object {

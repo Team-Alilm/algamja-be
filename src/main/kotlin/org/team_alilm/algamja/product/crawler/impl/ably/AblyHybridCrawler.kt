@@ -1,7 +1,6 @@
 package org.team_alilm.algamja.product.crawler.impl.ably
 
 import org.slf4j.LoggerFactory
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.team_alilm.algamja.common.exception.BusinessException
@@ -16,9 +15,8 @@ import org.team_alilm.algamja.product.crawler.dto.CrawledProduct
  * 
  * EC2 환경에서 Cloudflare 우회와 안정성을 위해 설계됨
  */
-@Component
+@Component("ablyHybridCrawler")
 @Order(1) // AblyCrawler보다 우선순위를 높게 설정
-@ConditionalOnProperty(name = ["crawler.ably.fallback-to-selenium"], havingValue = "true", matchIfMissing = false)
 class AblyHybridCrawler(
     private val ablyCrawler: AblyCrawler,
     private val ablySeleniumCrawler: AblySeleniumCrawler
