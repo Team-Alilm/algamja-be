@@ -253,10 +253,13 @@ class ProductService(
     fun registerProduct(request: ProductRegisterRequest, memberId: Long): ProductRegisterResponse {
         log.info("Registering product: {} from store: {} for member: {}", request.name, request.store, memberId)
         
-        // 1. 기존 상품이 있는지 확인
+        // 1. 기존 상품이 있는지 확인 (모든 옵션을 비교)
         val existingProduct = productExposedRepository.fetchProductByStoreNumber(
             storeNumber = request.number,
-            store = request.store
+            store = request.store,
+            firstOption = request.firstOption,
+            secondOption = request.secondOption,
+            thirdOption = request.thirdOption
         )
         
         val productId = if (existingProduct != null) {

@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/team-alilm/alilm-be:${IMAGE_TAG:-latest}
+    image: ghcr.io/team_alilm/algamja-be:${IMAGE_TAG:-latest}
     container_name: app
     depends_on:
       - redis

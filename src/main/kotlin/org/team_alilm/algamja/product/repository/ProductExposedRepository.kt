@@ -239,14 +239,48 @@ class ProductExposedRepository {
             .singleOrNull()
             ?.let(ProductRow::from)
 
-    /** 스토어 번호로 상품 조회 (중복 등록 방지용) */
-    fun fetchProductByStoreNumber(storeNumber: Long, store: Store): ProductRow? =
+    /** 스토어 번호와 옵션으로 상품 조회 (중복 등록 방지용) */
+    fun fetchProductByStoreNumber(
+        storeNumber: Long, 
+        store: Store,
+        firstOption: String?,
+        secondOption: String?,
+        thirdOption: String?
+    ): ProductRow? =
         ProductTable
             .selectAll()
             .where { 
-                (ProductTable.storeNumber eq storeNumber) and
-                (ProductTable.store eq store) and 
-                (ProductTable.isDelete eq false) 
+                val conditions = mutableListOf<Op<Boolean>>(
+                    ProductTable.storeNumber eq storeNumber,
+                    ProductTable.store eq store,
+                    ProductTable.isDelete eq false
+                )
+                
+                // firstOption 비교 (빈 문자열과 null 처리)
+                conditions.add(
+                    if (firstOption.isNullOrEmpty()) 
+                        ProductTable.firstOption eq ""
+                    else 
+                        ProductTable.firstOption eq firstOption
+                )
+                
+                // secondOption 비교
+                conditions.add(
+                    if (secondOption == null) 
+                        ProductTable.secondOption.isNull()
+                    else 
+                        ProductTable.secondOption eq secondOption
+                )
+                
+                // thirdOption 비교
+                conditions.add(
+                    if (thirdOption == null) 
+                        ProductTable.thirdOption.isNull()
+                    else 
+                        ProductTable.thirdOption eq thirdOption
+                )
+                
+                conditions.reduce { acc, op -> acc and op }
             }
             .singleOrNull()
             ?.let(ProductRow::from)
