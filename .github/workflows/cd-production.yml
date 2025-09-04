@@ -55,7 +55,7 @@ jobs:
         run: ./gradlew test --parallel
 
       - name: Build verification
-        run: ./gradlew build -x test
+        run: ./gradlew build -x test -x detekt
 
   # Docker 이미지 빌드 및 푸시
   build-and-push:

@@ -25,48 +25,48 @@ class MusinsaProductSchedulerTest {
         @DisplayName("성공적으로 스케줄 작업을 실행한다")
         fun `should execute scheduled task successfully`() {
             // Given
-            val expectedCount = 50
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100)).thenReturn(expectedCount)
+            val expectedCount = 25
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(30)).thenReturn(expectedCount)
 
             // When
             musinsaProductScheduler.registerRankingMusinsaProducts()
 
             // Then
-            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
+            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(30)
         }
 
         @Test
         @DisplayName("서비스에서 예외 발생 시에도 스케줄러는 정상 종료된다")
         fun `should handle service exceptions gracefully`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(30))
                 .thenThrow(RuntimeException("Service error"))
 
             // When & Then - 예외가 발생해도 스케줄러 메서드는 정상 종료되어야 함
             musinsaProductScheduler.registerRankingMusinsaProducts()
 
             // Verify that the service was called despite the exception
-            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
+            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(30)
         }
 
         @Test
-        @DisplayName("정확히 100개 상품 등록을 요청한다")
-        fun `should request exactly 100 products`() {
+        @DisplayName("정확히 30개 상품 등록을 요청한다")
+        fun `should request exactly 30 products`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100)).thenReturn(100)
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(30)).thenReturn(30)
 
             // When
             musinsaProductScheduler.registerRankingMusinsaProducts()
 
             // Then
-            verify(musinsaProductService).fetchAndRegisterRankingProducts(eq(100))
+            verify(musinsaProductService).fetchAndRegisterRankingProducts(eq(30))
         }
 
         @Test
         @DisplayName("서비스 메서드는 한 번만 호출된다")
         fun `should call service method exactly once`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100)).thenReturn(75)
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(30)).thenReturn(25)
 
             // When
             musinsaProductScheduler.registerRankingMusinsaProducts()
@@ -79,10 +79,10 @@ class MusinsaProductSchedulerTest {
         @DisplayName("여러 번 실행해도 각각 독립적으로 작동한다")
         fun `should work independently on multiple executions`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
-                .thenReturn(30)
-                .thenReturn(50)
-                .thenReturn(80)
+            whenever(musinsaProductService.fetchAndRegisterRankingProducts(30))
+                .thenReturn(15)
+                .thenReturn(20)
+                .thenReturn(25)
 
             // When
             musinsaProductScheduler.registerRankingMusinsaProducts()
@@ -90,7 +90,7 @@ class MusinsaProductSchedulerTest {
             musinsaProductScheduler.registerRankingMusinsaProducts()
 
             // Then
-            verify(musinsaProductService, times(3)).fetchAndRegisterRankingProducts(100)
+            verify(musinsaProductService, times(3)).fetchAndRegisterRankingProducts(30)
         }
     }
 
@@ -127,7 +127,7 @@ class MusinsaProductSchedulerTest {
             
             // Then
             assert(scheduledAnnotation != null) { "Scheduled annotation should be present" }
-            assert(scheduledAnnotation.cron == "0 0 * * * *") { "Cron expression should be '0 0 * * * *'" }
+            assert(scheduledAnnotation.cron == "0 0 6 * * *") { "Cron expression should be '0 0 6 * * *'" }
         }
 
         @Test

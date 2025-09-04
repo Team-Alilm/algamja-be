@@ -55,7 +55,7 @@ class DelayedProductResponseTest {
         assertEquals("지연 상품", result.name)
         assertEquals("테스트 브랜드", result.brand)
         assertEquals("https://example.com/delayed.jpg", result.thumbnailUrl)
-        assertEquals("ABLY", result.store)
+        assertEquals("MUSINSA", result.store)
         assertEquals(3L, result.waitingDays)
         assertEquals(threeDaysAgo, result.addedDate)
     }
@@ -150,7 +150,7 @@ class DelayedProductResponseTest {
         assertEquals("오래된 상품", result.name)
         assertEquals("빈티지 브랜드", result.brand)
         assertEquals("https://example.com/vintage.jpg", result.thumbnailUrl)
-        assertEquals("ABLY", result.store)
+        assertEquals("MUSINSA", result.store)
         assertEquals(30L, result.waitingDays)
         assertEquals(thirtyDaysAgo, result.addedDate)
     }

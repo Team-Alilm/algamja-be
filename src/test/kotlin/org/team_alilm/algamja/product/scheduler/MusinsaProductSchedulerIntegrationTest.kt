@@ -1,25 +1,23 @@
 package org.team_alilm.algamja.product.scheduler
 
+import io.mockk.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Assertions.*
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.ActiveProfiles
-import org.mockito.kotlin.*
+import org.junit.jupiter.api.BeforeEach
 import org.team_alilm.algamja.product.service.MusinsaProductService
 
-@SpringBootTest
-@ActiveProfiles("test")
-class MusinsaProductSchedulerIntegrationTest {
+class MusinsaProductSchedulerUnitTest {
 
-    @Autowired
+    private val musinsaProductService: MusinsaProductService = mockk()
     private lateinit var musinsaProductScheduler: MusinsaProductScheduler
 
-    @MockBean
-    private lateinit var musinsaProductService: MusinsaProductService
+    @BeforeEach
+    fun setUp() {
+        clearAllMocks()
+        musinsaProductScheduler = MusinsaProductScheduler(musinsaProductService)
+    }
 
     @Nested
     @DisplayName("스케줄러 기본 기능 테스트")
@@ -36,21 +34,20 @@ class MusinsaProductSchedulerIntegrationTest {
         @DisplayName("스케줄러 메서드를 수동으로 실행할 수 있다")
         fun `should be able to execute scheduler method manually`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100)).thenReturn(50)
+            every { musinsaProductService.fetchAndRegisterRankingProducts(30) } returns 25
 
             // When
             musinsaProductScheduler.registerRankingMusinsaProducts()
 
             // Then
-            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
+            verify(exactly = 1) { musinsaProductService.fetchAndRegisterRankingProducts(30) }
         }
 
         @Test
         @DisplayName("여러 번 수동 실행해도 정상 작동한다")
         fun `should work correctly on multiple manual executions`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
-                .thenReturn(30, 45, 60)
+            every { musinsaProductService.fetchAndRegisterRankingProducts(30) } returnsMany listOf(15, 20, 25)
 
             // When
             repeat(3) {
@@ -58,7 +55,7 @@ class MusinsaProductSchedulerIntegrationTest {
             }
 
             // Then
-            verify(musinsaProductService, times(3)).fetchAndRegisterRankingProducts(100)
+            verify(exactly = 3) { musinsaProductService.fetchAndRegisterRankingProducts(30) }
         }
     }
 
@@ -70,24 +67,21 @@ class MusinsaProductSchedulerIntegrationTest {
         @DisplayName("서비스에서 예외 발생시 스케줄러가 안전하게 처리한다")
         fun `should handle service exceptions gracefully`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
-                .thenThrow(RuntimeException("Service exception"))
+            every { musinsaProductService.fetchAndRegisterRankingProducts(30) } throws RuntimeException("Service exception")
 
             // When & Then
             assertDoesNotThrow {
                 musinsaProductScheduler.registerRankingMusinsaProducts()
             }
 
-            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
+            verify(exactly = 1) { musinsaProductService.fetchAndRegisterRankingProducts(30) }
         }
 
         @Test
         @DisplayName("예외 발생 후에도 다음 실행이 정상적으로 동작한다")
         fun `should continue working after exception`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
-                .thenThrow(RuntimeException("First call fails"))
-                .thenReturn(25)
+            every { musinsaProductService.fetchAndRegisterRankingProducts(30) } throws RuntimeException("First call fails") andThen 15
 
             // When & Then
             assertDoesNotThrow {
@@ -95,7 +89,7 @@ class MusinsaProductSchedulerIntegrationTest {
                 musinsaProductScheduler.registerRankingMusinsaProducts()
             }
 
-            verify(musinsaProductService, times(2)).fetchAndRegisterRankingProducts(100)
+            verify(exactly = 2) { musinsaProductService.fetchAndRegisterRankingProducts(30) }
         }
     }
 
@@ -120,30 +114,28 @@ class MusinsaProductSchedulerIntegrationTest {
         @DisplayName("성공적인 상품 등록시 반환값을 로깅한다")
         fun `should log return value on successful registration`() {
             // Given
-            val expectedCount = 75
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
-                .thenReturn(expectedCount)
+            val expectedCount = 25
+            every { musinsaProductService.fetchAndRegisterRankingProducts(30) } returns expectedCount
 
             // When
             musinsaProductScheduler.registerRankingMusinsaProducts()
 
             // Then
-            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
+            verify(exactly = 1) { musinsaProductService.fetchAndRegisterRankingProducts(30) }
         }
 
         @Test
         @DisplayName("0개 상품 등록시에도 정상 처리한다")
         fun `should handle zero products registration normally`() {
             // Given
-            whenever(musinsaProductService.fetchAndRegisterRankingProducts(100))
-                .thenReturn(0)
+            every { musinsaProductService.fetchAndRegisterRankingProducts(30) } returns 0
 
             // When & Then
             assertDoesNotThrow {
                 musinsaProductScheduler.registerRankingMusinsaProducts()
             }
 
-            verify(musinsaProductService, times(1)).fetchAndRegisterRankingProducts(100)
+            verify(exactly = 1) { musinsaProductService.fetchAndRegisterRankingProducts(30) }
         }
     }
 }
