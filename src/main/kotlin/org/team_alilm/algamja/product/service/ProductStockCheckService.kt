@@ -87,14 +87,17 @@ class ProductStockCheckService(
         option: OptionItem,
         storeNumber: Long
     ): Boolean {
-        val isAvailable = option.activated && 
-                         !option.outOfStock && 
-                         !option.isSoldOut && 
-                         !option.isDeleted &&
-                         option.remainQuantity > 0
+        // remainQuantity는 무신사가 실제 재고 수량을 공개하지 않는 정책으로 인해 항상 0을 반환
+        // 따라서 remainQuantity는 재고 판단에 사용하면 안 되며, 다른 필드로만 재고를 확인해야 함
+        val isAvailable = option.activated &&
+                         !option.outOfStock &&
+                         !option.isSoldOut &&
+                         !option.isDeleted
         
         log.debug("Musinsa product $storeNumber availability: $isAvailable " +
-                 "(remainQuantity: ${option.remainQuantity})")
+                 "(activated: ${option.activated}, outOfStock: ${option.outOfStock}, " +
+                 "isSoldOut: ${option.isSoldOut}, isDeleted: ${option.isDeleted}, " +
+                 "remainQuantity: ${option.remainQuantity} [ignored - always 0])")
         return isAvailable
     }
     
