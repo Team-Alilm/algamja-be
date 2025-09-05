@@ -105,15 +105,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run detekt (Kotlin static analysis)  
-        run: ./gradlew detekt --continue || echo "Detekt failed but continuing CI"
+      # Detekt 정적 분석은 Kotlin 2.2.0 호환성 문제로 일시 비활성화
+      # - name: Run detekt (Kotlin static analysis)  
+      #   run: ./gradlew detekt --continue || echo "Detekt failed but continuing CI"
 
-      - name: Upload detekt results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: detekt-results
-          path: build/reports/detekt/
+      # - name: Upload detekt results
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: detekt-results
+      #     path: build/reports/detekt/
 
   build-verification:
     name: Build Verification
@@ -151,7 +152,7 @@ jobs:
           echo "FirebaseSecretKey.json ready for build."
 
       - name: Build application
-        run: ./gradlew build -x test -x detekt
+        run: ./gradlew build -x test
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
