@@ -15,7 +15,7 @@ mysql = "9.4.0"
 flyway = "10.16.0"   # ✅ 추가
 mockito-kotlin = "5.2.1"
 kotest = "5.9.1"
-detekt = "1.23.7"
+detekt = "1.23.8"
 commons-lang3 = "3.18.0"  # Latest stable version
 shedlock = "5.1.0"
 

@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.spring.dependency.management)
     java
     jacoco
-    alias(libs.plugins.detekt)
+    // alias(libs.plugins.detekt)  // Kotlin 2.2.0 호환성 이슈로 일시 비활성화
     id("org.sonarqube") version "4.4.1.3373"
 }
 
@@ -164,7 +164,8 @@ tasks.jacocoTestCoverageVerification {
     }
 }
 
-// Detekt 정적 분석 설정
+// Detekt 정적 분석 설정 - Kotlin 2.2.0 호환성 이슈로 일시 비활성화
+/*
 detekt {
     config.setFrom("$projectDir/detekt-config.yml")
     buildUponDefaultConfig = true
@@ -183,10 +184,14 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
         md.required.set(false)
     }
 }
+*/
 
 // 빌드 태스크 의존성 설정
 tasks.build {
-    dependsOn(tasks.test, tasks.jacocoTestReport)
+    // CI에서 `build -x test` 실행 시 커버리지 검증을 건너뛰도록 조건부 의존성 설정
+    if (!gradle.startParameter.excludedTaskNames.contains("test")) {
+        dependsOn(tasks.test, tasks.jacocoTestReport)
+    }
     // detekt는 Kotlin 2.2.0 호환성 문제로 일시적으로 제외
     // dependsOn(tasks.detekt) 
 }
@@ -221,7 +226,7 @@ sonar {
         property("sonar.sources", "src/main/kotlin")
         property("sonar.tests", "src/test/kotlin")
         property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.kotlin.detekt.reportPaths", "build/reports/detekt/detekt.xml")
+        // property("sonar.kotlin.detekt.reportPaths", "build/reports/detekt/detekt.xml")  // detekt 비활성화로 주석 처리
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
