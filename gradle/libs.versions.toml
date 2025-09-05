@@ -17,6 +17,7 @@ mockito-kotlin = "5.2.1"
 kotest = "5.9.1"
 detekt = "1.23.7"
 commons-lang3 = "3.18.0"  # Latest stable version
+shedlock = "5.1.0"
 
 [libraries]
 # Spring Boot Starters
@@ -58,6 +59,10 @@ flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
 
 # Apache Commons
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+
+# ShedLock for distributed scheduling
+shedlock-spring = { module = "net.javacrumbs.shedlock:shedlock-spring", version.ref = "shedlock" }
+shedlock-provider-jdbc-template = { module = "net.javacrumbs.shedlock:shedlock-provider-jdbc-template", version.ref = "shedlock" }
 
 # Testing
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }

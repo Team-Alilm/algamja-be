@@ -1,6 +1,7 @@
 package org.team_alilm.algamja.basket.scheduler
 
 import com.google.firebase.messaging.FirebaseMessaging
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import com.google.firebase.messaging.FirebaseMessagingException
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
@@ -36,6 +37,7 @@ class BasketStockCheckScheduler(
 
     @Transactional
     @Scheduled(cron = "0 */10 * * * *")
+    @SchedulerLock(name = "basketStockCheck", lockAtMostFor = "9m", lockAtLeastFor = "30s")
     fun checkBasketProductAvailability() {
         val startTime = System.currentTimeMillis()
         log.info("========== Basket Product Stock Check Started ==========")

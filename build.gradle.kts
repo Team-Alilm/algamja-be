@@ -63,6 +63,10 @@ dependencies {
     implementation(libs.jsoup) // HTML 파싱
     implementation(libs.commons.lang3)
     
+    // ShedLock for distributed scheduling
+    implementation(libs.shedlock.spring)
+    implementation(libs.shedlock.provider.jdbc.template)
+    
     // API Documentation
     implementation(libs.springdoc.webmvc.ui)
 

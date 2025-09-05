@@ -528,7 +528,11 @@ class MusinsaProductService(
     /**
      * 모든 등록된 상품의 가격을 배치로 업데이트하고 히스토리를 기록하는 함수
      * 메모리 사용량을 줄이기 위해 배치 단위로 처리
+     * 
+     * @deprecated 이 기능은 ProductPriceUpdateService로 이관되었습니다.
+     * 모든 스토어를 통합적으로 처리하는 ProductPriceUpdateScheduler를 사용하세요.
      */
+    @Deprecated("Use ProductPriceUpdateService for unified price updates across all stores")
     fun updateAllProductPrices(): Int {
         log.info("Starting price update for all existing products")
         

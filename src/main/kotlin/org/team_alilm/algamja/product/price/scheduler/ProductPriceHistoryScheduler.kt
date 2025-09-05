@@ -1,5 +1,6 @@
 package org.team_alilm.algamja.product.price.scheduler
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -17,6 +18,7 @@ class ProductPriceHistoryScheduler(
     private val log = LoggerFactory.getLogger(javaClass)
     
     @Scheduled(cron = "0 0 2 * * *") // 매일 새벽 2시에 실행
+    @SchedulerLock(name = "priceHistoryCollection", lockAtMostFor = "1h", lockAtLeastFor = "10m")
     @Transactional
     fun collectDailyPriceHistory() {
         val startTime = System.currentTimeMillis()
@@ -58,6 +60,7 @@ class ProductPriceHistoryScheduler(
     }
     
     @Scheduled(cron = "0 0 3 1 * *") // 매월 1일 새벽 3시에 오래된 데이터 정리
+    @SchedulerLock(name = "priceHistoryCleanup", lockAtMostFor = "30m", lockAtLeastFor = "5m")
     @Transactional
     fun cleanupOldPriceHistory() {
         log.info("Starting old price history cleanup at {}", LocalDateTime.now())

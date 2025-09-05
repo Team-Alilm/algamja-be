@@ -1,5 +1,6 @@
 package org.team_alilm.algamja.product.scheduler
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -19,6 +20,7 @@ class MusinsaProductScheduler(
      * - 랭킹 API를 우선 사용하고, 실패 시 크롤링으로 fallback
      */
     @Scheduled(cron = "0 0 6 * * *")
+    @SchedulerLock(name = "musinsaProductRegistration", lockAtMostFor = "1h", lockAtLeastFor = "10m")
     fun registerRankingMusinsaProducts() {
         val startTime = System.currentTimeMillis()
         log.info("========== Musinsa Ranking Product Registration Scheduled Task Started ==========")
@@ -40,27 +42,6 @@ class MusinsaProductScheduler(
         }
     }
     
-    /**
-     * 매일 오전 7시에 모든 등록된 상품의 가격을 업데이트하는 스케줄 작업
-     * Cron: 0 0 7 * * * (초 분 시 일 월 요일)
-     * - 매일 오전 7시 실행 (1일 1회)
-     * - 모든 등록된 상품의 가격 정보 업데이트 및 히스토리 저장
-     * - 배치 처리로 메모리 사용량 최적화
-     */
-    @Scheduled(cron = "0 0 7 * * *")
-    fun updateProductPrices() {
-        val startTime = System.currentTimeMillis()
-        log.info("========== Musinsa All Products Price Update Scheduled Task Started ==========")
-        
-        try {
-            // 모든 등록된 상품의 가격 업데이트 (배치 처리)
-            val updatedCount = musinsaProductService.updateAllProductPrices()
-            val duration = System.currentTimeMillis() - startTime
-            
-            log.info("========== Musinsa All Products Price Update Completed: $updatedCount products updated in ${duration}ms ==========")
-        } catch (e: Exception) {
-            val duration = System.currentTimeMillis() - startTime
-            log.error("========== Musinsa All Products Price Update Failed in ${duration}ms ==========", e)
-        }
-    }
+    // 가격 업데이트 기능은 ProductPriceUpdateScheduler로 이관됨
+    // 해당 스케줄러가 모든 스토어를 통합적으로 처리함
 }

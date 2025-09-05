@@ -12,7 +12,7 @@ spring:
       write-dates-as-timestamps: false
     deserialization:
       fail-on-unknown-properties: false
-    property-naming-strategy: SNAKE_CASE
+    # property-naming-strategy: SNAKE_CASE  # API 응답을 카멜케이스로 유지
     
 server:
   port: ${SERVER_PORT:8080}
