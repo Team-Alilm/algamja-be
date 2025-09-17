@@ -5,6 +5,7 @@ enum class PublicApiPaths(val pattern: String) {
     PRODUCTS_DETAIL("/api/v*/products/*"),
     PRODUCTS_SIMILAR("/api/v*/products/similar/*"),
     PRODUCTS_RECENTLY_RESTOCKED("/api/v*/products/recently-restocked"),
+    BANNERS("/api/v*/banners"),
     ;
 
     companion object {
