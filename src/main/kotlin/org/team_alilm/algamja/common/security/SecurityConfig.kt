@@ -32,11 +32,7 @@ class SecurityConfig(
 
         http
             .cors { it.configurationSource(corsConfigurationSource()) }
-            .csrf {
-                it.disable()
-                // (선택) 로컬에서만 H2 경로 CSRF 무시하고 싶다면:
-                // if (isLocal) it.ignoringRequestMatchers(AntPathRequestMatcher("/h2-console/**"))
-            }
+            .csrf { it.disable() }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
             .headers { headers ->
