@@ -49,10 +49,28 @@ class ProductExposedRepository {
             table.isDelete eq false,
             like?.let { (table.name like it) or (table.brand like it) },
             // 이제 카테고리가 영어로 저장되므로 직접 비교
-            categoryKey?.let { 
+            categoryKey?.let {
                 (table.firstCategory eq it) or (table.secondCategory eq it)
             }
         ).fold(initial = Op.TRUE as Op<Boolean>) { acc, op -> acc and op }
+    }
+
+    /** ProductCountParam용 WHERE 빌더 */
+    private fun buildCountWhere(param: ProductCountParam): Op<Boolean> {
+        var predicate: Op<Boolean> = ProductTable.isDelete eq false
+
+        // 키워드 검색 조건 추가
+        param.keyword?.trim()?.takeIf { it.isNotEmpty() }?.let { keyword ->
+            val searchPattern = "%$keyword%"
+            predicate = predicate and ((ProductTable.name like searchPattern) or (ProductTable.brand like searchPattern))
+        }
+
+        // 카테고리 검색 조건 추가
+        param.category?.trim()?.takeIf { it.isNotEmpty() }?.let { category ->
+            predicate = predicate and ((ProductTable.firstCategory eq category) or (ProductTable.secondCategory eq category))
+        }
+
+        return predicate
     }
 
     /** 상품 목록 조회 (커서 기반, +1 로 hasNext 판단) */
@@ -169,25 +187,13 @@ class ProductExposedRepository {
 
     /** 검색 조건에 따른 '총 개수' 조회 (정렬 불필요) */
     fun countProducts(param: ProductCountParam): Long {
-        val table = ProductTable
-        val like = param.keyword?.trim()?.takeIf { it.isNotEmpty() }?.let { "%$it%" }
-        val categoryKey = param.category?.trim()?.takeIf { it.isNotEmpty() }
-        
-        val predicate = listOfNotNull(
-            table.isDelete eq false,
-            like?.let { (table.name like it) or (table.brand like it) },
-            categoryKey?.let { 
-                (table.firstCategory eq it) or (table.secondCategory eq it)
-            }
-        ).fold(initial = Op.TRUE as Op<Boolean>) { acc, op -> acc and op }
-        
-        val cnt = ProductTable.id.count()
+        val predicate = buildCountWhere(param)
+        val count = ProductTable.id.count()
+
         return ProductTable
-            .select(cnt)
-            .where { predicate }
-            .firstOrNull()
-            ?.get(cnt)
-            ?: 0L
+            .select(count)
+            .where(predicate)
+            .single()[count]
     }
 
     /** 카테고리 기준 유사 상품 상위 10개 (자기 자신 제외), 최신(id DESC) */
