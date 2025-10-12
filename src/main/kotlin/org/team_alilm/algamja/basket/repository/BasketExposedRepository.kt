@@ -150,19 +150,24 @@ class BasketExposedRepository {
         }
     }
 
+    /**
+     * 최근 재입고된 상품 ID를 최대 10개 조회
+     * - 재입고 알림이 온 상품들 중에서
+     * - 가장 최근에 알림받은(notificationDate가 가장 큰) 상품을 상위 10개 반환
+     */
     fun fetchTop10RecentlyNotifiedProductIds(): List<Long> {
-        val maxId = BasketTable.id.max().alias("max_id")
+        val maxNotificationDate = BasketTable.notificationDate.max().alias("max_notification_date")
 
         return BasketTable
-            .select(BasketTable.productId, maxId)   // ← slice 대신 select(vararg)
+            .select(BasketTable.productId, maxNotificationDate)
             .where {
                 (BasketTable.isNotification eq true) and
+                (BasketTable.notificationDate.isNotNull()) and
                 (BasketTable.isDelete eq false) and
-                (BasketTable.isHidden eq false) and
-                (BasketTable.isNotification eq true)
+                (BasketTable.isHidden eq false)
             }
             .groupBy(BasketTable.productId)
-            .orderBy(maxId to DESC)
+            .orderBy(maxNotificationDate to DESC)
             .limit(10)
             .map { it[BasketTable.productId] }
     }
