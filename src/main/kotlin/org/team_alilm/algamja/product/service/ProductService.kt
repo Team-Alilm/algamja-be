@@ -147,13 +147,18 @@ class ProductService(
         }
 
         val products = productExposedRepository.fetchProductsByIds(ids)
-        val responses = products.map { product ->
-            RecentlyRestockedProductResponse(
-                productId = product.id,
-                name = product.name,
-                brand = product.brand,
-                thumbnailUrl = product.thumbnailUrl
-            )
+        val productMap = products.associateBy { it.id }
+
+        // 원래 정렬 순서(최신순)를 유지하면서 매핑
+        val responses = ids.mapNotNull { id ->
+            productMap[id]?.let { product ->
+                RecentlyRestockedProductResponse(
+                    productId = product.id,
+                    name = product.name,
+                    brand = product.brand,
+                    thumbnailUrl = product.thumbnailUrl
+                )
+            }
         }
 
         return RecentlyRestockedProductListResponse(recentlyRestockedProductResponseList = responses)
