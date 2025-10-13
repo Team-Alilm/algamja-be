@@ -1,6 +1,8 @@
 package org.team_alilm.algamja.product.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -27,36 +29,45 @@ class MusinsaProductService(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun fetchAndRegisterRandomProducts(count: Int = 100): Int {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun fetchAndRegisterRandomProducts(count: Int = 100): Int = runBlocking {
         log.info("Starting to fetch and register {} random Musinsa products", count)
-        
+
         try {
             val productUrls = fetchRandomMusinsaProductUrls(count)
             log.info("Found {} Musinsa product URLs", productUrls.size)
-            
-            var successCount = 0
-            var failCount = 0
-            
-            productUrls.forEach { url ->
-                try {
-                    val crawledProduct = crawlProductFromUrl(url)
-                    if (crawledProduct != null) {
-                        registerProduct(crawledProduct)
-                        successCount++
-                        log.debug("Successfully registered product from URL: {}", url)
-                    } else {
-                        failCount++
-                        log.warn("Failed to crawl product from URL: {}", url)
+
+            // CPU 코어 수 기반 병렬 처리 (최대 8개)
+            val parallelism = Runtime.getRuntime().availableProcessors().coerceAtMost(8)
+            val dispatcher = Dispatchers.IO.limitedParallelism(parallelism)
+
+            val results = productUrls.chunked(10).flatMap { urlBatch ->
+                urlBatch.map { url ->
+                    async(dispatcher) {
+                        try {
+                            val crawledProduct = crawlProductFromUrl(url)
+                            if (crawledProduct != null) {
+                                registerProduct(crawledProduct)
+                                log.debug("Successfully registered product from URL: {}", url)
+                                Result.success(Unit)
+                            } else {
+                                log.warn("Failed to crawl product from URL: {}", url)
+                                Result.failure(Exception("Crawl failed"))
+                            }
+                        } catch (e: Exception) {
+                            log.error("Error processing product URL: {}", url, e)
+                            Result.failure(e)
+                        }
                     }
-                } catch (e: Exception) {
-                    failCount++
-                    log.error("Error processing product URL: {}", url, e)
-                }
+                }.awaitAll()
             }
-            
+
+            val successCount = results.count { it.isSuccess }
+            val failCount = results.count { it.isFailure }
+
             log.info("Product registration completed. Success: {}, Failed: {}", successCount, failCount)
-            return successCount
-            
+            return@runBlocking successCount
+
         } catch (e: Exception) {
             log.error("Failed to fetch and register Musinsa products", e)
             throw BusinessException(ErrorCode.INTERNAL_ERROR, cause = e)
@@ -328,21 +339,22 @@ class MusinsaProductService(
         }
     }
     
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun fetchAndRegisterRankingProducts(count: Int = 100): Int {
         log.info("Starting to fetch and register {} products from Musinsa ranking API", count)
-        
+
         try {
             val registeredCount = fetchAndRegisterProductsFromRankingApi(count)
-            
+
             // 랭킹 API로 충분한 상품을 얻지 못한 경우 기존 방식으로 보충
             if (registeredCount < count / 2) {
                 log.info("Ranking API returned insufficient products ({}), falling back to crawling", registeredCount)
                 val additionalCount = fetchAndRegisterRandomProducts(count - registeredCount)
                 return registeredCount + additionalCount
             }
-            
+
             return registeredCount
-            
+
         } catch (e: Exception) {
             log.error("Failed to fetch products from ranking API, falling back to crawling", e)
             return fetchAndRegisterRandomProducts(count)

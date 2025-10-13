@@ -1,5 +1,6 @@
 [versions]
 kotlin = "2.2.0"
+kotlinx-coroutines = "1.10.1"
 spring-boot = "3.5.5"  # CVE-2025-41242 fix
 spring-dep-mgmt = "1.1.7"
 springdoc = "2.8.9"
@@ -39,6 +40,11 @@ jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
 
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+
+# Kotlin Coroutines
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
 
 exposed-spring-boot-starter = { module = "org.jetbrains.exposed:exposed-spring-boot-starter", version.ref = "exposed" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }

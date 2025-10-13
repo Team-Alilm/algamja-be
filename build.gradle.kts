@@ -54,6 +54,11 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
 
+    // Kotlin Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.reactor)
+    implementation(libs.kotlinx.coroutines.jdk8)
+
     // External Services
     implementation(libs.spring.boot.starter.mail)
     implementation(libs.firebase.admin)

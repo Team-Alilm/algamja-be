@@ -1,6 +1,8 @@
 package org.team_alilm.algamja.basket.scheduler
 
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import com.google.firebase.messaging.FirebaseMessagingException
 import com.google.firebase.messaging.Message
@@ -57,44 +59,48 @@ class BasketStockCheckScheduler(
         }
     }
     
-    private fun processBasketStockCheck() {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun processBasketStockCheck() = runBlocking {
         val basketsToCheck = basketExposedRepository.fetchBasketsToCheckStock()
-        
+
         if (basketsToCheck.isEmpty()) {
             log.info("No baskets to check for stock availability")
-            return
+            return@runBlocking
         }
-        
+
         log.info("Found {} baskets to check for stock availability", basketsToCheck.size)
-        
+
         val productIds = basketsToCheck.map { it.productId }.distinct()
         val products = productExposedRepository.fetchProductsByIds(productIds)
         val productMap = products.associateBy { it.id }
-        
+
+        // CPU 코어 수 기반 병렬 처리 (최대 4개 - API 부하 고려)
+        val parallelism = Runtime.getRuntime().availableProcessors().coerceAtMost(4)
+        val dispatcher = Dispatchers.IO.limitedParallelism(parallelism)
+
         val fcmTokenCache = mutableMapOf<Long, String?>()
-        var successCount = 0
-        var failedCount = 0
-        var noTokenCount = 0
-        
-        basketsToCheck.forEach { basket ->
-            try {
-                processBasketItem(basket, productMap[basket.productId], fcmTokenCache).let {
-                    when (it) {
-                        ProcessResult.SUCCESS -> successCount++
-                        ProcessResult.NO_TOKEN -> noTokenCount++
-                        ProcessResult.PRODUCT_UNAVAILABLE -> null
+
+        val results = basketsToCheck.chunked(20).flatMap { basketBatch ->
+            basketBatch.map { basket ->
+                async(dispatcher) {
+                    try {
+                        processBasketItem(basket, productMap[basket.productId], fcmTokenCache)
+                    } catch (e: BusinessException) {
+                        log.error("Failed to process basket {}: {}", basket.id, e.errorCode.message)
+                        ProcessResult.PRODUCT_UNAVAILABLE
+                    } catch (e: Exception) {
+                        log.error("Unexpected error processing basket {}", basket.id, e)
+                        ProcessResult.PRODUCT_UNAVAILABLE
                     }
                 }
-            } catch (e: BusinessException) {
-                failedCount++
-                log.error("Failed to process basket {}: {}", basket.id, e.errorCode.message)
-            } catch (e: Exception) {
-                failedCount++
-                log.error("Unexpected error processing basket {}", basket.id, e)
-            }
+            }.awaitAll()
         }
-        
-        log.info("Stock check results - Success: {}, No Token: {}, Failed: {}", 
+
+        val successCount = results.count { it == ProcessResult.SUCCESS }
+        val noTokenCount = results.count { it == ProcessResult.NO_TOKEN }
+        val failedCount = results.count { it == ProcessResult.PRODUCT_UNAVAILABLE }
+
+        log.info("Stock check results - Success: {}, No Token: {}, Failed: {}",
             successCount, noTokenCount, failedCount)
     }
     

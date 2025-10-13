@@ -1,5 +1,6 @@
 package org.team_alilm.algamja.product.service
 
+import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -70,27 +71,31 @@ class ProductPriceUpdateService(
     }
     
     /**
-     * 특정 스토어의 상품들 가격 업데이트
+     * 특정 스토어의 상품들 가격 업데이트 (병렬 처리)
      */
-    private fun updateProductsByStore(store: Store, products: List<ProductRow>): Int {
-        var updatedCount = 0
-        
-        products.forEach { product ->
-            try {
-                val updated = updateSingleProductPrice(product)
-                if (updated) updatedCount++
-                
-                // CPU 부하 방지를 위한 짧은 대기
-                Thread.sleep(100)
-                
-            } catch (e: Exception) {
-                log.warn("Failed to update price for product {} from {}: {}", 
-                    product.name, store, e.message)
-            }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun updateProductsByStore(store: Store, products: List<ProductRow>): Int = runBlocking {
+        // CPU 코어 수 기반 병렬 처리 (최대 6개 - API 부하 고려)
+        val parallelism = Runtime.getRuntime().availableProcessors().coerceAtMost(6)
+        val dispatcher = Dispatchers.IO.limitedParallelism(parallelism)
+
+        val results = products.chunked(10).flatMap { productChunk ->
+            productChunk.map { product ->
+                async(dispatcher) {
+                    try {
+                        updateSingleProductPrice(product)
+                    } catch (e: Exception) {
+                        log.warn("Failed to update price for product {} from {}: {}",
+                            product.name, store, e.message)
+                        false
+                    }
+                }
+            }.awaitAll()
         }
-        
+
+        val updatedCount = results.count { it }
         log.debug("Updated {} out of {} products from store: {}", updatedCount, products.size, store)
-        return updatedCount
+        return@runBlocking updatedCount
     }
     
     /**
