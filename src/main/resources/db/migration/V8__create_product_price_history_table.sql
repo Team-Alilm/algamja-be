@@ -12,6 +12,6 @@ CREATE TABLE product_price_history (
     INDEX idx_product_price_history_product_time (product_id, recorded_at),
 
     -- 제약 조건
-    CONSTRAINT chk_price_non_negative CHECK (price >= 0),
+    CONSTRAINT chk_product_price_history_price_non_negative CHECK (price >= 0),
     CONSTRAINT fk_product_price_history_product FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='상품 가격 변동 히스토리';
