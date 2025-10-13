@@ -100,39 +100,40 @@ class ProductPriceUpdateService(
     
     /**
      * 단일 상품의 가격 업데이트
+     * 가격 변경 여부와 관계없이 매일 히스토리를 저장하여 연속적인 가격 데이터 확보
      */
     private fun updateSingleProductPrice(product: ProductRow): Boolean {
         try {
             // 상품 URL 생성
             val productUrl = buildProductUrl(product)
-            
+
             // 크롤러 레지스트리를 통해 적절한 크롤러 선택
             val crawler = crawlerRegistry.resolve(productUrl)
             val normalizedUrl = crawler.normalize(productUrl)
-            
+
             // 최신 가격 크롤링
             val crawledProduct = crawler.fetch(normalizedUrl)
 
             val oldPrice = product.price
             val newPrice = crawledProduct.price
+            val priceChanged = oldPrice.compareTo(newPrice) != 0
 
-            // 가격이 실제로 변경되었는지 확인 (히스토리 기반 중복 방지 포함)
-            if (shouldUpdatePrice(product.id, oldPrice, newPrice)) {
-                // 상품 가격 업데이트
+            // 가격이 변경된 경우 상품 테이블 업데이트
+            if (priceChanged) {
                 productExposedRepository.updatePrice(product.id, newPrice)
-
-                // 가격 히스토리 기록
-                savePriceHistory(product.id, oldPrice, newPrice)
-
                 log.debug("Price updated for product {} ({}): {} -> {}",
                     product.name, product.store, oldPrice, newPrice)
-                return true
             }
+
+            // 가격 변경 여부와 관계없이 매일 히스토리 저장 (그래프 연속성 확보)
+            savePriceHistory(product.id, newPrice)
+
+            return true
 
         } catch (e: Exception) {
             log.warn("Failed to update price for product {}: {}", product.name, e.message)
         }
-        
+
         return false
     }
     
@@ -149,49 +150,26 @@ class ProductPriceUpdateService(
     
     /**
      * 가격 히스토리를 저장하는 함수
+     * 매일 스냅샷을 저장하여 그래프용 연속 데이터 확보
      */
-    private fun savePriceHistory(productId: Long, oldPrice: BigDecimal, newPrice: BigDecimal) {
+    private fun savePriceHistory(productId: Long, price: BigDecimal) {
         try {
-            val changeType = when {
-                newPrice > oldPrice -> "INCREASE"
-                newPrice < oldPrice -> "DECREASE" 
-                else -> "SAME"
-            }
-            
-            // 가격 히스토리 저장
+            // 가격 히스토리 저장 (매일 실행되므로 recordedAt은 현재 시간)
             val historyRow = productPriceHistoryRepository.recordPriceHistory(
                 productId = productId,
-                price = newPrice,
+                price = price,
                 recordedAt = System.currentTimeMillis()
             )
-            
-            log.debug("Price history saved for product {}: {} -> {} ({}) - History ID: {}", 
-                productId, oldPrice, newPrice, changeType, historyRow.id)
-                
+
+            log.debug("Daily price snapshot saved for product {}: {} - History ID: {}",
+                productId, price, historyRow.id)
+
         } catch (e: Exception) {
-            log.error("Failed to save price history for product {}: {} -> {}", 
-                productId, oldPrice, newPrice, e)
+            log.error("Failed to save price history for product {}: {}",
+                productId, price, e)
         }
     }
     
-    /**
-     * 가격 변경 여부를 확인하는 함수
-     * 기존 히스토리와 비교하여 실제로 변경되었는지 확인
-     */
-    private fun shouldUpdatePrice(productId: Long, currentPrice: BigDecimal, newPrice: BigDecimal): Boolean {
-        // 현재 상품의 가격과 새로운 가격이 다른 경우에만 업데이트
-        if (currentPrice.compareTo(newPrice) == 0) {
-            return false
-        }
-        
-        // 히스토리에서 중복 기록 방지 - 최신 기록과 동일한 가격인지 확인
-        return try {
-            productPriceHistoryRepository.hasPriceChanged(productId, newPrice)
-        } catch (e: Exception) {
-            log.warn("Failed to check price history for product {}, proceeding with update", productId, e)
-            true // 히스토리 확인 실패 시에는 업데이트 진행
-        }
-    }
     
     /**
      * 특정 상품의 가격 히스토리 조회 (디버깅/모니터링용)

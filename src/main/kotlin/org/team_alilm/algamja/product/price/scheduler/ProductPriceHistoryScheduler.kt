@@ -9,17 +9,19 @@ import org.team_alilm.algamja.product.price.repository.ProductPriceHistoryReposi
 import org.team_alilm.algamja.product.repository.ProductExposedRepository
 import java.time.LocalDateTime
 
-@Component
+// @Component // 비활성화: ProductPriceUpdateScheduler에서 가격 업데이트 시 히스토리를 함께 저장하도록 통합
 class ProductPriceHistoryScheduler(
     private val productExposedRepository: ProductExposedRepository,
     private val productPriceHistoryRepository: ProductPriceHistoryRepository
 ) {
-    
+
     private val log = LoggerFactory.getLogger(javaClass)
-    
-    @Scheduled(cron = "0 0 2 * * *") // 매일 새벽 2시에 실행
-    @SchedulerLock(name = "priceHistoryCollection", lockAtMostFor = "1h", lockAtLeastFor = "10m")
-    @Transactional
+
+    // 비활성화: ProductPriceUpdateScheduler(오전 7시)에서 가격 크롤링 시 히스토리를 함께 저장
+    // 매일 스냅샷 방식으로 저장하여 그래프용 연속 데이터 확보
+    // @Scheduled(cron = "0 0 2 * * *") // 매일 새벽 2시에 실행
+    // @SchedulerLock(name = "priceHistoryCollection", lockAtMostFor = "1h", lockAtLeastFor = "10m")
+    // @Transactional
     fun collectDailyPriceHistory() {
         val startTime = System.currentTimeMillis()
         log.info("Starting daily price history collection at {}", LocalDateTime.now())
@@ -59,9 +61,9 @@ class ProductPriceHistoryScheduler(
         }
     }
     
-    @Scheduled(cron = "0 0 3 1 * *") // 매월 1일 새벽 3시에 오래된 데이터 정리
-    @SchedulerLock(name = "priceHistoryCleanup", lockAtMostFor = "30m", lockAtLeastFor = "5m")
-    @Transactional
+    // @Scheduled(cron = "0 0 3 1 * *") // 매월 1일 새벽 3시에 오래된 데이터 정리
+    // @SchedulerLock(name = "priceHistoryCleanup", lockAtMostFor = "30m", lockAtLeastFor = "5m")
+    // @Transactional
     fun cleanupOldPriceHistory() {
         log.info("Starting old price history cleanup at {}", LocalDateTime.now())
         
