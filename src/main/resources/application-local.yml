@@ -149,7 +149,7 @@ springdoc:
 
 # 애플리케이션 설정
 app:
-  base-url: ${FRONTEND_URL:http://localhost:3000}
+  base-url: http://localhost:3000
 
 # 웹훅 설정  
 webhook:
