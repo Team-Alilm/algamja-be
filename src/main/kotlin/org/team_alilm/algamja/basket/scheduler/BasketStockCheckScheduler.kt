@@ -37,13 +37,12 @@ class BasketStockCheckScheduler(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Transactional
     @Scheduled(cron = "0 */10 * * * *")
     @SchedulerLock(name = "basketStockCheck", lockAtMostFor = "9m", lockAtLeastFor = "30s")
     fun checkBasketProductAvailability() {
         val startTime = System.currentTimeMillis()
         log.info("========== Basket Product Stock Check Started ==========")
-        
+
         try {
             processBasketStockCheck()
             val duration = System.currentTimeMillis() - startTime
@@ -61,7 +60,10 @@ class BasketStockCheckScheduler(
     
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun processBasketStockCheck() = runBlocking {
-        val basketsToCheck = basketExposedRepository.fetchBasketsToCheckStock()
+        // 트랜잭션 밖에서 데이터 조회
+        val basketsToCheck = org.jetbrains.exposed.sql.transactions.transaction {
+            basketExposedRepository.fetchBasketsToCheckStock()
+        }
 
         if (basketsToCheck.isEmpty()) {
             log.info("No baskets to check for stock availability")
@@ -71,7 +73,9 @@ class BasketStockCheckScheduler(
         log.info("Found {} baskets to check for stock availability", basketsToCheck.size)
 
         val productIds = basketsToCheck.map { it.productId }.distinct()
-        val products = productExposedRepository.fetchProductsByIds(productIds)
+        val products = org.jetbrains.exposed.sql.transactions.transaction {
+            productExposedRepository.fetchProductsByIds(productIds)
+        }
         val productMap = products.associateBy { it.id }
 
         // CPU 코어 수 기반 병렬 처리 (최대 4개 - API 부하 고려)
@@ -104,6 +108,7 @@ class BasketStockCheckScheduler(
             successCount, noTokenCount, failedCount)
     }
     
+    @Transactional
     private fun processBasketItem(
         basket: BasketRow,
         product: ProductRow?,
