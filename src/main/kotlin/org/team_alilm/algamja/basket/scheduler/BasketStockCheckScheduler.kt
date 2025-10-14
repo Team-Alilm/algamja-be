@@ -108,7 +108,6 @@ class BasketStockCheckScheduler(
             successCount, noTokenCount, failedCount)
     }
     
-    @Transactional
     private fun processBasketItem(
         basket: BasketRow,
         product: ProductRow?,
@@ -118,7 +117,7 @@ class BasketStockCheckScheduler(
             log.debug("Product {} not found or deleted for basket {}", basket.productId, basket.id)
             return ProcessResult.PRODUCT_UNAVAILABLE
         }
-        
+
         // 실시간으로 재고 확인 (API 호출)
         val isCurrentlyAvailable = try {
             productStockCheckService.checkProductAvailability(product)
@@ -127,30 +126,36 @@ class BasketStockCheckScheduler(
             // API 호출 실패 시 DB의 isAvailable 값을 폴백으로 사용
             product.isAvailable
         }
-        
+
         if (!isCurrentlyAvailable) {
             log.debug("Product {} is out of stock for basket {}", basket.productId, basket.id)
             // DB의 isAvailable 상태 업데이트
             if (product.isAvailable) {
-                productExposedRepository.markProductAsPurchased(product.id)
+                org.jetbrains.exposed.sql.transactions.transaction {
+                    productExposedRepository.markProductAsPurchased(product.id)
+                }
             }
             return ProcessResult.PRODUCT_UNAVAILABLE
         }
-        
+
         // 재고가 있다고 확인되면 DB 상태도 업데이트
         if (!product.isAvailable) {
-            productExposedRepository.updateProductAvailability(product.id, true)
+            org.jetbrains.exposed.sql.transactions.transaction {
+                productExposedRepository.updateProductAvailability(product.id, true)
+            }
         }
-        
+
         val fcmToken = fcmTokenCache.getOrPut(basket.memberId) {
-            fcmTokenExposedRepository.fetchLatestTokenByMemberId(basket.memberId)?.token
+            org.jetbrains.exposed.sql.transactions.transaction {
+                fcmTokenExposedRepository.fetchLatestTokenByMemberId(basket.memberId)?.token
+            }
         }
-        
+
         if (fcmToken.isNullOrEmpty()) {
             log.debug("No FCM token found for member {}", basket.memberId)
             return ProcessResult.NO_TOKEN
         }
-        
+
         sendStockNotification(basket, product, fcmToken)
         return ProcessResult.SUCCESS
     }
@@ -164,10 +169,12 @@ class BasketStockCheckScheduler(
             // FCM 푸시 알림 발송
             val message = buildFcmMessage(product, fcmToken)
             firebaseMessaging.send(message)
-            
+
             // 이메일 알림 발송 (실패해도 전체 프로세스는 계속 진행)
             try {
-                val member = memberExposedRepository.fetchById(basket.memberId)
+                val member = org.jetbrains.exposed.sql.transactions.transaction {
+                    memberExposedRepository.fetchById(basket.memberId)
+                }
                 if (member != null) {
                     emailService.sendStockNotificationEmail(
                         email = member.email,
@@ -179,26 +186,29 @@ class BasketStockCheckScheduler(
             } catch (e: Exception) {
                 log.error("Failed to send email for basket {} - continuing with other notifications", basket.id, e)
             }
-            
-            // 알림 기록 저장
-            notificationExposedRepository.createNotification(
-                memberId = basket.memberId,
-                productId = product.id
-            )
-            
-            // 장바구니 알림 상태 업데이트
-            basketExposedRepository.updateBasketNotification(
-                basketId = basket.id,
-                isNotification = true,
-                notificationDate = System.currentTimeMillis()
-            )
-            
-            // 상품 구매여부 업데이트
-            productExposedRepository.markProductAsPurchased(product.id)
-            
-            log.debug("Successfully sent all notifications for basket {} to member {}", 
+
+            // DB 작업들을 하나의 트랜잭션으로 묶기
+            org.jetbrains.exposed.sql.transactions.transaction {
+                // 알림 기록 저장
+                notificationExposedRepository.createNotification(
+                    memberId = basket.memberId,
+                    productId = product.id
+                )
+
+                // 장바구니 알림 상태 업데이트
+                basketExposedRepository.updateBasketNotification(
+                    basketId = basket.id,
+                    isNotification = true,
+                    notificationDate = System.currentTimeMillis()
+                )
+
+                // 상품 구매여부 업데이트
+                productExposedRepository.markProductAsPurchased(product.id)
+            }
+
+            log.debug("Successfully sent all notifications for basket {} to member {}",
                 basket.id, basket.memberId)
-                
+
         } catch (e: FirebaseMessagingException) {
             log.error("FCM send failed for basket {} - Error code: {}", basket.id, e.errorCode)
             throw BusinessException(ErrorCode.FCM_SEND_FAILED, e)

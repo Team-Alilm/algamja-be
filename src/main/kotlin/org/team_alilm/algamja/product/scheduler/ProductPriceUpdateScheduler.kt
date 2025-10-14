@@ -45,32 +45,4 @@ class ProductPriceUpdateScheduler(
         }
     }
     
-    /**
-     * 매일 오전 8시에 가격 업데이트 결과 요약 리포트 생성
-     * Cron: 0 0 8 * * * (초 분 시 일 월 요일)  
-     * - 전날 가격 업데이트 결과 분석
-     * - 스토어별 업데이트 현황 정리
-     * - 가격 변동이 큰 상품들 식별
-     */
-    @Scheduled(cron = "0 0 8 * * *")
-    @SchedulerLock(name = "priceUpdateReport", lockAtMostFor = "30m", lockAtLeastFor = "2m")
-    fun generatePriceUpdateReport() {
-        val startTime = System.currentTimeMillis()
-        log.info("========== Daily Price Update Report Generation Started ==========")
-        
-        try {
-            // TODO: 가격 업데이트 리포트 생성 로직 구현
-            // - 어제 업데이트된 상품 수
-            // - 스토어별 통계
-            // - 가격 변동률이 큰 상품들
-            // - 업데이트 실패한 상품들
-            
-            val duration = System.currentTimeMillis() - startTime
-            log.info("========== Daily Price Update Report Generated in {}ms ==========", duration)
-            
-        } catch (e: Exception) {
-            val duration = System.currentTimeMillis() - startTime
-            log.error("========== Daily Price Update Report Generation Failed in {}ms ==========", duration, e)
-        }
-    }
 }

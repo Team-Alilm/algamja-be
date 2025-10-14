@@ -118,15 +118,18 @@ class ProductPriceUpdateService(
             val newPrice = crawledProduct.price
             val priceChanged = oldPrice.compareTo(newPrice) != 0
 
-            // 가격이 변경된 경우 상품 테이블 업데이트
-            if (priceChanged) {
-                productExposedRepository.updatePrice(product.id, newPrice)
-                log.debug("Price updated for product {} ({}): {} -> {}",
-                    product.name, product.store, oldPrice, newPrice)
-            }
+            // 코루틴 내에서 실행되므로 명시적으로 트랜잭션 생성
+            org.jetbrains.exposed.sql.transactions.transaction {
+                // 가격이 변경된 경우 상품 테이블 업데이트
+                if (priceChanged) {
+                    productExposedRepository.updatePrice(product.id, newPrice)
+                    log.debug("Price updated for product {} ({}): {} -> {}",
+                        product.name, product.store, oldPrice, newPrice)
+                }
 
-            // 가격 변경 여부와 관계없이 매일 히스토리 저장 (그래프 연속성 확보)
-            savePriceHistory(product.id, newPrice)
+                // 가격 변경 여부와 관계없이 매일 히스토리 저장 (그래프 연속성 확보)
+                savePriceHistory(product.id, newPrice)
+            }
 
             return true
 
