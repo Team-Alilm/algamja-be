@@ -169,22 +169,4 @@ class ProductPriceUpdateService(
                 productId, price, e)
         }
     }
-    
-    
-    /**
-     * 특정 상품의 가격 히스토리 조회 (디버깅/모니터링용)
-     */
-    fun getPriceHistory(productId: Long, limit: Int = 10): List<String> {
-        return try {
-            productPriceHistoryRepository.fetchPriceHistoryByProductId(productId, limit)
-                .map { history ->
-                    "ID: ${history.id}, Price: ${history.price}, Recorded: ${
-                        java.time.Instant.ofEpochMilli(history.recordedAt)
-                    }"
-                }
-        } catch (e: Exception) {
-            log.error("Failed to fetch price history for product {}", productId, e)
-            emptyList()
-        }
-    }
 }

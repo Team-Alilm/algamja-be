@@ -39,6 +39,11 @@ out/
 ### json ###
 *.json
 
+### Claude Code ###
+# MCP 설정 파일 (토큰 포함)
+.claude/mcp.json
+.claude/**/*.env
+
 ### Security - Environment Variables ###
 .env
 .env.*
