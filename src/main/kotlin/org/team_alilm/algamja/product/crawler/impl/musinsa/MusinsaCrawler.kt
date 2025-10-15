@@ -45,7 +45,11 @@ class MusinsaCrawler(
             val u = URI(url.trim())
             val scheme = (u.scheme ?: "https").lowercase()
             val host = normalizeHost(u.host) ?: return url.substringBefore("?")
-            val path = u.rawPath.orEmpty()
+            var path = u.rawPath.orEmpty()
+
+            // /app/goods/ 형식을 /products/ 형식으로 변환 (무신사 리다이렉트 규칙)
+            path = path.replace(Regex("^/app/goods/"), "/products/")
+
             if ((scheme == "http" || scheme == "https") &&
                 (host == "musinsa.com" || host.endsWith(".musinsa.com"))
             ) {
