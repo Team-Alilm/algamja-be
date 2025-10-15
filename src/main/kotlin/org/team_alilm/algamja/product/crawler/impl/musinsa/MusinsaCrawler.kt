@@ -109,13 +109,20 @@ class MusinsaCrawler(
         val price = state.goodsPrice.salePrice
             .toBigDecimal()
 
-        // 4) 옵션 API 호출 → 옵션명 리스트 추출
-        val option = fetchOptionData(state.goodsNo) // OptionApiResponse
-        val basic = option.data?.basic.orEmpty()    // depth별 옵션 배열
+        // 4) 옵션 API 호출 → 옵션명 리스트 추출 (실패 시 빈 리스트)
+        val (firstOptions, secondOptions, thirdOptions) = try {
+            val option = fetchOptionData(state.goodsNo)
+            val basic = option.data?.basic.orEmpty()
 
-        val firstOptions  = basic.getOrNull(0)?.optionValues?.map { it.name } ?: emptyList()
-        val secondOptions = basic.getOrNull(1)?.optionValues?.map { it.name } ?: emptyList()
-        val thirdOptions  = basic.getOrNull(2)?.optionValues?.map { it.name } ?: emptyList()
+            Triple(
+                basic.getOrNull(0)?.optionValues?.map { it.name } ?: emptyList(),
+                basic.getOrNull(1)?.optionValues?.map { it.name } ?: emptyList(),
+                basic.getOrNull(2)?.optionValues?.map { it.name } ?: emptyList()
+            )
+        } catch (e: Exception) {
+            // 옵션 API 실패 시 빈 옵션으로 처리 (상품 정보는 정상 반환)
+            Triple(emptyList(), emptyList(), emptyList())
+        }
 
         // 한국어 카테고리를 영어로 변환
         val koreanCategory = CategoryMapper.mapCategory("${state.category.categoryDepth1Name} ${state.category.categoryDepth2Name}")
