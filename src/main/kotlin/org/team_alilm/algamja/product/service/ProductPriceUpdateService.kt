@@ -56,9 +56,10 @@ class ProductPriceUpdateService(
                 offset += batchSize
                 
                 log.info("Batch completed: {} products updated in this batch", batchUpdatedCount)
-                
-                // 배치 간 짧은 휴식 (서버 부하 방지)
-                Thread.sleep(500)
+
+                // 배치 간 휴식 (서버 부하 및 rate limiting 방지 - 무신사는 더 긴 지연)
+                val sleepTime = if (productsByStore.containsKey(Store.MUSINSA)) 2000L else 500L
+                Thread.sleep(sleepTime)
             }
             
             log.info("All products price update completed: {} products updated", totalUpdatedCount)
@@ -75,8 +76,8 @@ class ProductPriceUpdateService(
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun updateProductsByStore(store: Store, products: List<ProductRow>): Int = runBlocking {
-        // CPU 코어 수 기반 병렬 처리 (최대 6개 - API 부하 고려)
-        val parallelism = Runtime.getRuntime().availableProcessors().coerceAtMost(6)
+        // 무신사 rate limiting 고려하여 병렬 처리 수 제한 (최대 2개)
+        val parallelism = if (store == Store.MUSINSA) 2 else Runtime.getRuntime().availableProcessors().coerceAtMost(6)
         val dispatcher = Dispatchers.IO.limitedParallelism(parallelism)
 
         val results = products.chunked(10).flatMap { productChunk ->
