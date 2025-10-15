@@ -47,8 +47,8 @@ class BasketServiceTest {
             notificationDate = null,
             isHidden = false,
             isDelete = false,
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
 
         val mockProductRow = ProductRow(
@@ -67,8 +67,8 @@ class BasketServiceTest {
             isAvailable = false,
             lastCheckedAt = null,
             isDelete = false,
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
 
         val mockWaitingCount = ProductWaitingCountProjection(productId, 3L)
@@ -126,8 +126,8 @@ class BasketServiceTest {
             notificationDate = null,
             isHidden = false,
             isDelete = true, // deleted basket
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
 
         whenever(basketExposedRepository.fetchBasketByMemberIdAndProductId(memberId, productId)).thenReturn(null)
@@ -155,8 +155,8 @@ class BasketServiceTest {
             notificationDate = null,
             isHidden = false,
             isDelete = false, // active basket
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
 
         whenever(basketExposedRepository.fetchAnyBasketByMemberIdAndProductId(memberId, productId)).thenReturn(activeBasketRow)
@@ -183,8 +183,8 @@ class BasketServiceTest {
             notificationDate = null,
             isHidden = false,
             isDelete = false,
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
 
         whenever(basketExposedRepository.fetchBasketById(basketId)).thenReturn(mockBasketRow)
@@ -225,8 +225,8 @@ class BasketServiceTest {
             notificationDate = null,
             isHidden = false,
             isDelete = false,
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
 
         whenever(basketExposedRepository.fetchBasketById(basketId)).thenReturn(otherMemberBasket)
