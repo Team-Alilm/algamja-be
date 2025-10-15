@@ -51,8 +51,8 @@ class ProductServiceTest {
             isAvailable = false,
             lastCheckedAt = null,
             isDelete = false,
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
 
         whenever(productExposedRepository.fetchProductById(productId)).thenReturn(mockProduct)
@@ -99,8 +99,8 @@ class ProductServiceTest {
             notificationDate = null,
             isHidden = false,
             isDelete = false,
-            createdDate = basketCreatedTime,
-            lastModifiedDate = basketCreatedTime
+            createdAt = basketCreatedTime,
+            updatedAt = basketCreatedTime
         )
 
         val mockProductRow = ProductRow(
@@ -119,8 +119,8 @@ class ProductServiceTest {
             isAvailable = false,
             lastCheckedAt = null,
             isDelete = false,
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
 
         whenever(basketExposedRepository.fetchOldestWaitingProductByMember(memberId)).thenReturn(mockBasketRow)
@@ -166,8 +166,8 @@ class ProductServiceTest {
             notificationDate = null,
             isHidden = false,
             isDelete = false,
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
         )
 
         whenever(basketExposedRepository.fetchOldestWaitingProductByMember(memberId)).thenReturn(mockBasketRow)

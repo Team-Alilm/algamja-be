@@ -31,8 +31,8 @@ class DelayedProductResponseTest {
             isAvailable = false,
             lastCheckedAt = null,
             isDelete = false,
-            createdDate = currentTime,
-            lastModifiedDate = currentTime
+            createdAt = currentTime,
+            updatedAt = currentTime
         )
 
         val basketRow = BasketRow(
@@ -43,8 +43,8 @@ class DelayedProductResponseTest {
             notificationDate = null,
             isHidden = false,
             isDelete = false,
-            createdDate = threeDaysAgo,
-            lastModifiedDate = threeDaysAgo
+            createdAt = threeDaysAgo,
+            updatedAt = threeDaysAgo
         )
 
         // When
@@ -80,8 +80,8 @@ class DelayedProductResponseTest {
             secondOption = "",
             thirdOption = "",
             isDelete = false,
-            createdDate = currentTime,
-            lastModifiedDate = currentTime
+            createdAt = currentTime,
+            updatedAt = currentTime
         )
 
         val basketRow = BasketRow(
@@ -92,8 +92,8 @@ class DelayedProductResponseTest {
             notificationDate = null,
             isHidden = false,
             isDelete = false,
-            createdDate = oneHourAgo,
-            lastModifiedDate = oneHourAgo
+            createdAt = oneHourAgo,
+            updatedAt = oneHourAgo
         )
 
         // When
@@ -126,8 +126,8 @@ class DelayedProductResponseTest {
             secondOption = "XL",
             thirdOption = "롱",
             isDelete = false,
-            createdDate = currentTime,
-            lastModifiedDate = currentTime
+            createdAt = currentTime,
+            updatedAt = currentTime
         )
 
         val basketRow = BasketRow(
@@ -138,8 +138,8 @@ class DelayedProductResponseTest {
             notificationDate = null,
             isHidden = false,
             isDelete = false,
-            createdDate = thirtyDaysAgo,
-            lastModifiedDate = thirtyDaysAgo
+            createdAt = thirtyDaysAgo,
+            updatedAt = thirtyDaysAgo
         )
 
         // When

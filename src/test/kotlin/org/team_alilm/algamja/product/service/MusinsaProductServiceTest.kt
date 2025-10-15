@@ -337,8 +337,8 @@ class MusinsaProductServiceTest {
             thirdOption = null,
             isAvailable = false,
             lastCheckedAt = null,
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis(),
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis(),
             isDelete = false
         )
     }
@@ -348,8 +348,8 @@ class MusinsaProductServiceTest {
             id = 1L,
             productId = 1L,
             imageUrl = "https://example.com/image.jpg",
-            createdDate = System.currentTimeMillis(),
-            lastModifiedDate = System.currentTimeMillis(),
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis(),
             isDelete = false
         )
     }
