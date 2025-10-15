@@ -31,7 +31,7 @@ class NotificationExposedRepository {
     /** findAllByMemberIdAndReadYnIsFalseAndCreatedDateAfter */
     fun fetchUnreadByMemberIdCreatedAfter(
         memberId: Long,
-        createdDateExclusive: Long
+        createdAtExclusive: Long
     ): List<NotificationRow> =
         NotificationTable
             .selectAll()
@@ -39,7 +39,7 @@ class NotificationExposedRepository {
                 (NotificationTable.memberId eq memberId) and
                         (NotificationTable.readYn eq false) and
                         (NotificationTable.isDelete eq false) and
-                        (NotificationTable.createdDate greater createdDateExclusive)
+                        (NotificationTable.createdAt greater createdAtExclusive)
             }
             .orderBy(NotificationTable.id to SortOrder.DESC)
             .map(NotificationRow::from)

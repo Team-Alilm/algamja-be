@@ -15,6 +15,6 @@ class BannerRow(id: EntityID<Long>) : LongEntity(id) {
     var endDate by BannerTable.endDate
     var isActive by BannerTable.isActive
     var isDelete by BannerTable.isDelete
-    var createdDate by BannerTable.createdDate
-    var lastModifiedDate by BannerTable.lastModifiedDate
+    var createdAt by BannerTable.createdAt
+    var updatedAt by BannerTable.updatedAt
 }

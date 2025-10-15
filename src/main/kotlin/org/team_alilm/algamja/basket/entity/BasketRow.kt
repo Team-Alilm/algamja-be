@@ -10,8 +10,8 @@ data class BasketRow(
     val notificationDate: Long?,
     val isHidden: Boolean,
     val isDelete: Boolean,
-    val createdDate: Long,
-    val lastModifiedDate: Long,
+    val createdAt: Long,
+    val updatedAt: Long,
 ) {
     companion object {
         fun from(row: ResultRow) = BasketRow(
@@ -22,8 +22,8 @@ data class BasketRow(
             notificationDate = row[BasketTable.notificationDate],
             isHidden = row[BasketTable.isHidden],
             isDelete = row[BasketTable.isDelete],
-            createdDate = row[BasketTable.createdDate],
-            lastModifiedDate = row[BasketTable.lastModifiedDate],
+            createdAt = row[BasketTable.createdAt],
+            updatedAt = row[BasketTable.updatedAt],
         )
     }
 }

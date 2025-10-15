@@ -31,7 +31,7 @@ class NotificationService(
 
         val notifications = notificationExposedRepository.fetchUnreadByMemberIdCreatedAfter(
             memberId = memberId,
-            createdDateExclusive = since
+            createdAtExclusive = since
         )
         if (notifications.isEmpty()) {
             return RecentNotificationResponseList(emptyList())
@@ -58,7 +58,7 @@ class NotificationService(
                 secondOption = p.secondOption,
                 thirdOption = p.thirdOption,
                 readYn = n.readYn,
-                createdData = n.createdDate
+                createdData = n.createdAt
             )
         }
 

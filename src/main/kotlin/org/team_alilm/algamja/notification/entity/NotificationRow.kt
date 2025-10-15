@@ -8,8 +8,8 @@ data class NotificationRow(
     val memberId: Long,
     val readYn: Boolean,
     val isDelete: Boolean,
-    val createdDate: Long,
-    val lastModifiedDate: Long
+    val createdAt: Long,
+    val updatedAt: Long
 ) {
     companion object {
         fun from(row: ResultRow): NotificationRow =
@@ -19,8 +19,8 @@ data class NotificationRow(
                 memberId        = row[NotificationTable.memberId],
                 readYn          = row[NotificationTable.readYn],
                 isDelete        = row[NotificationTable.isDelete],
-                createdDate     = row[NotificationTable.createdDate],
-                lastModifiedDate= row[NotificationTable.lastModifiedDate],
+                createdAt     = row[NotificationTable.createdAt],
+                updatedAt= row[NotificationTable.updatedAt],
             )
     }
 }

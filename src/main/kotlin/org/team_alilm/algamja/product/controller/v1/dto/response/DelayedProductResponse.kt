@@ -15,7 +15,7 @@ data class DelayedProductResponse(
     companion object {
         fun from(productRow: ProductRow, basketRow: BasketRow): DelayedProductResponse {
             val currentTime = System.currentTimeMillis()
-            val waitingDays = (currentTime - basketRow.createdDate) / (24 * 60 * 60 * 1000) // 밀리초를 일수로 변환
+            val waitingDays = (currentTime - basketRow.createdAt) / (24 * 60 * 60 * 1000) // 밀리초를 일수로 변환
             
             return DelayedProductResponse(
                 productId = productRow.id,
@@ -24,7 +24,7 @@ data class DelayedProductResponse(
                 thumbnailUrl = productRow.thumbnailUrl,
                 store = productRow.store.name,
                 waitingDays = waitingDays,
-                addedDate = basketRow.createdDate
+                addedDate = basketRow.createdAt
             )
         }
     }

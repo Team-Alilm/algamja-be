@@ -8,8 +8,8 @@ data class ProductPriceHistoryRow(
     val productId: Long,
     val price: BigDecimal,
     val recordedAt: Long,
-    val createdDate: Long,
-    val lastModifiedDate: Long,
+    val createdAt: Long,
+    val updatedAt: Long,
     val isDelete: Boolean
 ) {
     companion object {
@@ -19,8 +19,8 @@ data class ProductPriceHistoryRow(
                 productId = row[ProductPriceHistoryTable.productId],
                 price = row[ProductPriceHistoryTable.price],
                 recordedAt = row[ProductPriceHistoryTable.recordedAt],
-                createdDate = row[ProductPriceHistoryTable.createdDate],
-                lastModifiedDate = row[ProductPriceHistoryTable.lastModifiedDate],
+                createdAt = row[ProductPriceHistoryTable.createdAt],
+                updatedAt = row[ProductPriceHistoryTable.updatedAt],
                 isDelete = row[ProductPriceHistoryTable.isDelete]
             )
         }

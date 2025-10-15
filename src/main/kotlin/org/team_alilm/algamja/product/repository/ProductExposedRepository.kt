@@ -329,8 +329,8 @@ class ProductExposedRepository {
                 row[ProductTable.firstOption] = first?.take(120) ?: ""
                 row[ProductTable.secondOption] = second?.take(120)
                 row[ProductTable.thirdOption] = third?.take(120)
-                row[ProductTable.createdDate] = now
-                row[ProductTable.lastModifiedDate] = now
+                row[ProductTable.createdAt] = now
+                row[ProductTable.updatedAt] = now
                 row[ProductTable.isDelete] = false
             }
             
@@ -420,8 +420,8 @@ class ProductExposedRepository {
             row[ProductTable.firstOption] = firstOption.take(120)
             row[ProductTable.secondOption] = secondOption?.take(120)
             row[ProductTable.thirdOption] = thirdOption?.take(120)
-            row[ProductTable.createdDate] = now
-            row[ProductTable.lastModifiedDate] = now
+            row[ProductTable.createdAt] = now
+            row[ProductTable.updatedAt] = now
             row[ProductTable.isDelete] = false
         }
         

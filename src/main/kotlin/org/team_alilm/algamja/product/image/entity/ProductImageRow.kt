@@ -4,8 +4,8 @@ import org.jetbrains.exposed.sql.ResultRow
 
 data class ProductImageRow(
     val id: Long,
-    val createdDate: Long,
-    val lastModifiedDate: Long,
+    val createdAt: Long,
+    val updatedAt: Long,
     val isDelete: Boolean,
     val imageUrl: String,
     val productId: Long
@@ -14,8 +14,8 @@ data class ProductImageRow(
         fun from(row: ResultRow): ProductImageRow =
             ProductImageRow(
                 id = row[ProductImageTable.id].value,
-                createdDate = row[ProductImageTable.createdDate],
-                lastModifiedDate = row[ProductImageTable.lastModifiedDate],
+                createdAt = row[ProductImageTable.createdAt],
+                updatedAt = row[ProductImageTable.updatedAt],
                 isDelete = row[ProductImageTable.isDelete],
                 imageUrl = row[ProductImageTable.imageUrl],
                 productId = row[ProductImageTable.productId]

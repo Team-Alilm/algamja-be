@@ -22,8 +22,8 @@ data class ProductRow(
 
     // audit
     val isDelete: Boolean,
-    val createdDate: Long,
-    val lastModifiedDate: Long,
+    val createdAt: Long,
+    val updatedAt: Long,
 ) {
     companion object {
         fun from(row: ResultRow) = ProductRow(
@@ -40,8 +40,8 @@ data class ProductRow(
             secondOption  = row[ProductTable.secondOption],
             thirdOption   = row[ProductTable.thirdOption],
             isDelete      = row[ProductTable.isDelete],
-            createdDate   = row[ProductTable.createdDate],
-            lastModifiedDate   = row[ProductTable.lastModifiedDate],
+            createdAt   = row[ProductTable.createdAt],
+            updatedAt   = row[ProductTable.updatedAt],
         )
     }
 }

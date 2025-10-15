@@ -186,7 +186,7 @@ class BasketExposedRepository {
                 (BasketTable.isDelete eq false) and
                 (BasketTable.isHidden eq false)
             }
-            .orderBy(BasketTable.createdDate to SortOrder.ASC)  // 가장 오래된 것부터
+            .orderBy(BasketTable.createdAt to SortOrder.ASC)  // 가장 오래된 것부터
             .limit(1)
             .firstOrNull()
             ?.let(BasketRow::from)

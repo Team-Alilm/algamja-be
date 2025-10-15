@@ -79,5 +79,4 @@ class ProductPriceUpdateScheduler(
             log.error("Error details:", e)
         }
     }
-
 }

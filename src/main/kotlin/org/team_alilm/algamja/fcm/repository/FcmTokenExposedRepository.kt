@@ -35,7 +35,7 @@ class FcmTokenExposedRepository {
                 (FcmTokenTable.isActive eq true) and 
                 (FcmTokenTable.isDelete eq false) 
             }
-            .orderBy(FcmTokenTable.createdDate to org.jetbrains.exposed.sql.SortOrder.DESC)
+            .orderBy(FcmTokenTable.createdAt to org.jetbrains.exposed.sql.SortOrder.DESC)
             .limit(1)
             .firstOrNull()
             ?.let(FcmTokenRow::from)

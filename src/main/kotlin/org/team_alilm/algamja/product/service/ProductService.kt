@@ -245,7 +245,7 @@ class ProductService(
             val response = DelayedProductResponse.from(productRow, basketRow)
             
             log.info("Found most delayed product for member {}: '{}' waiting {} days since {}", 
-                    memberId, productRow.name, response.waitingDays, basketRow.createdDate)
+                    memberId, productRow.name, response.waitingDays, basketRow.createdAt)
             
             response
         } catch (e: Exception) {

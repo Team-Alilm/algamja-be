@@ -8,8 +8,8 @@ data class FcmTokenRow(
     val memberId: Long,
     val isActive: Boolean,
     val isDelete: Boolean,
-    val createdDate: Long,
-    val lastModifiedDate: Long
+    val createdAt: Long,
+    val updatedAt: Long
 ) {
     companion object {
         fun from(row: ResultRow): FcmTokenRow = FcmTokenRow(
@@ -18,8 +18,8 @@ data class FcmTokenRow(
             memberId        = row[FcmTokenTable.memberId],
             isActive        = row[FcmTokenTable.isActive],
             isDelete        = row[FcmTokenTable.isDelete],
-            createdDate     = row[FcmTokenTable.createdDate],
-            lastModifiedDate= row[FcmTokenTable.lastModifiedDate],
+            createdAt     = row[FcmTokenTable.createdAt],
+            updatedAt= row[FcmTokenTable.updatedAt],
         )
     }
 }

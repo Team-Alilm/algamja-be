@@ -23,7 +23,7 @@ class BannerRepository {
                 (BannerTable.startDate lessEq currentTime) and
                 (BannerTable.endDate greaterEq currentTime)
             }
-            .orderBy(BannerTable.priority to SortOrder.DESC, BannerTable.createdDate to SortOrder.DESC)
+            .orderBy(BannerTable.priority to SortOrder.DESC, BannerTable.createdAt to SortOrder.DESC)
             .map { BannerRow.wrapRow(it) }
     }
 
@@ -38,7 +38,7 @@ class BannerRepository {
         BannerTable
             .selectAll()
             .where { BannerTable.isDelete eq false }
-            .orderBy(BannerTable.priority to SortOrder.DESC, BannerTable.createdDate to SortOrder.DESC)
+            .orderBy(BannerTable.priority to SortOrder.DESC, BannerTable.createdAt to SortOrder.DESC)
             .map { BannerRow.wrapRow(it) }
 
     fun create(
